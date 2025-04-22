@@ -1,0 +1,32 @@
+# === Kompilierte Binaries ===
+*.out
+*.o
+*.obj
+*.exe
+*.a
+*.so
+*.dll
+*.dylib
+
+# === Standard Output-Dateien von g++ oder clang++ ===
+a.out
+main
+
+# === Build-Ordner (z. B. bei CMake oder Make) ===
+build/
+bin/
+lib/
+
+# === VS Code Projektdateien ===
+.vscode/
+
+# === Temporäre Dateien ===
+*~
+*.log
+
+# === macOS spezifisch ===
+.DS_Store
+
+# === Backup-Dateien ===
+*.bak
+*.swp
