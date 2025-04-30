@@ -11,7 +11,8 @@
 #define GPIO_SETDATAOUT 0x194
 #define GPIO_CLEARDATAOUT 0x190
 
-#define GPIO_1 0x4804C000  //spruh731.pdf page 182
+#define GPIO_0 0x44E07000  //page 180
+#define GPIO_1 0x4804C000  //page 182
 #define GPIO_2 0x481AC000  //page 183
 #define GPIO_3 0x481AE000  //page 183
 
@@ -31,12 +32,13 @@
 #define LED_Q1_BIT          4
 #define LED_Q2_BIT          5
 
-#define SIZE   0x1000      //based on GPIO address range, see above
+#define SIZE   0x0FFF      //based on GPIO address range, see above
 
 //===================== contructors & destructors =====================
 
 HAL::HAL()
- :gpio_bank_1(mmap_device_io(SIZE, (uint64_t) (GPIO_1)))
+ :gpio_bank_0(mmap_device_io(SIZE, (uint64_t) (GPIO_0)))
+ ,gpio_bank_1(mmap_device_io(SIZE, (uint64_t) (GPIO_1)))
  ,gpio_bank_2(mmap_device_io(SIZE, (uint64_t) (GPIO_2)))
  ,gpio_bank_3(mmap_device_io(SIZE, (uint64_t) (GPIO_3)))
 {}
@@ -48,6 +50,9 @@ HAL::HAL()
 
 
 HAL::~HAL() {
+	if (gpio_bank_0) {
+	    munmap_device_io(gpio_bank_0, SIZE);
+	}
     if (gpio_bank_1) {
         munmap_device_io(gpio_bank_1, SIZE);
     }

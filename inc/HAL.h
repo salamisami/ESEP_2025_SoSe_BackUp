@@ -85,6 +85,7 @@ public:
 #endif
 
 private:
+    uintptr_t gpio_bank_0;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
     uintptr_t gpio_bank_3;
