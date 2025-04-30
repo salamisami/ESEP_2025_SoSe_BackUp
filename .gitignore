@@ -30,3 +30,8 @@ lib/
 # === Backup-Dateien ===
 *.bak
 *.swp
+
+# others
+.cproject
+.project
+vsc.bat
