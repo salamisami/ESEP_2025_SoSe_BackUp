@@ -37,29 +37,25 @@
 //===================== contructors & destructors =====================
 
 HAL::HAL()
- :gpio_bank_0(mmap_device_io(SIZE, (uint64_t) (GPIO_0)))
- ,gpio_bank_1(mmap_device_io(SIZE, (uint64_t) (GPIO_1)))
- ,gpio_bank_2(mmap_device_io(SIZE, (uint64_t) (GPIO_2)))
- ,gpio_bank_3(mmap_device_io(SIZE, (uint64_t) (GPIO_3)))
-{}
+    :gpio_bank_0(mmap_device_io(SIZE, (uint64_t) (GPIO_0)))
+    , gpio_bank_1(mmap_device_io(SIZE, (uint64_t) (GPIO_1)))
+    , gpio_bank_2(mmap_device_io(SIZE, (uint64_t) (GPIO_2)))
+    , gpio_bank_3(mmap_device_io(SIZE, (uint64_t) (GPIO_3))) {
     // request IO privileges (without this code, the code works too. What's the explanation?)
-    //ThreadCtl( _NTO_TCTL_IO, 0);
-//    gpio_bank_1 = mmap_device_io(SIZE, (uint64_t GPIO_1));
-//    gpio_bank_2 = mmap_device_io(SIZE, (uint64_t GPIO_2));
-//    gpio_bank_3 = mmap_device_io(SIZE, (uint64_t GPIO_3));
-
+    ThreadCtl(_NTO_TCTL_IO, 0);
+}
 
 HAL::~HAL() {
-	if (gpio_bank_0) {
-	    munmap_device_io(gpio_bank_0, SIZE);
-	}
-    if (gpio_bank_1) {
+    if(gpio_bank_0) {
+        munmap_device_io(gpio_bank_0, SIZE);
+    }
+    if(gpio_bank_1) {
         munmap_device_io(gpio_bank_1, SIZE);
     }
-    if (gpio_bank_2) {
+    if(gpio_bank_2) {
         munmap_device_io(gpio_bank_2, SIZE);
     }
-    if (gpio_bank_3) {
+    if(gpio_bank_3) {
         munmap_device_io(gpio_bank_3, SIZE);
     }
 }
@@ -105,76 +101,76 @@ void HAL::motor_slow_off() {
     clear_data(gpio_bank_1, MOTOR_SLOW_BIT);
 }
 
-void HAL::motor_stop_on()  {
+void HAL::motor_stop_on() {
     set_data(gpio_bank_1, MOTOR_STOP_BIT);
 }
 
-void HAL::motor_stop_off()  {
+void HAL::motor_stop_off() {
     clear_data(gpio_bank_1, MOTOR_STOP_BIT);
 }
 
-void HAL::traffic_red_on()  {
+void HAL::traffic_red_on() {
     set_data(gpio_bank_1, TRAFFIC_RED_BIT);
 }
 
-void HAL::traffic_red_off()  {
+void HAL::traffic_red_off() {
     clear_data(gpio_bank_1, TRAFFIC_RED_BIT);
 }
 
-void HAL::traffic_yellow_on()  {
+void HAL::traffic_yellow_on() {
     set_data(gpio_bank_1, TRAFFIC_YELLOW_BIT);
 }
 
-void HAL::traffic_yellow_off()  {
+void HAL::traffic_yellow_off() {
     clear_data(gpio_bank_1, TRAFFIC_YELLOW_BIT);
 }
 
-void HAL::traffic_green_on()  {
+void HAL::traffic_green_on() {
     set_data(gpio_bank_1, TRAFFIC_GREEN_BIT);
 }
 
-void HAL::traffic_green_off()  {
+void HAL::traffic_green_off() {
     clear_data(gpio_bank_1, TRAFFIC_GREEN_BIT);
 }
 
-void HAL::sorting_on()  {
+void HAL::sorting_on() {
     set_data(gpio_bank_1, SORTING_BIT);
 }
 
-void HAL::sorting_off()  {
+void HAL::sorting_off() {
     clear_data(gpio_bank_1, SORTING_BIT);
 }
 
 //GPIO_2
 
-void HAL::led_start_on()  {
+void HAL::led_start_on() {
     set_data(gpio_bank_2, LED_START_BIT);
 }
 
-void HAL::led_start_off()  {
+void HAL::led_start_off() {
     clear_data(gpio_bank_2, LED_START_BIT);
 }
 
-void HAL::led_reset_on()  {
+void HAL::led_reset_on() {
     set_data(gpio_bank_2, LED_RESET_BIT);
 }
 
-void HAL::led_reset_off()  {
+void HAL::led_reset_off() {
     clear_data(gpio_bank_2, LED_RESET_BIT);
 }
 
-void HAL::led_q1_on()  {
+void HAL::led_q1_on() {
     set_data(gpio_bank_2, LED_Q1_BIT);
 }
 
-void HAL::led_q1_off()  {
+void HAL::led_q1_off() {
     clear_data(gpio_bank_2, LED_Q1_BIT);
 }
 
-void HAL::led_q2_on()  {
+void HAL::led_q2_on() {
     set_data(gpio_bank_2, LED_Q2_BIT);
 }
 
-void HAL::led_q2_off()  {
+void HAL::led_q2_off() {
     clear_data(gpio_bank_2, LED_Q2_BIT);
 }
