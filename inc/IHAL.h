@@ -3,6 +3,32 @@
 
 #pragma once
 
+//those are the events
+#define LASER_FRONT_BLOCKED
+#define LASER_FRONT_UNBLOCKED
+#define LASER_BACK_BLOCKED
+#define LASER_BACK_UNBLOCKED
+
+#define BUTTON_START_PRESSED
+#define BUTTON_START_UNPRESSED
+#define BUTTON_STOP_PRESSED
+#define BUTTON_STOP_UNPRESSED
+
+#define LASER_METAL_DETECTED
+#define LASER_METAL_NOT_DETECTED
+#define LASER_SORTING_GATE_BLOCKED
+#define LASER_SORTING_GATE_NOT_BLOCKED
+#define LASER_RAMP_BLOCKED
+#define LASER_RAMP_NOT_BLOCKED
+
+
+
+
+
+
+
+
+
 //implementing with interrupt is preffered
 //therefore HAL will contain only outs at the moment
 #define USE_INTERRUPT
