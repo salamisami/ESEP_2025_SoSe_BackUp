@@ -8,13 +8,25 @@
 
 // register description:
 // spruh73l.pdf page 4877
-#define GPIO_SETDATAOUT 0x194
-#define GPIO_CLEARDATAOUT 0x190
+#define GPIO_SETDATAOUT     0x194
+#define GPIO_CLEARDATAOUT   0x190
 
-#define GPIO_0 0x44E07000  //page 180
-#define GPIO_1 0x4804C000  //page 182
-#define GPIO_2 0x481AC000  //page 183
-#define GPIO_3 0x481AE000  //page 183
+#define GPIO_0 0x44E07000  //inputs,            page 180
+#define GPIO_1 0x4804C000  //system outputs,    page 182
+#define GPIO_2 0x481AC000  //human outputs,      page 183
+#define GPIO_3 0x481AE000  //unknown,           page 183
+
+//GPIO_0
+#define LASER_FRONT_BIT     2
+#define LASER_SORTING_BIT   5
+#define LASER_METAL_BIT     7
+#define SORTING_STATUS_BIT  14
+#define LASER_RAMP_BIT      15
+#define LASER_BACK_BIT      20
+#define BUTTON_START_BIT    22
+#define BUTTON_STOP_BIT     23
+#define BUTTON_RESET_BIT    26
+#define BUTTON_ESTOP_BIT    27
 
 //GPIO_1
 #define MOTOR_RIGHT_BIT     12
@@ -32,7 +44,7 @@
 #define LED_Q1_BIT          4
 #define LED_Q2_BIT          5
 
-#define SIZE   0x0FFF      //based on GPIO address range, see above
+#define SIZE   0x1000      //based on GPIO address range (4KB)
 
 //===================== contructors & destructors =====================
 
