@@ -34,4 +34,5 @@ lib/
 # others
 .cproject
 .project
+.metadata
 vsc.bat
