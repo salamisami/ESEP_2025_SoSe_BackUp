@@ -13,48 +13,26 @@
 #define BUTTON_START_UNPRESSED
 #define BUTTON_STOP_PRESSED
 #define BUTTON_STOP_UNPRESSED
+#define BUTTON_RESET_PRESSED
+#define BUTTON_RESET_UNPRESSED
+#define BUTTON_ESTOP_PRESSED
+#define BUTTON_ESTOP_UNPRESSED
 
-#define LASER_METAL_DETECTED
-#define LASER_METAL_NOT_DETECTED
+#define METAL_DETECTED
+#define METAL_NOT_DETECTED
+
 #define LASER_SORTING_GATE_BLOCKED
-#define LASER_SORTING_GATE_NOT_BLOCKED
+#define LASER_SORTING_GATE_UNBLOCKED
 #define LASER_RAMP_BLOCKED
-#define LASER_RAMP_NOT_BLOCKED
-
-
-
-
-
-
-
-
-
-//implementing with interrupt is preffered
-//therefore HAL will contain only outs at the moment
-#define USE_INTERRUPT
+#define LASER_RAMP_UNBLOCKED
 
 class IHAL {
 public:
     virtual ~IHAL() = default;
 
-    #ifndef USE_INTERRUPT
-    //INs
-    virtual bool laser_front_is_blocked() = 0;
-    virtual bool laser_back_is_blocked() = 0;
-
-	virtual bool metal_sensor_detects() = 0;
-    double laser_measure_value() = 0;
-
-    virtual bool laser_sorting_gate_is_blocked() = 0;
-    virtual bool laser_ramp_is_blocked() = 0;
-
-    virtual bool button_start_is_pressed() = 0;
-    virtual bool button_stop_is_pressed() = 0;
-    virtual bool button_reset_is_pressed() = 0;
-    virtual bool button_estop_is_pressed() = 0;
-    #endif
-
     //OUTs
+    virtual bool isGate() = 0;
+
     virtual void motor_right_on() = 0;
     virtual void motor_right_off() = 0;
     virtual void motor_left_on() = 0;
