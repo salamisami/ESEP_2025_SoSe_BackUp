@@ -1,0 +1,46 @@
+# === Kompilierte Binaries ===
+*.out
+*.o
+*.obj
+*.exe
+*.a
+*.so
+*.dll
+*.dylib
+
+# === Standard Output-Dateien von g++ oder clang++ ===
+a.out
+main
+
+# === Build-Ordner (z. B. bei CMake oder Make) ===
+build/
+bin/
+lib/
+
+# === VS Code Projektdateien ===
+.vscode/
+
+# === Temporäre Dateien ===
+*~
+*.log
+
+# === macOS spezifisch ===
+.DS_Store
+
+# === Backup-Dateien ===
+*.bak
+*.swp
+
+# others
+.cproject
+.project
+<<<<<<< HEAD
+.metadata
+vsc.bat
+=======
+vsc.bat
+.history
+docs/Termin 1 - 23.04.25.pdf
+inc/output
+program
+>>>>>>> f566943 (updated gitignore)
