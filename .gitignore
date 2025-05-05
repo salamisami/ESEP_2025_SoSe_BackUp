@@ -51,3 +51,5 @@ program
 
 .idea
 doc/.$ComponentDiagram.drawio.bkp
+.metadata
+vsc.bat
