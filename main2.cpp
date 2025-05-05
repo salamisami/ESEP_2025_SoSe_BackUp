@@ -1,19 +1,21 @@
-#include "HAL.h"
+#include "./inc/HAL.h"
 #include <iostream>
+#include <unistd.h>
 
 #define ONE_MILLISECOND 1000
 
 using namespace std;
 
-
-void wait(){
+void wait()
+{
 	usleep(ONE_MILLISECOND * 1000);
 }
 
-int main() {
+int main()
+{
 	cout << "Hello World!!!" << endl; // prints Hello World!!!
 
-	HAL* hal = new HAL();
+	HAL *hal = new HAL();
 
 	hal->traffic_red_on();
 	wait();
@@ -58,8 +60,6 @@ int main() {
 	hal->led_reset_off();
 	hal->led_q1_off();
 	hal->led_q2_off();
-
-
 
 	delete hal;
 	return 0;
