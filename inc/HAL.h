@@ -12,6 +12,8 @@ public:
     HAL();
     virtual ~HAL();
 
+    bool isGate() override;
+
     void motor_right_on() override;
     void motor_right_off() override;
     void motor_left_on() override;
