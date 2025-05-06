@@ -6,15 +6,21 @@
 #include <hw/inout.h>
 #include <sys/neutrino.h>
 
-// register description:
-// spruh73l.pdf page 4877
+// GPIO Registers page 4877 
 #define GPIO_SETDATAOUT     0x194
 #define GPIO_CLEARDATAOUT   0x190
+#define GPIO_OE             0x134
 
+// Memory maps
 #define GPIO_0 0x44E07000  //inputs,            page 180
 #define GPIO_1 0x4804C000  //system outputs,    page 182
 #define GPIO_2 0x481AC000  //human outputs,      page 183
 #define GPIO_3 0x481AE000  //unknown,           page 183
+#define INTERRUPT_CONTROLLER 0x48200000         //page 183
+
+//Interrupt Tables: page 465
+
+//interrupt controller registers: 470
 
 //GPIO_0
 #define LASER_FRONT_BIT     2
@@ -55,6 +61,10 @@ HAL::HAL()
     , gpio_bank_3(mmap_device_io(SIZE, (uint64_t) (GPIO_3))) {
     // request IO privileges (without this code, the code works too. What's the explanation?)
     ThreadCtl(_NTO_TCTL_IO, 0);
+
+    out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
+    out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
+
 }
 
 HAL::~HAL() {
@@ -86,6 +96,10 @@ void HAL::clear_data(uintptr_t gpio_bank, uint32_t bit) {
 }
 
 //========================= public functions =========================
+
+bool HAL::isGate(){
+    return true;
+}
 
 //GPIO_1
 
