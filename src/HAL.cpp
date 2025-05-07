@@ -86,13 +86,17 @@ HAL::~HAL() {
 //========================= private functions =========================
 
 void HAL::set_data(uintptr_t gpio_bank, uint32_t bit) {
+    actuatorMutex.lock();
     uint32_t port = (1 << bit);
     out32((uintptr_t) (gpio_bank + GPIO_SETDATAOUT), port);
+    actuatorMutex.unlock();
 }
 
 void HAL::clear_data(uintptr_t gpio_bank, uint32_t bit) {
+    actuatorMutex.lock();
     uint32_t port = (1 << bit);
     out32((uintptr_t) (gpio_bank + GPIO_CLEARDATAOUT), port);
+    actuatorMutex.unlock();
 }
 
 //========================= public functions =========================

@@ -3,6 +3,7 @@
 
 #include "IHAL.h"
 #include <stdint.h>
+#include <mutex>
 
 #pragma once
 
@@ -49,6 +50,8 @@ private:
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
     uintptr_t gpio_bank_3;
+
+    std::mutex actuatorMutex;
 
     void set_data(uintptr_t gpio_bank, uint32_t bit);
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
