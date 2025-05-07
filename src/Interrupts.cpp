@@ -44,17 +44,7 @@
 #define GPIO_DATAIN 0x138
 #define GPIO_SETDATAOUT 0x194
 
-//GPIO_0 - Sensors pin mapping
-#define LASER_FRONT_BIT     2
-#define LASER_SORTING_BIT   5
-#define LASER_METAL_BIT     7
-#define SORTING_STATUS_BIT  14
-#define LASER_RAMP_BIT      15
-#define LASER_BACK_BIT      20
-#define BUTTON_START_BIT    22
-#define BUTTON_STOP_BIT     23
-#define BUTTON_RESET_BIT    26
-#define BUTTON_ESTOP_BIT    27
+
 
 
 /* Helper macros */
@@ -84,15 +74,15 @@ Interrupts::Interrupts(int connectionID)
 	pinsList.push_back(BUTTON_ESTOP_BIT);
 
 	inputPins = (1 << LASER_FRONT_BIT)
-	| (1 << LASER_SORTING_BIT)
-	| (1 << LASER_METAL_BIT)
-	| (1 << SORTING_STATUS_BIT)
-	| (1 << LASER_RAMP_BIT)
-	| (1 << LASER_BACK_BIT)
-	| (1 << BUTTON_START_BIT)
-	| (1 << BUTTON_STOP_BIT)
-	| (1 << BUTTON_RESET_BIT)
-	| (1 << BUTTON_ESTOP_BIT);
+		| (1 << LASER_SORTING_BIT)
+		| (1 << LASER_METAL_BIT)
+		| (1 << SORTING_STATUS_BIT)
+		| (1 << LASER_RAMP_BIT)
+		| (1 << LASER_BACK_BIT)
+		| (1 << BUTTON_START_BIT)
+		| (1 << BUTTON_STOP_BIT)
+		| (1 << BUTTON_RESET_BIT)
+		| (1 << BUTTON_ESTOP_BIT);
 
 	ThreadCtl(_NTO_TCTL_IO, 0);	//Request IO privileges for process.
 	// Request interrupt and IO abilities.
@@ -124,7 +114,7 @@ Interrupts::Interrupts(int connectionID)
 		throw std::runtime_error("Interrupt was not able to be attached!");
 	}
 
-	for(auto pin : pinsList){
+	for(auto pin : pinsList) {
 		out32((uintptr_t) gpio_bank_0 + GPIO_IRQSTATUS_SET_1, (1 << pin));
 	}
 
@@ -182,7 +172,7 @@ Interrupts::~Interrupts() {
 // }
 int Interrupts::registerToBit(uint32_t inputRegister) {
 	if(inputRegister > 0 && (inputRegister & (inputRegister - 1)) != 0) {
-		throw std::runtime_error(std::string(__FUNCTION__) + "Cannot convert register to bit offset, value is not a power of 2");
+		throw std::runtime_error(std::string(__FUNCTION__) + ": Cannot convert register to bit offset, value is not a power of 2");
 	}
 	double value = std::log2(inputRegister);
 	return (int) value;
@@ -216,20 +206,22 @@ void Interrupts::receivingRoutine(int channelID) {
 
 
 void Interrupts::handleInterrupt(void) {
-	//uintptr_t gpioBase = mmap_device_io(GPIO_MMAP_SIZE, GPIO_0);
-
 	uint32_t intrStatusReg = in32(uintptr_t(gpio_bank_0 + GPIO_IRQSTATUS_1));
-	//std::cout << "Interrupt Status Register: " << std::bitset<32>(intrStatusReg) << std::endl;
-
 	out32(uintptr_t(gpio_bank_0 + GPIO_IRQSTATUS_1), 0xffffffff);	//clear all interrupts.
 	InterruptUnmask(INTR_GPIO_0, interruptID);				//unmask interrupt.
 
 	int causing_pin = registerToBit(intrStatusReg);
 	int pin_status = (in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN) >> causing_pin) & 0x1;
-	std::printf("Interrupt on pin %d, status: %d\n", causing_pin, pin_status);
+	//if double events come at the same time, the system has to ignore it.
+	if(last_causing_pin != causing_pin || last_pin_status != pin_status) {
+		last_causing_pin = causing_pin;
+		last_pin_status = pin_status;
+		//std::printf("Interrupt on pin %d, status: %d\n", causing_pin, pin_status);
+		//TODO e-stopp is still trigerred 2x during e-stop pull
+		//TODO send event to external pulse message (GNS)
+		MsgSendPulse(externalConID,5,causing_pin,pin_status);
+	}
 
-	//TODO
-	//MsgSendPulse(externalConID,5,code,value);
 }
 
 
