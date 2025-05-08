@@ -99,20 +99,17 @@ HAL::HAL(int connectionID)
         throw std::runtime_error(std::string(__FUNCTION__) + "Interrupt was not able to be attached!");
     }
 
-    out32((uintptr_t) gpio_bank_0 + GPIO_IRQSTATUS_SET_1, (1 << inputPins));
+    out32((uintptr_t) gpio_bank_0 + GPIO_IRQSTATUS_SET_1, (inputPins));
 
     // Set irq event types.
     uint32_t currentConfig;
 
     //	(for rising edge detection)
     currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
-    currentConfig |= inputPins;//Add desired pins.
-    out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), currentConfig);			//Write new config back.
-
+    out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig|inputPins));//Write new config back.
     // 	(for falling edge detection)
-    currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT));			//Read current config.
-    currentConfig |= inputPins;//Add desired pins.
-    out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), currentConfig);			//Write new config back.
+    currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT));//Read current config.
+    out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig|inputPins));//Write new config back.
 
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
@@ -121,31 +118,25 @@ HAL::HAL(int connectionID)
 }
 
 HAL::~HAL() {
+    MsgSendPulse(internalConID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
+    receivingThread->join();
+    delete receivingThread;
+
+    //	(for rising edge detection)
+    uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
+    out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig^inputPins));//Write new config back.
+    // 	(for falling edge detection)
+    currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT));//Read current config.
+    out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig^inputPins));//Write new config back.
+    out32((uintptr_t) gpio_bank_0 + GPIO_IRQSTATUS_SET_1, (inputPins));
+
+   
+
     // Detach interrupts.
     int intr_detach_status = InterruptDetach(interruptID);
     if(intr_detach_status != EOK) {
         throw std::runtime_error(std::string(__FUNCTION__) + "Detaching interrupt failed!");
     }
-    // Stop receiving thread.
-    MsgSendPulse(internalConID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
-
-
-    motor_stop();
-    traffic_red_off();
-    traffic_yellow_off();
-    traffic_green_off();
-    led_start_off();
-    led_reset_off();
-    led_q1_off();
-    led_q2_off();
-
-
-    receivingThread->join();
-    delete receivingThread;
-
-
-    // Reset registers.
-    // ONLY IF YOUR THE ONLY PROGRAM WITH INTERRUPTS RUNNING ON THIS MACHINE!
 
     // Close channel
     int detach_status = ConnectDetach(internalConID);
@@ -158,8 +149,15 @@ HAL::~HAL() {
         throw std::runtime_error(std::string(__FUNCTION__) + "Destroying channel failed!");
     }
     InterruptDisable();
-    std::cout << "Interrupt deleted." << std::endl;
 
+    motor_stop();
+    traffic_red_off();
+    traffic_yellow_off();
+    traffic_green_off();
+    led_start_off();
+    led_reset_off();
+    led_q1_off();
+    led_q2_off();
 
     if(gpio_bank_0) {
         munmap_device_io(gpio_bank_0, GPIO_MMAP_SIZE);
@@ -379,10 +377,12 @@ void HAL::test_ins(int externalChannelID) {
                 }
                 break;
             case LASER_BACK_BIT:
+                std::cout << "LASER_BACK_BIT" << std::endl;
                 if(value == 0){
                     this->motor_stop();
+                    running = false;
                 }
-                running = false;
+                
                 break;
             default:
                 break;
