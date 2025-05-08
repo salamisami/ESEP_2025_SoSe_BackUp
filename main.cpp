@@ -12,57 +12,17 @@ void wait(){
 
 int main() {
 	cout << "Starting Program..." << endl; // prints Hello World!!!
+	int globalChannelID = ChannelCreate(0);
+	int globalConID = ConnectAttach(0,0,globalChannelID,_NTO_SIDE_CHANNEL, 0);
 
-
-	IHAL* hal = new HAL();
-
-	hal->traffic_red_on();
-	wait();
-	hal->traffic_red_off();
-
-	hal->traffic_yellow_on();
-	wait();
-	hal->traffic_yellow_off();
-
-	hal->traffic_green_on();
-	wait();
-	hal->traffic_green_off();
-
-	hal->motor_slow_on();
-	hal->motor_right_on();
-	wait();
-	hal->motor_slow_off();
-	wait();
-	hal->motor_right_off();
-
-	hal->motor_slow_on();
-	hal->motor_left_on();
-	wait();
-	hal->motor_slow_off();
-	wait();
-	hal->motor_left_off();
-
-	hal->sorting_on();
-	wait();
-	hal->sorting_off();
-
-	hal->led_start_on();
-	wait();
-	hal->led_reset_on();
-	wait();
-	hal->led_q1_on();
-	wait();
-	hal->led_q2_on();
-	wait();
-
-	hal->led_start_off();
-	hal->led_reset_off();
-	hal->led_q1_off();
-	hal->led_q2_off();
-
-
-
+	HAL* hal = new HAL(globalConID);
+	std::cout << "Festo is gate? " <<std::boolalpha << hal->isGate() << std::endl;
+	//schläger:50600801
+	//weiche   50600801
+	//hal->test_outs();
+	hal->test_ins(globalChannelID);
 	delete hal;
+
 	cout << "Program Finished." << endl;
 	return 0;
 }
