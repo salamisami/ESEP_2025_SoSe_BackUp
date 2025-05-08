@@ -62,6 +62,7 @@ HAL::HAL(int connectionID)
     pinsList.push_back(BUTTON_STOP_BIT);
     pinsList.push_back(BUTTON_RESET_BIT);
     pinsList.push_back(BUTTON_ESTOP_BIT);
+    pinsList.push_back(ADC_SIDE_AREA_BIT);
 
     for(auto pin : pinsList) {
         inputPins |= (1 << pin);
@@ -357,8 +358,8 @@ void HAL::led_q2_off() {
     clear_data(gpio_bank_2, LED_Q2_BIT);
 }
 
-void HAL::wait() {
-    usleep(ONE_MILLISECOND * 1000);
+void HAL::wait(float seconds) {
+    usleep(ONE_MILLISECOND * 1000 * seconds);
 }
 
 void HAL::test_ins(int externalChannelID) {
@@ -369,21 +370,43 @@ void HAL::test_ins(int externalChannelID) {
         MsgReceivePulse(externalChannelID, &msg, sizeof(msg), nullptr);
         int code = msg.code;
         int value = msg.value.sival_int;
+        
         switch(code) {
             case LASER_FRONT_BIT:
                 if(value == 0){
                     std::cout << "Thanks!" << std::endl;
+                    this->traffic_green_on();
                     this->motor_right();
                 }
                 break;
             case LASER_BACK_BIT:
                 if(value == 0){
                     this->motor_stop();
+                    this->traffic_green_off();
+                    this->traffic_red_on();
+                } else {
+                    running = false;
+                }
+                break;
+            case LASER_METAL_BIT:
+                if(value == 0){
+                    this->sorting_on();
+                    wait(0.1);
+                    this->sorting_off();
                 }
                 break;
             case BUTTON_STOP_BIT:
                 if(value == 0){
                     running = false;
+                }
+                break;
+            case ADC_SIDE_AREA_BIT:
+                if(value == 0){
+                    this->motor_slow_on();
+                    this->traffic_yellow_on();
+                } else {
+                    this->motor_slow_off();
+                    this->traffic_yellow_off();
                 }
                 break;
             default:
@@ -396,36 +419,36 @@ void HAL::test_ins(int externalChannelID) {
 void HAL::test_outs() {
     std::cout << "Testing Outputs..." << std::endl;
     this->traffic_red_on();
-    wait();
+    wait(1);
     this->traffic_red_off();
     this->traffic_yellow_on();
-    wait();
+    wait(1);
     this->traffic_yellow_off();
     this->traffic_green_on();
-    wait();
+    wait(1);
     this->traffic_green_off();
     this->motor_slow_on();
     this->motor_right();
-    wait();
+    wait(1);
     this->motor_slow_off();
-    wait();
+    wait(1);
     this->motor_left();
     this->motor_slow_on();
-    wait();
+    wait(1);
     this->motor_slow_off();
-    wait();
+    wait(1);
     this->motor_stop();
     this->sorting_on();
-    wait();
+    wait(1);
     this->sorting_off();
     this->led_start_on();
-    wait();
+    wait(1);
     this->led_reset_on();
-    wait();
+    wait(1);
     this->led_q1_on();
-    wait();
+    wait(1);
     this->led_q2_on();
-    wait();
+    wait(1);
     this->led_start_off();
     this->led_reset_off();
     this->led_q1_off();

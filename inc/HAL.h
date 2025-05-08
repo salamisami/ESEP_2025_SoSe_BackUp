@@ -24,6 +24,7 @@
 
 //GPIO_0 - Sensors pin mapping
 #define LASER_FRONT_BIT     2
+#define ADC_SIDE_AREA_BIT   3
 #define ADC_AREA_BIT        4
 #define LASER_SORTING_BIT   5
 #define LASER_METAL_BIT     7
@@ -111,7 +112,7 @@ private:
     //outs
     void set_data(uintptr_t gpio_bank, uint32_t bit);
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
-    void wait();
+    void wait(float seconds);
 
    
 

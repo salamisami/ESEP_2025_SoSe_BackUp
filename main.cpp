@@ -17,8 +17,7 @@ int main() {
 
 	HAL* hal = new HAL(globalConID);
 	std::cout << "Festo is gate: " << std::boolalpha << hal->isGate() << std::endl;
-	//schläger:50600801
-	//weiche   50600801
+
 	//hal->test_outs();
 	hal->test_ins(globalChannelID);
 
