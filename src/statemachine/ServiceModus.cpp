@@ -1,32 +1,24 @@
-#include "../inc/ServiceModus.h"
-#include "../inc/RuheModus.h"
+#include "ServiceModus.h"
+#include "RuheModus.h"
 #include "FBM.h"
 #include <iostream>
+#include "memory_utils.h"
 
-RestMode::RestMode(TrafficLight *context)
-{
+ServiceModus::ServiceModus(FBM* context) {
     context_ = context;
 }
 
-void RestMode::enter()
-{
-    std::cout << "Entering Rest Mode - 0.5Hz blinking\n";
-    context_->startBlinkingThread(0.5);
+void ServiceModus::enter() {
+    std::cout << "Entering Servicemodus - 5Hz blinking\n";
+    context_->startBlinkingThread(5.0);
 }
 
-void RestMode::handleButtonStartUp(bool pressedLong, bool hasErrorOrWarning)
-{
-    if (pressedLong && !hasErrorOrWarning)
-    {
-        std::cout << "Transition to Operation Mode\n";
-        context_->transitionTo(std::make_unique<OperationMode>(context_));
-    }
-    else
-    {
-        std::cout << "Short press or error/warning - staying in Rest Mode\n";
-    }
+void ServiceModus::handleButtonStartUp(bool pressedLong, bool hasErrorOrWarning) {
+    // Behavior not specified in diagram
+    std::cout << "Button start up in Servicemodus\n";
 }
 
-void RestMode::handleButtonStop()
-{
+void ServiceModus::handleButtonStop() {
+    std::cout << "Transition to Ruhemodus\n";
+    context_->transitionTo(make_unique<RuheModus>(context_));
 }
