@@ -3,12 +3,13 @@
 
 #include "IFBMState.h"
 
-class BetriebsModus : public IFBMState
+class OperationMode : public IFBMState
 {
 public:
-    explicit BetriebsModus(FBM *context);
+    explicit OperationMode(FBM *context);
     void enter() override;
     void handleButtonStartUp(bool pressedLong, bool hasErrorOrWarning) override;
     void handleButtonStop() override;
 };
 
+#endif
