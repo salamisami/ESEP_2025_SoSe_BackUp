@@ -32,7 +32,5 @@ lib/
 *.swp
 
 # others
-.cproject
-.project
 .metadata
 vsc.bat
