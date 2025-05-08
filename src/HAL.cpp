@@ -364,6 +364,7 @@ void HAL::wait() {
 }
 
 void HAL::test_ins(int externalChannelID) {
+    std::cout << "Testing Inputs... Please put Piece on the front laser" << std::endl;
     bool running = true;
     _pulse msg;
     while(running) {
@@ -373,6 +374,7 @@ void HAL::test_ins(int externalChannelID) {
         switch(code) {
             case LASER_FRONT_BIT:
                 if(value == 0){
+                    std::cout << "Thanks!" << std::endl;
                     this->motor_right();
                 }
                 break;
@@ -380,19 +382,17 @@ void HAL::test_ins(int externalChannelID) {
                 if(value == 0){
                     this->motor_stop();
                 }
-            case BUTTON_STOP_BIT:
-                if(value == 0){
-                    running = false;
-                }
-
+                running = false;
+                break;
             default:
                 break;
         }
     }
-
+    std::cout << "Testing Input done." << std::endl;
 }
 
 void HAL::test_outs() {
+    std::cout << "Testing Outputs..." << std::endl;
     this->traffic_red_on();
     wait();
     this->traffic_red_off();
@@ -428,4 +428,5 @@ void HAL::test_outs() {
     this->led_reset_off();
     this->led_q1_off();
     this->led_q2_off();
+    std::cout << "Testing Outputs done." << std::endl;
 }
