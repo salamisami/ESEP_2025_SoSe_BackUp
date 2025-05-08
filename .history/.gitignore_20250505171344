@@ -32,8 +32,6 @@ lib/
 *.swp
 
 # others
-.metadata
-vsc.bat
 .cproject
 .project
 vsc.bat
@@ -43,5 +41,3 @@ inc/output
 program
 .metadata
 vsc.bat
-.idea
-doc/.$ComponentDiagram.drawio.bkp

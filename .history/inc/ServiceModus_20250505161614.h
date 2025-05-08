@@ -1,14 +1,15 @@
-#ifndef BETRIEBSMODUS_H
-#define BETRIEBSMODUS_H
+#ifndef SERVICEMODUS_H
+#define SERVICEMODUS_H
 
 #include "IFBMState.h"
 
-class BetriebsModus : public IFBMState
+class ServiceModus : public IFBMState
 {
 public:
-    explicit BetriebsModus(FBM *context);
+    explicit ServiceModus(FBM *context);
     void enter() override;
     void handleButtonStartUp(bool pressedLong, bool hasErrorOrWarning) override;
     void handleButtonStop() override;
 };
 
+#endif

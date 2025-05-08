@@ -32,16 +32,15 @@ lib/
 *.swp
 
 # others
-.metadata
-vsc.bat
 .cproject
 .project
+<<<<<<< HEAD
+.metadata
+vsc.bat
+=======
 vsc.bat
 .history
 docs/Termin 1 - 23.04.25.pdf
 inc/output
 program
-.metadata
-vsc.bat
-.idea
-doc/.$ComponentDiagram.drawio.bkp
+>>>>>>> f566943 (updated gitignore)

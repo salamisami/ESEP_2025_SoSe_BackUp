@@ -1,0 +1,12 @@
+#ifndef IHelloWorld_H
+#define IHellowWorld_H
+
+#pragma once
+
+class IHelloWorld
+{
+public:
+    IHelloWorld() {}
+    virtual ~IHelloWorld() {}
+    virtual void method1() = 0;
+};

@@ -33,8 +33,10 @@ public:
     //OUTs
     virtual bool isGate() = 0;
 
-    virtual void motor_right() = 0;
-    virtual void motor_left() = 0;
+    virtual void motor_right_on() = 0;
+    virtual void motor_right_off() = 0;
+    virtual void motor_left_on() = 0;
+    virtual void motor_left_off() = 0;
     virtual void motor_slow_on() = 0;
     virtual void motor_slow_off() = 0;
     virtual void motor_stop() = 0;
