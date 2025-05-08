@@ -1,5 +1,11 @@
 #include "HAL.h"
 
+#include <iostream>
+#include <stdint.h>
+#include <sys/mman.h>
+#include <hw/inout.h>
+#include <sys/neutrino.h>
+
 // GPIO Registers page 4877 
 //outs
 #define GPIO_SETDATAOUT     0x194
