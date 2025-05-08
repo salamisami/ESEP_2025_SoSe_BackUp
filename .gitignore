@@ -43,3 +43,5 @@ inc/output
 program
 .metadata
 vsc.bat
+.idea
+doc/.$ComponentDiagram.drawio.bkp
