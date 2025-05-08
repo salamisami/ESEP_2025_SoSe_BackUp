@@ -1,10 +1,15 @@
-#include "../inc/FBM.h"
-#include "../inc/RuheModus.h"
+#include "FBM.h"
+#include "RuheModus.h"
 #include <iostream>
+#include "memory_utils.h"
 
 FBM::FBM()
 {
-    transitionTo(std::make_unique<RuheModus>(this));
+    transitionTo(make_unique<RuheModus>(this));
+}
+
+FBM::~FBM() {
+    // Add cleanup code if needed (e.g., freeing resources)
 }
 
 void FBM::transitionTo(std::unique_ptr<IFBMState> state)
