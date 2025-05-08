@@ -51,6 +51,8 @@
 #define LED_Q1_BIT          4
 #define LED_Q2_BIT          5
 
+//#define SHOW_EVENTS
+
 
 class HAL :public IHAL {
 public:

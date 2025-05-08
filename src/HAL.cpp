@@ -233,10 +233,11 @@ void HAL::handleInterrupt(void) {
     if(last_causing_pin != causing_pin || last_pin_status != pin_status) {
         last_causing_pin = causing_pin;
         last_pin_status = pin_status;
-        //std::printf("Interrupt on pin %d, status: %d\n", causing_pin, pin_status);
+        #ifdef SHOW_EVENTS
+        std::printf("Interrupt on pin %d, status: %d\n", causing_pin, pin_status);
+        #endif
         //TODO e-stopp is still trigerred 2x during e-stop pull. 
         //TODO send event to external pulse message (GNS)
-        //TODO double stop pressed event. Reason: MessagePulse is not flushed after deletion
         MsgSendPulse(externalConID, 5, causing_pin, pin_status);
     }
 
@@ -250,12 +251,11 @@ void HAL::startReceiving() {
 //========================= public functions =========================
 
 bool HAL::isGate() {
-
-    uint32_t status_register = in32((uintptr_t) gpio_bank_0);
-    std::cout << "Status Register of in32: " << std::hex << status_register << std::endl;
+    uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
+    std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
     uint32_t sorting_status_pin = (1 << SORTING_STATUS_BIT);
     bool status = (status_register & sorting_status_pin);
-    return status;
+    return !status;
 }
 
 //GPIO_1
@@ -377,12 +377,14 @@ void HAL::test_ins(int externalChannelID) {
                 }
                 break;
             case LASER_BACK_BIT:
-                std::cout << "LASER_BACK_BIT" << std::endl;
                 if(value == 0){
                     this->motor_stop();
+                }
+                break;
+            case BUTTON_STOP_BIT:
+                if(value == 0){
                     running = false;
                 }
-                
                 break;
             default:
                 break;
