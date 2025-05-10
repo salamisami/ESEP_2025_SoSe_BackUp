@@ -28,9 +28,36 @@
 #define INTR_GPIO_1 99
 #define INTR_GPIO_2 33
 
-/* My pulse codes */
-#define PULSE_STOP_THREAD _PULSE_CODE_MINAVAIL + 1
-#define PULSE_INTR_ON_PORT0 _PULSE_CODE_MINAVAIL + 2
+//GPIO_0 - Sensors pin mapping
+#define LASER_FRONT_BIT     2
+#define ADC_SIDE_AREA_BIT   3
+#define ADC_TOP_AREA_BIT    4
+#define LASER_SORTING_BIT   5
+#define LASER_METAL_BIT     7
+#define SORTING_STATUS_BIT  14
+#define LASER_RAMP_BIT      15
+#define LASER_BACK_BIT      20
+#define BUTTON_START_BIT    22
+#define BUTTON_STOP_BIT     23
+#define BUTTON_RESET_BIT    26
+#define BUTTON_ESTOP_BIT    27
+
+//GPIO_1 - Internal actuator pin mapping
+#define MOTOR_RIGHT_BIT     12
+#define MOTOR_LEFT_BIT      13
+#define MOTOR_SLOW_BIT      14
+#define MOTOR_STOP_BIT      15 //useless?
+#define TRAFFIC_RED_BIT     16
+#define TRAFFIC_YELLOW_BIT  17
+#define TRAFFIC_GREEN_BIT   18
+#define SORTING_BIT         19
+
+//GPIO_2 - External actuator pin mapping
+#define LED_START_BIT       2
+#define LED_RESET_BIT       3
+#define LED_Q1_BIT          4
+#define LED_Q2_BIT          5
+
 
 
 
@@ -46,15 +73,15 @@ HAL::HAL(int connectionID)
     , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
     , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
     , externalConID(connectionID)
+    , inputPins(0)
     , last_causing_pin(0)
     , last_pin_status(0)
-    , inputPins(0)
     , receivingRunning(false) {
 
     pinsList.push_back(LASER_FRONT_BIT);
     pinsList.push_back(LASER_SORTING_BIT);
     pinsList.push_back(LASER_METAL_BIT);
-    pinsList.push_back(ADC_AREA_BIT);
+    pinsList.push_back(ADC_TOP_AREA_BIT);
     pinsList.push_back(SORTING_STATUS_BIT);
     pinsList.push_back(LASER_RAMP_BIT);
     pinsList.push_back(LASER_BACK_BIT);
@@ -107,10 +134,10 @@ HAL::HAL(int connectionID)
 
     //	(for rising edge detection)
     currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
-    out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig|inputPins));//Write new config back.
+    out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig | inputPins));//Write new config back.
     // 	(for falling edge detection)
     currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT));//Read current config.
-    out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig|inputPins));//Write new config back.
+    out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig | inputPins));//Write new config back.
 
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
@@ -125,13 +152,13 @@ HAL::~HAL() {
 
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
-    out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig^inputPins));//Write new config back.
+    out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig ^ inputPins));//Write new config back.
     // 	(for falling edge detection)
     currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT));//Read current config.
-    out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig^inputPins));//Write new config back.
+    out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig ^ inputPins));//Write new config back.
     out32((uintptr_t) gpio_bank_0 + GPIO_IRQSTATUS_SET_1, (inputPins));
 
-   
+
 
     // Detach interrupts.
     int intr_detach_status = InterruptDetach(interruptID);
@@ -229,7 +256,7 @@ void HAL::handleInterrupt(void) {
     out32(uintptr_t(gpio_bank_0 + GPIO_IRQSTATUS_1), 0xffffffff);	//clear all interrupts.
     InterruptUnmask(INTR_GPIO_0, interruptID);				//unmask interrupt.
     int causing_pin = registerToBit(intrStatusReg);
-    int pin_status = (in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN) >> causing_pin) & 0x1;
+    bool pin_status = (bool) (in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN) >> causing_pin) & 0x1;
     //if double events come at the same time, the system has to ignore it.
     if(last_causing_pin != causing_pin || last_pin_status != pin_status) {
         last_causing_pin = causing_pin;
@@ -239,9 +266,52 @@ void HAL::handleInterrupt(void) {
         #endif
         //TODO e-stopp is still trigerred 2x during e-stop pull. 
         //TODO send event to external pulse message (GNS)
-        MsgSendPulse(externalConID, 5, causing_pin, pin_status);
+        sendEvent(causing_pin, pin_status);
     }
 
+}
+
+
+void HAL::sendEvent(int causing_pin, int pin_status) {
+    Event::Interrupt event;
+    //Event is the namespace, Interrupt is the enum class
+    using namespace Event;
+    switch(causing_pin) {
+        case LASER_FRONT_BIT:
+            event = pin_status ? Interrupt::LASER_FRONT_BLOCKED : Interrupt::LASER_FRONT_UNBLOCKED;
+            break;
+        case LASER_BACK_BIT:
+            event = pin_status ? Interrupt::LASER_BACK_BLOCKED : Interrupt::LASER_BACK_UNBLOCKED;
+            break;
+        case BUTTON_START_BIT:
+            event = pin_status ? Interrupt::BUTTON_START_PRESSED : Interrupt::BUTTON_START_RELEASED;
+            break;
+        case BUTTON_STOP_BIT:
+            event = pin_status ? Interrupt::BUTTON_STOP_PRESSED : Interrupt::BUTTON_STOP_RELEASED;
+            break;
+        case BUTTON_RESET_BIT:
+            event = pin_status ? Interrupt::BUTTON_RESET_PRESSED : Interrupt::BUTTON_RESET_RELEASED;
+            break;
+        case BUTTON_ESTOP_BIT:
+            event = pin_status ? Interrupt::BUTTON_ESTOP_PRESSED : Interrupt::BUTTON_ESTOP_RELEASED;
+            break;
+        case LASER_SORTING_BIT:
+            event = pin_status ? Interrupt::LASER_SORTING_GATE_BLOCKED : Interrupt::LASER_SORTING_GATE_UNBLOCKED;
+            break;
+        case LASER_RAMP_BIT:
+            event = pin_status ? Interrupt::LASER_RAMP_BLOCKED : Interrupt::LASER_RAMP_UNBLOCKED;
+            break;
+        case LASER_METAL_BIT:
+            event = pin_status ? Interrupt::METAL_DETECTED : Interrupt::METAL_NOT_DETECTED;
+            break;
+        case ADC_TOP_AREA_BIT:
+            event = pin_status ? Interrupt::ADC_TOP_AREA_BLOCKED : Interrupt::ADC_TOP_AREA_UNBLOCKED;
+            break;
+        default:
+            break;
+
+    }
+    MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, INTERRUPT_PULSE, (int) event);
 }
 
 void HAL::startReceiving() {
@@ -264,15 +334,12 @@ bool HAL::isGate() {
 void HAL::motor_right() {
     clear_data(gpio_bank_1, MOTOR_LEFT_BIT);
     set_data(gpio_bank_1, MOTOR_RIGHT_BIT);
-
 }
-
 
 void HAL::motor_left() {
     clear_data(gpio_bank_1, MOTOR_RIGHT_BIT);
     set_data(gpio_bank_1, MOTOR_LEFT_BIT);
 }
-
 
 void HAL::motor_slow_on() {
     set_data(gpio_bank_1, MOTOR_SLOW_BIT);
@@ -369,45 +436,40 @@ void HAL::test_ins(int externalChannelID) {
     while(running) {
         MsgReceivePulse(externalChannelID, &msg, sizeof(msg), nullptr);
         int code = msg.code;
-        int value = msg.value.sival_int;
-        
-        switch(code) {
-            case LASER_FRONT_BIT:
-                if(value == 0){
-                    std::cout << "Thanks!" << std::endl;
-                    this->traffic_green_on();
-                    this->motor_right();
-                }
+        if(code != INTERRUPT_PULSE) {
+            return;
+        }
+        Event::Interrupt event = (Event::Interrupt) msg.value.sival_int;
+        using namespace Event;
+        switch(event) {
+            case Interrupt::LASER_FRONT_BLOCKED:
+                std::cout << "Thanks!" << std::endl;
+                this->traffic_green_on();
+                this->motor_right();
                 break;
-            case LASER_BACK_BIT:
-                if(value == 0){
-                    this->motor_stop();
-                    this->traffic_green_off();
-                    this->traffic_red_on();
-                } else {
-                    running = false;
-                }
+            case Interrupt::LASER_BACK_BLOCKED:
+                this->motor_stop();
+                this->traffic_green_off();
+                this->traffic_red_on();
                 break;
-            case LASER_METAL_BIT:
-                if(value == 0){
-                    this->sorting_on();
-                    wait(0.1);
-                    this->sorting_off();
-                }
+            case Interrupt::LASER_BACK_UNBLOCKED:
+                running = false;
                 break;
-            case BUTTON_STOP_BIT:
-                if(value == 0){
-                    running = false;
-                }
+            case Interrupt::METAL_DETECTED:
+                this->sorting_on();
+                wait(0.1);
+                this->sorting_off();
                 break;
-            case ADC_SIDE_AREA_BIT:
-                if(value == 0){
-                    this->motor_slow_on();
-                    this->traffic_yellow_on();
-                } else {
-                    this->motor_slow_off();
-                    this->traffic_yellow_off();
-                }
+            case Interrupt::BUTTON_STOP_PRESSED:
+                running = false;
+                break;
+            case Interrupt::ADC_TOP_AREA_BLOCKED:
+                this->motor_slow_on();
+                this->traffic_yellow_on();
+                break;
+            case Interrupt::ADC_TOP_AREA_UNBLOCKED:
+                this->motor_slow_off();
+                this->traffic_yellow_off();
                 break;
             default:
                 break;

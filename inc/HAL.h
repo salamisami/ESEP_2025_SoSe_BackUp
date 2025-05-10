@@ -20,39 +20,18 @@
 #include <sys/mman.h>
 #include <hw/inout.h>
 
+#include "Event.h"
+
 #pragma once
 
-//GPIO_0 - Sensors pin mapping
-#define LASER_FRONT_BIT     2
-#define ADC_SIDE_AREA_BIT   3
-#define ADC_AREA_BIT        4
-#define LASER_SORTING_BIT   5
-#define LASER_METAL_BIT     7
-#define SORTING_STATUS_BIT  14
-#define LASER_RAMP_BIT      15
-#define LASER_BACK_BIT      20
-#define BUTTON_START_BIT    22
-#define BUTTON_STOP_BIT     23
-#define BUTTON_RESET_BIT    26
-#define BUTTON_ESTOP_BIT    27
 
-//GPIO_1 - Internal actuator pin mapping
-#define MOTOR_RIGHT_BIT     12
-#define MOTOR_LEFT_BIT      13
-#define MOTOR_SLOW_BIT      14
-#define MOTOR_STOP_BIT      15 //useless?
-#define TRAFFIC_RED_BIT     16
-#define TRAFFIC_YELLOW_BIT  17
-#define TRAFFIC_GREEN_BIT   18
-#define SORTING_BIT         19
-
-//GPIO_2 - External actuator pin mapping
-#define LED_START_BIT       2
-#define LED_RESET_BIT       3
-#define LED_Q1_BIT          4
-#define LED_Q2_BIT          5
 
 //#define SHOW_EVENTS
+
+/* My pulse codes */
+#define PULSE_STOP_THREAD _PULSE_CODE_MINAVAIL + 1
+#define PULSE_INTR_ON_PORT0 _PULSE_CODE_MINAVAIL + 2
+#define INTERRUPT_PULSE _PULSE_CODE_MINAVAIL + 3
 
 
 class HAL :public IHAL {
@@ -99,13 +78,13 @@ private:
     //uintptr_t gpio_bank_3;
 
     int externalConID;
-    int last_causing_pin;
-    int last_pin_status;
     uint32_t inputPins;
     int interruptID;
     int channelID, internalConID;
     std::thread* receivingThread;
     std::vector<uint8_t> pinsList;
+    int last_causing_pin;
+    bool last_pin_status;
     bool receivingRunning;
 
 private:
@@ -121,6 +100,7 @@ private:
     void handleInterrupt(void);
     void startReceiving();
     int registerToBit(uint32_t inputRegister);
+    void sendEvent(int causing_pin, int pin_status);
 
 };
 
