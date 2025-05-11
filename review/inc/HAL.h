@@ -13,12 +13,16 @@
 #include <chrono>
 #include <cmath>
 #include <vector>
+#include <sys/mman.h>
+#include <hw/inout.h>
+#include <sys/dispatch.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 //
 //#include "simqnxgpioapi.h"
 //#include "simqnxirqapi.h"
-#include <sys/mman.h>
-#include <hw/inout.h>
 
 #include "Event.h"
 
@@ -35,10 +39,11 @@
 
 
 class HAL :public IHAL {
-public:
-    HAL(int connectionID);
+public: //============================================ contructors & destructors ============================================
+    HAL(std::string attach_point);
     virtual ~HAL();
 
+public: //================================================ public functions ================================================
     bool isGate() override;
 
     void motor_right() override;
@@ -68,10 +73,10 @@ public:
     void led_q2_off() override;
 
     void test_outs();
-    void test_ins(int externalChannelID);
-    
+    void test_ins();
 
-private:
+
+private: //================================================ private variables ================================================
     uintptr_t gpio_bank_0;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
@@ -80,22 +85,30 @@ private:
     int externalConID;
     uint32_t inputPins;
     int interruptID;
-    int channelID, internalConID;
+    int internalConID, channelID;
     std::thread* receivingThread;
     std::vector<uint8_t> pinsList;
+    std::string attach_point;
+    name_attach_t* attach;
     int last_causing_pin;
     bool last_pin_status;
     bool receivingRunning;
 
-private:
+private: //================================================ private functions ================================================
     //outs
     void set_data(uintptr_t gpio_bank, uint32_t bit);
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
     void wait(float seconds);
+    void setup_GNS_receiver();
+    void clean_GNS_receiver();
 
-   
+
 
     //ins
+    void setup_GNS_sender();
+    void clean_GNS_sender();
+    void setup_internal_pulse_message();
+    void clean_internal_pulse_message();
     void receivingRoutine(int channelID);
     void handleInterrupt(void);
     void startReceiving();

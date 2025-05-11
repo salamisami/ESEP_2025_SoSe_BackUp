@@ -65,21 +65,22 @@
 #define LED_Q2_BIT          5
 
 
-
+#define THROW(msg) \
+    throw std::runtime_error(std::string(__FUNCTION__) + ": " + msg)
 
 #define ONE_MILLISECOND 1000
 
 #define GPIO_MMAP_SIZE   0x1000      //based on GPIO address range (4KB)
 using namespace std;
 
-//===================== contructors & destructors =====================
+//============================================ contructors & destructors ============================================
 
-HAL::HAL(int connectionID)
+HAL::HAL(std::string attach_point)
     :gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
     , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
     , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
-    , externalConID(connectionID)
     , inputPins(0)
+    , attach_point(attach_point)
     , last_causing_pin(0)
     , last_pin_status(0)
     , receivingRunning(false) {
@@ -114,23 +115,18 @@ HAL::HAL(int connectionID)
         PROCMGR_AID_EOL
     );
     if(procmgr_status != EOK) {
-        throw std::runtime_error(std::string(__FUNCTION__) + "Requested abilities failed or denied!\n");
+        THROW("Requested procmgr_status failed!");
     }
     InterruptEnable(); //Enables interrupts.
-    channelID = ChannelCreate(0);//Create channel to receive interrupt pulse messages.
-    if(channelID < 0) {
-        throw std::runtime_error(std::string(__FUNCTION__) + "Could not create a channel!\n");
-    }
-    internalConID = ConnectAttach(0, 0, channelID, _NTO_SIDE_CHANNEL, 0); //Connect to channel.
-    if(internalConID < 0) {
-        throw std::runtime_error(std::string(__FUNCTION__) + "Could not connect to channel!");
-    }
+    setup_internal_pulse_message();
+    setup_GNS_sender();
+    setup_GNS_receiver();
     //Register interrupts by OS.
     struct sigevent interrupt_event;
     SIGEV_PULSE_INIT(&interrupt_event, internalConID, SIGEV_PULSE_PRIO_INHERIT, PULSE_INTR_ON_PORT0, 0);
     interruptID = InterruptAttachEvent(INTR_GPIO_0, &interrupt_event, 0);
     if(interruptID < 0) {
-        throw std::runtime_error(std::string(__FUNCTION__) + "Interrupt was not able to be attached!");
+        THROW( "Interrupt was not able to be attached!");
     }
 
     out32((uintptr_t) gpio_bank_0 + GPIO_IRQSTATUS_SET_1, (inputPins));
@@ -169,19 +165,14 @@ HAL::~HAL() {
     // Detach interrupts.
     int intr_detach_status = InterruptDetach(interruptID);
     if(intr_detach_status != EOK) {
-        throw std::runtime_error(std::string(__FUNCTION__) + "Detaching interrupt failed!");
+        THROW( "Detaching interrupt failed!");
     }
 
-    // Close channel
-    int detach_status = ConnectDetach(internalConID);
-    if(detach_status != EOK) {
-        throw std::runtime_error(std::string(__FUNCTION__) + "Detaching channel failed!");
-    }
+    clean_GNS_receiver();
+    clean_GNS_sender();
+    clean_internal_pulse_message();
+  
 
-    int destroy_status = ChannelDestroy(channelID);
-    if(destroy_status != EOK) {
-        throw std::runtime_error(std::string(__FUNCTION__) + "Destroying channel failed!");
-    }
     InterruptDisable();
 
     motor_stop();
@@ -206,7 +197,58 @@ HAL::~HAL() {
 }
 
 
-//========================= private functions =========================
+//================================================ private functions ================================================
+void HAL::setup_internal_pulse_message() {
+    channelID = ChannelCreate(0);//Create channel to receive interrupt pulse messages.
+    if(channelID < 0) {
+        THROW("Could not create a channel!");
+    }
+    internalConID = ConnectAttach(0, 0, channelID, _NTO_SIDE_CHANNEL, 0); //Connect to channel.
+    if(internalConID < 0) {
+        THROW("Could not connect to channel!");
+    }
+}
+
+void HAL::clean_internal_pulse_message() {
+     // Close channel
+    int detach_status = ConnectDetach(internalConID);
+    if(detach_status != EOK) {
+        THROW("Detaching channel failed!");
+    }
+    int destroy_status = ChannelDestroy(channelID);
+    if(destroy_status != EOK) {
+        THROW("Destroying channel failed!");
+    }
+}
+
+void HAL::setup_GNS_sender(){
+    externalConID = name_open(attach_point.c_str(), NAME_FLAG_ATTACH_GLOBAL);
+    if(externalConID < 0) {
+        THROW( "GNS-Sender failed to create!");
+    }
+}
+void HAL::clean_GNS_sender() {
+    int detach_status = name_close(externalConID);
+    if(detach_status < 0) {
+        THROW( "GNS-Sender failed to close!");
+    }
+}
+
+
+void HAL::setup_GNS_receiver() {
+    this->attach = name_attach(NULL, attach_point.c_str(),NAME_FLAG_ATTACH_GLOBAL);
+    if(this->attach == NULL){
+        THROW( "GNS-Receiver failed to create");
+    }
+}
+
+void HAL::clean_GNS_receiver() {
+    int status = name_detach(attach, 0);
+    if (status < 0){
+        THROW("GNS-Receiver failed to clean");
+    }
+}
+
 
 void HAL::set_data(uintptr_t gpio_bank, uint32_t bit) {
     uint32_t pin = (1 << bit);
@@ -221,8 +263,7 @@ void HAL::clear_data(uintptr_t gpio_bank, uint32_t bit) {
 
 int HAL::registerToBit(uint32_t inputRegister) {
     if(inputRegister == 0 || (inputRegister & (inputRegister - 1)) != 0) {
-        throw std::runtime_error(std::string(__FUNCTION__) +
-            ": Cannot convert register to bit offset, value is not a power of 2");
+        THROW("Cannot convert register to bit offset, value is not a power of 2");
     }
     return __builtin_ctz(inputRegister);  // Count trailing zeros
 }
@@ -235,7 +276,7 @@ void HAL::receivingRoutine(int channelID) {
     while(receivingRunning) {
         int recvid = MsgReceivePulse(channelID, &msg, sizeof(_pulse), nullptr);
         if(recvid < 0) {
-            throw std::runtime_error(std::string(__FUNCTION__) + "MsgReceivePulse failed!");
+            THROW( "MsgReceivePulse failed!");
         }
         if(recvid == 0) {	//pulse received.
             //Stop thread while it blocks.
@@ -325,7 +366,7 @@ void HAL::startReceiving() {
 
 }
 
-//========================= public functions =========================
+//================================================ public functions ================================================
 
 bool HAL::isGate() {
     uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
@@ -435,12 +476,26 @@ void HAL::wait(float seconds) {
     usleep(ONE_MILLISECOND * 1000 * seconds);
 }
 
-void HAL::test_ins(int externalChannelID) {
+
+
+void HAL::test_ins() {
+    int temporaryChID = ChannelCreate(0);
+    if(temporaryChID < 0){
+        THROW("ChannelCreate failed.");
+    }
+	int temporaryConID = ConnectAttach(0, 0, temporaryChID, _NTO_SIDE_CHANNEL, 0);
+    if(temporaryConID < 0){
+        THROW("ConenctAttach failed.");
+    }
+    int savedConID = externalConID;
+
+    externalConID = temporaryConID;
+
     std::cout << "Testing Inputs... Please put Piece on the front laser" << std::endl;
     bool running = true;
     _pulse msg;
     while(running) {
-        MsgReceivePulse(externalChannelID, &msg, sizeof(msg), nullptr);
+        MsgReceivePulse(temporaryChID, &msg, sizeof(msg), nullptr);
         int code = msg.code;
         if(code != INTERRUPT_PULSE) {
             return;
@@ -482,6 +537,7 @@ void HAL::test_ins(int externalChannelID) {
         }
     }
     std::cout << "Testing Input done." << std::endl;
+    externalConID = savedConID;
 }
 
 void HAL::test_outs() {
