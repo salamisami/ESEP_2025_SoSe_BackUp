@@ -39,9 +39,9 @@ public:
     virtual void motor_left_off() = 0;
     virtual void motor_slow_on() = 0;
     virtual void motor_slow_off() = 0;
+    virtual void motor_stop() = 0;
 
-    virtual void motor_stop_on() = 0;
-    virtual void motor_stop_off() = 0;
+    
 
     virtual void traffic_red_on() = 0;
     virtual void traffic_red_off() = 0;

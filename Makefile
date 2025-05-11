@@ -1,4 +1,4 @@
-ARTIFACT = esep
+ARTIFACT = main
 
 #Build architecture/variant string, possible values: x86, armv7le, etc...
 PLATFORM ?= armv7le
@@ -19,6 +19,7 @@ LD = $(CXX)
 #User defined include/preprocessor flags and libraries
 
 #INCLUDES += -I/path/to/my/lib/include
+#INCLUDES += -I../mylib/public
 INCLUDES += -I./inc
 
 #LIBS += -L/path/to/my/lib/$(PLATFORM)/usr/lib -lmylib
@@ -47,31 +48,26 @@ rwildcard = $(wildcard $(addprefix $1/*.,$2)) $(foreach d,$(wildcard $1/*),$(cal
 #Source list
 SRCS = $(call rwildcard, src, c cpp)
 SRCS += main.cpp
-
 #Object files list
 OBJS = $(addprefix $(OUTPUT_DIR)/,$(addsuffix .o, $(basename $(SRCS))))
 
 #Compiling rule
 $(OUTPUT_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	@echo "compiling $<..."
-	@$(CC) -c $(DEPS) -o $@ $(INCLUDES) $(CCFLAGS_all) $(CCFLAGS) $<
+	$(CC) -c $(DEPS) -o $@ $(INCLUDES) $(CCFLAGS_all) $(CCFLAGS) $<
 $(OUTPUT_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
-	@echo "compiling $<..."
-	@$(CXX) -c $(DEPS) -o $@ $(INCLUDES) $(CCFLAGS_all) $(CCFLAGS) $<
+	$(CXX) -c $(DEPS) -o $@ $(INCLUDES) $(CCFLAGS_all) $(CCFLAGS) $<
 
 #Linking rule
 $(TARGET):$(OBJS)
-	@echo "linking..."
-	@$(LD) -o $(TARGET) $(LDFLAGS_all) $(LDFLAGS) $(OBJS) $(LIBS_all) $(LIBS)
+	$(LD) -o $(TARGET) $(LDFLAGS_all) $(LDFLAGS) $(OBJS) $(LIBS_all) $(LIBS)
 
 #Rules section for default compilation and linking
 all: $(TARGET)
 
 clean:
-	@echo "cleaning..."
-	@rm -fr $(OUTPUT_DIR)
+	rm -fr $(OUTPUT_DIR)
 
 rebuild: clean all
 

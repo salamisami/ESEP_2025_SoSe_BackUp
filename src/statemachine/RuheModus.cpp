@@ -1,7 +1,8 @@
-#include "inc/RuheModus.h"
-#include "inc/BetriebsModus.h"
+#include "RuheModus.h"
+#include "BetriebsModus.h"
 #include "FBM.h"
 #include <iostream>
+#include "memory_utils.h"
 
 RuheModus::RuheModus(FBM *context)
 {
@@ -17,7 +18,7 @@ void RuheModus::handleButtonStartUp(bool pressedLong, bool hasErrorOrWarning)
 {
     if (pressedLong && !hasErrorOrWarning)
     {
-        context_->transitionTo(std::make_unique<BetriebsModus>(context_));
+        context_->transitionTo(make_unique<BetriebsModus>(context_));
     }
 }
 

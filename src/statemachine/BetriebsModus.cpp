@@ -2,6 +2,7 @@
 #include "ServiceModus.h"
 #include "FBM.h"
 #include <iostream>
+#include "memory_utils.h"
 
 BetriebsModus::BetriebsModus(FBM* context) {
     context_ = context;
@@ -19,5 +20,5 @@ void BetriebsModus::handleButtonStartUp(bool pressedLong, bool hasErrorOrWarning
 
 void BetriebsModus::handleButtonStop() {
     std::cout << "Transition to ServiceModus\n";
-    context_->transitionTo(std::make_unique<ServiceModus>(context_));
+    context_->transitionTo(make_unique<ServiceModus>(context_));
 }
