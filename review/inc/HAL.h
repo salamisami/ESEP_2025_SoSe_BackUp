@@ -77,22 +77,35 @@ public: //================================================ public functions ====
 
 
 private: //================================================ private variables ================================================
+    //classes, STL containers, and structs
+    std::vector<uint8_t> pinsList;
+    std::thread receivingThread;
+    std::string attach_point;
+
+    //pointers
     uintptr_t gpio_bank_0;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
     //uintptr_t gpio_bank_3;
-
-    int externalConID;
-    uint32_t inputPins;
-    int interruptID;
-    int internalConID, channelID;
-    std::thread* receivingThread;
-    std::vector<uint8_t> pinsList;
-    std::string attach_point;
     name_attach_t* attach;
+
+    //primitive types
+    uint32_t inputPins;
+    int externalConID;
+    int interruptID;
+    int internalConID;
+    int channelID;
     int last_causing_pin;
+
+
+    //bool and char
     bool last_pin_status;
     bool receivingRunning;
+
+
+
+
+
 
 private: //================================================ private functions ================================================
     //outs

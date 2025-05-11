@@ -76,11 +76,13 @@ using namespace std;
 //============================================ contructors & destructors ============================================
 
 HAL::HAL(std::string attach_point)
-    :gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
+    : attach_point(attach_point)
+
+    , gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
     , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
     , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
+
     , inputPins(0)
-    , attach_point(attach_point)
     , last_causing_pin(0)
     , last_pin_status(0)
     , receivingRunning(false) {
@@ -126,7 +128,7 @@ HAL::HAL(std::string attach_point)
     SIGEV_PULSE_INIT(&interrupt_event, internalConID, SIGEV_PULSE_PRIO_INHERIT, PULSE_INTR_ON_PORT0, 0);
     interruptID = InterruptAttachEvent(INTR_GPIO_0, &interrupt_event, 0);
     if(interruptID < 0) {
-        THROW( "Interrupt was not able to be attached!");
+        THROW("Interrupt was not able to be attached!");
     }
 
     out32((uintptr_t) gpio_bank_0 + GPIO_IRQSTATUS_SET_1, (inputPins));
@@ -144,13 +146,12 @@ HAL::HAL(std::string attach_point)
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
 
-    this->startReceiving();
+    receivingThread = thread(&HAL::receivingRoutine, this, channelID);
 }
 
 HAL::~HAL() {
     MsgSendPulse(internalConID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
-    receivingThread->join();
-    delete receivingThread;
+    receivingThread.join();
 
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
@@ -165,13 +166,13 @@ HAL::~HAL() {
     // Detach interrupts.
     int intr_detach_status = InterruptDetach(interruptID);
     if(intr_detach_status != EOK) {
-        THROW( "Detaching interrupt failed!");
+        THROW("Detaching interrupt failed!");
     }
 
     clean_GNS_receiver();
     clean_GNS_sender();
     clean_internal_pulse_message();
-  
+
 
     InterruptDisable();
 
@@ -210,7 +211,7 @@ void HAL::setup_internal_pulse_message() {
 }
 
 void HAL::clean_internal_pulse_message() {
-     // Close channel
+    // Close channel
     int detach_status = ConnectDetach(internalConID);
     if(detach_status != EOK) {
         THROW("Detaching channel failed!");
@@ -221,30 +222,30 @@ void HAL::clean_internal_pulse_message() {
     }
 }
 
-void HAL::setup_GNS_sender(){
+void HAL::setup_GNS_sender() {
     externalConID = name_open(attach_point.c_str(), NAME_FLAG_ATTACH_GLOBAL);
     if(externalConID < 0) {
-        THROW( "GNS-Sender failed to create!");
+        THROW("GNS-Sender failed to create!");
     }
 }
 void HAL::clean_GNS_sender() {
     int detach_status = name_close(externalConID);
     if(detach_status < 0) {
-        THROW( "GNS-Sender failed to close!");
+        THROW("GNS-Sender failed to close!");
     }
 }
 
 
 void HAL::setup_GNS_receiver() {
-    this->attach = name_attach(NULL, attach_point.c_str(),NAME_FLAG_ATTACH_GLOBAL);
-    if(this->attach == NULL){
-        THROW( "GNS-Receiver failed to create");
+    this->attach = name_attach(NULL, attach_point.c_str(), NAME_FLAG_ATTACH_GLOBAL);
+    if(this->attach == NULL) {
+        THROW("GNS-Receiver failed to create");
     }
 }
 
 void HAL::clean_GNS_receiver() {
     int status = name_detach(attach, 0);
-    if (status < 0){
+    if(status < 0) {
         THROW("GNS-Receiver failed to clean");
     }
 }
@@ -276,7 +277,7 @@ void HAL::receivingRoutine(int channelID) {
     while(receivingRunning) {
         int recvid = MsgReceivePulse(channelID, &msg, sizeof(_pulse), nullptr);
         if(recvid < 0) {
-            THROW( "MsgReceivePulse failed!");
+            THROW("MsgReceivePulse failed!");
         }
         if(recvid == 0) {	//pulse received.
             //Stop thread while it blocks.
@@ -361,10 +362,6 @@ void HAL::sendEvent(int causing_pin, int pin_status) {
     MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, INTERRUPT_PULSE, (int) event);
 }
 
-void HAL::startReceiving() {
-    receivingThread = new thread(&HAL::receivingRoutine, this, channelID);
-
-}
 
 //================================================ public functions ================================================
 
@@ -480,11 +477,11 @@ void HAL::wait(float seconds) {
 
 void HAL::test_ins() {
     int temporaryChID = ChannelCreate(0);
-    if(temporaryChID < 0){
+    if(temporaryChID < 0) {
         THROW("ChannelCreate failed.");
     }
-	int temporaryConID = ConnectAttach(0, 0, temporaryChID, _NTO_SIDE_CHANNEL, 0);
-    if(temporaryConID < 0){
+    int temporaryConID = ConnectAttach(0, 0, temporaryChID, _NTO_SIDE_CHANNEL, 0);
+    if(temporaryConID < 0) {
         THROW("ConenctAttach failed.");
     }
     int savedConID = externalConID;
