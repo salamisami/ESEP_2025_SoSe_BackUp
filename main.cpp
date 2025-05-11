@@ -12,14 +12,12 @@ void wait(int seconds) {
 
 int main() {
 	cout << "Starting Program..." << endl; // prints Hello World!!!
-	int globalChannelID = ChannelCreate(0);
-	int globalConID = ConnectAttach(0, 0, globalChannelID, _NTO_SIDE_CHANNEL, 0);
-
-	HAL* hal = new HAL(globalConID);
+	
+	HAL* hal = new HAL("Dispatcher");
 	std::cout << "Festo is gate: " << std::boolalpha << hal->isGate() << std::endl;
 
 	//hal->test_outs();
-	hal->test_ins(globalChannelID);
+	hal->test_ins();
 
 	delete hal;
 
