@@ -79,7 +79,7 @@ public: //================================================ public functions ====
 private: //================================================ private variables ================================================
     //classes, STL containers, and structs
     std::vector<uint8_t> pinsList;
-    std::thread receivingThread;
+    std::thread interruptThread;
     std::string attach_point;
 
     //pointers
@@ -93,8 +93,8 @@ private: //================================================ private variables ==
     uint32_t inputPins;
     int externalConID;
     int interruptID;
-    int internalConID;
-    int channelID;
+    int internalConnectionID;
+    int internalChannelID;
     int last_causing_pin;
 
 
@@ -122,8 +122,8 @@ private: //================================================ private functions ==
     void clean_GNS_sender();
     void setup_internal_pulse_message();
     void clean_internal_pulse_message();
-    void receivingRoutine(int channelID);
-    void handleInterrupt(void);
+    void interruptFunction(int channelID);
+    void isr(void);
     void startReceiving();
     int registerToBit(uint32_t inputRegister);
     void sendEvent(int causing_pin, int pin_status);

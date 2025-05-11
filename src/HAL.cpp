@@ -119,7 +119,7 @@ HAL::HAL(std::string attach_point)
     setup_GNS_receiver();
     //Register interrupts by OS.
     struct sigevent interrupt_event;
-    SIGEV_PULSE_INIT(&interrupt_event, internalConID, SIGEV_PULSE_PRIO_INHERIT, PULSE_INTR_ON_PORT0, 0);
+    SIGEV_PULSE_INIT(&interrupt_event, internalConnectionID, SIGEV_PULSE_PRIO_INHERIT, PULSE_INTR_ON_PORT0, 0);
     interruptID = InterruptAttachEvent(INTR_GPIO_0, &interrupt_event, 0);
     if(interruptID < 0) {
         THROW("Interrupt was not able to be attached!");
@@ -140,12 +140,12 @@ HAL::HAL(std::string attach_point)
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
 
-    receivingThread = thread(&HAL::receivingRoutine, this, channelID);
+    interruptThread = std::thread(&HAL::interruptFunction, this, internalChannelID);
 }
 
 HAL::~HAL() {
-    MsgSendPulse(internalConID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
-    receivingThread.join();
+    MsgSendPulse(internalConnectionID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
+    interruptThread.join();
 
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
@@ -194,23 +194,23 @@ HAL::~HAL() {
 
 //================================================ private functions ================================================
 void HAL::setup_internal_pulse_message() {
-    channelID = ChannelCreate(0);//Create channel to receive interrupt pulse messages.
-    if(channelID < 0) {
+    internalChannelID = ChannelCreate(0);//Create channel to receive interrupt pulse messages.
+    if(internalChannelID < 0) {
         THROW("Could not create a channel!");
     }
-    internalConID = ConnectAttach(0, 0, channelID, _NTO_SIDE_CHANNEL, 0); //Connect to channel.
-    if(internalConID < 0) {
+    internalConnectionID = ConnectAttach(0, 0, internalChannelID, _NTO_SIDE_CHANNEL, 0); //Connect to channel.
+    if(internalConnectionID < 0) {
         THROW("Could not connect to channel!");
     }
 }
 
 void HAL::clean_internal_pulse_message() {
     // Close channel
-    int detach_status = ConnectDetach(internalConID);
+    int detach_status = ConnectDetach(internalConnectionID);
     if(detach_status != EOK) {
         THROW("Detaching channel failed!");
     }
-    int destroy_status = ChannelDestroy(channelID);
+    int destroy_status = ChannelDestroy(internalChannelID);
     if(destroy_status != EOK) {
         THROW("Destroying channel failed!");
     }
@@ -263,7 +263,7 @@ int HAL::registerToBit(uint32_t inputRegister) {
     return __builtin_ctz(inputRegister);  // Count trailing zeros
 }
 
-void HAL::receivingRoutine(int channelID) {
+void HAL::interruptFunction(int channelID) {
     ThreadCtl(_NTO_TCTL_IO, 0);	//Request IO privileges
     _pulse msg;
     receivingRunning = true;
@@ -280,7 +280,7 @@ void HAL::receivingRoutine(int channelID) {
                 receivingRunning = false;
             }
             if(msg.code == PULSE_INTR_ON_PORT0) {
-                handleInterrupt();
+                isr();
             }
             // Do not ignore OS pulses!
         }
@@ -288,7 +288,7 @@ void HAL::receivingRoutine(int channelID) {
     printf("Message thread stops...\n");
 }
 
-void HAL::handleInterrupt(void) {
+void HAL::isr(void) {
     /**
      * 1. Is the interrupt from my device?
      * 2. Reset the IRQ
