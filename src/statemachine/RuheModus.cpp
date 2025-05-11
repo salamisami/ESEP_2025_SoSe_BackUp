@@ -1,5 +1,5 @@
-#include "../inc/RuheModus.h"
-#include "../inc/BetriebsModus.h"
+#include "inc/RuheModus.h"
+#include "inc/BetriebsModus.h"
 #include "FBM.h"
 #include <iostream>
 

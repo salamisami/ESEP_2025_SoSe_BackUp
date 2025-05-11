@@ -1,4 +1,4 @@
-#include "HAL.h"
+/*#include "HAL.h"
 
 #include <iostream>
 #include <stdint.h>
@@ -186,3 +186,4 @@ void HAL::led_q2_on() {
 void HAL::led_q2_off() {
     clear_data(gpio_bank_2, LED_Q2_BIT);
 }
+*/
