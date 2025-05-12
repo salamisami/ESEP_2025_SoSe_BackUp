@@ -13,11 +13,13 @@ void wait(int seconds) {
 int main() {
 	cout << "Starting Program..." << endl; // prints Hello World!!!
 	
-	HAL* hal = new HAL("Dispatcher");
+	HAL* hal = new HAL();
 	std::cout << "Festo is gate: " << std::boolalpha << hal->isGate() << std::endl;
 
 	//hal->test_outs();
-	hal->test_ins();
+	//hal->test_ins();
+
+	wait(10);
 
 	delete hal;
 

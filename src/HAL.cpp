@@ -78,9 +78,85 @@ HAL::HAL(std::string attach_point)
 
     , inputPins(0)
     , last_causing_pin(0)
+    , test_mode(false)
     , last_pin_status(0)
-    , receivingRunning(false) {
+    , interruptRunning(false)
+    , actuatorRunning(false) {
 
+    externalConID = setup_GNS_sender();
+    setup_GNS_receiver();
+    setup_interrupts();
+    actuatorThread = std::thread(&HAL::actuatorFunction, this, attach->chid);
+}
+
+HAL::HAL()
+    :gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
+    , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
+    , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
+    , inputPins(0)
+    , last_causing_pin(0)
+    , test_mode(true)
+    , last_pin_status(0)
+    , interruptRunning(false)
+    , actuatorRunning(false) {
+    externalChannelID = ChannelCreate(0);
+    externalConID = ConnectAttach(0, 0, externalChannelID, _NTO_SIDE_CHANNEL, 0);
+    setup_interrupts();
+}
+
+HAL::~HAL() {
+    MsgSendPulse(internalConnectionID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
+    interruptThread.join();
+    if(test_mode) {
+
+    } else {
+        actuatorRunning = false;
+        actuatorThread.join();
+        clean_GNS_receiver();
+        clean_GNS_sender();
+
+    }
+    //	(for rising edge detection)
+    uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
+    out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig ^ inputPins));//Write new config back.
+    // 	(for falling edge detection)
+    currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT));//Read current config.
+    out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig ^ inputPins));//Write new config back.
+    out32((uintptr_t) gpio_bank_0 + GPIO_IRQSTATUS_SET_1, (inputPins));
+
+    // Detach interrupts.
+    int intr_detach_status = InterruptDetach(interruptID);
+    if(intr_detach_status != EOK) {
+        THROW("Detaching interrupt failed!");
+    }
+    clean_internal_pulse_message();
+    InterruptDisable();
+
+    motor_stop();
+    traffic_red_off();
+    traffic_yellow_off();
+    traffic_green_off();
+    led_start_off();
+    led_reset_off();
+    led_q1_off();
+    led_q2_off();
+
+    if(gpio_bank_0) {
+        munmap_device_io(gpio_bank_0, GPIO_MMAP_SIZE);
+    }
+    if(gpio_bank_1) {
+        munmap_device_io(gpio_bank_1, GPIO_MMAP_SIZE);
+    }
+    if(gpio_bank_2) {
+        munmap_device_io(gpio_bank_2, GPIO_MMAP_SIZE);
+    }
+
+}
+
+
+//================================================ private functions ================================================
+
+void HAL::setup_interrupts() {
     pinsList.push_back(LASER_FRONT_BIT);
     pinsList.push_back(LASER_SORTING_BIT);
     pinsList.push_back(LASER_METAL_BIT);
@@ -115,8 +191,6 @@ HAL::HAL(std::string attach_point)
     }
     InterruptEnable(); //Enables interrupts.
     setup_internal_pulse_message();
-    setup_GNS_sender();
-    setup_GNS_receiver();
     //Register interrupts by OS.
     struct sigevent interrupt_event;
     SIGEV_PULSE_INIT(&interrupt_event, internalConnectionID, SIGEV_PULSE_PRIO_INHERIT, PULSE_INTR_ON_PORT0, 0);
@@ -143,56 +217,6 @@ HAL::HAL(std::string attach_point)
     interruptThread = std::thread(&HAL::interruptFunction, this, internalChannelID);
 }
 
-HAL::~HAL() {
-    MsgSendPulse(internalConnectionID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
-    interruptThread.join();
-
-    //	(for rising edge detection)
-    uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
-    out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig ^ inputPins));//Write new config back.
-    // 	(for falling edge detection)
-    currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT));//Read current config.
-    out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig ^ inputPins));//Write new config back.
-    out32((uintptr_t) gpio_bank_0 + GPIO_IRQSTATUS_SET_1, (inputPins));
-
-
-
-    // Detach interrupts.
-    int intr_detach_status = InterruptDetach(interruptID);
-    if(intr_detach_status != EOK) {
-        THROW("Detaching interrupt failed!");
-    }
-
-    clean_GNS_receiver();
-    clean_GNS_sender();
-    clean_internal_pulse_message();
-
-
-    InterruptDisable();
-
-    motor_stop();
-    traffic_red_off();
-    traffic_yellow_off();
-    traffic_green_off();
-    led_start_off();
-    led_reset_off();
-    led_q1_off();
-    led_q2_off();
-
-    if(gpio_bank_0) {
-        munmap_device_io(gpio_bank_0, GPIO_MMAP_SIZE);
-    }
-    if(gpio_bank_1) {
-        munmap_device_io(gpio_bank_1, GPIO_MMAP_SIZE);
-    }
-    if(gpio_bank_2) {
-        munmap_device_io(gpio_bank_2, GPIO_MMAP_SIZE);
-    }
-
-}
-
-
-//================================================ private functions ================================================
 void HAL::setup_internal_pulse_message() {
     internalChannelID = ChannelCreate(0);//Create channel to receive interrupt pulse messages.
     if(internalChannelID < 0) {
@@ -216,11 +240,12 @@ void HAL::clean_internal_pulse_message() {
     }
 }
 
-void HAL::setup_GNS_sender() {
-    externalConID = name_open(attach_point.c_str(), NAME_FLAG_ATTACH_GLOBAL);
-    if(externalConID < 0) {
+int HAL::setup_GNS_sender() {
+    int connectionID = name_open(attach_point.c_str(), NAME_FLAG_ATTACH_GLOBAL);
+    if(connectionID < 0) {
         THROW("GNS-Sender failed to create!");
     }
+    return connectionID;
 }
 void HAL::clean_GNS_sender() {
     int detach_status = name_close(externalConID);
@@ -266,9 +291,9 @@ int HAL::registerToBit(uint32_t inputRegister) {
 void HAL::interruptFunction(int channelID) {
     ThreadCtl(_NTO_TCTL_IO, 0);	//Request IO privileges
     _pulse msg;
-    receivingRunning = true;
+    interruptRunning = true;
     printf("Message thread started.\n");
-    while(receivingRunning) {
+    while(interruptRunning) {
         int recvid = MsgReceivePulse(channelID, &msg, sizeof(_pulse), nullptr);
         if(recvid < 0) {
             THROW("MsgReceivePulse failed!");
@@ -277,7 +302,7 @@ void HAL::interruptFunction(int channelID) {
             //Stop thread while it blocks.
             if(msg.code == PULSE_STOP_THREAD) {
                 printf("Thread kill code received!\n");
-                receivingRunning = false;
+                interruptRunning = false;
             }
             if(msg.code == PULSE_INTR_ON_PORT0) {
                 isr();
@@ -307,7 +332,6 @@ void HAL::isr(void) {
         std::printf("Interrupt on pin %d, status: %d\n", causing_pin, pin_status);
         #endif
         //TODO e-stopp is still trigerred 2x during e-stop pull. 
-        //TODO send event to external pulse message (GNS)
         sendEvent(causing_pin, pin_status);
     }
 
@@ -346,14 +370,27 @@ void HAL::sendEvent(int causing_pin, int pin_status) {
         case LASER_METAL_BIT:
             event = pin_status ? Interrupt::METAL_DETECTED : Interrupt::METAL_NOT_DETECTED;
             break;
-        case ADC_TOP_AREA_BIT:
-            event = pin_status ? Interrupt::ADC_TOP_AREA_BLOCKED : Interrupt::ADC_TOP_AREA_UNBLOCKED;
+        case ADC_SIDE_AREA_BIT:
+            event = pin_status ? Interrupt::ADC_SIDE_AREA_BLOCKED : Interrupt::ADC_SIDE_AREA_UNBLOCKED;
             break;
         default:
             break;
 
     }
     MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, INTERRUPT_PULSE, (int) event);
+}
+
+void HAL::actuatorFunction(int chid) {
+    actuatorRunning = true;
+    _pulse pulse;
+    while(actuatorRunning) {
+        int rcvid = MsgReceive(chid, &pulse, sizeof(_pulse), NULL);
+        if(rcvid < 0) {
+            THROW("MsgReceive Failed.");
+        }
+        int value = pulse.value.sival_int;
+        //switch(value)
+    }
 }
 
 
@@ -515,11 +552,11 @@ void HAL::test_ins() {
             case Interrupt::BUTTON_STOP_PRESSED:
                 running = false;
                 break;
-            case Interrupt::ADC_TOP_AREA_BLOCKED:
+            case Interrupt::ADC_SIDE_AREA_BLOCKED:
                 this->motor_slow_on();
                 this->traffic_yellow_on();
                 break;
-            case Interrupt::ADC_TOP_AREA_UNBLOCKED:
+            case Interrupt::ADC_SIDE_AREA_UNBLOCKED:
                 this->motor_slow_off();
                 this->traffic_yellow_off();
                 break;
