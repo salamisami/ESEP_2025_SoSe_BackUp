@@ -551,7 +551,7 @@ void HAL::test_ins() {
                 break;
             case Interrupt::METAL_DETECTED:
                 this->sorting_on();
-                wait(0.1);
+                wait(0.5);
                 this->sorting_off();
                 break;
             case Interrupt::BUTTON_STOP_PRESSED:
