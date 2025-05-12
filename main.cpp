@@ -17,9 +17,8 @@ int main() {
 	std::cout << "Festo is gate: " << std::boolalpha << hal->isGate() << std::endl;
 
 	//hal->test_outs();
-	//hal->test_ins();
-
-	wait(10);
+	hal->test_ins();
+	//wait(10);
 
 	delete hal;
 

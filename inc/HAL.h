@@ -35,7 +35,7 @@
 
 
 
-#define SHOW_EVENTS
+//#define SHOW_EVENTS
 
 /* My pulse codes */
 #define PULSE_STOP_THREAD _PULSE_CODE_MINAVAIL + 1
@@ -110,7 +110,7 @@ private: //================================================ private variables ==
 
     //bool and char
     bool test_mode;
-    bool last_pin_status;
+    int last_pin_status;
     bool interruptRunning;
     volatile bool actuatorRunning;
 

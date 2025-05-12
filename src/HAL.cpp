@@ -323,14 +323,12 @@ void HAL::isr(void) {
     out32(uintptr_t(gpio_bank_0 + GPIO_IRQSTATUS_1), 0xffffffff);	//clear all interrupts.
     InterruptUnmask(INTR_GPIO_0, interruptID);				//unmask interrupt.
     int causing_pin = registerToBit(intrStatusReg);
-    bool pin_status = (bool) (in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN) >> causing_pin) & 0x1;
+    int pin_status = (in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN) >> causing_pin) & 0x1;
     //if double events come at the same time, the system has to ignore it.
     if(last_causing_pin != causing_pin || last_pin_status != pin_status) {
         last_causing_pin = causing_pin;
         last_pin_status = pin_status;
-        #ifdef SHOW_EVENTS
-        std::printf("Interrupt on pin %d, status: %d\n", causing_pin, pin_status);
-        #endif
+
         //TODO e-stopp is still trigerred 2x during e-stop pull. 
         sendEvent(causing_pin, pin_status);
     }
@@ -342,12 +340,16 @@ void HAL::sendEvent(int causing_pin, int pin_status) {
     Event::Interrupt event;
     //Event is the namespace, Interrupt is the enum class
     using namespace Event;
+    #ifdef SHOW_EVENTS
+    std::printf("Interrupt on pin %d, status: %d\n", causing_pin, pin_status);
+    #endif
     switch(causing_pin) {
+        // 1 : 0
         case LASER_FRONT_BIT:
-            event = pin_status ? Interrupt::LASER_FRONT_BLOCKED : Interrupt::LASER_FRONT_UNBLOCKED;
+            event = pin_status ? Interrupt::LASER_FRONT_UNBLOCKED : Interrupt::LASER_FRONT_BLOCKED;
             break;
         case LASER_BACK_BIT:
-            event = pin_status ? Interrupt::LASER_BACK_BLOCKED : Interrupt::LASER_BACK_UNBLOCKED;
+            event = pin_status ? Interrupt::LASER_BACK_UNBLOCKED : Interrupt::LASER_BACK_BLOCKED;
             break;
         case BUTTON_START_BIT:
             event = pin_status ? Interrupt::BUTTON_START_PRESSED : Interrupt::BUTTON_START_RELEASED;
@@ -362,16 +364,19 @@ void HAL::sendEvent(int causing_pin, int pin_status) {
             event = pin_status ? Interrupt::BUTTON_ESTOP_PRESSED : Interrupt::BUTTON_ESTOP_RELEASED;
             break;
         case LASER_SORTING_BIT:
-            event = pin_status ? Interrupt::LASER_SORTING_GATE_BLOCKED : Interrupt::LASER_SORTING_GATE_UNBLOCKED;
+            event = pin_status ? Interrupt::LASER_SORTING_GATE_UNBLOCKED : Interrupt::LASER_SORTING_GATE_BLOCKED;
             break;
         case LASER_RAMP_BIT:
-            event = pin_status ? Interrupt::LASER_RAMP_BLOCKED : Interrupt::LASER_RAMP_UNBLOCKED;
+            event = pin_status ? Interrupt::LASER_RAMP_UNBLOCKED : Interrupt::LASER_RAMP_BLOCKED;
             break;
         case LASER_METAL_BIT:
             event = pin_status ? Interrupt::METAL_DETECTED : Interrupt::METAL_NOT_DETECTED;
             break;
         case ADC_SIDE_AREA_BIT:
-            event = pin_status ? Interrupt::ADC_SIDE_AREA_BLOCKED : Interrupt::ADC_SIDE_AREA_UNBLOCKED;
+            event = pin_status ? Interrupt::ADC_SIDE_AREA_UNBLOCKED : Interrupt::ADC_SIDE_AREA_BLOCKED;
+            break;
+        case ADC_TOP_AREA_BIT:
+            event = pin_status ? Interrupt::ADC_TOP_AREA_BLOCKED : Interrupt::ADC_TOP_AREA_UNBLOCKED;
             break;
         default:
             break;
