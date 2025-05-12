@@ -2,23 +2,28 @@
 #define HAL_H
 
 #include "IHAL.h"
-#include <stdint.h>
-//#include <stdio.h>
-#include <stdexcept>
+#include <stdio.h>
 #include <errno.h>
-#include <sys/neutrino.h>
-#include <sys/procmgr.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <stdexcept>
+
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <cmath>
 #include <vector>
+
 #include <sys/mman.h>
-#include <hw/inout.h>
 #include <sys/dispatch.h>
-#include <string.h>
 #include <sys/types.h>
-#include <unistd.h>
+#include <sys/neutrino.h>
+#include <sys/procmgr.h>
+#include <hw/inout.h>
+
 
 //
 //#include "simqnxgpioapi.h"
@@ -30,7 +35,7 @@
 
 
 
-//#define SHOW_EVENTS
+#define SHOW_EVENTS
 
 /* My pulse codes */
 #define PULSE_STOP_THREAD _PULSE_CODE_MINAVAIL + 1
@@ -38,9 +43,12 @@
 #define INTERRUPT_PULSE _PULSE_CODE_MINAVAIL + 3
 
 
+
+
 class HAL :public IHAL {
 public: //============================================ contructors & destructors ============================================
     HAL(std::string attach_point);
+    HAL();
     virtual ~HAL();
 
 public: //================================================ public functions ================================================
@@ -80,6 +88,7 @@ private: //================================================ private variables ==
     //classes, STL containers, and structs
     std::vector<uint8_t> pinsList;
     std::thread interruptThread;
+    std::thread actuatorThread;
     std::string attach_point;
 
     //pointers
@@ -92,6 +101,7 @@ private: //================================================ private variables ==
     //primitive types
     uint32_t inputPins;
     int externalConID;
+    int externalChannelID;
     int interruptID;
     int internalConnectionID;
     int internalChannelID;
@@ -99,8 +109,10 @@ private: //================================================ private variables ==
 
 
     //bool and char
+    bool test_mode;
     bool last_pin_status;
-    bool receivingRunning;
+    bool interruptRunning;
+    volatile bool actuatorRunning;
 
 
 
@@ -118,13 +130,14 @@ private: //================================================ private functions ==
 
 
     //ins
-    void setup_GNS_sender();
+    void setup_interrupts();
+    int setup_GNS_sender();
     void clean_GNS_sender();
     void setup_internal_pulse_message();
     void clean_internal_pulse_message();
     void interruptFunction(int channelID);
+    void actuatorFunction(int chid);
     void isr(void);
-    void startReceiving();
     int registerToBit(uint32_t inputRegister);
     void sendEvent(int causing_pin, int pin_status);
 
