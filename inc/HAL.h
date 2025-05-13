@@ -46,7 +46,13 @@
 
 class HAL {
 public: //============================================ contructors & destructors ============================================
+    /**
+     * Provide the GNS name to connect this HAL to Dispatcher
+     */
     HAL(std::string attach_point);
+    /**
+     * Or... leave it empty for testing purposes.
+     */
     HAL();
     virtual ~HAL();
 
