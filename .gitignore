@@ -10,7 +10,7 @@
 
 # === Standard Output-Dateien von g++ oder clang++ ===
 a.out
-main
+main.cpp
 
 # === Build-Ordner (z. B. bei CMake oder Make) ===
 build/
