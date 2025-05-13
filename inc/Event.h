@@ -28,7 +28,17 @@ namespace Event {
         ADC_TOP_AREA_UNBLOCKED,
         ADC_SIDE_AREA_BLOCKED,
         ADC_SIDE_AREA_UNBLOCKED
-
+    };
+    enum class Actuator :int {
+        MOTOR_RIGHT_START = -100,
+        MOTOR_LEFT_START,
+        MOTOR_STOP,
+        SORTING_ON,
+        SORTING_OFF,
+        TRAFFIC_GREEN_ON_SLOW,
+        TRAFFIC_GREEN_ON_FAST,
+        TRAFFIC_GREEN_ON,
+        TRAFFIC_GREEN_OFF
     };
 }
 
