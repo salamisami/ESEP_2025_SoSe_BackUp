@@ -40,6 +40,9 @@ namespace Event {
         TRAFFIC_GREEN_ON,
         TRAFFIC_GREEN_OFF
     };
+    enum class Dispatcher: int{
+        HAL_READY = -302
+    };
 }
 
 #endif
