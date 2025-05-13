@@ -86,7 +86,7 @@ HAL::HAL(std::string attach_point)
     externalConID = setup_GNS_sender();
     setup_GNS_receiver();
     setup_interrupts();
-    actuatorThread = std::thread(&HAL::actuatorFunction, this, attach->chid);
+    actuatorThread = new std::thread(&HAL::actuatorFunction, this, attach->chid);
 }
 
 HAL::HAL()
@@ -106,15 +106,16 @@ HAL::HAL()
 
 HAL::~HAL() {
     MsgSendPulse(internalConnectionID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
-    interruptThread.join();
+    interruptThread->join();
+    delete interruptThread;
     if(test_mode) {
 
     } else {
         actuatorRunning = false;
-        actuatorThread.join();
+        actuatorThread->join();
+        delete actuatorThread;
         clean_GNS_receiver();
         clean_GNS_sender();
-
     }
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
@@ -214,7 +215,7 @@ void HAL::setup_interrupts() {
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
 
-    interruptThread = std::thread(&HAL::interruptFunction, this, internalChannelID);
+    interruptThread = new std::thread(&HAL::interruptFunction, this, internalChannelID);
 }
 
 void HAL::setup_internal_pulse_message() {
@@ -393,8 +394,38 @@ void HAL::actuatorFunction(int chid) {
         if(rcvid < 0) {
             THROW("MsgReceive Failed.");
         }
-        int value = pulse.value.sival_int;
-        //switch(value)
+        Event::Actuator value = (Event::Actuator) pulse.value.sival_int;
+        using namespace Event;
+        switch(value) {
+            case Actuator::MOTOR_RIGHT_START:
+                motor_right();
+                break;
+            case Actuator::MOTOR_LEFT_START:
+                motor_left();
+                break;
+            case Actuator::MOTOR_STOP:
+                motor_stop();
+                break;
+            case Actuator::SORTING_ON:
+                sorting_on();
+                break;
+            case Actuator::SORTING_OFF:
+                sorting_off();
+                break;
+            case Actuator::TRAFFIC_GREEN_ON:
+                traffic_green_on();
+                break;
+            case Actuator::TRAFFIC_GREEN_OFF:
+                traffic_green_off();
+                break;
+            case Actuator::TRAFFIC_GREEN_ON_SLOW:
+                break;
+            case Actuator::TRAFFIC_GREEN_ON_FAST:
+                break;
+            default:
+                THROW("Invalid Actuator Event!");
+                break;
+        }
     }
 }
 

@@ -87,8 +87,8 @@ public: //================================================ public functions ====
 private: //================================================ private variables ================================================
     //classes, STL containers, and structs
     std::vector<uint8_t> pinsList;
-    std::thread interruptThread;
-    std::thread actuatorThread;
+    std::thread* interruptThread;
+    std::thread* actuatorThread;
     std::string attach_point;
 
     //pointers
