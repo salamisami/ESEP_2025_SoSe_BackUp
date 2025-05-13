@@ -58,6 +58,8 @@
 #define LED_Q1_BIT          4
 #define LED_Q2_BIT          5
 
+#define GNS_NAME            "HAL"
+
 
 #define THROW(msg) \
     throw std::runtime_error(std::string(__FUNCTION__) + ": " + msg)
@@ -83,10 +85,11 @@ HAL::HAL(std::string attach_point)
     , interruptRunning(false)
     , actuatorRunning(false) {
 
-    externalConID = setup_GNS_sender();
     setup_GNS_receiver();
+    externalConID = setup_GNS_sender();
     setup_interrupts();
     actuatorThread = new std::thread(&HAL::actuatorFunction, this, attach->chid);
+    MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, (int) Event::Dispatcher::HAL_READY, 0);
 }
 
 HAL::HAL()
@@ -257,7 +260,7 @@ void HAL::clean_GNS_sender() {
 
 
 void HAL::setup_GNS_receiver() {
-    this->attach = name_attach(NULL, attach_point.c_str(), NAME_FLAG_ATTACH_GLOBAL);
+    this->attach = name_attach(NULL, GNS_NAME, NAME_FLAG_ATTACH_GLOBAL);
     if(this->attach == NULL) {
         THROW("GNS-Receiver failed to create");
     }
