@@ -2,6 +2,7 @@ ARTIFACT = main
 
 #Build architecture/variant string, possible values: x86, armv7le, etc...
 PLATFORM ?= armv7le
+FIND = $(QNX_HOST)/usr/bin/find.exe
 
 #Build profile, possible values: release, debug, profile, coverage
 BUILD_PROFILE ?= debug
@@ -19,8 +20,8 @@ LD = $(CXX)
 #User defined include/preprocessor flags and libraries
 
 #INCLUDES += -I/path/to/my/lib/include
-#INCLUDES += -I../mylib/public
-INCLUDES += -I./inc
+INC_DIRS := $(shell $(FIND) inc -type d)
+INCLUDES += $(addprefix -I,$(INC_DIRS))
 
 #LIBS += -L/path/to/my/lib/$(PLATFORM)/usr/lib -lmylib
 #LIBS += -L../mylib/$(OUTPUT_DIR) -lmylib
@@ -72,4 +73,3 @@ clean:
 rebuild: clean all
 
 #Inclusion of dependencies (object files to source and includes)
--include $(OBJS:%.o=%.d)
