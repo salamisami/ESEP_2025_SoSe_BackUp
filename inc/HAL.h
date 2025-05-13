@@ -1,7 +1,6 @@
 #ifndef HAL_H
 #define HAL_H
 
-#include "IHAL.h"
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -45,40 +44,40 @@
 
 
 
-class HAL :public IHAL {
+class HAL {
 public: //============================================ contructors & destructors ============================================
     HAL(std::string attach_point);
     HAL();
     virtual ~HAL();
 
 public: //================================================ public functions ================================================
-    bool isGate() override;
+    bool isGate();
 
-    void motor_right() override;
-    void motor_left() override;
-    void motor_slow_on() override;
-    void motor_slow_off() override;
-    void motor_stop() override;
+    void motor_right();
+    void motor_left();
+    void motor_slow_on();
+    void motor_slow_off();
+    void motor_stop();
 
-    void traffic_red_on() override;
-    void traffic_red_off() override;
-    void traffic_yellow_on() override;
-    void traffic_yellow_off() override;
-    void traffic_green_on() override;
-    void traffic_green_off() override;
+    void traffic_red_on();
+    void traffic_red_off();
+    void traffic_yellow_on();
+    void traffic_yellow_off();
+    void traffic_green_on();
+    void traffic_green_off();
 
-    void sorting_on() override;
-    void sorting_off() override;
+    void sorting_on();
+    void sorting_off();
 
-    void led_start_on() override;
-    void led_start_off() override;
+    void led_start_on();
+    void led_start_off();
 
-    void led_reset_on() override;
-    void led_reset_off() override;
-    void led_q1_on() override;
-    void led_q1_off() override;
-    void led_q2_on() override;
-    void led_q2_off() override;
+    void led_reset_on();
+    void led_reset_off();
+    void led_q1_on();
+    void led_q1_off();
+    void led_q2_on();
+    void led_q2_off();
 
     void test_outs();
     void test_ins();
