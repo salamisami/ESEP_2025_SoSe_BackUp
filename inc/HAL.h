@@ -1,6 +1,9 @@
 #ifndef HAL_H
 #define HAL_H
 
+#include "Event.h"
+#include "Throw.h"
+
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -28,7 +31,7 @@
 //#include "simqnxgpioapi.h"
 //#include "simqnxirqapi.h"
 
-#include "Event.h"
+
 
 #pragma once
 

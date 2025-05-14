@@ -61,8 +61,7 @@
 #define GNS_NAME            "HAL"
 
 
-#define THROW(msg) \
-    throw std::runtime_error(std::string(__FUNCTION__) + ": " + msg)
+
 
 #define ONE_MILLISECOND 1000
 
@@ -386,7 +385,8 @@ void HAL::sendEvent(int causing_pin, int pin_status) {
             break;
 
     }
-    MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, INTERRUPT_PULSE, (int) event);
+    //TODO code here still not right
+    MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, 1, (int) event);
 }
 
 void HAL::actuatorFunction(int chid) {
@@ -437,7 +437,7 @@ void HAL::actuatorFunction(int chid) {
 
 bool HAL::isGate() {
     uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
-    std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
+    //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
     uint32_t sorting_status_pin = (1 << SORTING_STATUS_BIT);
     bool status = (status_register & sorting_status_pin);
     return !status;
@@ -564,9 +564,9 @@ void HAL::test_ins() {
     while(running) {
         MsgReceivePulse(temporaryChID, &msg, sizeof(msg), nullptr);
         int code = msg.code;
-        if(code != INTERRUPT_PULSE) {
-            return;
-        }
+        // if(code != INTERRUPT_PULSE) {
+        //     return;
+        // }
         Event::Interrupt event = (Event::Interrupt) msg.value.sival_int;
         using namespace Event;
         switch(event) {
@@ -581,21 +581,27 @@ void HAL::test_ins() {
                 this->traffic_red_on();
                 break;
             case Interrupt::LASER_BACK_UNBLOCKED:
-                running = false;
+                this->traffic_red_off();
+                this->traffic_yellow_off();
+                this->traffic_green_off();
+                //running = false;
                 break;
             case Interrupt::METAL_DETECTED:
                 this->sorting_on();
                 wait(0.5);
                 this->sorting_off();
                 break;
+            case Interrupt::BUTTON_ESTOP_PRESSED:
+                running = false;
+                break;
             case Interrupt::BUTTON_STOP_PRESSED:
                 running = false;
                 break;
-            case Interrupt::ADC_SIDE_AREA_BLOCKED:
+            case Interrupt::ADC_TOP_AREA_BLOCKED:
                 this->motor_slow_on();
                 this->traffic_yellow_on();
                 break;
-            case Interrupt::ADC_SIDE_AREA_UNBLOCKED:
+            case Interrupt::ADC_TOP_AREA_UNBLOCKED:
                 this->motor_slow_off();
                 this->traffic_yellow_off();
                 break;
