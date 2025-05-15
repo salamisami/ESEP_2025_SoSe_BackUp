@@ -572,7 +572,7 @@ void HAL::test_ins() {
     while(running) {
         MsgReceivePulse(temporaryChID, &msg, sizeof(msg), nullptr);
         int code = msg.code;
-        if(code != (int) Topic::ACTUATOR) {
+        if(code != (int) Topic::INTERRUPT) {
             THROW("Wrong event");
         }
         Interrupt event = (Interrupt) msg.value.sival_int;
