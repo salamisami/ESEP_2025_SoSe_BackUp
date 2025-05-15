@@ -25,6 +25,7 @@
 #include <sys/neutrino.h>
 #include <sys/procmgr.h>
 #include <hw/inout.h>
+#include <sched.h>
 
 
 //
