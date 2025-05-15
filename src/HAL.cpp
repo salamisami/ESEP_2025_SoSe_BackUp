@@ -88,7 +88,7 @@ HAL::HAL(std::string attach_point)
     externalConID = setup_GNS_sender();
     setup_interrupts();
     actuatorThread = new std::thread(&HAL::actuatorFunction, this, attach->chid);
-    MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, (int) Event::Dispatcher::HAL_READY, 0);
+    MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, (int) Dispatcher::HAL_READY, 0);
 }
 
 HAL::HAL()
@@ -340,9 +340,8 @@ void HAL::isr(void) {
 
 
 void HAL::sendEvent(int causing_pin, int pin_status) {
-    Event::Interrupt event;
+    Interrupt event;
     //Event is the namespace, Interrupt is the enum class
-    using namespace Event;
     #ifdef SHOW_EVENTS
     std::printf("Interrupt on pin %d, status: %d\n", causing_pin, pin_status);
     #endif
@@ -365,7 +364,10 @@ void HAL::sendEvent(int causing_pin, int pin_status) {
             break;
         case BUTTON_ESTOP_BIT:
             event = pin_status ? Interrupt::BUTTON_ESTOP_PRESSED : Interrupt::BUTTON_ESTOP_RELEASED;
-            break;
+            //TODO
+            //SCHED_FIFO or SCHED_RR?
+            MsgSendPulse(externalConID, sched_get_priority_max(SCHED_FIFO), (int) Topic::INTERRUPT, (int8_t) event);
+            return;
         case LASER_SORTING_BIT:
             event = pin_status ? Interrupt::LASER_SORTING_GATE_UNBLOCKED : Interrupt::LASER_SORTING_GATE_BLOCKED;
             break;
@@ -386,19 +388,19 @@ void HAL::sendEvent(int causing_pin, int pin_status) {
 
     }
     //TODO code here still not right
-    MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, 1, (int) event);
+    MsgSendPulse(externalConID, SIGEV_PULSE_PRIO_INHERIT, (int8_t) Topic::INTERRUPT, (int) event);
 }
 
 void HAL::actuatorFunction(int chid) {
     actuatorRunning = true;
     _pulse pulse;
     while(actuatorRunning) {
-        int rcvid = MsgReceive(chid, &pulse, sizeof(_pulse), NULL);
+        //int rcvid = MsgReceive(chid, &pulse, sizeof(_pulse), NULL);
+        int rcvid = MsgReceivePulse(chid,&pulse,sizeof(_pulse),NULL);
         if(rcvid < 0) {
             THROW("MsgReceive Failed.");
         }
-        Event::Actuator value = (Event::Actuator) pulse.value.sival_int;
-        using namespace Event;
+        Actuator value = (Actuator) pulse.value.sival_int;
         switch(value) {
             case Actuator::MOTOR_RIGHT_START:
                 motor_right();
@@ -564,11 +566,10 @@ void HAL::test_ins() {
     while(running) {
         MsgReceivePulse(temporaryChID, &msg, sizeof(msg), nullptr);
         int code = msg.code;
-        // if(code != INTERRUPT_PULSE) {
-        //     return;
-        // }
-        Event::Interrupt event = (Event::Interrupt) msg.value.sival_int;
-        using namespace Event;
+        if(code != (int) Topic::ACTUATOR) {
+            THROW("Wrong event");
+        }
+        Interrupt event = (Interrupt) msg.value.sival_int;
         switch(event) {
             case Interrupt::LASER_FRONT_BLOCKED:
                 std::cout << "Thanks!" << std::endl;

@@ -2,47 +2,55 @@
 #define EVENT_H
 #pragma once
 
-//include
+#include <stdint.h>
 
-namespace Event {
-    enum class Interrupt : int {
-        LASER_FRONT_BLOCKED = -1, //the rest will continue (-2, -3)
-        LASER_FRONT_UNBLOCKED,
-        LASER_BACK_BLOCKED,
-        LASER_BACK_UNBLOCKED,
-        BUTTON_START_PRESSED,
-        BUTTON_START_RELEASED,
-        BUTTON_STOP_PRESSED,
-        BUTTON_STOP_RELEASED,
-        BUTTON_RESET_PRESSED,
-        BUTTON_RESET_RELEASED,
-        BUTTON_ESTOP_PRESSED,
-        BUTTON_ESTOP_RELEASED,
-        METAL_DETECTED,
-        METAL_NOT_DETECTED,
-        LASER_SORTING_GATE_BLOCKED,
-        LASER_SORTING_GATE_UNBLOCKED,
-        LASER_RAMP_BLOCKED,
-        LASER_RAMP_UNBLOCKED,
-        ADC_TOP_AREA_BLOCKED,
-        ADC_TOP_AREA_UNBLOCKED,
-        ADC_SIDE_AREA_BLOCKED,
-        ADC_SIDE_AREA_UNBLOCKED
-    };
-    enum class Actuator :int {
-        MOTOR_RIGHT_START = -100,
-        MOTOR_LEFT_START,
-        MOTOR_STOP,
-        SORTING_ON,
-        SORTING_OFF,
-        TRAFFIC_GREEN_ON_SLOW,
-        TRAFFIC_GREEN_ON_FAST,
-        TRAFFIC_GREEN_ON,
-        TRAFFIC_GREEN_OFF
-    };
-    enum class Dispatcher: int{
-        HAL_READY = -302
-    };
-}
+
+enum class Interrupt : int32_t {
+    LASER_FRONT_BLOCKED = -1, //the rest will continue (-2, -3)
+    LASER_FRONT_UNBLOCKED,
+    LASER_BACK_BLOCKED,
+    LASER_BACK_UNBLOCKED,
+    BUTTON_START_PRESSED,
+    BUTTON_START_RELEASED,
+    BUTTON_STOP_PRESSED,
+    BUTTON_STOP_RELEASED,
+    BUTTON_RESET_PRESSED,
+    BUTTON_RESET_RELEASED,
+    BUTTON_ESTOP_PRESSED,
+    BUTTON_ESTOP_RELEASED,
+    METAL_DETECTED,
+    METAL_NOT_DETECTED,
+    LASER_SORTING_GATE_BLOCKED,
+    LASER_SORTING_GATE_UNBLOCKED,
+    LASER_RAMP_BLOCKED,
+    LASER_RAMP_UNBLOCKED,
+    ADC_TOP_AREA_BLOCKED,
+    ADC_TOP_AREA_UNBLOCKED,
+    ADC_SIDE_AREA_BLOCKED,
+    ADC_SIDE_AREA_UNBLOCKED
+};
+enum class Actuator :int32_t {
+    MOTOR_RIGHT_START = -100,
+    MOTOR_LEFT_START,
+    MOTOR_STOP,
+    SORTING_ON,
+    SORTING_OFF,
+    TRAFFIC_GREEN_ON_SLOW,
+    TRAFFIC_GREEN_ON_FAST,
+    TRAFFIC_GREEN_ON,
+    TRAFFIC_GREEN_OFF
+};
+enum class Dispatcher : int32_t {
+    HAL_READY = -302
+};
+
+
+enum class Topic : int8_t {
+    INTERRUPT = 1,
+    ACTUATOR,
+    QNET,
+    DISPATCHER
+};
+
 
 #endif
