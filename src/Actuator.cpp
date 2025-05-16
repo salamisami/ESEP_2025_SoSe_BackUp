@@ -1,0 +1,283 @@
+#include "Actuator.h"
+
+// GPIO Registers page 4877 
+//outs
+#define GPIO_SETDATAOUT     0x194
+#define GPIO_CLEARDATAOUT   0x190
+#define GPIO_OE             0x134
+
+//ins
+#define GPIO_DATAIN 0x138
+
+// Memory maps
+#define GPIO_0 0x44E07000  //for sorting type checking
+#define GPIO_1 0x4804C000  //system outputs,    page 182
+#define GPIO_2 0x481AC000  //human outputs,      page 183
+#define GPIO_3 0x481AE000  //unknown,           page 183
+
+//GPIO_0
+#define SORTING_STATUS_BIT  14
+
+
+//GPIO_1 - Internal actuator pin mapping
+#define MOTOR_RIGHT_BIT     12
+#define MOTOR_LEFT_BIT      13
+#define MOTOR_SLOW_BIT      14
+#define MOTOR_STOP_BIT      15 //useless?
+#define TRAFFIC_RED_BIT     16
+#define TRAFFIC_YELLOW_BIT  17
+#define TRAFFIC_GREEN_BIT   18
+#define SORTING_BIT         19
+
+//GPIO_2 - External actuator pin mapping
+#define LED_START_BIT       2
+#define LED_RESET_BIT       3
+#define LED_Q1_BIT          4
+#define LED_Q2_BIT          5
+
+#define ONE_MILLISECOND 1000
+
+#define GPIO_MMAP_SIZE   0x1000      //based on GPIO address range (4KB)
+using namespace std;
+
+//================================================= contructors & destructors =================================================
+Actuator::Actuator(const std::string gns_buffer_name)
+    : gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
+    , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
+    , actuatorRunning(false) {
+    receiver = new QNet::Receiver(gns_buffer_name);
+    out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
+    out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
+    actuatorThread = new std::thread(&Actuator::actuatorFunction, this);
+}
+
+Actuator::~Actuator() {
+    actuatorRunning = false;
+    actuatorThread->join();
+    delete actuatorThread;
+    motor_stop();
+    traffic_red_off();
+    traffic_yellow_off();
+    traffic_green_off();
+    led_start_off();
+    led_reset_off();
+    led_q1_off();
+    led_q2_off();
+
+    if(gpio_bank_1) {
+        munmap_device_io(gpio_bank_1, GPIO_MMAP_SIZE);
+    }
+    if(gpio_bank_2) {
+        munmap_device_io(gpio_bank_2, GPIO_MMAP_SIZE);
+    }
+    delete receiver;
+}
+
+//===================================================== private functions =====================================================
+
+
+void Actuator::set_data(uintptr_t gpio_bank, uint32_t bit) {
+    uint32_t pin = (1 << bit);
+    out32((uintptr_t) (gpio_bank + GPIO_SETDATAOUT), pin);
+
+}
+
+void Actuator::clear_data(uintptr_t gpio_bank, uint32_t bit) {
+    uint32_t pin = (1 << bit);
+    out32((uintptr_t) (gpio_bank + GPIO_CLEARDATAOUT), pin);
+}
+
+void Actuator::actuatorFunction() {
+    actuatorRunning = true;
+    _pulse pulse;
+    while(actuatorRunning) {
+        pulse = receiver->receive();
+        Topic code = (Topic) pulse.code;
+        ActuatorEnum value = (ActuatorEnum) pulse.value.sival_int;
+        if(code != Topic::ACTUATOR) {
+            THROW("Error not a Actuator function");
+        }
+        switch(value) {
+            case ActuatorEnum::MOTOR_RIGHT_START:
+                motor_right();
+                break;
+            case ActuatorEnum::MOTOR_LEFT_START:
+                motor_left();
+                break;
+            case ActuatorEnum::MOTOR_STOP:
+                motor_stop();
+                break;
+            case ActuatorEnum::SORTING_ON:
+                sorting_on();
+                break;
+            case ActuatorEnum::SORTING_OFF:
+                sorting_off();
+                break;
+            case ActuatorEnum::TRAFFIC_GREEN_ON:
+                traffic_green_on();
+                break;
+            case ActuatorEnum::TRAFFIC_GREEN_OFF:
+                traffic_green_off();
+                break;
+            case ActuatorEnum::TRAFFIC_GREEN_ON_SLOW:
+                break;
+            case ActuatorEnum::TRAFFIC_GREEN_ON_FAST:
+                break;
+            default:
+                THROW("Invalid Actuator Event!");
+                break;
+        }
+    }
+}
+
+//GPIO_0
+bool Actuator::isGate() {
+    uintptr_t gpio_bank_0 = mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0));
+
+    uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
+    //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
+    uint32_t sorting_status_pin = (1 << SORTING_STATUS_BIT);
+    bool status = (status_register & sorting_status_pin);
+    return !status;
+}
+
+//GPIO_1
+void Actuator::motor_right() {
+    clear_data(gpio_bank_1, MOTOR_LEFT_BIT);
+    set_data(gpio_bank_1, MOTOR_RIGHT_BIT);
+}
+
+void Actuator::motor_left() {
+    clear_data(gpio_bank_1, MOTOR_RIGHT_BIT);
+    set_data(gpio_bank_1, MOTOR_LEFT_BIT);
+}
+
+void Actuator::motor_slow_on() {
+    set_data(gpio_bank_1, MOTOR_SLOW_BIT);
+}
+
+void Actuator::motor_slow_off() {
+    clear_data(gpio_bank_1, MOTOR_SLOW_BIT);
+}
+
+void Actuator::motor_stop() {
+    clear_data(gpio_bank_1, MOTOR_RIGHT_BIT);
+    clear_data(gpio_bank_1, MOTOR_LEFT_BIT);
+
+    //set_data(gpio_bank_1, MOTOR_STOP_BIT);
+    //clear_data(gpio_bank_1, MOTOR_STOP_BIT);
+    motor_slow_off();
+
+}
+
+void Actuator::traffic_red_on() {
+    set_data(gpio_bank_1, TRAFFIC_RED_BIT);
+}
+
+void Actuator::traffic_red_off() {
+    clear_data(gpio_bank_1, TRAFFIC_RED_BIT);
+}
+
+void Actuator::traffic_yellow_on() {
+    set_data(gpio_bank_1, TRAFFIC_YELLOW_BIT);
+}
+
+void Actuator::traffic_yellow_off() {
+    clear_data(gpio_bank_1, TRAFFIC_YELLOW_BIT);
+}
+
+void Actuator::traffic_green_on() {
+    set_data(gpio_bank_1, TRAFFIC_GREEN_BIT);
+}
+
+void Actuator::traffic_green_off() {
+    clear_data(gpio_bank_1, TRAFFIC_GREEN_BIT);
+}
+
+void Actuator::sorting_on() {
+    set_data(gpio_bank_1, SORTING_BIT);
+}
+
+void Actuator::sorting_off() {
+    clear_data(gpio_bank_1, SORTING_BIT);
+}
+
+//GPIO_2
+
+void Actuator::led_start_on() {
+    set_data(gpio_bank_2, LED_START_BIT);
+}
+
+void Actuator::led_start_off() {
+    clear_data(gpio_bank_2, LED_START_BIT);
+}
+
+void Actuator::led_reset_on() {
+    set_data(gpio_bank_2, LED_RESET_BIT);
+}
+
+void Actuator::led_reset_off() {
+    clear_data(gpio_bank_2, LED_RESET_BIT);
+}
+
+void Actuator::led_q1_on() {
+    set_data(gpio_bank_2, LED_Q1_BIT);
+}
+
+void Actuator::led_q1_off() {
+    clear_data(gpio_bank_2, LED_Q1_BIT);
+}
+
+void Actuator::led_q2_on() {
+    set_data(gpio_bank_2, LED_Q2_BIT);
+}
+
+void Actuator::led_q2_off() {
+    clear_data(gpio_bank_2, LED_Q2_BIT);
+}
+
+void Actuator::wait(float seconds) {
+    usleep(ONE_MILLISECOND * 1000 * seconds);
+}
+
+//===================================================== public functions =====================================================
+
+void Actuator::test_outs() {
+    std::cout << "Testing Outputs..." << std::endl;
+    this->traffic_red_on();
+    wait(1);
+    this->traffic_red_off();
+    this->traffic_yellow_on();
+    wait(1);
+    this->traffic_yellow_off();
+    this->traffic_green_on();
+    wait(1);
+    this->traffic_green_off();
+    this->motor_slow_on();
+    this->motor_right();
+    wait(1);
+    this->motor_slow_off();
+    wait(1);
+    this->motor_left();
+    this->motor_slow_on();
+    wait(1);
+    this->motor_slow_off();
+    wait(1);
+    this->motor_stop();
+    this->sorting_on();
+    wait(1);
+    this->sorting_off();
+    this->led_start_on();
+    wait(1);
+    this->led_reset_on();
+    wait(1);
+    this->led_q1_on();
+    wait(1);
+    this->led_q2_on();
+    wait(1);
+    this->led_start_off();
+    this->led_reset_off();
+    this->led_q1_off();
+    this->led_q2_off();
+    std::cout << "Testing Outputs done." << std::endl;
+}

@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 
-enum class Interrupt : int32_t {
+enum class InterruptEnum : int32_t {
     LASER_FRONT_BLOCKED = -1, //the rest will continue (-2, -3)
     LASER_FRONT_UNBLOCKED,
     LASER_BACK_BLOCKED,
@@ -29,16 +29,22 @@ enum class Interrupt : int32_t {
     ADC_SIDE_AREA_BLOCKED,
     ADC_SIDE_AREA_UNBLOCKED
 };
-enum class Actuator :int32_t {
+enum class ActuatorEnum :int32_t {
     MOTOR_RIGHT_START = -100,
     MOTOR_LEFT_START,
+    MOTOR_SLOW_ON,
+    MOTOR_SLOW_OFF,
     MOTOR_STOP,
     SORTING_ON,
     SORTING_OFF,
     TRAFFIC_GREEN_ON_SLOW,
     TRAFFIC_GREEN_ON_FAST,
     TRAFFIC_GREEN_ON,
-    TRAFFIC_GREEN_OFF
+    TRAFFIC_GREEN_OFF,
+    TRAFFIC_RED_ON,
+    TRAFFIC_RED_OFF,
+    TRAFFIC_YELLOW_ON,
+    TRAFFIC_YELLOW_OFF
 };
 enum class Dispatcher : int32_t {
     HAL_READY = -302
