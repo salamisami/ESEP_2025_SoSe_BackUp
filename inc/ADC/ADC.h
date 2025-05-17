@@ -4,14 +4,14 @@
  * @date 		03.11.2017
  * @author: 	T Jaehnichen
  *				HAW-Hamburg
- *          	Labor für technische Informatik
+ *          	Labor fï¿½r technische Informatik
  *          	Berliner Tor  7
  *          	D-20099 Hamburg
  * @author:     T Lehmann
  * @version 	2
  * @details
  * @copybrief	Based on the StarterWareFree for AM335X provided by Texas Instrument
- *				
+ *
  */
 
 #ifndef ADC_H_
@@ -22,7 +22,7 @@
 
 #define ADC_TYPE   16
 
-class ADC{
+class ADC {
 public:
 	ADC(void) = delete;
 	ADC(TSCADC& tscadc);

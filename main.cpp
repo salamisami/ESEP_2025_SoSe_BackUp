@@ -1,27 +1,34 @@
-#include "HAL.h"
+// main.cpp
+// Startpunkt des Programms: Entscheidet anhand eines Puls- oder Kommandozeilenparameters, ob kalibriert oder gemessen wird
+
+
+#include "TSCADC.h"
+#include "ADC.h"
+#include "ADC_Utilities.h"
+
 #include <iostream>
+#include <string>
+#include <hw/inout.h>
+#include <sys/neutrino.h>
 
-#define ONE_MILLISECOND 1000
-
-using namespace std;
 
 
-void wait(int seconds) {
-	usleep(ONE_MILLISECOND * 1000 * seconds);
-}
+int main(int argc, char* argv[]) {
+    ThreadCtl(_NTO_TCTL_IO, 0);
+    TSCADC tscadc;
+    ADC adc(tscadc);
 
-int main() {
-	cout << "Starting Program..." << endl; // prints Hello World!!!
-	
-	HAL* hal = new HAL();
-	std::cout << "Festo is gate: " << std::boolalpha << hal->isGate() << std::endl;
+    float bandVoltage = ADC_Utilities::define_band_voltage(adc, tscadc);
+    std::cout << "Ermittelte Bandspannung: " << bandVoltage << " V\n";
 
-	//hal->test_outs();
-	hal->test_ins();
-	//wait(10);
+    //std::string mode = (argc > 1) ? argv[1] : "measure";
+    int mode = 0;
 
-	delete hal;
-
-	cout << "Program Finished." << endl;
-	return 0;
+    if(mode) {
+        ADC_Utilities::calibrateComponents(adc, tscadc, bandVoltage);
+    } else {
+        std::string result = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage);
+        //std::cout << "Erkanntes Bauteil: " << result << "\n";
+    }
+    return 0;
 }

@@ -8,9 +8,9 @@
  *          	Berliner Tor  7
  *          	D-20099 Hamburg
  * @version 	1
- * @details		
+ * @details
  * @copybrief	Based on the StarterWareFree for AM335X provided by Texas Instrument
- *				
+ *
  */
 
 #include "ADC.h"
@@ -21,11 +21,11 @@
 #define ADC_FIFO0_VALUE 		6
 #define ADC_TSC_GENINT 	 		16
 
-const struct sigevent* ADC::adcISR(void* arg, int id){
-	ADC* adc = (ADC*)arg;
+const struct sigevent* ADC::adcISR(void* arg, int id) {
+	ADC* adc = (ADC*) arg;
 	unsigned int status = adc->tscadc->intStatus();
 	adc->tscadc->intStatusClear(status);
-	if(status & END_OF_SEQUENCE_INT){
+	if(status & END_OF_SEQUENCE_INT) {
 		adc->event.sigev_value.sival_int = adc->tscadc->fifoADCDataRead(Fifo::FIFO_0);
 	}
 
@@ -33,9 +33,8 @@ const struct sigevent* ADC::adcISR(void* arg, int id){
 }
 
 ADC::ADC(TSCADC& tscadc)
-	:	tscadc(&tscadc)
-{
-	if (-1 == ThreadCtl(_NTO_TCTL_IO, 0)) {
+	: tscadc(&tscadc) {
+	if(-1 == ThreadCtl(_NTO_TCTL_IO, 0)) {
 		DBG_ERROR("ThreadCtl access failed\n");
 		exit(EXIT_FAILURE);
 	}
@@ -67,8 +66,8 @@ ADC::~ADC() {
 //	tscadc->eventInterruptEnable(END_OF_SEQUENCE_INT);
 //}
 
-void ADC::unregisterAdcISR(void){
-	if( InterruptDetach(interruptID) < 0){
+void ADC::unregisterAdcISR(void) {
+	if(InterruptDetach(interruptID) < 0) {
 		DBG_ERROR("could not detach adc interrupt handler");
 		exit(EXIT_FAILURE);
 	}
@@ -105,27 +104,27 @@ void ADC::init(void) {
 }
 
 void ADC::stepConfigure(unsigned int stepSel, Fifo fifo,
-		PositiveInput positiveInpChannel) {
-    /* Configure ADC to Single ended operation mode */
-    tscadc->tsStepOperationModeControl(SINGLE_ENDED_OPER_MODE, stepSel);
+	PositiveInput positiveInpChannel) {
+	/* Configure ADC to Single ended operation mode */
+	tscadc->tsStepOperationModeControl(SINGLE_ENDED_OPER_MODE, stepSel);
 
-    /* Configure step to select Channel, refernce voltages */
-    tscadc->tsStepConfig(stepSel, NEGATIVE_REF_VSSA,
-                    positiveInpChannel, NEGATIVE_INP_CHANNEL1, POSITIVE_REF_VDDA);
+	/* Configure step to select Channel, refernce voltages */
+	tscadc->tsStepConfig(stepSel, NEGATIVE_REF_VSSA,
+		positiveInpChannel, NEGATIVE_INP_CHANNEL1, POSITIVE_REF_VDDA);
 
-    /* XPPSW Pin is on, Which pull up the AN0 line*/
-    tscadc->tsStepAnalogSupplyConfig(true, false, false, stepSel);
+	/* XPPSW Pin is on, Which pull up the AN0 line*/
+	tscadc->tsStepAnalogSupplyConfig(true, false, false, stepSel);
 
-    /* XNNSW Pin is on, Which pull down the AN1 line*/
-    tscadc->tsStepAnalogGroundConfig(true, false, false, false, stepSel);
+	/* XNNSW Pin is on, Which pull down the AN1 line*/
+	tscadc->tsStepAnalogGroundConfig(true, false, false, false, stepSel);
 
-    /* select fifo 0 or 1*/
-    tscadc->tsStepFIFOSelConfig(stepSel, fifo);
+	/* select fifo 0 or 1*/
+	tscadc->tsStepFIFOSelConfig(stepSel, fifo);
 
-    /* Configure ADC to one shot mode */
-    tscadc->tsStepModeConfig(stepSel,  ONE_SHOT_SOFTWARE_ENABLED);
+	/* Configure ADC to one shot mode */
+	tscadc->tsStepModeConfig(stepSel, ONE_SHOT_SOFTWARE_ENABLED);
 
-    tscadc->tsStepAverageConfig(stepSel, NO_SAMPLES_AVG);
+	tscadc->tsStepAverageConfig(stepSel, NO_SAMPLES_AVG);
 }
 
 /**
@@ -133,7 +132,7 @@ void ADC::stepConfigure(unsigned int stepSel, Fifo fifo,
  *
  * @return 	None
  */
-void ADC::sample(void){
+void ADC::sample(void) {
 	adcEnableSequence(1);
 }
 
@@ -146,19 +145,19 @@ void ADC::sample(void){
  */
 void ADC::adcEnableSequence(unsigned int steps) {
 	tscadc->moduleStateSet(false);
-	int maxSteps = steps<16?steps:16;
-	for(int i=1; i<=maxSteps; i++){
+	int maxSteps = steps < 16 ? steps : 16;
+	for(int i = 1; i <= maxSteps; i++) {
 		tscadc->configureStepEnable(i, true);
 	}
 	tscadc->moduleStateSet(true);
 }
 
 // this has wrong semantic in comparison with adcEnable
-void ADC::adcDisable(void){
+void ADC::adcDisable(void) {
 	tscadc->moduleStateSet(false);
 }
 
-void ADC::cleanUpInterrupts(void){
+void ADC::cleanUpInterrupts(void) {
 	tscadc->intStatusClear(0x7FF);
 	tscadc->intStatusClear(0x7FF);
 	tscadc->intStatusClear(0x7FF);
