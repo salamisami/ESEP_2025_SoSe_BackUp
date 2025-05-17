@@ -41,11 +41,12 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Actuator::Actuator(const std::string gns_buffer_name)
-    : gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
+Actuator::Actuator(PM::Receiver* receiver)
+    :receiver(receiver) 
+    , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
     , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
     , actuatorRunning(false) {
-    receiver = new QNet::Receiver(gns_buffer_name);
+    channelID = receiver->getChannelID();
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
     actuatorThread = new std::thread(&Actuator::actuatorFunction, this);

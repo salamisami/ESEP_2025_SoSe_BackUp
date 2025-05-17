@@ -44,14 +44,14 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Interrupt::Interrupt(const std::string destination)
+Interrupt::Interrupt(PM::Sender* sender)
     : gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
+    , sender(sender)
     , inputPins(0)
     , last_causing_pin(0)
     , test_mode(false)
     , last_pin_status(0)
     , interruptRunning(false) {
-    sender = new QNet::Sender(destination);
     setup_interrupts();
 }
 

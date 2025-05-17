@@ -4,7 +4,7 @@
 
 #include "Throw.h"
 #include "Event.h"
-#include "Sender.h"
+#include "SenderP.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -33,7 +33,7 @@
 
 class Interrupt {
 public: //============================================ contructors & destructors ============================================
-    Interrupt(const std::string destination);
+    Interrupt(PM::Sender* sender);
     //Interrupt();
     virtual ~Interrupt();
 
@@ -48,7 +48,7 @@ private: //================================================ private variables ==
     //pointers
     std::thread* interruptThread;
     uintptr_t gpio_bank_0;
-    QNet::Sender* sender;
+    PM::Sender* sender;
     //primitive types
     uint32_t inputPins;
     int interruptID;

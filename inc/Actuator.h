@@ -4,7 +4,7 @@
 
 #include "Throw.h"
 #include "Event.h"
-#include "Receiver.h"
+#include "ReceiverP.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -34,7 +34,7 @@
 
 class Actuator {
 public: //============================================ contructors & destructors ============================================
-    Actuator(const std::string gns_buffer_name);
+    Actuator(PM::Receiver* receiver);
     virtual ~Actuator();
 
 
@@ -48,12 +48,13 @@ private: //================================================ private variables ==
     //classes, STL containers, and structs
 
     //pointers
-    QNet::Receiver* receiver;
+    PM::Receiver* receiver;
     std::thread* actuatorThread;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
 
     //primitive types
+    int channelID;
     //bool and char
     volatile bool actuatorRunning;
 
