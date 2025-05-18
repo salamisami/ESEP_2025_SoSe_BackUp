@@ -41,11 +41,11 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Actuator::Actuator(const std::string gns_buffer_name)
-    : gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
+Actuator::Actuator(name_attach_t* mailbox)
+    : mailbox(mailbox)
+    , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
     , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
     , actuatorRunning(false) {
-    receiver = new QNet::Receiver(gns_buffer_name);
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
     actuatorThread = new std::thread(&Actuator::actuatorFunction, this);
@@ -70,7 +70,6 @@ Actuator::~Actuator() {
     if(gpio_bank_2) {
         munmap_device_io(gpio_bank_2, GPIO_MMAP_SIZE);
     }
-    delete receiver;
 }
 
 //===================================================== private functions =====================================================
@@ -91,7 +90,7 @@ void Actuator::actuatorFunction() {
     actuatorRunning = true;
     _pulse pulse;
     while(actuatorRunning) {
-        pulse = receiver->receive();
+        pulse = Thread_COM::receive_event(*mailbox);
         Topic code = (Topic) pulse.code;
         ActuatorEnum value = (ActuatorEnum) pulse.value.sival_int;
         if(code != Topic::ACTUATOR) {
@@ -113,15 +112,23 @@ void Actuator::actuatorFunction() {
             case ActuatorEnum::SORTING_OFF:
                 sorting_off();
                 break;
+            case ActuatorEnum::TRAFFIC_RED_ON:
+                traffic_red_on();
+                break;
+            case ActuatorEnum::TRAFFIC_RED_OFF:
+                traffic_red_off();
+                break;
+            case ActuatorEnum::TRAFFIC_YELLOW_ON:
+                traffic_yellow_on();
+                break;
+            case ActuatorEnum::TRAFFIC_YELLOW_OFF:
+                traffic_yellow_off();
+                break;
             case ActuatorEnum::TRAFFIC_GREEN_ON:
                 traffic_green_on();
                 break;
             case ActuatorEnum::TRAFFIC_GREEN_OFF:
                 traffic_green_off();
-                break;
-            case ActuatorEnum::TRAFFIC_GREEN_ON_SLOW:
-                break;
-            case ActuatorEnum::TRAFFIC_GREEN_ON_FAST:
                 break;
             default:
                 THROW("Invalid Actuator Event!");
@@ -236,45 +243,43 @@ void Actuator::led_q2_off() {
     clear_data(gpio_bank_2, LED_Q2_BIT);
 }
 
-void Actuator::wait(float seconds) {
-    usleep(ONE_MILLISECOND * 1000 * seconds);
-}
+
 
 //===================================================== public functions =====================================================
 
 void Actuator::test_outs() {
     std::cout << "Testing Outputs..." << std::endl;
     this->traffic_red_on();
-    wait(1);
+    WAIT(1);
     this->traffic_red_off();
     this->traffic_yellow_on();
-    wait(1);
+    WAIT(1);
     this->traffic_yellow_off();
     this->traffic_green_on();
-    wait(1);
+    WAIT(1);
     this->traffic_green_off();
     this->motor_slow_on();
     this->motor_right();
-    wait(1);
+    WAIT(1);
     this->motor_slow_off();
-    wait(1);
+    WAIT(1);
     this->motor_left();
     this->motor_slow_on();
-    wait(1);
+    WAIT(1);
     this->motor_slow_off();
-    wait(1);
+    WAIT(1);
     this->motor_stop();
     this->sorting_on();
-    wait(1);
+    WAIT(1);
     this->sorting_off();
     this->led_start_on();
-    wait(1);
+    WAIT(1);
     this->led_reset_on();
-    wait(1);
+    WAIT(1);
     this->led_q1_on();
-    wait(1);
+    WAIT(1);
     this->led_q2_on();
-    wait(1);
+    WAIT(1);
     this->led_start_off();
     this->led_reset_off();
     this->led_q1_off();

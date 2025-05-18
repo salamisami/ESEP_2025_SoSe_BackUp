@@ -2,9 +2,9 @@
 #define ACTUATOR_H
 #pragma once
 
-#include "Throw.h"
+#include "Macros.h"
 #include "Event.h"
-#include "Receiver.h"
+#include "Thread_COM.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -12,15 +12,13 @@
 #include <stdint.h>
 #include <string.h>
 #include <unistd.h>
-
 #include <stdexcept>
-
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <cmath>
 #include <vector>
-
+#include <sys/dispatch.h>
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/neutrino.h>
@@ -34,7 +32,7 @@
 
 class Actuator {
 public: //============================================ contructors & destructors ============================================
-    Actuator(const std::string gns_buffer_name);
+    Actuator(name_attach_t* mailbox);
     virtual ~Actuator();
 
 
@@ -48,7 +46,7 @@ private: //================================================ private variables ==
     //classes, STL containers, and structs
 
     //pointers
-    QNet::Receiver* receiver;
+    name_attach_t* mailbox;
     std::thread* actuatorThread;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
@@ -62,7 +60,6 @@ private: //================================================ private variables ==
 private: //================================================ private functions ================================================
     void set_data(uintptr_t gpio_bank, uint32_t bit);
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
-    void wait(float seconds);
 
     void actuatorFunction();
 

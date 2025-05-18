@@ -2,9 +2,9 @@
 #define INTERRUPT_H
 #pragma once
 
-#include "Throw.h"
+#include "Macros.h"
 #include "Event.h"
-#include "Sender.h"
+#include "Thread_COM.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -33,7 +33,7 @@
 
 class Interrupt {
 public: //============================================ contructors & destructors ============================================
-    Interrupt(const std::string destination);
+    Interrupt(int dispatcher_rcvid);
     //Interrupt();
     virtual ~Interrupt();
 
@@ -48,9 +48,9 @@ private: //================================================ private variables ==
     //pointers
     std::thread* interruptThread;
     uintptr_t gpio_bank_0;
-    QNet::Sender* sender;
     //primitive types
     uint32_t inputPins;
+    int dispatcher_rcvid;
     int interruptID;
     int internalConnectionID;
     int internalChannelID;

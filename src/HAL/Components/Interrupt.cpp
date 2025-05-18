@@ -44,14 +44,14 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Interrupt::Interrupt(const std::string destination)
+Interrupt::Interrupt(int dispatcher_rcvid)
     : gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
     , inputPins(0)
+    , dispatcher_rcvid(dispatcher_rcvid)
     , last_causing_pin(0)
     , test_mode(false)
     , last_pin_status(0)
     , interruptRunning(false) {
-    sender = new QNet::Sender(destination);
     setup_interrupts();
 }
 
@@ -74,7 +74,7 @@ Interrupt::~Interrupt() {
     if(test_mode) {
 
     } else {
-        delete sender;
+        
     }
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
@@ -94,7 +94,6 @@ Interrupt::~Interrupt() {
     if(gpio_bank_0) {
         munmap_device_io(gpio_bank_0, GPIO_MMAP_SIZE);
     }
-    delete sender;
 }
 
 //===================================================== private functions =====================================================
@@ -265,7 +264,7 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
             event = pin_status ? InterruptEnum::BUTTON_ESTOP_PRESSED : InterruptEnum::BUTTON_ESTOP_RELEASED;
             //TODO
             //SCHED_FIFO or SCHED_RR?
-            sender->send((int) Topic::INTERRUPT, (int8_t) event, sched_get_priority_max(SCHED_FIFO));
+            Thread_COM::send_event(dispatcher_rcvid, (int) Topic::INTERRUPT, (int8_t) event, sched_get_priority_max(SCHED_FIFO));
             return;
         case LASER_SORTING_BIT:
             event = pin_status ? InterruptEnum::LASER_SORTING_GATE_UNBLOCKED : InterruptEnum::LASER_SORTING_GATE_BLOCKED;
@@ -285,7 +284,7 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         default:
             break;
     }
-    sender->send((int8_t) Topic::INTERRUPT, (int) event);
+    Thread_COM::send_event(dispatcher_rcvid, (int8_t) Topic::INTERRUPT, (int) event);
 }
 
 
