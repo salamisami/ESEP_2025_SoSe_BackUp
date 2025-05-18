@@ -30,11 +30,11 @@
 
 typedef struct {
 	std::string name;
-	bool hatLoch;
 	float avg;
 	float lochMin;
 	int lochStartIndex;
 	int lochEndIndex;
+	bool hatLoch;
 } Profil;
 
 class ADC_Utilities {
