@@ -55,7 +55,18 @@ enum class Topic : int8_t {
     INTERRUPT = 1,
     ACTUATOR,
     QNET,
-    DISPATCHER
+    DISPATCHER,
+    ADC
+};
+
+enum class ADC_Enum : int32_t {
+    ADC_WH_DETECT = 0xFFA0,
+    ADC_WF_DETECT,
+    ADC_W_B_DETECT,
+    ADC_W_NOT_DETECT,
+    ADC_CALIBRATE,
+    ADC_MESURE,
+    ADC_INVALID_MESURE,
 };
 
 
