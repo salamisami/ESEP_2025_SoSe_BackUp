@@ -69,8 +69,7 @@ Interrupt::Interrupt(int dispatcher_rcvid)
 
 Interrupt::~Interrupt() {
     MsgSendPulse(internalConnectionID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
-    interruptThread->join();
-    delete interruptThread;
+    interruptThread.join();
     if(test_mode) {
 
     } else {
@@ -154,7 +153,7 @@ void Interrupt::setup_interrupts() {
     out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig | inputPins));//Write new config back.
 
 
-    interruptThread = new std::thread(&Interrupt::interruptFunction, this, internalConnectionID);
+    interruptThread = std::thread(&Interrupt::threadFunction, this, internalConnectionID);
 }
 
 void Interrupt::setup_internal_pulse_message() {
@@ -189,7 +188,7 @@ int Interrupt::registerToBit(uint32_t inputRegister) {
     return __builtin_ctz(inputRegister);  // Count trailing zeros
 }
 
-void Interrupt::interruptFunction(int channelID) {
+void Interrupt::threadFunction(int channelID) {
     ThreadCtl(_NTO_TCTL_IO, 0);	//Request IO privileges
     _pulse msg;
     interruptRunning = true;

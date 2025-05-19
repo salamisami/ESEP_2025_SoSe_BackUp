@@ -7,26 +7,45 @@ HAL::HAL(const char* gns_name, int dispatcher_rcvid) {
     actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
 
-    Thread_COM::setup_thread_communication(gns_name, hal_mailbox, &hal_rcvid);
+    Thread_COM::setup_thread_communication(gns_name, hal_connection, &hal_rcvid);
     interrupt = new Interrupt(dispatcher_rcvid);
     actuator = new Actuator(actuator_mailbox);
     //TODO call actuator isGate()
     //adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
-    //TODO start thread
+    halThread = std::thread(&HAL::threadFunction, this);
 }
 
 HAL::~HAL() {
-    delete adc;
+    hal_running = false;
+    halThread.join();
+    //delete adc;
     delete actuator;
     delete interrupt;
 
-    delete actuator_mailbox;
     delete adc_mailbox;
+    delete actuator_mailbox;
 }
 
 //===================================================== private functions =====================================================
 
-
+void HAL::threadFunction() {
+    hal_running = true;
+    while(hal_running) {
+        _pulse event;
+        Thread_COM::receive_event(*hal_connection, &event);
+        Topic event_code = (Topic) event.code;
+        switch(event_code) {
+            case Topic::ACTUATOR:
+                actuator_mailbox->put(event);
+                break;
+            case Topic::ADC:
+                adc_mailbox->put(event);
+                break;
+            default:
+                break;
+        }
+    }
+}
 
 //===================================================== public functions =====================================================
 
@@ -40,7 +59,7 @@ void HAL::test_ins() {
     int8_t code = (int8_t) Topic::INTERRUPT;
     while(running) {
         _pulse msg;
-        Thread_COM::receive_event(*hal_mailbox, &msg);
+        Thread_COM::receive_event(*hal_connection, &msg);
         InterruptEnum event = (InterruptEnum) msg.value.sival_int;
         switch(event) {
             case InterruptEnum::LASER_FRONT_BLOCKED:
