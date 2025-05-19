@@ -19,13 +19,13 @@ public: //============================================ contructors & destructors
 	
 
 public: //================================================ public functions ================================================
-	virtual void send_event(int rcvid, int8_t event_code, int event_value, int priority = SIGEV_PULSE_PRIO_INHERIT);
+	static void send_event(int rcvid, int8_t event_code, int event_value, int priority = SIGEV_PULSE_PRIO_INHERIT);
 	/**
 	 * @return -1	Error in Message Receive
 	 * @return 0	event is received
 	 * @return 1	QNX Message is received
 	 */
-	virtual int receive_event(name_attach_t connection, _pulse* event);
+	static int receive_event(name_attach_t connection, _pulse* event);
 
 	/**
 	 * @param rcvid			mailbox address
@@ -34,7 +34,7 @@ public: //================================================ public functions ====
 	 * @return 0	Success
 	 * @return -1	Fail
 	 */
-	virtual int setup_thread_communication(const char* gns_name, name_attach_t* connection, int* rcvid);
+	static int setup_thread_communication(const char* gns_name, name_attach_t* connection, int* rcvid);
 
 
 
