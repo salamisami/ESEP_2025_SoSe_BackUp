@@ -1,37 +1,46 @@
-#ifndef HAL_H
-#define HAL_H
+#ifndef MAILBOX_H
+#define MAILBOX_H
 #pragma once
 
+#include "Macros.h"
 
-#include "Actuator.h"
-#include "Interrupt.h"
-#include "ADC_Class.h"
-#include "Thread_COM.h"
-#include "Mailbox.h"
-
+#include <mutex>
+#include <semaphore.h>
+#include <stdint.h>
 
 
-class HAL {
+/**
+ * @brief creates a Mailbox with T datatype
+ */
+template <typename T>
+class Mailbox {
 public: //============================================ contructors & destructors ============================================
-	HAL(const char* gns_name, int dispatcher_rcvid);
-	virtual ~HAL();
+	Mailbox(uint8_t size);
+	virtual ~Mailbox();
 
 
 public: //================================================ public functions ================================================
-	int getHAL_rcvid();
-	void test_ins();
+	/**
+	 * @brief puts an element to the mailbox. Blocked if the mailbox is full
+	 * @param element the item to be added to the Mailbox
+	 */
+	void put(T element);
+
+	/**
+	 * @brief takes an element from the mailbox. Blocked if the mailbox is empty
+	 * @return the item from the Mailbox
+	 */
+	T take();
+
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
+	std::mutex mtx;
+	sem_t vacant;
+	sem_t occupied;
 	//pointers
-	Interrupt* interrupt;
-	Actuator* actuator;
-	ADC_Class* adc;
-	name_attach_t* hal_mailbox;
-	Mailbox<_pulse>* actuator_mailbox;
-	Mailbox<_pulse>* adc_mailbox;
 	//primitive types
-	int hal_rcvid;
+	T element;
 	//bool and char
 
 
