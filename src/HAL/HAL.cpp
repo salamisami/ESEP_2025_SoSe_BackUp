@@ -8,11 +8,10 @@ HAL::HAL(const char* gns_name, int dispatcher_rcvid) {
     adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
 
     Thread_COM::setup_thread_communication(gns_name, hal_mailbox, &hal_rcvid);
-    //TODO send ACK to Dispatcher
     interrupt = new Interrupt(dispatcher_rcvid);
     actuator = new Actuator(actuator_mailbox);
     //TODO call actuator isGate()
-    adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
+    //adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
     //TODO start thread
 }
 
@@ -40,7 +39,8 @@ void HAL::test_ins() {
     bool running = true;
     int8_t code = (int8_t) Topic::INTERRUPT;
     while(running) {
-        _pulse msg = Thread_COM::receive_event(*hal_mailbox);
+        _pulse msg;
+        Thread_COM::receive_event(*hal_mailbox, &msg);
         InterruptEnum event = (InterruptEnum) msg.value.sival_int;
         switch(event) {
             case InterruptEnum::LASER_FRONT_BLOCKED:
