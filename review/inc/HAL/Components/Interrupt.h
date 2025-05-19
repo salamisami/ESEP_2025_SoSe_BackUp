@@ -5,6 +5,7 @@
 #include "Macros.h"
 #include "Event.h"
 #include "Thread_COM.h"
+#include "EventPriority.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -27,7 +28,6 @@
 #include <sys/neutrino.h>
 #include <sys/procmgr.h>
 #include <hw/inout.h>
-#include <sched.h>
 
 
 
@@ -66,7 +66,7 @@ private: //================================================ private functions ==
     void setup_interrupts();
     void setup_internal_pulse_message();
     void clean_internal_pulse_message();
-    void threadFunction(int channelID);
+    void threadFunction();
     void isr(void);
     int registerToBit(uint32_t inputRegister);
     void sendEvent(int causing_pin, int pin_status);
