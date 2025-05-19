@@ -11,11 +11,16 @@
 
 //void Thread_COM::publicFunction(){}
 void Thread_COM::send_event(int rcvid, int8_t event_code, int event_value, int priority) {
+    // int status = MsgSendPulse(rcvid,priority,event_code, event_value);
+    // if(status < 0){
+    //     THROW("Cannot send pulse message");
+    // }
 }
 
-_pulse Thread_COM::receive_event(name_attach_t connection) {
-    return _pulse();
+int Thread_COM::receive_event(name_attach_t connection, _pulse* event) {
+    return 0;
 }
 
-void Thread_COM::setup_thread_communication(const char* gns_name, name_attach_t* connection, int* rcvid) {
+int Thread_COM::setup_thread_communication(const char* gns_name, name_attach_t* connection, int* rcvid) {
+    return 0;
 }
