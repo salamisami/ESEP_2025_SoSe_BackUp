@@ -41,7 +41,7 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Actuator::Actuator(name_attach_t* mailbox)
+Actuator::Actuator(Mailbox<_pulse>* mailbox)
     : mailbox(mailbox)
     , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
     , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
@@ -90,10 +90,12 @@ void Actuator::actuatorFunction() {
     actuatorRunning = true;
     _pulse pulse;
     while(actuatorRunning) {
-        pulse = Thread_COM::receive_event(*mailbox);
-        Topic code = (Topic) pulse.code;
+        pulse = mailbox->take();
+        Topic event_code = (Topic) pulse.code;
         ActuatorEnum value = (ActuatorEnum) pulse.value.sival_int;
-        if(code != Topic::ACTUATOR) {
+        if((int8_t) event_code == PULSE_STOP_THREAD){
+            actuatorRunning = false;
+        } else if(event_code != Topic::ACTUATOR) {
             THROW("Error not a Actuator function");
         }
         switch(value) {
@@ -131,7 +133,7 @@ void Actuator::actuatorFunction() {
                 traffic_green_off();
                 break;
             default:
-                THROW("Invalid Actuator Event!");
+                //THROW("Invalid Actuator Event!");
                 break;
         }
     }
