@@ -40,6 +40,7 @@ public: //============================================ contructors & destructors
 public: //================================================ public functions ================================================
     bool isGate();
     void test_outs();
+    void global_shutdown();
 
 
 

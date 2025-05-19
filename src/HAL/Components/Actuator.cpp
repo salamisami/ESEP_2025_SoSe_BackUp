@@ -54,14 +54,8 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox)
 Actuator::~Actuator() {
     actuatorRunning = false;
     actuatorThread.join();
-    motor_stop();
-    traffic_red_off();
-    traffic_yellow_off();
-    traffic_green_off();
-    led_start_off();
-    led_reset_off();
-    led_q1_off();
-    led_q2_off();
+    global_shutdown();
+
 
     if(gpio_bank_1) {
         munmap_device_io(gpio_bank_1, GPIO_MMAP_SIZE);
@@ -87,17 +81,16 @@ void Actuator::clear_data(uintptr_t gpio_bank, uint32_t bit) {
 
 void Actuator::threadFunction() {
     actuatorRunning = true;
-    _pulse pulse;
     while(actuatorRunning) {
-        pulse = mailbox->take();
+        _pulse pulse = mailbox->take();
         Topic event_code = (Topic) pulse.code;
-        ActuatorEnum value = (ActuatorEnum) pulse.value.sival_int;
-        if(event_code == Topic::STOP_THREAD){
+        ActuatorEnum event_value = (ActuatorEnum) pulse.value.sival_int;
+        if(event_code == Topic::STOP_THREAD) {
             actuatorRunning = false;
         } else if(event_code != Topic::ACTUATOR) {
             THROW("Error not a Actuator function");
         }
-        switch(value) {
+        switch(event_value) {
             case ActuatorEnum::MOTOR_SLOW_ON:
                 motor_slow_on();
                 break;
@@ -253,7 +246,16 @@ void Actuator::led_q2_off() {
 
 
 //===================================================== public functions =====================================================
-
+void Actuator::global_shutdown() {
+    motor_stop();
+    traffic_red_off();
+    traffic_yellow_off();
+    traffic_green_off();
+    led_start_off();
+    led_reset_off();
+    led_q1_off();
+    led_q2_off();
+}
 void Actuator::test_outs() {
     std::cout << "Testing Outputs..." << std::endl;
     this->traffic_red_on();

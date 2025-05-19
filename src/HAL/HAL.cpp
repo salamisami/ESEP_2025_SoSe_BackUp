@@ -24,14 +24,10 @@ HAL::HAL(const char* gns_name, int dispatcher_rcvid) {
 
 HAL::~HAL() {
     Thread_COM::send_event(hal_rcvid, (int8_t) Topic::STOP_THREAD, 0, -1);
-    hal_running = false;
     halThread.join();
-    DEBUG("hal thread stopped...");
     //delete adc;
     delete actuator;
-    DEBUG("actuator thread stopped...");
     delete interrupt;
-    DEBUG("interrupt thread stopped...");
 
     delete adc_mailbox;
     delete actuator_mailbox;
@@ -47,7 +43,6 @@ void HAL::threadFunction() {
         Topic event_code = (Topic) event.code;
         switch(event_code) {
             case Topic::ACTUATOR:
-                //DEBUG("Put Mailbox");
                 actuator_mailbox->put(event);
                 break;
             case Topic::ADC:

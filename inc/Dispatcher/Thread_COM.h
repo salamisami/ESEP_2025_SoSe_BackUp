@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Macros.h"
+#include "EventPriority.h"
 
 #include <stdint.h>
 #include <sys/dispatch.h>
@@ -19,7 +20,7 @@ public: //============================================ contructors & destructors
 	
 
 public: //================================================ public functions ================================================
-	static void send_event(int rcvid, int8_t event_code, int event_value, int priority = SIGEV_PULSE_PRIO_INHERIT);
+	static void send_event(int rcvid, int8_t event_code, int event_value, int priority = (int) EventPriority::DEFAULT);
 	/**
 	 * @return -1	Error in Message Receive
 	 * @return 0	event is received

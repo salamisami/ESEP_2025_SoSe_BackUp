@@ -35,7 +35,7 @@
 #define BUTTON_RESET_BIT    26
 #define BUTTON_ESTOP_BIT    27
 
-//#define PULSE_STOP_THREAD _PULSE_CODE_MINAVAIL + 1
+#define PULSE_STOP_THREAD _PULSE_CODE_MINAVAIL + 1
 #define PULSE_INTR_ON_PORT0 _PULSE_CODE_MINAVAIL + 2
 
 #define ONE_MILLISECOND 1000
@@ -153,7 +153,7 @@ void Interrupt::setup_interrupts() {
     out32((uintptr_t) (gpio_bank_0 + GPIO_FALLINGDETECT), (currentConfig | inputPins));//Write new config back.
 
 
-    interruptThread = std::thread(&Interrupt::threadFunction, this, internalConnectionID);
+    interruptThread = std::thread(&Interrupt::threadFunction, this);
 }
 
 void Interrupt::setup_internal_pulse_message() {
@@ -188,7 +188,7 @@ int Interrupt::registerToBit(uint32_t inputRegister) {
     return __builtin_ctz(inputRegister);  // Count trailing zeros
 }
 
-void Interrupt::threadFunction(int channelID) {
+void Interrupt::threadFunction() {
     ThreadCtl(_NTO_TCTL_IO, 0);	//Request IO privileges
     _pulse msg;
     interruptRunning = true;
@@ -261,9 +261,7 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
             break;
         case BUTTON_ESTOP_BIT:
             event = pin_status ? InterruptEnum::BUTTON_ESTOP_PRESSED : InterruptEnum::BUTTON_ESTOP_RELEASED;
-            //TODO
-            //SCHED_FIFO or SCHED_RR?
-            Thread_COM::send_event(dispatcher_rcvid, (int) Topic::INTERRUPT, (int8_t) event, sched_get_priority_max(SCHED_FIFO));
+            Thread_COM::send_event(dispatcher_rcvid, (int) Topic::INTERRUPT, (int8_t) event, (int) EventPriority::FIRST_PRIO);
             return; 
         case LASER_SORTING_BIT:
             event = pin_status ? InterruptEnum::LASER_SORTING_GATE_UNBLOCKED : InterruptEnum::LASER_SORTING_GATE_BLOCKED;
