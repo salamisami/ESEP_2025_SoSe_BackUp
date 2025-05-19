@@ -35,7 +35,7 @@
 #define BUTTON_RESET_BIT    26
 #define BUTTON_ESTOP_BIT    27
 
-#define PULSE_STOP_THREAD _PULSE_CODE_MINAVAIL + 1
+//#define PULSE_STOP_THREAD _PULSE_CODE_MINAVAIL + 1
 #define PULSE_INTR_ON_PORT0 _PULSE_CODE_MINAVAIL + 2
 
 #define ONE_MILLISECOND 1000
@@ -265,7 +265,7 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
             //TODO
             //SCHED_FIFO or SCHED_RR?
             Thread_COM::send_event(dispatcher_rcvid, (int) Topic::INTERRUPT, (int8_t) event, sched_get_priority_max(SCHED_FIFO));
-            return;
+            return; 
         case LASER_SORTING_BIT:
             event = pin_status ? InterruptEnum::LASER_SORTING_GATE_UNBLOCKED : InterruptEnum::LASER_SORTING_GATE_BLOCKED;
             break;
