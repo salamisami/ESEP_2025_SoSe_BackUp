@@ -1,5 +1,6 @@
 #include "RuheModus.h"
 #include "BetriebsModus.h"
+#include "ServiceModus.h"
 #include "FBM.h"
 #include <iostream>
 #include "memory_utils.h"
@@ -16,10 +17,20 @@ void RuheModus::enter()
 
 void RuheModus::handleButtonStartUp(bool pressedLong, bool hasErrorOrWarning)
 {
-    if (pressedLong && !hasErrorOrWarning)
+    if (!hasErrorOrWarning)
+    {
+    if (pressedLong)
+    {
+        context_->transitionTo(make_unique<ServiceModus>(context_));
+    }
+    if (!pressedLong )
     {
         context_->transitionTo(make_unique<BetriebsModus>(context_));
     }
+    }
+    
+
+    
 }
 
 void RuheModus::handleButtonStop()

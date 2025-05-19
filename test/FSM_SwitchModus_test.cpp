@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include "FBM.h"
 #include "memory_utils.h" // Your make_unique implementation
-#define ENABLE_STATE_TESTING
 
 class StateMachineTest : public ::testing::Test {
 protected:
@@ -19,14 +18,14 @@ TEST_F(StateMachineTest, InitialStateIsRuheModus) {
 TEST_F(StateMachineTest, RuheToServiceTransition) {
     // Initial state
     EXPECT_TRUE(fbm->isInRuheModus());
-    fbm->buttonStop();
+    fbm->buttonStartUp(true, false);
     EXPECT_TRUE(fbm->isInServiceModus());
     // EXPECT_TRUE Blinken Grün 0.5Hz
 }
 
 TEST_F(StateMachineTest, ServiceToRuheTransition) {
     // Set initial state to ServiceModus
-    fbm->buttonStop(); // From Ruhe to Service
+    fbm->buttonStartUp(true, false); // From Ruhe to Service
     EXPECT_TRUE(fbm->isInServiceModus());
     
     // Trigger transition back to Ruhe
@@ -41,7 +40,7 @@ TEST_F(StateMachineTest, RuheToBetriebsTransition) {
     EXPECT_TRUE(fbm->isInRuheModus());
     
     // Trigger transition (long press, no errors)
-    fbm->buttonStartUp(true, false);
+    fbm->buttonStartUp(false, false);
     
     // Verify new state
     EXPECT_TRUE(fbm->isInBetriebsModus());
@@ -50,11 +49,11 @@ TEST_F(StateMachineTest, RuheToBetriebsTransition) {
 
 TEST_F(StateMachineTest, BetriebsToRuheTransition) {
     // Set initial state to BetriebsModus
-    fbm->buttonStartUp(true, false);
+    fbm->buttonStartUp(false, false);
     EXPECT_TRUE(fbm->isInBetriebsModus());
     
     // Trigger transition back to Ruhe
-    fbm->buttonStartUp(false, true); // Short press or error
+    fbm->buttonStop(); // Short press or error
     
     // Verify state
     EXPECT_TRUE(fbm->isInRuheModus());
@@ -65,7 +64,7 @@ TEST_F(StateMachineTest, Flow) {
     EXPECT_TRUE(fbm->isInRuheModus());
     
     // 2. Ruhe -> Service
-    fbm->buttonStop();
+    fbm->buttonStartUp(true, false);
     EXPECT_TRUE(fbm->isInServiceModus());
     
     // 3. Service -> Ruhe
@@ -73,10 +72,10 @@ TEST_F(StateMachineTest, Flow) {
     EXPECT_TRUE(fbm->isInRuheModus());
     
     // 4. Ruhe -> Betriebs (long press, no errors)
-    fbm->buttonStartUp(true, false);
+    fbm->buttonStartUp(false, false);
     EXPECT_TRUE(fbm->isInBetriebsModus());
     
     // 5. Betriebs -> Ruhe (short press or error)
-    fbm->buttonStartUp(false, true);
+    fbm->buttonStop();
     EXPECT_TRUE(fbm->isInRuheModus());
 }
