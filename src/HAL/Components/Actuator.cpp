@@ -48,13 +48,12 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox)
     , actuatorRunning(false) {
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
-    actuatorThread = new std::thread(&Actuator::actuatorFunction, this);
+    actuatorThread = std::thread(&Actuator::threadFunction, this);
 }
 
 Actuator::~Actuator() {
     actuatorRunning = false;
-    actuatorThread->join();
-    delete actuatorThread;
+    actuatorThread.join();
     motor_stop();
     traffic_red_off();
     traffic_yellow_off();
@@ -86,7 +85,7 @@ void Actuator::clear_data(uintptr_t gpio_bank, uint32_t bit) {
     out32((uintptr_t) (gpio_bank + GPIO_CLEARDATAOUT), pin);
 }
 
-void Actuator::actuatorFunction() {
+void Actuator::threadFunction() {
     actuatorRunning = true;
     _pulse pulse;
     while(actuatorRunning) {

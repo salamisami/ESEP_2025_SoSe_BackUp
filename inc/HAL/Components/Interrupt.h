@@ -46,7 +46,7 @@ private: //================================================ private variables ==
     //classes, STL containers, and structs
     std::vector<uint8_t> pinsList;
     //pointers
-    std::thread* interruptThread;
+    std::thread interruptThread;
     uintptr_t gpio_bank_0;
     //primitive types
     uint32_t inputPins;
@@ -66,7 +66,7 @@ private: //================================================ private functions ==
     void setup_interrupts();
     void setup_internal_pulse_message();
     void clean_internal_pulse_message();
-    void interruptFunction(int channelID);
+    void threadFunction(int channelID);
     void isr(void);
     int registerToBit(uint32_t inputRegister);
     void sendEvent(int causing_pin, int pin_status);

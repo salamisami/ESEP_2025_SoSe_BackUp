@@ -23,21 +23,23 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
+	std::thread halThread;
 	//pointers
 	Interrupt* interrupt;
 	Actuator* actuator;
 	ADC_Class* adc;
-	name_attach_t* hal_mailbox;
+	name_attach_t* hal_connection;
 	Mailbox<_pulse>* actuator_mailbox;
 	Mailbox<_pulse>* adc_mailbox;
 	//primitive types
 	int hal_rcvid;
 	//bool and char
+	volatile bool hal_running;
 
 
 
 private: //================================================ private functions ================================================
-	//void privateFunction();
+	void threadFunction();
 
 };
 

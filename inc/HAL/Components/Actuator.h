@@ -45,10 +45,9 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
     //classes, STL containers, and structs
-
+    std::thread actuatorThread;
     //pointers
     Mailbox<_pulse>* mailbox;
-    std::thread* actuatorThread;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
 
@@ -62,7 +61,7 @@ private: //================================================ private functions ==
     void set_data(uintptr_t gpio_bank, uint32_t bit);
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
 
-    void actuatorFunction();
+    void threadFunction();
 
     void motor_right();
     void motor_left();
