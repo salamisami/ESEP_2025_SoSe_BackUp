@@ -130,6 +130,30 @@ void Actuator::threadFunction() {
             case ActuatorEnum::TRAFFIC_GREEN_OFF:
                 traffic_green_off();
                 break;
+            case ActuatorEnum::LED_START_ON:
+                led_start_on();
+                break;
+            case ActuatorEnum::LED_START_OFF:
+                led_start_off();
+                break;
+            case ActuatorEnum::LED_RESET_ON:
+                led_reset_on();
+                break;
+                case ActuatorEnum::LED_RESET_OFF:
+                led_reset_off();
+                break;
+            case ActuatorEnum::LED_Q1_ON:
+                led_q1_on();
+                break;
+            case ActuatorEnum::LED_Q1_OFF:
+                led_q1_off();
+                break;
+            case ActuatorEnum::LED_Q2_ON:
+               led_q2_on();
+                break;
+            case ActuatorEnum::LED_Q2_OFF:
+                led_q2_off();
+                break;
             default:
                 //THROW("Invalid Actuator Event!");
                 break;
