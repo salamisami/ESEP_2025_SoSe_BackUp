@@ -15,8 +15,20 @@
 template <typename T>
 class Mailbox {
 public: //============================================ contructors & destructors ============================================
-	Mailbox(uint8_t size);
-	virtual ~Mailbox();
+	Mailbox(uint8_t mailbox_size) {
+		int initVacant = sem_init(&vacant, 0, mailbox_size);
+		int initOccupied = sem_init(&occupied, 0, 0);
+
+		if(initVacant == -1 || initOccupied == -1) {
+			THROW("Failed to initialize Semaphores in ThreadSafeQueue");
+		}
+	}
+	virtual ~Mailbox() {
+		mtx.lock();
+		sem_destroy(&vacant);
+		sem_destroy(&occupied);
+		mtx.unlock();
+	}
 
 
 public: //================================================ public functions ================================================
@@ -24,13 +36,26 @@ public: //================================================ public functions ====
 	 * @brief puts an element to the mailbox. Blocked if the mailbox is full
 	 * @param element the item to be added to the Mailbox
 	 */
-	void put(T element);
+	void put(T element) {
+		sem_wait(&vacant);
+		mtx.lock();
+		this->element = element;
+		mtx.unlock();
+		sem_post(&occupied);
+	}
 
 	/**
 	 * @brief takes an element from the mailbox. Blocked if the mailbox is empty
 	 * @return the item from the Mailbox
 	 */
-	T take();
+	T take() {
+		sem_wait(&occupied);
+		mtx.lock();
+		T element = this->element;
+		mtx.unlock();
+		sem_post(&vacant);
+		return element;
+	}
 
 
 private: //================================================ private variables ================================================
