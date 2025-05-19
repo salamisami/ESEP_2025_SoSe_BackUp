@@ -39,7 +39,7 @@
 #define PULSE_INTR_ON_PORT0 _PULSE_CODE_MINAVAIL + 2
 
 #define ONE_MILLISECOND 1000
-//#define SHOW_EVENTS
+#define SHOW_EVENTS
 #define GPIO_MMAP_SIZE   0x1000      //based on GPIO address range (4KB)
 using namespace std;
 
@@ -194,7 +194,7 @@ void Interrupt::threadFunction(int channelID) {
     interruptRunning = true;
     printf("Message thread started.\n");
     while(interruptRunning) {
-        int recvid = MsgReceivePulse(channelID, &msg, sizeof(_pulse), nullptr);
+        int recvid = MsgReceivePulse(internalChannelID, &msg, sizeof(_pulse), nullptr);
         if(recvid < 0) {
             THROW("MsgReceivePulse failed!");
         }

@@ -92,12 +92,18 @@ void Actuator::threadFunction() {
         pulse = mailbox->take();
         Topic event_code = (Topic) pulse.code;
         ActuatorEnum value = (ActuatorEnum) pulse.value.sival_int;
-        if((int8_t) event_code == PULSE_STOP_THREAD){
+        if(event_code == Topic::STOP_THREAD){
             actuatorRunning = false;
         } else if(event_code != Topic::ACTUATOR) {
             THROW("Error not a Actuator function");
         }
         switch(value) {
+            case ActuatorEnum::MOTOR_SLOW_ON:
+                motor_slow_on();
+                break;
+            case ActuatorEnum::MOTOR_SLOW_OFF:
+                motor_slow_off();
+                break;
             case ActuatorEnum::MOTOR_RIGHT_START:
                 motor_right();
                 break;
