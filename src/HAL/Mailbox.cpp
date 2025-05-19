@@ -42,5 +42,5 @@ T Mailbox<T>::take() {
     T element = this->element;
     mtx.unlock();
     sem_post(&vacant);
-    return;
+    return element;
 }
