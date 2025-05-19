@@ -6,7 +6,7 @@
 
 
 enum class InterruptEnum : int32_t {
-    LASER_FRONT_BLOCKED = -1, //the rest will continue (-2, -3)
+    LASER_FRONT_BLOCKED = 1, //the rest will continue (-2, -3)
     LASER_FRONT_UNBLOCKED,
     LASER_BACK_BLOCKED,
     LASER_BACK_UNBLOCKED,
@@ -30,7 +30,7 @@ enum class InterruptEnum : int32_t {
     ADC_SIDE_AREA_UNBLOCKED
 };
 enum class ActuatorEnum :int32_t {
-    MOTOR_RIGHT_START = -100,
+    MOTOR_RIGHT_START = 1,
     MOTOR_LEFT_START,
     MOTOR_SLOW_ON,
     MOTOR_SLOW_OFF,
@@ -47,7 +47,7 @@ enum class ActuatorEnum :int32_t {
     TRAFFIC_YELLOW_OFF
 };
 enum class Dispatcher : int32_t {
-    HAL_READY = -302
+    HAL_READY = 1
 };
 
 
@@ -56,7 +56,8 @@ enum class Topic : int8_t {
     ACTUATOR,
     QNET,
     DISPATCHER,
-    ADC
+    ADC,
+    STOP_THREAD
 };
 
 enum class ADC_Enum : int32_t {

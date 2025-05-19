@@ -4,10 +4,17 @@
 
 //================================================= contructors & destructors =================================================
 HAL::HAL(const char* gns_name, int dispatcher_rcvid) {
+    hal_connection = name_attach_t();
     actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
+    DEBUG("Mailboxes are created");
 
-    Thread_COM::setup_thread_communication(gns_name, hal_connection, &hal_rcvid);
+    Thread_COM::setup_thread_communication(gns_name, &hal_connection, &hal_rcvid);
+    DEBUG("setup_thread_communication success");
+    if(dispatcher_rcvid == -1){
+        Thread_COM::setup_thread_communication("DispatcherMock",&dispatcher_mock_connection,&dispatcher_mock_rcvid);
+        dispatcher_rcvid = dispatcher_mock_rcvid;
+    }
     interrupt = new Interrupt(dispatcher_rcvid);
     actuator = new Actuator(actuator_mailbox);
     //TODO call actuator isGate()
@@ -16,6 +23,7 @@ HAL::HAL(const char* gns_name, int dispatcher_rcvid) {
 }
 
 HAL::~HAL() {
+    Thread_COM::send_event(hal_rcvid, (int8_t) Topic::STOP_THREAD, 0, -1);
     hal_running = false;
     halThread.join();
     //delete adc;
@@ -32,7 +40,7 @@ void HAL::threadFunction() {
     hal_running = true;
     while(hal_running) {
         _pulse event;
-        Thread_COM::receive_event(*hal_connection, &event);
+        Thread_COM::receive_event(hal_connection, &event);
         Topic event_code = (Topic) event.code;
         switch(event_code) {
             case Topic::ACTUATOR:
@@ -40,6 +48,9 @@ void HAL::threadFunction() {
                 break;
             case Topic::ADC:
                 adc_mailbox->put(event);
+                break;
+            case Topic::STOP_THREAD:
+                hal_running = false;
                 break;
             default:
                 break;
@@ -59,7 +70,7 @@ void HAL::test_ins() {
     int8_t code = (int8_t) Topic::INTERRUPT;
     while(running) {
         _pulse msg;
-        Thread_COM::receive_event(*hal_connection, &msg);
+        Thread_COM::receive_event(hal_connection, &msg);
         InterruptEnum event = (InterruptEnum) msg.value.sival_int;
         switch(event) {
             case InterruptEnum::LASER_FRONT_BLOCKED:

@@ -13,7 +13,7 @@
 
 class HAL {
 public: //============================================ contructors & destructors ============================================
-	HAL(const char* gns_name, int dispatcher_rcvid);
+	HAL(const char* gns_name, int dispatcher_rcvid = -1);
 	virtual ~HAL();
 
 
@@ -24,15 +24,18 @@ public: //================================================ public functions ====
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	std::thread halThread;
+	name_attach_t hal_connection;
+	name_attach_t dispatcher_mock_connection;
 	//pointers
 	Interrupt* interrupt;
 	Actuator* actuator;
 	ADC_Class* adc;
-	name_attach_t* hal_connection;
+	
 	Mailbox<_pulse>* actuator_mailbox;
 	Mailbox<_pulse>* adc_mailbox;
 	//primitive types
 	int hal_rcvid;
+	int dispatcher_mock_rcvid;
 	//bool and char
 	volatile bool hal_running;
 
