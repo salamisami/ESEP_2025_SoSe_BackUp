@@ -1,19 +1,28 @@
 #include "HAL.h"
 
+#define MAILBOX_SIZE 1
+
 //================================================= contructors & destructors =================================================
 HAL::HAL(const char* gns_name, int dispatcher_rcvid) {
-    //TODO create an event distributor
+    actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
+    adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
+
     Thread_COM::setup_thread_communication(gns_name, hal_mailbox, &hal_rcvid);
+    //TODO send ACK to Dispatcher
     interrupt = new Interrupt(dispatcher_rcvid);
-    actuator = new Actuator(hal_mailbox);
+    actuator = new Actuator(actuator_mailbox);
     //TODO call actuator isGate()
-    adc = new ADC_Class(dispatcher_rcvid, hal_mailbox);
+    adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
+    //TODO start thread
 }
 
 HAL::~HAL() {
     delete adc;
     delete actuator;
     delete interrupt;
+
+    delete actuator_mailbox;
+    delete adc_mailbox;
 }
 
 //===================================================== private functions =====================================================
@@ -22,7 +31,7 @@ HAL::~HAL() {
 
 //===================================================== public functions =====================================================
 
-int HAL::getHAL_rcvid(){
+int HAL::getHAL_rcvid() {
     return hal_rcvid;
 }
 
