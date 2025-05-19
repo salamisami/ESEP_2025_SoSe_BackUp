@@ -44,7 +44,15 @@ enum class ActuatorEnum :int32_t {
     TRAFFIC_RED_ON,
     TRAFFIC_RED_OFF,
     TRAFFIC_YELLOW_ON,
-    TRAFFIC_YELLOW_OFF
+    TRAFFIC_YELLOW_OFF,
+    LED_START_ON,
+    LED_START_OFF,
+    LED_RESET_ON,
+    LED_RESET_OFF,
+    LED_Q1_ON,
+    LED_Q1_OFF,
+    LED_Q2_ON,
+    LED_Q2_OFF
 };
 enum class Dispatcher : int32_t {
     HAL_READY = 1
