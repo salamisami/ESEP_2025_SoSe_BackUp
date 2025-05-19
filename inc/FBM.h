@@ -18,6 +18,13 @@ public:
     void startBlinkingThread(double frequency);
     void stopBlinkingThread();
 
+#ifdef ENABLE_STATE_TESTING
+
+    bool isInRuheModus() const ;
+    bool isInServiceModus() const ;
+    bool isInBetriebsModus() const ;
+#endif
+
 private:
     std::unique_ptr<IFBMState> currentstate_;
     std::thread blinkingThread;

@@ -12,3 +12,4 @@ public:
     void handleButtonStop() override;
 };
 
+#endif

@@ -3,6 +3,11 @@
 #include <iostream>
 #include "memory_utils.h"
 
+#ifdef ENABLE_STATE_TESTING
+#include "BetriebsModus.h"
+#include "ServiceModus.h"
+#endif
+
 FBM::FBM()
 {
     transitionTo(make_unique<RuheModus>(this));
@@ -36,3 +41,17 @@ void FBM::startBlinkingThread(double frequency)
 void FBM::stopBlinkingThread()
 {
 }
+
+#ifdef ENABLE_STATE_TESTING
+bool FBM::isInRuheModus() const {
+    return dynamic_cast<const RuheModus*>(currentstate_.get()) != nullptr;
+}
+
+bool FBM::isInBetriebsModus() const {
+    return dynamic_cast<const BetriebsModus*>(currentstate_.get()) != nullptr;
+}
+
+bool FBM::isInServiceModus() const {
+    return dynamic_cast<const ServiceModus*>(currentstate_.get()) != nullptr;
+}
+#endif
