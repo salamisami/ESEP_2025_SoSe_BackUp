@@ -1,14 +1,12 @@
-#include <iostream>
 #include "Dispatcher.h"
-#include "Ithreadcom.h"
+#include "Thread_COM.h"
 
+#include <iostream>
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/dispatch.h>
-#include <sys/types.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <thread>
@@ -22,15 +20,16 @@ int main(){
 	_pulse event;
 	int event_info;
 
-	Ithread_com *threadcom_hal = new Ithread_com(FBM_1_HAL);
+	//TODO Don't forget to free the memory, allocated using new. Because the objects here are initialized to heap, not stack.
+	Thread_COM::Receiver *threadcom_hal = new Thread_COM::Receiver(FBM_1_HAL);
 	printf("staring Hal\n");
-	Ithread_com *threadcom_fsm = new Ithread_com(FBM_1_FSM);
+	Thread_COM::Receiver *threadcom_fsm = new Thread_COM::Receiver(FBM_1_FSM);
 	printf("staring Fsm\n");
-	Ithread_com *threadcom_com = new Ithread_com(FBM_1_COM);
+	Thread_COM::Receiver *threadcom_com = new Thread_COM::Receiver(FBM_1_COM);
 	printf("staring Com\n");
-	Ithread_com *threadcom_rec = new Ithread_com(FBM_1_RECORDER);
+	Thread_COM::Receiver *threadcom_rec = new Thread_COM::Receiver(FBM_1_RECORDER);
 	printf("staring Rec\n");
-	Ithread_com *threadcom_rem = new Ithread_com(FBM_1_REMOTE);
+	Thread_COM::Receiver *threadcom_rem = new Thread_COM::Receiver(FBM_1_REMOTE);
 	printf("staring Rem\n");
 
 	event_info = threadcom_hal->receive_event(&event);
@@ -64,7 +63,9 @@ int main(){
 		}
 	}
 
-	threadcom_hal->send_event(0, 0);
+
+	Thread_COM::Sender* send_test = new Thread_COM::Sender(threadcom_hal->get_coid());
+	send_test->send_event(0, 0);
 
 	event_info = threadcom_rec->receive_event(&event);
 	if(event_info == 0){
