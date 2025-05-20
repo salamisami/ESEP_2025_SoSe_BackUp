@@ -8,27 +8,23 @@
 #ifndef DISPATCHER_H_
 #define DISPATCHER_H_
 
-#include "Action.h"
-#include "Data.h"
-#include "Context.h"
+#include "Ithreadcom.h"
+
+#define MAX_NUM_COMP 5
 
 class Dispatcher {
 public:
 	Dispatcher();
 	virtual ~Dispatcher();
-	int start_dispatcher();
+	void run_dispatcher();
 	typedef struct _pulse header_t;
 
 
 private:
-	Action *action;
-	Data *data;
-	Context *context;
+	Ithread_com *threadcom;
 
-	int handle_app_msg(header_t header,int rcvid);
-	int handle_pulse_msg(header_t header, int rcvid);
-	int handle_QNX_IO_msg(header_t header,int rcvid);
-	int handle_QNX_pulse(header_t header,int rcvid);
+	int coid_arr[MAX_NUM_COMP] = {0,0,0,0,0};
+
 	int handle_appl_pulse(header_t header,int rcvid);
 };
 

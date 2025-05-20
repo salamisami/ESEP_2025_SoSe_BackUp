@@ -6,10 +6,7 @@
  */
 
 #include "Dispatcher.h"
-#include "Action.h"
-#include "Data.h"
-#include "DispatcherEvents.h"
-#include "Context.h"
+#include "Ithreadcom.h"
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -19,157 +16,97 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "Ithreadcom.h"
 
-#define GNS_NAME "Dispatcher"
-#define NUMBER_OF_COMPONENTS 4
+
+
+
 
 Dispatcher::Dispatcher() {
-	//system("gns -s ");	 //for FBM_1
-	//system("gns -c "); //for FBM_2
-	data = new Data();
-	action = new Action(data);
-	context = new Context(action, data);
-
+	switch(FBM){
+	case 1:
+		threadcom = new Ithread_com(FBM_1_DISPATCHER);
+		break;
+	case 2:
+		threadcom = new Ithread_com(FBM_2_DISPATCHER);
+		break;
+	default:
+		perror("Foerderbandmodul not defined");
+		exit(-1);
+	}
 }
 
 Dispatcher::~Dispatcher() {
-	delete context;
-	delete action;
-	delete data;
 
-}
-
-int Dispatcher::handle_pulse_msg(header_t header,int rcvid){
-	if ((_PULSE_CODE_MINAVAIL <= header.code) && (header.code <= _PULSE_CODE_MAXAVAIL)){
-			handle_appl_pulse(header, rcvid);
-		} else {
-			handle_QNX_pulse(header, rcvid);
-		}
 }
 
 int Dispatcher::handle_appl_pulse(header_t header,int rcvid){
 	switch (header.code) {
-	case FSM_READY:
-		context->fsm_ready();
+	}
+}
+
+void Dispatcher::run_dispatcher() {
+
+//waiting for all components to connect to DispatcherS
+	_pulse event;
+	int event_info;
+	int num_comp = 0;
+	do{
+		event_info = threadcom->receive_event(&event);
+		if(event_info == -1){
+			continue;
+		}
+		if(event_info == 0){
+			continue;
+		}
+		if(event_info == 1){
+			if(event.code == 12){
+				num_comp++;
+			}
+		}
+	}while(num_comp < MAX_NUM_COMP);
+
+//connecting to all Components
+	switch(FBM){
+	case 1:
+		coid_arr[0] = name_open(FBM_1_HAL, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[1] = name_open(FBM_1_FSM, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[2] = name_open(FBM_1_RECORDER, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[3] = name_open(FBM_1_COM, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[4] = name_open(FBM_1_REMOTE, NAME_FLAG_ATTACH_GLOBAL);
 		break;
-	case HAL_READY:
-		context->hal_ready();
-		break;
-	case MQTT_READY:
-		context->mqtt_ready();
-		break;
-	case QNET_READY:
-		context->qnet_ready();
-		break;
-	case FSM_NOT_READY:
-		context->fsm_not_ready();
-		break;
-	case HAL_NOT_READY:
-		context->hal_not_ready();
-		break;
-	case MQTT_NOT_READY:
-		context->mqtt_not_ready();
-		break;
-	case QNET_NOT_READY:
-		context->qnet_not_ready();
-		break;
-	case DISPATCHER_READY:
-		context->dispatcher_ready();
+	case 2:
+		coid_arr[0] = name_open(FBM_2_HAL, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[1] = name_open(FBM_2_FSM, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[2] = name_open(FBM_2_RECORDER, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[3] = name_open(FBM_2_COM, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[4] = name_open(FBM_2_REMOTE, NAME_FLAG_ATTACH_GLOBAL);
 		break;
 	default:
-		context->dispatch_message();
-	}
-}
-
-
-int Dispatcher::handle_QNX_pulse(header_t header,int rcvid){
-	switch (header.code) {
-		case _PULSE_CODE_DISCONNECT:
-			printf("Dispatcher _PULSE_CODE_DISCONNECT\n");
-/* A client disconnected all its connections (called
-* name_close() for each name_open() of our name) or
-* terminated. */
-			ConnectDetach(header.scoid);
-			break;
-		case _PULSE_CODE_UNBLOCK:
-			printf("Dispatcher received _PULSE_CODE_UNBLOCK\n");
-/* REPLY blocked client wants to unblock (was hit by
-* a signal or timed out). It's up to you if you
-* reply now or later. */
-			break;
-		default:
-/* A pulse sent by the kernel like
-* _PULSE_CODE_COIDDEATH or _PULSE_CODE_THREADDEATH
-* from the kernel? */
-			printf("Dispatcher received some other QNX pulse msg.\n");
-			break;
-	}
-}
-
-int Dispatcher::handle_QNX_IO_msg(header_t header, int rcvid){
-	switch (header.code) {
-			case _PULSE_CODE_DISCONNECT:
-				printf("Dispatcher _PULSE_CODE_DISCONNECT\n");
-	/* A client disconnected all its connections (called
-	* name_close() for each name_open() of our name) or
-	* terminated. */
-				ConnectDetach(header.scoid);
-				break;
-			case _PULSE_CODE_UNBLOCK:
-				printf("Dispatcher received _PULSE_CODE_UNBLOCK\n");
-	/* REPLY blocked client wants to unblock (was hit by
-	* a signal or timed out). It's up to you if you
-	* reply now or later. */
-				break;
-			case 12:
-				MsgReply( rcvid, EOK, NULL, 0 );
-				break;
-			default:
-	/* A pulse sent by the kernel like
-	* _PULSE_CODE_COIDDEATH or _PULSE_CODE_THREADDEATH
-	* from the kernel? */
-				printf("Dispatcher received some other QNX pulse msg: %d\n",header.code);
-				break;
-		}
-}
-
-int Dispatcher::handle_app_msg(header_t header,int rcvid){
-	printf("Receiver: Unexpected message type 0x%04X\n", header.type);
-	MsgError(rcvid,EPERM);
-}
-
-int Dispatcher::start_dispatcher() {
-	name_attach_t *attach;
-	attach = name_attach(NULL, GNS_NAME, NAME_FLAG_ATTACH_GLOBAL);
-	if ( attach == NULL) {
-		perror("Dispatcher: name_attach failed");
-		return EXIT_FAILURE;
+		perror("Foerderbandmodul not defined");
+		exit(-1);
 	}
 
-	printf("Dispatcher: name_attach successful\n");
+//dispatching Messages
 	while (1) {
-	// Waiting for a message and read first header
-		header_t header;
-		int rcvid = MsgReceive (attach->chid, &header, sizeof (header_t), NULL);
-		if (rcvid == -1) { // Error occurred
-			perror("Dispatcher: MsgReceived failed");
+		event_info = threadcom->receive_event(&event);
+		if (event_info == -1) { // Error occurred
+			perror("Dispatcher: threadcom->recieve_event() failed");
 			continue;
 		}
-		if (rcvid == 0) {// Pulse was received
-			this->handle_pulse_msg(header, rcvid);
+		if (event_info == 1) {
 			continue;
 		}
-		// some sync msg was received
-		if ((_IO_BASE <= header.type) && (header.type <= _IO_MAX)) {
-			// Some QNX IO msg generated by gns was received
-			handle_QNX_IO_msg(header, rcvid);
-			continue;
+		if(event_info == 0){
+			for(int i = 0;i < MAX_NUM_COMP;i++){
+				switch(event.value.sival_int){
+				default:
+					MsgSendPulse(coid_arr[i],SIGEV_PULSE_PRIO_INHERIT,event.code,event.value.sival_int);
+					break;
+				}
+
+			}
 		}
-		// A sync msg (presumable ours) was received; handle it
-		handle_app_msg(header, rcvid);
 	}
-	// Server stopped; remove the name from the space
-	name_detach(attach, 0);
-	return EXIT_SUCCESS;
 }
 
