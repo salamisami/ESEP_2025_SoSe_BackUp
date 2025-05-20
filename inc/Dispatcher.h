@@ -8,7 +8,16 @@
 #ifndef DISPATCHER_H_
 #define DISPATCHER_H_
 
-#include "Ithreadcom.h"
+#include "Thread_COM.h"
+#include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/dispatch.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #define MAX_NUM_COMP 5
 
@@ -21,7 +30,7 @@ public:
 
 
 private:
-	Ithread_com *threadcom;
+	Thread_COM::Receiver *threadcom;
 
 	int coid_arr[MAX_NUM_COMP] = {0,0,0,0,0};
 

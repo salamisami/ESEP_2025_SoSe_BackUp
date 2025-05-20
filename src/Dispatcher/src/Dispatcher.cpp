@@ -6,17 +6,7 @@
  */
 
 #include "Dispatcher.h"
-#include "Ithreadcom.h"
-#include <stdio.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/dispatch.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include "Ithreadcom.h"
+
 
 
 
@@ -25,10 +15,10 @@
 Dispatcher::Dispatcher() {
 	switch(FBM){
 	case 1:
-		threadcom = new Ithread_com(FBM_1_DISPATCHER);
+		threadcom = new Thread_COM::Receiver(FBM_1_DISPATCHER);
 		break;
 	case 2:
-		threadcom = new Ithread_com(FBM_2_DISPATCHER);
+		threadcom = new Thread_COM::Receiver(FBM_2_DISPATCHER);
 		break;
 	default:
 		perror("Foerderbandmodul not defined");
@@ -43,6 +33,8 @@ Dispatcher::~Dispatcher() {
 int Dispatcher::handle_appl_pulse(header_t header,int rcvid){
 	switch (header.code) {
 	}
+	//TODO is it true to return 0 here? Previously there was no return at all.
+	return 0;
 }
 
 void Dispatcher::run_dispatcher() {
