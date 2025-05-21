@@ -6,7 +6,7 @@
 
 
 enum class InterruptEnum : int32_t {
-    LASER_FRONT_BLOCKED = -1, //the rest will continue (-2, -3)
+    LASER_FRONT_BLOCKED = 2, //the rest will continue (-2, -3)
     LASER_FRONT_UNBLOCKED,
     LASER_BACK_BLOCKED,
     LASER_BACK_UNBLOCKED,

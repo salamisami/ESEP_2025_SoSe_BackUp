@@ -1,31 +1,80 @@
 #include "ADC_Class.h"
 
-//================================================= contructors & destructors =================================================
-ADC_Class::ADC_Class(int dispatcher_rcvid, name_attach_t* mailbox ) {
+
+//================================================= contructors & destructors ================================================
+ADC_Class::ADC_Class(int dispatcher_rcvid, Mailbox<_pulse>* mailbox)
+    : tscadc(),
+	  adc(tscadc),
+	  mailbox(mailbox),
+	  dispatcher_rcvid(dispatcher_rcvid)
+	{
     ThreadCtl(_NTO_TCTL_IO, 0);
-    TSCADC tscadc;
-    ADC adc(tscadc);
-
-    float bandVoltage = ADC_Utilities::define_band_voltage(adc, tscadc);
-    std::cout << "Ermittelte Bandspannung: " << bandVoltage << " V\n";
-
-    //std::string mode = (argc > 1) ? argv[1] : "measure";
-    int mode = 0;
-
-    if(mode) {
-        ADC_Utilities::calibrateComponents(adc, tscadc, bandVoltage);
-    } else {
-        std::string result = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage);
-        //std::cout << "Erkanntes Bauteil: " << result << "\n";
-    }
+    bandVoltage = ADC_Utilities::define_band_voltage(adc, tscadc);
 }
 
 ADC_Class::~ADC_Class() {}
 
-//===================================================== private functions =====================================================
+//=====================================================  private functions  ===================================================
+//float ADC_Class::bandVoltage() {
+//    float sum = 0;
+//    for (int i = 0; i < SAMPLE_COUNT; ++i) {
+//        adc.sample();
+//        usleep(1000);
+//        uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
+//        float voltage = (raw / 4095.0f) * REF_VOLTAGE;
+//        sum += voltage * VOLTAGE_DIVIDER_FACTOR;
+//    }
+//    return sum / SAMPLE_COUNT;
+//}
 
-//void ADC_Class::privateFunction(){}
+void ADC_Class::clibrate() {
+	ADC_Utilities::calibrateComponents(adc, tscadc, bandVoltage);
+}
 
-//===================================================== public functions =====================================================
+void ADC_Class::messureClassfySend() {
+	ADC_Enum name = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage);
+    //std::vector<Profil> profile = ladeProfile();
+    //std::string name = klassifizieren(werte, profile);
 
-//void ADC_Class::publicFunction(){}
+    // Ergebnis per Pulse senden
+    //TODO ergebnis noch in hex code wandeln
+    Thread_COM::send_event(dispatcher_rcvid,(int8_t)Topic::ADC,(int)name);
+}
+
+//===================================================== public functions ===============================================
+void ADC_Class::eventLoop() {
+    bool running = true;
+
+    while (running) {
+        _pulse pulse = mailbox->take();
+        Topic code = static_cast<Topic>(pulse.code);
+        ADC_Enum value = static_cast<ADC_Enum>(pulse.value.sival_int);
+
+        if (code != Topic::ACTUATOR) {
+            THROW("unexpectet topic");
+        }
+
+        switch (value) {
+            case ADC_Enum::ADC_CALIBRATE:
+            	clibrate();
+                break;
+
+            case ADC_Enum::ADC_MESURE:
+            	messureClassfySend();
+                break;
+
+//            case ActuatorEnum::STOP:
+//                running = false;
+//                break;
+
+            default:
+                std::cerr << "Unbekannter Aktor-Befehl\n";
+        }
+    }
+}
+
+
+
+
+
+

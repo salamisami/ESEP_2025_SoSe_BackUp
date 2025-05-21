@@ -5,7 +5,7 @@
 #include "TSCADC.h"
 #include "ADC.h"
 #include "Macros.h"
-
+#include "Event.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -30,12 +30,19 @@
 
 typedef struct {
 	std::string name;
+	ADC_Enum eventCode;
 	float avg;
 	float lochMin; 
 	int lochStartIndex;
 	int lochEndIndex;
 	bool hatLoch;
 } Profil;
+
+typedef struct{
+    std::string name;
+    ADC_Enum eventCode;
+    bool hatLoch;
+} Bauteil;
 
 class ADC_Utilities {
 public: //============================================ contructors & destructors ============================================
@@ -50,8 +57,8 @@ public: //================================================ public functions ====
 	static void saveProfile(const Profil& p);
 	static std::vector<Profil> loadProfile();
 	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage);
-	static std::string classify(const std::vector<float>& value, const std::vector<Profil>& profile);
-	static std::string executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage);
+	static ADC_Enum classify(const std::vector<float>& value, const std::vector<Profil>& profile);
+	static ADC_Enum executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage);
 	static float define_band_voltage(ADC& adc, TSCADC& tscadc);
 	
 

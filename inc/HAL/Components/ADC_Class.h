@@ -3,6 +3,12 @@
 #pragma once
 
 #include "ADC_Utilities.h"
+#include "Macros.h"
+#include "Event.h"
+#include "Thread_COM.h"
+#include "Mailbox.h"
+#include <iostream>
+#include <unistd.h>
 #include <sys/dispatch.h>
 
 class ADC_Class {
@@ -12,25 +18,30 @@ public: //============================================ contructors & destructors
 	 * @param dispatcher_rcvid id used to send events to dispatcher
 	 * @param mailbox a name_attach_t* connection, used to receive events
 	 */
-    ADC_Class(int dispatcher_rcvid, name_attach_t* mailbox);
+    ADC_Class(int dispatcher_rcvid,  Mailbox<_pulse>* mailbox);
     virtual ~ADC_Class();
 	
 
 public: //================================================ public functions ================================================
 	//void publicFunction();
+    void eventLoop();
     
 
 
 private: //================================================ private variables ================================================
-	//classes, STL containers, and structs
-	//pointers
-	//primitive types
-	//bool and char
+    TSCADC tscadc;
+    ADC adc;
+    Mailbox<_pulse>* mailbox;
+    int dispatcher_rcvid;
+    float bandVoltage;
    
 	
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
+    //float bandVoltage();
+    void clibrate();
+    void messureClassfySend();
 	
 };
 
