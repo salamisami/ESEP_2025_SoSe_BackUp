@@ -73,7 +73,7 @@ Interrupt::~Interrupt() {
     if(test_mode) {
 
     } else {
-        
+
     }
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
@@ -261,8 +261,8 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
             break;
         case BUTTON_ESTOP_BIT:
             event = pin_status ? InterruptEnum::BUTTON_ESTOP_PRESSED : InterruptEnum::BUTTON_ESTOP_RELEASED;
-            Thread_COM::send_event(dispatcher_rcvid, (int) Topic::INTERRUPT, (int8_t) event, (int) EventPriority::FIRST_PRIO);
-            return; 
+            Thread_COM::send_event(dispatcher_rcvid, (int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
+            return;
         case LASER_SORTING_BIT:
             event = pin_status ? InterruptEnum::LASER_SORTING_GATE_UNBLOCKED : InterruptEnum::LASER_SORTING_GATE_BLOCKED;
             break;
