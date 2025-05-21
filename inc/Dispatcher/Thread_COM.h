@@ -31,12 +31,11 @@ namespace Thread_COM {
 	class Receiver {
 	public: //============================================ contructors & destructors ============================================
 		Receiver(const char* name);
-		virtual ~Receiver() = default;
+		virtual ~Receiver();
 
 
 	public: //================================================ public functions ================================================
 		int receive_event(_pulse* event);
-		int get_coid();
 		const char* get_name();
 
 
@@ -48,7 +47,6 @@ namespace Thread_COM {
 		name_attach_t* attach;
 		const char* gns_name;
 		//primitive types
-		int coid;
 		//bool and char
 		//...
 
@@ -62,8 +60,8 @@ namespace Thread_COM {
 
 	class Sender {
 	public: //============================================ contructors & destructors ============================================
-		Sender(int coid);
-		virtual ~Sender() = default;
+		Sender(const char* name);
+		virtual ~Sender();
 
 
 	public: //================================================ public functions ================================================
@@ -75,7 +73,7 @@ namespace Thread_COM {
 		//classes, STL containers, and structs
 		//pointers
 		//primitive types
-		int coid;
+		int receiver_coid;
 		//bool and char
 
 
