@@ -1,40 +1,141 @@
 #include "Thread_COM.h"
 
+using namespace Thread_COM;
+
 //================================================= contructors & destructors =================================================
+Sender::Sender(int coid) :coid(coid) {
+
+}
+
+Receiver::Receiver(const char* name) {
+    gns_name = name;
+
+    std::string str_gns_name(gns_name);
+
+    attach = name_attach(NULL, gns_name, NAME_FLAG_ATTACH_GLOBAL);
+    if(attach == NULL) {
+        printf("%s: ", gns_name);
+        perror(" name_open on Dispatcher failed");
+        exit(-1);
+    }
+
+    if(str_gns_name.compare(FBM_1_DISPATCHER) == 0) {
+        return;
+    }
+    if(str_gns_name.compare(FBM_2_DISPATCHER) == 0) {
+        return;
+    }
+
+    switch(FBM) {
+        case 1:
+            coid = name_open(FBM_1_DISPATCHER, NAME_FLAG_ATTACH_GLOBAL);
+            if(-1 == coid) {
+                printf("%s: ", gns_name);
+                perror(" name_open on Dispatcher failed");
+            }
+            break;
+        case 2:
+            coid = name_open(FBM_2_DISPATCHER, NAME_FLAG_ATTACH_GLOBAL);
+            if(-1 == coid) {
+                printf("%s: ", gns_name);
+                perror(" name_open on Dispatcher failed");
+            }
+            break;
+        default:
+            perror("Foerderbandmodul is not defined\n");
+            exit(-1);
+    }
+}
 
 
 //===================================================== private functions =====================================================
 
-//void Thread_COM::privateFunction(){}
+void Receiver::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
+    switch(msg->code) {
+        case _PULSE_CODE_DISCONNECT:
+            printf("%s _PULSE_CODE_DISCONNECT\n", gns_name);
+            /* A client disconnected all its connections (called
+            * name_close() for each name_open() of our name) or
+            * terminated. */
+            ConnectDetach(msg->scoid);
+            break;
+        case _PULSE_CODE_UNBLOCK:
+            printf("%s received _PULSE_CODE_UNBLOCK\n", gns_name);
+            /* REPLY blocked client wants to unblock (was hit by
+            * a signal or timed out). It's up to you if you
+            * reply now or later. */
+            break;
+        case 12:
+            //antwort auf name_open()
+            MsgReply(rcvid, EOK, NULL, 0);
+            break;
+        default:
+            /* A pulse sent by the kernel like
+            * _PULSE_CODE_COIDDEATH or _PULSE_CODE_THREADDEATH
+            * from the kernel? */
+            printf("%s received some other QNX pulse msg code: %d\n", gns_name, msg->code);
+            break;
+    }
+}
+
+void Receiver::handle_app_msg(_pulse* msg, int rcvid) {
+    printf("%s: Unexpected message type 0x%04X\n", gns_name, msg->type);
+    MsgError(rcvid, EPERM);
+}
+
+void Receiver::handle_QNX_pulse(_pulse* msg, int rcvid) {
+    switch(msg->code) {
+        case _PULSE_CODE_DISCONNECT:
+            printf("%s _PULSE_CODE_DISCONNECT\n", gns_name);
+            /* A client disconnected all its connections (called
+            * name_close() for each name_open() of our name) or
+            * terminated. */
+            ConnectDetach(msg->scoid);
+            break;
+        case _PULSE_CODE_UNBLOCK:
+            printf("%s received _PULSE_CODE_UNBLOCK\n", gns_name);
+            /* REPLY blocked client wants to unblock (was hit by
+            * a signal or timed out). It's up to you if you
+            * reply now or later. */
+            break;
+        default:
+            /* A pulse sent by the kernel like
+            * _PULSE_CODE_COIDDEATH or _PULSE_CODE_THREADDEATH
+            * from the kernel? */
+            printf("%s received some other QNX pulse msg code: %d.\n", gns_name, msg->code);
+            break;
+    }
+}
 
 //===================================================== public functions =====================================================
-
-//void Thread_COM::publicFunction(){}
-void Thread_COM::send_event(int rcvid, int8_t event_code, int event_value, int priority) {
-    int status = MsgSendPulse(rcvid, priority, event_code, event_value);
-    if(status < 0) {
-        THROW("Cannot send pulse message");
-    }
+void Sender::send_event(int8_t event_code, int event_value, int priority) {
+    MsgSendPulse(coid, priority, event_code, event_value);
 }
 
-int Thread_COM::receive_event(name_attach_t connection, _pulse* event) {
-    int status = MsgReceivePulse(connection.chid, event, sizeof(_pulse), nullptr);
-    if(status < 0) {
-        THROW("Cannot receive pulse message");
+int Receiver::receive_event(_pulse* event) {
+    int rcvid = MsgReceive(attach->chid, event, sizeof(_pulse), NULL);
+    if(rcvid == -1) {
+        printf("%s: ", gns_name);
+        perror(" MsgReceived failed");
+        return -1; //return MsgReceived failed
     }
-    return 0;
+    if(rcvid == 0) {
+        if((_PULSE_CODE_MINAVAIL <= event->code) && (event->code <= _PULSE_CODE_MAXAVAIL)) {
+            return 0; //return Event received
+        } else {
+            handle_QNX_pulse(event, rcvid);
+            return 1;
+        }
+    }
+    if((_IO_BASE <= event->type) && (event->type <= _IO_MAX)) {
+        // Some QNX IO msg generated by gns was received
+        handle_QNX_IO_msg(event, rcvid);
+        return 1;
+    }
+    handle_app_msg(event, rcvid);
+    return -1;
 }
 
-int Thread_COM::setup_thread_communication(const char* gns_name, name_attach_t* connection, int* rcvid) {
-    int chid = ChannelCreate(0);
-    if(chid < 0) {
-        THROW("Cannot create Channel");
-    }
-    connection->chid = chid;
-    int coid = ConnectAttach(0, 0, chid, _NTO_SIDE_CHANNEL, 0);
-    if(coid < 0) {
-        THROW("Cannot attach to a channel");
-    }
-    *rcvid = coid;
-    return 0;
+int Receiver::get_coid(){
+    return this->coid;
 }

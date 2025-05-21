@@ -7,6 +7,7 @@
 #include "Interrupt.h"
 #include "ADC_Class.h"
 #include "Thread_COM.h"
+#include "PulseMsg.h"
 #include "Mailbox.h"
 
 
@@ -24,8 +25,9 @@ public: //================================================ public functions ====
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	std::thread halThread;
-	name_attach_t hal_connection;
-	name_attach_t dispatcher_mock_connection;
+	PulseMsg::Receiver dispatcher_mock_receiver;
+	PulseMsg::Sender dispatcher_mock_sender;
+	Thread_COM::Receiver receiver;
 	//pointers
 	Interrupt* interrupt;
 	Actuator* actuator;

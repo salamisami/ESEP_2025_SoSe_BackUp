@@ -4,16 +4,18 @@
 
 //================================================= contructors & destructors =================================================
 HAL::HAL(const char* gns_name, int dispatcher_rcvid) {
-    hal_connection = name_attach_t();
+    receiver = new Thread_COM::Receiver(gns_name);
+    //hal_connection = name_attach_t();
     actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     DEBUG("Mailboxes are created");
+    //Thread_COM::setup_thread_communication(gns_name, &hal_connection, &hal_rcvid);
+    hal_rcvid = receiver.get_chid();
 
-    Thread_COM::setup_thread_communication(gns_name, &hal_connection, &hal_rcvid);
     DEBUG("setup_thread_communication success");
     if(dispatcher_rcvid == -1){
-        Thread_COM::setup_thread_communication("DispatcherMock",&dispatcher_mock_connection,&dispatcher_mock_rcvid);
-        dispatcher_rcvid = dispatcher_mock_rcvid;
+        dispatcher_mock_sender = PulseMsg::Sender(dispatcher_mock_receiver.getchid());
+        dispatcher_rcvid = dispatcher_mock_sender.getcoid();
     }
     interrupt = new Interrupt(dispatcher_rcvid);
     actuator = new Actuator(actuator_mailbox);
@@ -23,7 +25,8 @@ HAL::HAL(const char* gns_name, int dispatcher_rcvid) {
 }
 
 HAL::~HAL() {
-    Thread_COM::send_event(hal_rcvid, (int8_t) Topic::STOP_THREAD, 0, -1);
+    PulseMsg::Sender temp_sender = PulseMsg::Sender(hal_rcvid);
+    temp_sender.send((int8_t) Topic::STOP_THREAD, 0);
     halThread.join();
     //delete adc;
     delete actuator;
@@ -39,7 +42,7 @@ void HAL::threadFunction() {
     hal_running = true;
     while(hal_running) {
         _pulse event;
-        Thread_COM::receive_event(hal_connection, &event);
+        receiver.receive_event(&event);
         Topic event_code = (Topic) event.code;
         switch(event_code) {
             case Topic::ACTUATOR:
@@ -69,8 +72,7 @@ void HAL::test_ins() {
     bool running = true;
     int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
     while(running) {
-        _pulse msg;
-        Thread_COM::receive_event(dispatcher_mock_connection, &msg);
+        _pulse msg = dispatcher_mock_receiver.receive();
         InterruptEnum event = (InterruptEnum) msg.value.sival_int;
         switch(event) {
             case InterruptEnum::LASER_FRONT_BLOCKED:
