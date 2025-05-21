@@ -1,99 +1,55 @@
-#ifndef ACTUATOR_H
-#define ACTUATOR_H
+#ifndef HAL_H
+#define HAL_H
+
+#include "IHAL.h"
+#include <stdint.h>
+
 #pragma once
 
-#include "Throw.h"
-#include "Event.h"
-#include "Receiver.h"
 
-#include <stdio.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <unistd.h>
+class HAL :public IHAL {
+public:
+    HAL();
+    virtual ~HAL();
 
-#include <stdexcept>
+    void motor_right_on() override;
+    void motor_right_off() override;
+    void motor_left_on() override;
+    void motor_left_off() override;
+    void motor_slow_on() override;
+    void motor_slow_off() override;
 
-#include <iostream>
-#include <thread>
-#include <chrono>
-#include <cmath>
-#include <vector>
+    void motor_stop_on() override;
+    void motor_stop_off() override;
 
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/neutrino.h>
-#include <sys/procmgr.h>
-#include <hw/inout.h>
-#include <sched.h>
+    void traffic_red_on() override;
+    void traffic_red_off() override;
+    void traffic_yellow_on() override;
+    void traffic_yellow_off() override;
+    void traffic_green_on() override;
+    void traffic_green_off() override;
 
-#define GNS_NAME "Actuator"
+    void sorting_on() override;
+    void sorting_off() override;
 
+    void led_start_on() override;
+    void led_start_off() override;
 
+    void led_reset_on() override;
+    void led_reset_off() override;
+    void led_q1_on() override;
+    void led_q1_off() override;
+    void led_q2_on() override;
+    void led_q2_off() override;
 
-class Actuator {
-public: //============================================ contructors & destructors ============================================
-    Actuator(const std::string gns_buffer_name);
-    virtual ~Actuator();
-
-
-public: //================================================ public functions ================================================
-    bool isGate();
-    void test_outs();
-
-
-
-private: //================================================ private variables ================================================
-    //classes, STL containers, and structs
-
-    //pointers
-    QNet::Receiver* receiver;
-    std::thread* actuatorThread;
+private:
+    uintptr_t gpio_bank_0;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
+    uintptr_t gpio_bank_3;
 
-    //primitive types
-    //bool and char
-    volatile bool actuatorRunning;
-
-
-
-private: //================================================ private functions ================================================
     void set_data(uintptr_t gpio_bank, uint32_t bit);
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
-    void wait(float seconds);
-
-    void actuatorFunction();
-
-    void motor_right();
-    void motor_left();
-    void motor_slow_on();
-    void motor_slow_off();
-    void motor_stop();
-
-    void traffic_red_on();
-    void traffic_red_off();
-    void traffic_yellow_on();
-    void traffic_yellow_off();
-    void traffic_green_on();
-    void traffic_green_off();
-
-    void sorting_on();
-    void sorting_off();
-
-    void led_start_on();
-    void led_start_off();
-
-    void led_reset_on();
-    void led_reset_off();
-    void led_q1_on();
-    void led_q1_off();
-    void led_q2_on();
-    void led_q2_off();
-
-
 
 };
 
-#endif

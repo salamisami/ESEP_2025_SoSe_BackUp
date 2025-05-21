@@ -7,20 +7,9 @@
 #include <sys/neutrino.h>
 
 // GPIO Registers page 4877 
-//outs
 #define GPIO_SETDATAOUT     0x194
 #define GPIO_CLEARDATAOUT   0x190
 #define GPIO_OE             0x134
-//ins
-#define GPIO_LEVELDETECT0 0x140
-#define GPIO_LEVELDETECT1 0x144
-#define GPIO_RISINGDETECT 0x148
-#define GPIO_FALLINGDETECT 0x14C
-#define GPIO_IRQSTATUS_0 0x2C
-#define GPIO_IRQSTATUS_1 0x30
-#define GPIO_IRQSTATUS_SET_0 0x34
-#define GPIO_IRQSTATUS_SET_1 0x38
-#define GPIO_DATAIN 0x138
 
 // Memory maps
 #define GPIO_0 0x44E07000  //inputs,            page 180
@@ -30,14 +19,11 @@
 #define INTERRUPT_CONTROLLER 0x48200000         //page 183
 
 //Interrupt Tables: page 465
-#define INTR_GPIO_0 97
-#define INTR_GPIO_1 99
-#define INTR_GPIO_2 33
 
-//GPIO_0 - Sensors pin mapping
+//interrupt controller registers: 470
+
+//GPIO_0
 #define LASER_FRONT_BIT     2
-#define ADC_SIDE_AREA_BIT   3
-#define ADC_TOP_AREA_BIT    4
 #define LASER_SORTING_BIT   5
 #define LASER_METAL_BIT     7
 #define SORTING_STATUS_BIT  14
@@ -48,17 +34,17 @@
 #define BUTTON_RESET_BIT    26
 #define BUTTON_ESTOP_BIT    27
 
-//GPIO_1 - Internal actuator pin mapping
+//GPIO_1
 #define MOTOR_RIGHT_BIT     12
 #define MOTOR_LEFT_BIT      13
 #define MOTOR_SLOW_BIT      14
-#define MOTOR_STOP_BIT      15 //useless?
+#define MOTOR_STOP_BIT      15
 #define TRAFFIC_RED_BIT     16
 #define TRAFFIC_YELLOW_BIT  17
 #define TRAFFIC_GREEN_BIT   18
 #define SORTING_BIT         19
 
-//GPIO_2 - External actuator pin mapping
+//GPIO_2
 #define LED_START_BIT       2
 #define LED_RESET_BIT       3
 #define LED_Q1_BIT          4

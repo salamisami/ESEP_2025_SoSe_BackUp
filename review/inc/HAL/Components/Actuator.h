@@ -5,6 +5,7 @@
 #include "Macros.h"
 #include "Event.h"
 #include "Thread_COM.h"
+#include "Mailbox.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -32,22 +33,22 @@
 
 class Actuator {
 public: //============================================ contructors & destructors ============================================
-    Actuator(name_attach_t* mailbox);
+    Actuator(Mailbox<_pulse>* mailbox);
     virtual ~Actuator();
 
 
 public: //================================================ public functions ================================================
     bool isGate();
     void test_outs();
+    void global_shutdown();
 
 
 
 private: //================================================ private variables ================================================
     //classes, STL containers, and structs
-
+    std::thread actuatorThread;
     //pointers
-    name_attach_t* mailbox;
-    std::thread* actuatorThread;
+    Mailbox<_pulse>* mailbox;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
 
@@ -61,7 +62,7 @@ private: //================================================ private functions ==
     void set_data(uintptr_t gpio_bank, uint32_t bit);
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
 
-    void actuatorFunction();
+    void threadFunction();
 
     void motor_right();
     void motor_left();
@@ -93,4 +94,3 @@ private: //================================================ private functions ==
 
 };
 
-#endif
