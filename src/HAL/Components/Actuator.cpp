@@ -48,6 +48,7 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox)
     , actuatorRunning(false) {
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
+    global_shutdown();
     actuatorThread = std::thread(&Actuator::threadFunction, this);
 }
 
