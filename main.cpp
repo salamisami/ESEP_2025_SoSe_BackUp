@@ -64,7 +64,7 @@ int main(){
 	}
 
 
-	Thread_COM::Sender* send_test = new Thread_COM::Sender(threadcom_hal->get_coid());
+	Thread_COM::Sender* send_test = new Thread_COM::Sender(FBM_1_HAL);
 	send_test->send_event(0, 0);
 
 	event_info = threadcom_rec->receive_event(&event);

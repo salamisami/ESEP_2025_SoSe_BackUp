@@ -3,8 +3,20 @@
 using namespace Thread_COM;
 
 //================================================= contructors & destructors =================================================
-Sender::Sender(int coid) :coid(coid) {
 
+Sender::Sender(const char* name) {
+    receiver_coid = name_open(name,NAME_FLAG_ATTACH_GLOBAL);
+    if(receiver_coid < 0){
+        //error
+    }
+}
+
+Sender::~Sender(){
+    name_close(receiver_coid);
+}
+
+void Sender::send_event(int8_t event_code, int event_value, int priority) {
+    MsgSendPulse(receiver_coid, priority, event_code, event_value);
 }
 
 Receiver::Receiver(const char* name) {
@@ -26,29 +38,33 @@ Receiver::Receiver(const char* name) {
         return;
     }
 
-    switch(FBM) {
-        case 1:
-            coid = name_open(FBM_1_DISPATCHER, NAME_FLAG_ATTACH_GLOBAL);
-            if(-1 == coid) {
-                printf("%s: ", gns_name);
-                perror(" name_open on Dispatcher failed");
-            }
-            break;
-        case 2:
-            coid = name_open(FBM_2_DISPATCHER, NAME_FLAG_ATTACH_GLOBAL);
-            if(-1 == coid) {
-                printf("%s: ", gns_name);
-                perror(" name_open on Dispatcher failed");
-            }
-            break;
-        default:
-            perror("Foerderbandmodul is not defined\n");
-            exit(-1);
-    }
+    // switch(FBM) {
+    //     case 1:
+    //         coid = name_open(FBM_1_DISPATCHER, NAME_FLAG_ATTACH_GLOBAL);
+    //         if(-1 == coid) {
+    //             printf("%s: ", gns_name);
+    //             perror(" name_open on Dispatcher failed");
+    //         }
+    //         break;
+    //     case 2:
+    //         coid = name_open(FBM_2_DISPATCHER, NAME_FLAG_ATTACH_GLOBAL);
+    //         if(-1 == coid) {
+    //             printf("%s: ", gns_name);
+    //             perror(" name_open on Dispatcher failed");
+    //         }
+    //         break;
+    //     default:
+    //         perror("Foerderbandmodul is not defined\n");
+    //         exit(-1);
+    // }
+}
+
+Receiver::~Receiver(){
+    name_detach(attach, 0);
 }
 
 
-//===================================================== private functions =====================================================
+
 
 void Receiver::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
     switch(msg->code) {
@@ -108,9 +124,7 @@ void Receiver::handle_QNX_pulse(_pulse* msg, int rcvid) {
 }
 
 //===================================================== public functions =====================================================
-void Sender::send_event(int8_t event_code, int event_value, int priority) {
-    MsgSendPulse(coid, priority, event_code, event_value);
-}
+
 
 int Receiver::receive_event(_pulse* event) {
     int rcvid = MsgReceive(attach->chid, event, sizeof(_pulse), NULL);
@@ -134,8 +148,4 @@ int Receiver::receive_event(_pulse* event) {
     }
     handle_app_msg(event, rcvid);
     return -1;
-}
-
-int Receiver::get_coid(){
-    return this->coid;
 }
