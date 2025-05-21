@@ -65,7 +65,8 @@ enum class Topic : int8_t {
     QNET,
     DISPATCHER,
     ADC,
-    STOP_THREAD
+    STOP_THREAD,
+    TIMER
 };
 
 enum class ADC_Enum : int32_t {
