@@ -91,7 +91,7 @@ void HAL::test_ins() {
                 break;
             case InterruptEnum::METAL_DETECTED:
                 Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::SORTING_ON);
-                WAIT(0.5);
+                WAIT(500);
                 Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                 break;
             case InterruptEnum::BUTTON_ESTOP_PRESSED:

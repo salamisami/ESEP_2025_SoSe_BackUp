@@ -1,4 +1,5 @@
 #include "HAL.h"
+#include "Timer.h"
 #include <iostream>
 
 #define ONE_MILLISECOND 1000

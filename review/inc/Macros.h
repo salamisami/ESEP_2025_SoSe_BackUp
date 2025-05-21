@@ -10,7 +10,7 @@
 
 
 #define THROW(msg) throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + ": " + msg)
-#define WAIT(x) usleep(x * 1000000)
+#define WAIT(x) usleep(x * 1000)
 #define DEBUG(msg) std::cout << msg << std::endl
 
 
