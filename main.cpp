@@ -1,4 +1,5 @@
 #include "HAL.h"
+#include "Timer.h"
 #include <iostream>
 
 #define ONE_MILLISECOND 1000
@@ -11,7 +12,7 @@ using namespace std;
 int main() {
     cout << "Starting Program..." << endl; // prints Hello World!!!
 
-    HAL* hal = new HAL("dispatcher", 0);
+    HAL* hal = new HAL("dispatcher");
     hal->test_ins();
     
     delete hal;

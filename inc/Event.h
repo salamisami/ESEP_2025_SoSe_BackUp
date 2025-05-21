@@ -5,8 +5,8 @@
 #include <stdint.h>
 
 
-enum class InterruptEnum : int32_t {
-    LASER_FRONT_BLOCKED = 2, //the rest will continue (-2, -3)
+enum class InterruptEnum : int {
+    LASER_FRONT_BLOCKED = 1, //the rest will continue (-2, -3)
     LASER_FRONT_UNBLOCKED,
     LASER_BACK_BLOCKED,
     LASER_BACK_UNBLOCKED,
@@ -29,8 +29,8 @@ enum class InterruptEnum : int32_t {
     ADC_SIDE_AREA_BLOCKED,
     ADC_SIDE_AREA_UNBLOCKED
 };
-enum class ActuatorEnum :int32_t {
-    MOTOR_RIGHT_START = -100,
+enum class ActuatorEnum : int {
+    MOTOR_RIGHT_START = 1,
     MOTOR_LEFT_START,
     MOTOR_SLOW_ON,
     MOTOR_SLOW_OFF,
@@ -44,10 +44,18 @@ enum class ActuatorEnum :int32_t {
     TRAFFIC_RED_ON,
     TRAFFIC_RED_OFF,
     TRAFFIC_YELLOW_ON,
-    TRAFFIC_YELLOW_OFF
+    TRAFFIC_YELLOW_OFF,
+    LED_START_ON,
+    LED_START_OFF,
+    LED_RESET_ON,
+    LED_RESET_OFF,
+    LED_Q1_ON,
+    LED_Q1_OFF,
+    LED_Q2_ON,
+    LED_Q2_OFF
 };
-enum class Dispatcher : int32_t {
-    HAL_READY = -302
+enum class Dispatcher : int {
+    HAL_READY = 1
 };
 
 
@@ -56,10 +64,12 @@ enum class Topic : int8_t {
     ACTUATOR,
     QNET,
     DISPATCHER,
-    ADC
+    ADC,
+    STOP_THREAD,
+    TIMER
 };
 
-enum class ADC_Enum : int32_t {
+enum class ADC_Enum : int {
     ADC_WH_DETECT = 0xFFA0,
     ADC_WF_DETECT,
     ADC_W_B_DETECT,

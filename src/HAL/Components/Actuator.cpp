@@ -48,21 +48,14 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox)
     , actuatorRunning(false) {
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
-    actuatorThread = new std::thread(&Actuator::actuatorFunction, this);
+    actuatorThread = std::thread(&Actuator::threadFunction, this);
 }
 
 Actuator::~Actuator() {
     actuatorRunning = false;
-    actuatorThread->join();
-    delete actuatorThread;
-    motor_stop();
-    traffic_red_off();
-    traffic_yellow_off();
-    traffic_green_off();
-    led_start_off();
-    led_reset_off();
-    led_q1_off();
-    led_q2_off();
+    actuatorThread.join();
+    global_shutdown();
+
 
     if(gpio_bank_1) {
         munmap_device_io(gpio_bank_1, GPIO_MMAP_SIZE);
@@ -86,19 +79,24 @@ void Actuator::clear_data(uintptr_t gpio_bank, uint32_t bit) {
     out32((uintptr_t) (gpio_bank + GPIO_CLEARDATAOUT), pin);
 }
 
-void Actuator::actuatorFunction() {
+void Actuator::threadFunction() {
     actuatorRunning = true;
-    _pulse pulse;
     while(actuatorRunning) {
-        pulse = mailbox->take();
+        _pulse pulse = mailbox->take();
         Topic event_code = (Topic) pulse.code;
-        ActuatorEnum value = (ActuatorEnum) pulse.value.sival_int;
-        if((int8_t) event_code == PULSE_STOP_THREAD){
+        ActuatorEnum event_value = (ActuatorEnum) pulse.value.sival_int;
+        if(event_code == Topic::STOP_THREAD) {
             actuatorRunning = false;
         } else if(event_code != Topic::ACTUATOR) {
             THROW("Error not a Actuator function");
         }
-        switch(value) {
+        switch(event_value) {
+            case ActuatorEnum::MOTOR_SLOW_ON:
+                motor_slow_on();
+                break;
+            case ActuatorEnum::MOTOR_SLOW_OFF:
+                motor_slow_off();
+                break;
             case ActuatorEnum::MOTOR_RIGHT_START:
                 motor_right();
                 break;
@@ -131,6 +129,30 @@ void Actuator::actuatorFunction() {
                 break;
             case ActuatorEnum::TRAFFIC_GREEN_OFF:
                 traffic_green_off();
+                break;
+            case ActuatorEnum::LED_START_ON:
+                led_start_on();
+                break;
+            case ActuatorEnum::LED_START_OFF:
+                led_start_off();
+                break;
+            case ActuatorEnum::LED_RESET_ON:
+                led_reset_on();
+                break;
+                case ActuatorEnum::LED_RESET_OFF:
+                led_reset_off();
+                break;
+            case ActuatorEnum::LED_Q1_ON:
+                led_q1_on();
+                break;
+            case ActuatorEnum::LED_Q1_OFF:
+                led_q1_off();
+                break;
+            case ActuatorEnum::LED_Q2_ON:
+               led_q2_on();
+                break;
+            case ActuatorEnum::LED_Q2_OFF:
+                led_q2_off();
                 break;
             default:
                 //THROW("Invalid Actuator Event!");
@@ -248,40 +270,49 @@ void Actuator::led_q2_off() {
 
 
 //===================================================== public functions =====================================================
-
+void Actuator::global_shutdown() {
+    motor_stop();
+    traffic_red_off();
+    traffic_yellow_off();
+    traffic_green_off();
+    led_start_off();
+    led_reset_off();
+    led_q1_off();
+    led_q2_off();
+}
 void Actuator::test_outs() {
     std::cout << "Testing Outputs..." << std::endl;
     this->traffic_red_on();
-    WAIT(1);
+    WAIT(1000);
     this->traffic_red_off();
     this->traffic_yellow_on();
-    WAIT(1);
+    WAIT(1000);
     this->traffic_yellow_off();
     this->traffic_green_on();
-    WAIT(1);
+    WAIT(1000);
     this->traffic_green_off();
     this->motor_slow_on();
     this->motor_right();
-    WAIT(1);
+    WAIT(1000);
     this->motor_slow_off();
-    WAIT(1);
+    WAIT(1000);
     this->motor_left();
     this->motor_slow_on();
-    WAIT(1);
+    WAIT(1000);
     this->motor_slow_off();
-    WAIT(1);
+    WAIT(1000);
     this->motor_stop();
     this->sorting_on();
-    WAIT(1);
+    WAIT(1000);
     this->sorting_off();
     this->led_start_on();
-    WAIT(1);
+    WAIT(1000);
     this->led_reset_on();
-    WAIT(1);
+    WAIT(1000);
     this->led_q1_on();
-    WAIT(1);
+    WAIT(1000);
     this->led_q2_on();
-    WAIT(1);
+    WAIT(1000);
     this->led_start_off();
     this->led_reset_off();
     this->led_q1_off();
