@@ -3,19 +3,20 @@
 #pragma once
 
 #include "Macros.h"
+#include "QNet.h"
 #include <sys/neutrino.h>
 
 
 namespace PulseMsg {
-	class Receiver {
+	class Receiver : public I_Receiver{
 	public: //============================================ contructors & destructors ============================================
 		Receiver();
 		virtual ~Receiver();
 
 
 	public: //================================================ public functions ================================================
-		_pulse receive();
-		int getchid();
+		int receive_event(_pulse* event) override;
+		int getchid() override;
 
 	private: //================================================ private variables ================================================
 		//classes, STL containers, and structs
@@ -26,7 +27,7 @@ namespace PulseMsg {
 
 	};
 
-	class Sender {
+	class Sender : public I_Sender{
 	public: //============================================ contructors & destructors ============================================
 		Sender();
 		Sender(int chid);
@@ -34,7 +35,7 @@ namespace PulseMsg {
 
 
 	public: //================================================ public functions ================================================
-		void send(int8_t code, int value, int priority = SIGEV_PULSE_PRIO_INHERIT);
+		void send_event(int8_t code, int value, int priority = (int) EventPriority::DEFAULT) override;
 		int getcoid();
 
 	private: //================================================ private variables ================================================

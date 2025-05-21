@@ -149,3 +149,7 @@ int Receiver::receive_event(_pulse* event) {
     handle_app_msg(event, rcvid);
     return -1;
 }
+
+int Receiver::getchid(){
+    return attach->chid;
+}

@@ -4,7 +4,6 @@
 
 #include "Macros.h"
 #include "Event.h"
-#include "Thread_COM.h"
 #include "Mailbox.h"
 
 #include <stdio.h>

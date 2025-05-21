@@ -3,30 +3,23 @@
 #define MAILBOX_SIZE 1
 
 //================================================= contructors & destructors =================================================
-HAL::HAL(const char* gns_name, int dispatcher_rcvid) {
-    receiver = new Thread_COM::Receiver(gns_name);
-    //hal_connection = name_attach_t();
-    actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
-    adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
-    DEBUG("Mailboxes are created");
-    //Thread_COM::setup_thread_communication(gns_name, &hal_connection, &hal_rcvid);
-    hal_rcvid = receiver.get_chid();
+HAL::HAL(const char* local_gns_name, const char* target_gns_name) {
+    local_receiver = new Thread_COM::Receiver(local_gns_name);
+    local_sender = new Thread_COM::Sender(target_gns_name);
+    mock_dispatcher_sender = PulseMsg::Sender(local_receiver->getchid());
+    init();
+}
 
-    DEBUG("setup_thread_communication success");
-    if(dispatcher_rcvid == -1){
-        dispatcher_mock_sender = PulseMsg::Sender(dispatcher_mock_receiver.getchid());
-        dispatcher_rcvid = dispatcher_mock_sender.getcoid();
-    }
-    interrupt = new Interrupt(dispatcher_rcvid);
-    actuator = new Actuator(actuator_mailbox);
-    //TODO call actuator isGate()
-    //adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
-    halThread = std::thread(&HAL::threadFunction, this);
+HAL::HAL(){
+    local_receiver = new PulseMsg::Receiver();
+    mock_dispatcher_receiver = PulseMsg::Receiver();
+    local_sender = new PulseMsg::Sender(mock_dispatcher_receiver.getchid());
+    mock_dispatcher_sender = PulseMsg::Sender(local_receiver->getchid());
+    init();
 }
 
 HAL::~HAL() {
-    PulseMsg::Sender temp_sender = PulseMsg::Sender(hal_rcvid);
-    temp_sender.send((int8_t) Topic::STOP_THREAD, 0);
+    mock_dispatcher_sender.send_event((int8_t) Topic::STOP_THREAD, 0);
     halThread.join();
     //delete adc;
     delete actuator;
@@ -34,15 +27,27 @@ HAL::~HAL() {
 
     delete adc_mailbox;
     delete actuator_mailbox;
+    delete local_sender;
+    delete local_receiver;
 }
 
 //===================================================== private functions =====================================================
+void HAL::init() {
+    actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
+    adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
+    DEBUG("Mailboxes are created");
 
+    interrupt = new Interrupt(local_sender);
+    actuator = new Actuator(actuator_mailbox);
+    //TODO call actuator isGate()
+    //adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
+    halThread = std::thread(&HAL::threadFunction, this);
+}
 void HAL::threadFunction() {
     hal_running = true;
     while(hal_running) {
         _pulse event;
-        receiver.receive_event(&event);
+        local_receiver->receive_event(&event);
         Topic event_code = (Topic) event.code;
         switch(event_code) {
             case Topic::ACTUATOR:
@@ -63,38 +68,36 @@ void HAL::threadFunction() {
 
 //===================================================== public functions =====================================================
 
-int HAL::getHAL_rcvid() {
-    return hal_rcvid;
-}
 
 void HAL::test_ins() {
     std::cout << "Testing Inputs... Please put Piece on the front laser" << std::endl;
     bool running = true;
     int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
     while(running) {
-        _pulse msg = dispatcher_mock_receiver.receive();
+        _pulse msg;
+        local_receiver->receive_event(&msg);
         InterruptEnum event = (InterruptEnum) msg.value.sival_int;
         switch(event) {
             case InterruptEnum::LASER_FRONT_BLOCKED:
                 std::cout << "Thanks!" << std::endl;
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::MOTOR_RIGHT_START);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::MOTOR_RIGHT_START);
                 break;
             case InterruptEnum::LASER_BACK_BLOCKED:
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_ON);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_ON);
                 break;
             case InterruptEnum::LASER_BACK_UNBLOCKED:
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_OFF);
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_OFF);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
                 //running = false;
                 break;
             case InterruptEnum::METAL_DETECTED:
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::SORTING_ON);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::SORTING_ON);
                 WAIT(500);
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::SORTING_OFF);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                 break;
             case InterruptEnum::BUTTON_ESTOP_PRESSED:
                 running = false;
@@ -103,12 +106,12 @@ void HAL::test_ins() {
                 running = false;
                 break;
             case InterruptEnum::ADC_TOP_AREA_BLOCKED:
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
                 break;
             case InterruptEnum::ADC_TOP_AREA_UNBLOCKED:
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
-                Thread_COM::send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+                local_sender->send_event(hal_rcvid, actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
                 break;
             default:
                 break;

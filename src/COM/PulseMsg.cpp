@@ -31,18 +31,15 @@ Sender::~Sender() {
 
 
 //===================================================== public functions =====================================================
-_pulse Receiver::receive() {
-    _pulse msg;
-    int status = MsgReceivePulse(chid, &msg, sizeof(_pulse), nullptr);
-    if(status < 0) {
-        THROW("Cannot perform MsgReceivePulse");
-    }
+int Receiver::receive_event(_pulse* msg) {
+    int status = MsgReceivePulse(chid, msg, sizeof(_pulse), nullptr);
+    return status;
 }
 int Receiver::getchid() {
     return chid;
 }
 
-void Sender::send(int8_t code, int value, int priority) {
+void Sender::send_event(int8_t code, int value, int priority) {
     int status = MsgSendPulse(coid, priority, code, value);
     if (status < 0){
         THROW("Cannot perform MsgSendPulse");

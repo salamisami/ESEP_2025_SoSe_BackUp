@@ -2,6 +2,8 @@
 #define THREAD_COM_H
 #pragma once
 
+#include "QNet.h"
+
 #include <sys/dispatch.h>
 #include <stdio.h>
 #include <errno.h>
@@ -28,15 +30,17 @@
 #define FBM_2_DISPATCHER "Dis_2"
 
 namespace Thread_COM {
-	class Receiver {
+	class Receiver : public I_Receiver {
 	public: //============================================ contructors & destructors ============================================
+		Receiver();
 		Receiver(const char* name);
 		virtual ~Receiver();
 
 
 	public: //================================================ public functions ================================================
-		int receive_event(_pulse* event);
+		int receive_event(_pulse* event) override;
 		const char* get_name();
+		int getchid() override;
 
 
 
@@ -58,14 +62,15 @@ namespace Thread_COM {
 
 	};
 
-	class Sender {
+	class Sender: public I_Sender{
 	public: //============================================ contructors & destructors ============================================
+		Sender();
 		Sender(const char* name);
 		virtual ~Sender();
 
 
 	public: //================================================ public functions ================================================
-		void send_event(int8_t event_code, int event_value, int priority = SIGEV_PULSE_PRIO_INHERIT);
+		void send_event(int8_t event_code, int event_value, int priority = (int) EventPriority::DEFAULT) override;
 
 
 

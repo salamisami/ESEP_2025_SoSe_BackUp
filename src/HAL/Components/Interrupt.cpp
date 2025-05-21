@@ -44,10 +44,10 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Interrupt::Interrupt(int dispatcher_rcvid)
+Interrupt::Interrupt(I_Sender* sender)
     : gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
+    , sender(sender)
     , inputPins(0)
-    , dispatcher_rcvid(dispatcher_rcvid)
     , last_causing_pin(0)
     , test_mode(false)
     , last_pin_status(0)
@@ -261,7 +261,7 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
             break;
         case BUTTON_ESTOP_BIT:
             event = pin_status ? InterruptEnum::BUTTON_ESTOP_PRESSED : InterruptEnum::BUTTON_ESTOP_RELEASED;
-            Thread_COM::send_event(dispatcher_rcvid, (int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
+            sender->send_event((int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
             return;
         case LASER_SORTING_BIT:
             event = pin_status ? InterruptEnum::LASER_SORTING_GATE_UNBLOCKED : InterruptEnum::LASER_SORTING_GATE_BLOCKED;
@@ -281,7 +281,7 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         default:
             break;
     }
-    Thread_COM::send_event(dispatcher_rcvid, (int8_t) Topic::INTERRUPT, (int) event);
+    sender->send_event((int8_t) Topic::INTERRUPT, (int) event);
 }
 
 
