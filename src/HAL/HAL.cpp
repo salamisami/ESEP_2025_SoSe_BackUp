@@ -13,6 +13,7 @@ HAL::HAL(const char* local_gns_name, const char* target_gns_name) {
 HAL::HAL() {
     local_receiver = new PulseMsg::Receiver();
     mock_dispatcher_receiver = new PulseMsg::Receiver();
+    //TODO converting mock_dispatcher_Receiver to stack casues problem
     local_sender = new PulseMsg::Sender(mock_dispatcher_receiver->getchid());
     mock_dispatcher_sender = new PulseMsg::Sender(local_receiver->getchid());
     init();
