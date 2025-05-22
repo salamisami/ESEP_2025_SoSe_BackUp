@@ -17,6 +17,7 @@ class ContextData {
     //============================================ contructors & destructors ============================================
 public:
     ContextData(I_Sender* sender, I_Receiver* receiver);
+    ContextData();
     virtual ~ContextData();
 
     //================================================ public functions ================================================

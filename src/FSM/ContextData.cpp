@@ -2,6 +2,7 @@
 #include "State.h"
 
 //================================================= contructors & destructors =================================================
+ContextData::ContextData(){}
 ContextData::ContextData(I_Sender* sender, I_Receiver* receiver) {
     this->sender = sender;
     this->receiver = receiver;

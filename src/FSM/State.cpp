@@ -7,16 +7,21 @@ State::State(ContextData* data)
 
 }
 
-// State::~State() {
-//     //std::cout << "State Destructor" << std::endl;
-//     //delete stateStack;
-// }
+State::~State() {
+    //std::cout << "State Destructor" << std::endl;
+    //delete stateStack;
+}
 
 //===================================================== private functions =====================================================
 
 //void State::privateFunction(){}
 
 //===================================================== public functions =====================================================
+
+State* State::laser_front_blocked() {
+    return nullptr;
+}
+
 State* State::laser_front_unblocked() {
     return nullptr;
 }
@@ -93,6 +98,14 @@ State* State::adc_top_area_unblocked() {
     return nullptr;
 }
 
-State* State::timer(int id){
+// State* State::adc_side_area_blocked() {
+//     return nullptr;
+// }
+
+// State* State::adc_side_area_unblocked() {
+//     return nullptr;
+// }
+
+State* State::timer(int id) {
     return nullptr;
 }

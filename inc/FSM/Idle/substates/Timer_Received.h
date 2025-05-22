@@ -4,6 +4,7 @@
 
 #include "State.h"
 #include "Timer.h"
+#include "Servicemode.h"
 
 class Timer_Received: public State{
 public: //============================================ contructors & destructors ============================================
@@ -25,7 +26,6 @@ private: //================================================ private variables ==
 	//pointers
 	//primitive types
 	//bool and char
-	State* button_start_released();
    
 	
 

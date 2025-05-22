@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "Waiting.h"
 
 class Traffic_Green_On_Slow : public State {
 public: //============================================ contructors & destructors ============================================

@@ -29,7 +29,7 @@ public: //================================================ public functions ====
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
-	State* substate;
+	State* subState;
 	//primitive types
 	//bool and char
    

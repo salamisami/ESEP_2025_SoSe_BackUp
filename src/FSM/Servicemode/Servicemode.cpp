@@ -1,13 +1,9 @@
 #include "Servicemode.h"
 
 //================================================= contructors & destructors =================================================
-Servicemode:Servicemode(ContextData* data, State* previousState)
+Servicemode::Servicemode(ContextData* data, State* previousState)
     : State(data) {
-    if(previousState == nullptr) {
-        subState = new StateA(data);
-    } else {
-        subState = previousState;
-    }
+
 }
 
 Servicemode::~Servicemode() {}
@@ -20,11 +16,10 @@ Servicemode::~Servicemode() {}
 
 void Servicemode::entry() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    subState->entry();
+    DEBUG("Traffic Green on Fast()");
 }
 
 void Servicemode::exit() {
-    subState->exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 

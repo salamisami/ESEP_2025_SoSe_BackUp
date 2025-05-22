@@ -13,14 +13,14 @@ Waiting::~Waiting() {}
 //===================================================== public functions =====================================================
 void Waiting::entry(){
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->timer->setTimer(2000, IDLE_TIMER)
+    data->timer->setTimer(2000, IDLE_TIMER);
 }
 
 void Waiting::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Waiting::button_start_released{
+State* Waiting::button_start_released(){
     return new Operating(data);
 }
 

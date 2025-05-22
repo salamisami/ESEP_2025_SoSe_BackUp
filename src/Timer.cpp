@@ -23,8 +23,5 @@ void Timer::setTimer(int miliseconds, int id) {
 
 void Timer::threadFunction(int miliseconds, int id) {
     WAIT(miliseconds);
-    int status = sender->send_event((int) Topic::TIMER, id, (int) EventPriority::SECOND_PRIO);
-    if(status < 0) {
-        THROW("Cannot set up a timer");
-    }
+    sender->send_event((int) Topic::TIMER, id, (int) EventPriority::SECOND_PRIO);
 }

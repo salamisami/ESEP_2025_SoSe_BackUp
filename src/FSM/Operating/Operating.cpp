@@ -2,8 +2,7 @@
 
 //================================================= contructors & destructors =================================================
 
-Operating::Operating(ContextData* data, State* previousState): State(data){
-    : State(data) {
+Operating::Operating(ContextData* data, State* previousState): State(data) {
     if(previousState == nullptr) {
         subState = new Traffic_Green_On_Slow(data);
     } else {

@@ -18,7 +18,7 @@ public: //============================================ contructors & destructors
 	 * @brief Creates a timer linked to a connection ID, on which the timer events are sent
 	 * @param feedbackConnectionID the connection ID, for the events to be sent to
 	 */
-	Timer(int feedbackConnectionID);
+	Timer(I_Sender* sender);
 	virtual ~Timer();
 
 
