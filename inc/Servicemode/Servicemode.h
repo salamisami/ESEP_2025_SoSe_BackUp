@@ -1,31 +1,28 @@
-#ifndef WAITING_H
-#define WAITING_H
+#ifndef SERVICEMODE_H
+#define SERVICEMODE_H
 #pragma once
 
 #include "State.h"
-#include "Timer.h"
-#include "Timer_Received.h"
+#include "Idle.h"
 
-#define IDLE_TIMER 1
-
-class Waiting : public State {
+class Servicemode : public State{
 public: //============================================ contructors & destructors ============================================
-    Waiting(ContextData* data);
-    virtual ~Waiting();
+    Servicemode(ContextData* data, State* previousState = nullptr);
+    virtual ~Servicemode();
 	
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
+	void entry() override;
+	void exit() override;
 
-	State* button_start_released() override;
-	State* timer(int id) override;
+	State* button_stop_pressed() override;
     
 
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
+	State* subState;
 	//primitive types
 	//bool and char
    

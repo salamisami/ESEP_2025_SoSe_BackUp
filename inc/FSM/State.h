@@ -39,6 +39,13 @@ public:
     virtual State* adc_top_area_blocked();
     virtual State* adc_top_area_unblocked();
 
+    virtual State* traffic_green_on();
+    virtual State* traffic_green_off();
+
+    virtual State* timer(int id);
+    
+
+
 
 
 

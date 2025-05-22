@@ -11,6 +11,7 @@ class Context {
     //============================================ contructors & destructors ============================================
 public:
     Context();
+    Context(ContextData* data);
     virtual ~Context();
 
     //================================================ public functions ================================================
@@ -20,7 +21,7 @@ public:
 
     //================================================ private variables ================================================
 protected:
-    ContextData data;
+    ContextData* data;
     State* state;
 
     //================================================ private functions ================================================
@@ -31,8 +32,8 @@ private:
 
 //================================================= contructors & destructors =================================================
 template <typename T>
-Context<T>::Context():state(new T(&data)){
-    data = ContextData()
+Context<T>::Context(ContextData* data):state(new T(data)){
+    this->data = data;
 }
 template <typename T>
 Context<T>::~Context() {
@@ -50,10 +51,8 @@ void Context<T>::handleEvent(_pulse event) {
     Topic event_code = (Topic) event.code;
     InterruptEnum event_value = (InterruptEnum) event.value.sival_int;
 
-    if(event_code != Topic::INTERRUPT){
-        THROW("Not an Interrupt Topic. Maybe it's an ADC Topic?");
-    }
-    switch(event_value) {
+    if(event_code == Topic::INTERRUPT){
+        switch(event_value) {
         //TODO implement ADC_Enum
         case InterruptEnum::LASER_FRONT_BLOCKED;
             newState = state->laser_front_blocked();
@@ -124,7 +123,11 @@ void Context<T>::handleEvent(_pulse event) {
 
         default:
             break;
+        }   
+    } else if(event_code == Topic::TIMER){
+        newState = state->timer(event_value);
     }
+    
     if(newState != nullptr) {
         state->exit();
         delete state;

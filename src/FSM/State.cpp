@@ -92,3 +92,7 @@ State* State::adc_top_area_blocked() {
 State* State::adc_top_area_unblocked() {
     return nullptr;
 }
+
+State* State::timer(int id){
+    return nullptr;
+}

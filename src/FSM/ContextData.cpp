@@ -2,15 +2,19 @@
 #include "State.h"
 
 //================================================= contructors & destructors =================================================
-ContextData::ContextData(int fsm_connectionID) {
+ContextData::ContextData(I_Sender* sender, I_Receiver* receiver) {
+    this->sender = sender;
+    this->receiver = receiver;
     stateStack = new std::stack<State*>();
-    if(fsm_connectionID > -1) {
-        timer = new Timer(fsm_connectionID);
-    }
+    timer_sender = new PulseMsg::Sender(receiver->getchid());
+    timer = new Timer(timer_sender);
+
 
 }
 
 ContextData::~ContextData() {
+    delete timer;
+    delete timer_sender;
     delete stateStack;
 }
 

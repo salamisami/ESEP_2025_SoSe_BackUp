@@ -1,25 +1,18 @@
-#ifndef WAITING_H
-#define WAITING_H
+#ifndef ERROR_H
+#define ERROR_H
 #pragma once
 
 #include "State.h"
-#include "Timer.h"
-#include "Timer_Received.h"
 
-#define IDLE_TIMER 1
-
-class Waiting : public State {
+class Error : public State {
 public: //============================================ contructors & destructors ============================================
-    Waiting(ContextData* data);
-    virtual ~Waiting();
+    Error(ContextData* data);
+    virtual ~Error();
 	
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
-
-	State* button_start_released() override;
-	State* timer(int id) override;
+	void entry() override;
+	void exit() override;
     
 
 

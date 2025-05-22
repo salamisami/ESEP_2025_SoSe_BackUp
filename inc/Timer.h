@@ -5,12 +5,14 @@
 #include "EventPriority.h"
 #include "Event.h"
 #include "Macros.h"
+#include "QNet.h"
 #include <sys/dispatch.h>
 #include <sys/neutrino.h>
 #include <thread>
 
 
 class Timer {
+	//TODO change connectionID to ChannelID
 public: //============================================ contructors & destructors ============================================
 	/**
 	 * @brief Creates a timer linked to a connection ID, on which the timer events are sent
@@ -36,6 +38,7 @@ private: //================================================ private variables ==
 	//classes, STL containers, and structs
 	std::thread timerThread;
 	//pointers
+	I_Sender* sender;
 	//primitive types
 	int coid;
 	//bool and char

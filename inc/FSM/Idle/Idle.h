@@ -15,6 +15,7 @@ public:
 public:
     State* button_start_pressed() override;
     State* button_start_released() override;
+    State* timer(int id) override;
 
     void entry() override;
     void exit() override;

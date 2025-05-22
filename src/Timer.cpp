@@ -1,8 +1,8 @@
 #include "Timer.h"
 
 //================================================= contructors & destructors =================================================
-Timer::Timer(int feedbackConnectionID) : coid(feedbackConnectionID) {
-
+Timer::Timer(I_Sender* sender)  {
+    this->sender = sender;
 }
 
 Timer::~Timer() {
@@ -23,7 +23,7 @@ void Timer::setTimer(int miliseconds, int id) {
 
 void Timer::threadFunction(int miliseconds, int id) {
     WAIT(miliseconds);
-    int status = MsgSendPulse(coid, (int) EventPriority::SECOND_PRIO, (int) Topic::TIMER, id);
+    int status = sender->send_event((int) Topic::TIMER, id, (int) EventPriority::SECOND_PRIO);
     if(status < 0) {
         THROW("Cannot set up a timer");
     }

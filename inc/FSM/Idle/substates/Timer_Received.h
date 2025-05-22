@@ -1,25 +1,22 @@
-#ifndef WAITING_H
-#define WAITING_H
+#ifndef TIMER_RECEIVED_H
+#define TIMER_RECEIVED_H
 #pragma once
 
 #include "State.h"
 #include "Timer.h"
-#include "Timer_Received.h"
 
-#define IDLE_TIMER 1
-
-class Waiting : public State {
+class Timer_Received: public State{
 public: //============================================ contructors & destructors ============================================
-    Waiting(ContextData* data);
-    virtual ~Waiting();
+    Timer_Received(ContextData* data);
+    virtual ~Timer_Received();
 	
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
+	//void publicFunction();
+	void entry() override;
+	void exit() override;
 
 	State* button_start_released() override;
-	State* timer(int id) override;
     
 
 
@@ -28,6 +25,7 @@ private: //================================================ private variables ==
 	//pointers
 	//primitive types
 	//bool and char
+	State* button_start_released();
    
 	
 

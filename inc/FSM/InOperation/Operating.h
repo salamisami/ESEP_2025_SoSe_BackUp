@@ -4,9 +4,6 @@
 
 #include "State.h"
 #include "Idle.h"
-#include "StateA.h"
-#include "EmergencyStop.h"
-#include "Servicemode.h"
 
 class Operating : public State {
 //============================================ contructors & destructors ============================================
@@ -19,14 +16,7 @@ public:
     void entry() override;
     void exit() override;
     
-    State* stop() override;
-    State* estop() override;
-    State* forward() override;
-    State* backward() override;
-
-    State* tick() override;
-    State* service() override;
-    State* reset() override;
+    State* button_stop_pressed() override;
     
 
 //================================================ private variables ================================================

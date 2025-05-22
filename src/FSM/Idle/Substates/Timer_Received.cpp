@@ -1,25 +1,25 @@
-#include "Traffic_Green_On_Slow.h"
+#include "Timer_Received.h"
 
 //================================================= contructors & destructors =================================================
-Traffic_Green_On_Slow::Traffic_Green_On_Slow(ContextData* data) :State(data) {
+Timer_Received::Timer_Received(ContextData* data) :State(data) {}
 
-}
-
-Traffic_Green_On_Slow::~Traffic_Green_On_Slow() {}
+Timer_Received::~Timer_Received() {}
 
 //===================================================== private functions =====================================================
 
+//void Timer_Received::privateFunction(){}
 
 //===================================================== public functions =====================================================
-void Traffic_Green_On_Slow::entry() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-    //TODO blink slow
-}
 
-void Traffic_Green_On_Slow::exit() {
+//void Timer_Received::publicFunction(){}
+void Timer_Received::entry(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Traffic_Green_On_Slow::button_start_pressed(){
-    return new Waiting(data);
+void Timer_Received::exit(){
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+State* Timer_Received::button_start_released(){
+    return new Servicemode(data);
 }

@@ -1,25 +1,33 @@
-#include "Traffic_Green_On_Slow.h"
+#include "Servicemode.h"
 
 //================================================= contructors & destructors =================================================
-Traffic_Green_On_Slow::Traffic_Green_On_Slow(ContextData* data) :State(data) {
-
+Servicemode:Servicemode(ContextData* data, State* previousState)
+    : State(data) {
+    if(previousState == nullptr) {
+        subState = new StateA(data);
+    } else {
+        subState = previousState;
+    }
 }
 
-Traffic_Green_On_Slow::~Traffic_Green_On_Slow() {}
+Servicemode::~Servicemode() {}
 
 //===================================================== private functions =====================================================
 
+//void Servicemode::privateFunction(){}
 
 //===================================================== public functions =====================================================
-void Traffic_Green_On_Slow::entry() {
+
+void Servicemode::entry() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    //TODO blink slow
+    subState->entry();
 }
 
-void Traffic_Green_On_Slow::exit() {
+void Servicemode::exit() {
+    subState->exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Traffic_Green_On_Slow::button_start_pressed(){
-    return new Waiting(data);
+State* Servicemode::button_stop_pressed(){
+    return new Idle(data);
 }

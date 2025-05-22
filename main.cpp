@@ -1,5 +1,7 @@
 #include "HAL.h"
 #include "Timer.h"
+#include "Context.h"
+#include "Idle.h"
 #include <iostream>
 
 #define ONE_MILLISECOND 1000
@@ -11,12 +13,13 @@ using namespace std;
 
 int main() {
     cout << "Starting Program..." << endl; // prints Hello World!!!
+    I_Receiver* local_receiver = new PulseMsg::Receiver();
+    I_Sender* local_sender = new PulseMsg::Sender(local_receiver->getchid());
+    ContextData data();
+    Context<Idle> fsm(data);
 
-    HAL* hal = new HAL();
-    hal->test_ins();
-    
-    delete hal;
-
+    delete local_sender;
+    delete local_receiver;
     cout << "Program Finished." << endl;
     return 0;
 }
