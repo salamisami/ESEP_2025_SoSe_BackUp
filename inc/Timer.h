@@ -12,11 +12,10 @@
 
 
 class Timer {
-	//TODO change connectionID to ChannelID
 public: //============================================ contructors & destructors ============================================
 	/**
 	 * @brief Creates a timer linked to a connection ID, on which the timer events are sent
-	 * @param feedbackConnectionID the connection ID, for the events to be sent to
+	 * @param sender the timer will use this sender interface to send the timer events
 	 */
 	Timer(I_Sender* sender);
 	virtual ~Timer();
@@ -25,7 +24,7 @@ public: //============================================ contructors & destructors
 public: //================================================ public functions ================================================
 
 	/**
-	 * @brief set a timer, and send the alarm to @param feedbackConnectionID
+	 * @brief set a timer, and send the alarm using @param sender
 	 *
 	 * @param miliseconds how long should the timer be set
 	 * @param id timer ID, which will be saved to the event.value

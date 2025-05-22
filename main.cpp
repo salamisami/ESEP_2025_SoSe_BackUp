@@ -15,8 +15,8 @@ int main() {
     cout << "Starting Program..." << endl; // prints Hello World!!!
     I_Receiver* local_receiver = new PulseMsg::Receiver();
     I_Sender* local_sender = new PulseMsg::Sender(local_receiver->getchid());
-    ContextData data(local_sender, local_receiver);
-    Context<Idle> fsm(&data);
+    ContextData data = ContextData(local_sender, local_receiver);
+    Context<Idle> fsm = Context<Idle>(&data);
 
     delete local_sender;
     delete local_receiver;
