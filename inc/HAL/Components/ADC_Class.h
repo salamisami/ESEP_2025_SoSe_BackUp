@@ -7,6 +7,8 @@
 #include "Event.h"
 #include "Thread_COM.h"
 #include "Mailbox.h"
+
+#include <thread>
 #include <iostream>
 #include <unistd.h>
 #include <sys/dispatch.h>
@@ -29,11 +31,16 @@ public: //================================================ public functions ====
 
 
 private: //================================================ private variables ================================================
+    //classes, STL containers, and structs
+    std::thread ADCThread;
+
     TSCADC tscadc;
     ADC adc;
+
     Mailbox<_pulse>* mailbox;
     int dispatcher_rcvid;
     float bandVoltage;
+    bool running;
    
 	
 

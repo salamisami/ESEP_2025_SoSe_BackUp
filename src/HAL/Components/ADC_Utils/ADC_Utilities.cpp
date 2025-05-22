@@ -18,7 +18,7 @@ void ADC_Utilities::saveProfile(const Profil& p) {
     }
 
     file << p.name << ","
-    	<< static_cast<int>(p.eventCode) << ","
+    	<< static_cast<int32_t>(p.eventValue) << ","
         << p.hatLoch << ","
         << p.avg << ","
         << p.lochMin << ","
@@ -50,7 +50,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
     for(const auto& bauteil : bauteile) {
         std::string name = bauteil.name;
         bool hatLoch = bauteil.hatLoch;
-        ADC_Enum eventCode = bauteil.eventCode;
+        ADC_Enum eventValue = bauteil.eventValue;
 
         std::cout << "\nBitte platziere das Bauteil: " << name << "\n";
         std::vector<float> werte;
@@ -111,7 +111,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         Profil p;
         p.name = name;
         p.hatLoch = hatLoch;
-        p.eventCode = eventCode;
+        p.eventValue = eventValue;
         p.avg = avg;
 
         if(hatLoch) {
@@ -142,9 +142,11 @@ std::vector<Profil> ADC_Utilities::loadProfile() {
         std::istringstream ss(line);
         Profil p;
         std::getline(ss, p.name, ',');
+
         int codeInt;
         ss >> codeInt; ss.ignore();
-        //p.eventCode = static_cast<>;
+        p.eventValue = static_cast<ADC_Enum>(codeInt);
+
         ss >> p.hatLoch; ss.ignore();
         ss >> p.avg; ss.ignore();
         ss >> p.lochMin; ss.ignore();
@@ -184,12 +186,13 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
 
         if(std::fabs(avg - p.avg) > MESS_TOLERANZ) {
             std::cout << "  → ❌ Mittelwert außerhalb Toleranz\n";
+            std::cout << "Aktuell:"<< avg <<"gespeichert:"<< p.avg << "\n";
             continue;
         }
 
         if(!p.hatLoch) {
             std::cout << "  → ✅ Kein Loch erforderlich – passt\n";
-            return p.eventCode;
+            return p.eventValue;
         }
 
         std::cout << "  Loch-Soll: " << p.lochMin << " ±" << MESS_TOLERANZ
@@ -200,11 +203,11 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
             minIndex <= p.lochEndIndex) {
             std::cout << "  → ✅ Loch passt\n";
             //TODO Spezifizieren!!!
-            return p.eventCode;
+            return p.eventValue;
         } else {
             std::cout << "  → ❌ Lochbedingung nicht erfüllt\n";
             break;
-            //SIgnal Aussenden !
+            //SIgnal Aussenden Error  !
         }
     }
 

@@ -6,13 +6,19 @@ ADC_Class::ADC_Class(int dispatcher_rcvid, Mailbox<_pulse>* mailbox)
     : tscadc(),
 	  adc(tscadc),
 	  mailbox(mailbox),
-	  dispatcher_rcvid(dispatcher_rcvid)
+	  dispatcher_rcvid(dispatcher_rcvid),
+	  running(false)
 	{
+	ADCThread = std::thread(&ADC_Class::eventLoop, this);
     ThreadCtl(_NTO_TCTL_IO, 0);
     bandVoltage = ADC_Utilities::define_band_voltage(adc, tscadc);
+    std::cout << "Bandvoltage :" << bandVoltage;
 }
 
-ADC_Class::~ADC_Class() {}
+ADC_Class::~ADC_Class() {
+	ADCThread.join();
+	running = false;
+}
 
 //=====================================================  private functions  ===================================================
 //float ADC_Class::bandVoltage() {
@@ -39,18 +45,19 @@ void ADC_Class::messureClassfySend() {
     // Ergebnis per Pulse senden
     //TODO ergebnis noch in hex code wandeln
     Thread_COM::send_event(dispatcher_rcvid,(int8_t)Topic::ADC,(int)name);
+    std::cout << "Erkanntes Event " << (int)name <<"\n";
 }
 
 //===================================================== public functions ===============================================
 void ADC_Class::eventLoop() {
-    bool running = true;
+	running = true;
 
     while (running) {
         _pulse pulse = mailbox->take();
         Topic code = static_cast<Topic>(pulse.code);
         ADC_Enum value = static_cast<ADC_Enum>(pulse.value.sival_int);
 
-        if (code != Topic::ACTUATOR) {
+        if (code != Topic::ADC) {
             THROW("unexpectet topic");
         }
 

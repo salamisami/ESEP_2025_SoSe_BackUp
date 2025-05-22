@@ -20,6 +20,7 @@ public: //============================================ contructors & destructors
 public: //================================================ public functions ================================================
 	int getHAL_rcvid();
 	void test_ins();
+	void test_ins_ADC();
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
