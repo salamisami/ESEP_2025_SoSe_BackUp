@@ -12,7 +12,7 @@ using namespace std;
 int main() {
     cout << "Starting Program..." << endl; // prints Hello World!!!
 
-    HAL* hal = new HAL("dispatcher");
+    HAL* hal = new HAL();
     hal->test_ins_ADC();
     
     delete hal;

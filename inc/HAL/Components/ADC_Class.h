@@ -20,7 +20,7 @@ public: //============================================ contructors & destructors
 	 * @param dispatcher_rcvid id used to send events to dispatcher
 	 * @param mailbox a name_attach_t* connection, used to receive events
 	 */
-    ADC_Class(int dispatcher_rcvid,  Mailbox<_pulse>* mailbox);
+    ADC_Class(Mailbox<_pulse>* mailbox, I_Sender* sender);
     virtual ~ADC_Class();
 	
 
@@ -32,13 +32,15 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
     //classes, STL containers, and structs
-    std::thread ADCThread;
-
     TSCADC tscadc;
     ADC adc;
 
+    //pointers
+    std::thread ADCThread;
+    I_Sender* sender;
     Mailbox<_pulse>* mailbox;
-    int dispatcher_rcvid;
+
+    //primitive Types
     float bandVoltage;
     bool running;
    

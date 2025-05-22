@@ -2,11 +2,11 @@
 
 
 //================================================= contructors & destructors ================================================
-ADC_Class::ADC_Class(int dispatcher_rcvid, Mailbox<_pulse>* mailbox)
+ADC_Class::ADC_Class(Mailbox<_pulse>* mailbox, I_Sender* sender)
     : tscadc(),
 	  adc(tscadc),
+	  sender(sender),
 	  mailbox(mailbox),
-	  dispatcher_rcvid(dispatcher_rcvid),
 	  running(false)
 	{
 	ADCThread = std::thread(&ADC_Class::eventLoop, this);
@@ -44,7 +44,7 @@ void ADC_Class::messureClassfySend() {
 
     // Ergebnis per Pulse senden
     //TODO ergebnis noch in hex code wandeln
-    Thread_COM::send_event(dispatcher_rcvid,(int8_t)Topic::ADC,(int)name);
+    sender->send_event((int8_t)Topic::ADC,(int)name);
     std::cout << "Erkanntes Event " << (int)name <<"\n";
 }
 
