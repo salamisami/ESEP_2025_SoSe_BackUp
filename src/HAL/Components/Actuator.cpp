@@ -272,6 +272,7 @@ void Actuator::led_q2_off() {
 
 //===================================================== public functions =====================================================
 void Actuator::global_shutdown() {
+    sorting_off();  
     motor_stop();
     traffic_red_off();
     traffic_yellow_off();
