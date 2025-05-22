@@ -79,12 +79,16 @@ void HAL::test_ins_ADC() {
     int8_t AdcCode = (int8_t) Topic::ADC;
     bool allowGo = true;
     bool allowSorting = true;
+    ADC_Enum mode = ADC_Enum::ADC_CALIBRATE;
     while(running) {
         _pulse msg;
         mock_dispatcher_receiver->receive_event(&msg);
         InterruptEnum InterEvent = (InterruptEnum) msg.value.sival_int;
         ADC_Enum AdcEvent = (ADC_Enum) msg.value.sival_int;
         switch(InterEvent) {
+        	case InterruptEnum::BUTTON_RESET_PRESSED:
+        		mode = ADC_Enum::ADC_MESURE;
+        		break;
             case InterruptEnum::LASER_FRONT_BLOCKED:
                 std::cout << "Thanks!" << std::endl;
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
@@ -118,7 +122,7 @@ void HAL::test_ins_ADC() {
                 running = false;
                 break;
             case InterruptEnum::ADC_TOP_AREA_BLOCKED:
-            	mock_dispatcher_sender->send_event(AdcCode, (int) ADC_Enum::ADC_MESURE);
+            	mock_dispatcher_sender->send_event(AdcCode, (int) mode);
             	mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
                 break;
             case InterruptEnum::ADC_TOP_AREA_UNBLOCKED:

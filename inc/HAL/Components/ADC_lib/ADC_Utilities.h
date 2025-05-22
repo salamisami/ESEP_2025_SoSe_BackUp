@@ -56,13 +56,9 @@ public: //============================================ contructors & destructors
 
 
 public: //================================================ public functions ================================================
-	static void saveProfile(const Profil& p);
-	static std::vector<Profil> loadProfile();
-	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage);
-	static ADC_Enum classify(const std::vector<float>& value, const std::vector<Profil>& profile);
 	static ADC_Enum executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage);
 	static float define_band_voltage(ADC& adc, TSCADC& tscadc);
-	
+	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage);
 
 
 
@@ -75,7 +71,10 @@ private: //================================================ private variables ==
 
 
 private: //================================================ private functions ================================================
-	//void privateFunction();
+	static ADC_Enum classify(const std::vector<float>& value, const std::vector<Profil>& profile);
+	static void saveProfile(const Profil& p);
+	static std::vector<Profil> loadProfile();
+
 
 };
 

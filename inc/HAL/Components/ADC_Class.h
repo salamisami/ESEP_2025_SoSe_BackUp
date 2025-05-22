@@ -26,8 +26,8 @@ public: //============================================ contructors & destructors
 
 public: //================================================ public functions ================================================
 	//void publicFunction();
-    void eventLoop();
     
+
 
 
 private: //================================================ private variables ================================================
@@ -48,9 +48,9 @@ private: //================================================ private variables ==
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
-    //float bandVoltage();
-    void clibrate();
-    void messureClassfySend();
+    void eventLoop();
+    void calibrate();
+    void measureClassifySend();
 	
 };
 

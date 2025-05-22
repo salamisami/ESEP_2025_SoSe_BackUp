@@ -13,7 +13,7 @@ int main() {
     cout << "Starting Program..." << endl; // prints Hello World!!!
 
     HAL* hal = new HAL();
-    hal->test_ins_ADC();
+    hal->test_ins();
     
     delete hal;
 

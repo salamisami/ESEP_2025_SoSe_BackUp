@@ -20,30 +20,12 @@ ADC_Class::~ADC_Class() {
 	running = false;
 }
 
-//=====================================================  private functions  ===================================================
-//float ADC_Class::bandVoltage() {
-//    float sum = 0;
-//    for (int i = 0; i < SAMPLE_COUNT; ++i) {
-//        adc.sample();
-//        usleep(1000);
-//        uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
-//        float voltage = (raw / 4095.0f) * REF_VOLTAGE;
-//        sum += voltage * VOLTAGE_DIVIDER_FACTOR;
-//    }
-//    return sum / SAMPLE_COUNT;
-//}
-
-void ADC_Class::clibrate() {
+void ADC_Class::calibrate() {
 	ADC_Utilities::calibrateComponents(adc, tscadc, bandVoltage);
 }
 
-void ADC_Class::messureClassfySend() {
+void ADC_Class::measureClassifySend() {
 	ADC_Enum name = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage);
-    //std::vector<Profil> profile = ladeProfile();
-    //std::string name = klassifizieren(werte, profile);
-
-    // Ergebnis per Pulse senden
-    //TODO ergebnis noch in hex code wandeln
     sender->send_event((int8_t)Topic::ADC,(int)name);
     std::cout << "Erkanntes Event " << (int)name <<"\n";
 }
@@ -63,11 +45,11 @@ void ADC_Class::eventLoop() {
 
         switch (value) {
             case ADC_Enum::ADC_CALIBRATE:
-            	clibrate();
+            	calibrate();
                 break;
 
             case ADC_Enum::ADC_MESURE:
-            	messureClassfySend();
+            	measureClassifySend();
                 break;
 
 //            case ActuatorEnum::STOP:
