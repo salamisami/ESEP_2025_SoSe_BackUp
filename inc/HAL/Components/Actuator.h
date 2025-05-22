@@ -18,6 +18,7 @@
 #include <chrono>
 #include <cmath>
 #include <vector>
+#include <mutex>
 #include <sys/dispatch.h>
 #include <sys/mman.h>
 #include <sys/types.h>
@@ -40,12 +41,14 @@ public: //================================================ public functions ====
     bool isGate();
     void test_outs();
     void global_shutdown();
+    void reset();
 
 
 
 private: //================================================ private variables ================================================
     //classes, STL containers, and structs
     std::thread actuatorThread;
+    std::mutex mtx;
     //pointers
     Mailbox<_pulse>* mailbox;
     uintptr_t gpio_bank_1;
@@ -54,6 +57,7 @@ private: //================================================ private variables ==
     //primitive types
     //bool and char
     volatile bool actuatorRunning;
+    bool global_estop;
 
 
 

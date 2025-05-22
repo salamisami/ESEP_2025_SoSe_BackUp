@@ -45,10 +45,12 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox)
     : mailbox(mailbox)
     , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
     , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
-    , actuatorRunning(false) {
+    , actuatorRunning(false)
+    , global_estop(false) {
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
     global_shutdown();
+    reset();
     actuatorThread = std::thread(&Actuator::threadFunction, this);
 }
 
@@ -70,14 +72,19 @@ Actuator::~Actuator() {
 
 
 void Actuator::set_data(uintptr_t gpio_bank, uint32_t bit) {
-    uint32_t pin = (1 << bit);
-    out32((uintptr_t) (gpio_bank + GPIO_SETDATAOUT), pin);
-
+    mtx.lock();
+    if(!global_estop) {
+        uint32_t pin = (1 << bit);
+        out32((uintptr_t) (gpio_bank + GPIO_SETDATAOUT), pin);
+    }
+    mtx.unlock();
 }
 
 void Actuator::clear_data(uintptr_t gpio_bank, uint32_t bit) {
+    mtx.lock();
     uint32_t pin = (1 << bit);
     out32((uintptr_t) (gpio_bank + GPIO_CLEARDATAOUT), pin);
+    mtx.unlock();
 }
 
 void Actuator::threadFunction() {
@@ -140,7 +147,7 @@ void Actuator::threadFunction() {
             case ActuatorEnum::LED_RESET_ON:
                 led_reset_on();
                 break;
-                case ActuatorEnum::LED_RESET_OFF:
+            case ActuatorEnum::LED_RESET_OFF:
                 led_reset_off();
                 break;
             case ActuatorEnum::LED_Q1_ON:
@@ -150,7 +157,7 @@ void Actuator::threadFunction() {
                 led_q1_off();
                 break;
             case ActuatorEnum::LED_Q2_ON:
-               led_q2_on();
+                led_q2_on();
                 break;
             case ActuatorEnum::LED_Q2_OFF:
                 led_q2_off();
@@ -272,7 +279,8 @@ void Actuator::led_q2_off() {
 
 //===================================================== public functions =====================================================
 void Actuator::global_shutdown() {
-    sorting_off();  
+    global_estop = true;
+    sorting_off();
     motor_stop();
     traffic_red_off();
     traffic_yellow_off();
@@ -281,6 +289,10 @@ void Actuator::global_shutdown() {
     led_reset_off();
     led_q1_off();
     led_q2_off();
+}
+
+void Actuator::reset() {
+    global_estop = false;
 }
 void Actuator::test_outs() {
     std::cout << "Testing Outputs..." << std::endl;

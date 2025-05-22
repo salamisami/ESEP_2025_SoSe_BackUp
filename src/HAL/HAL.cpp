@@ -37,9 +37,9 @@ void HAL::init() {
     actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     DEBUG("Mailboxes are created");
-
-    interrupt = new Interrupt(local_sender);
     actuator = new Actuator(actuator_mailbox);
+    interrupt = new Interrupt(local_sender, actuator);
+    
     //TODO call actuator isGate()
     //adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
     halThread = std::thread(&HAL::threadFunction, this);

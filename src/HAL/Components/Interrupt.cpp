@@ -55,6 +55,18 @@ Interrupt::Interrupt(I_Sender* sender)
     setup_interrupts();
 }
 
+Interrupt::Interrupt(I_Sender* sender, Actuator* actuator)
+    : gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
+    , sender(sender)
+    , actuator(actuator)
+    , inputPins(0)
+    , last_causing_pin(0)
+    , test_mode(false)
+    , last_pin_status(0)
+    , interruptRunning(false) {
+    setup_interrupts();
+}
+
 // Interrupt::Interrupt()
 //     :gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
 //     , inputPins(0)
@@ -265,9 +277,14 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
             break;
         case BUTTON_ESTOP_BIT:
             event = pin_status ? InterruptEnum::BUTTON_ESTOP_RELEASED : InterruptEnum::BUTTON_ESTOP_PRESSED;
-            //sender->send_event((int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
-            //return;
-            break;
+            if(event == InterruptEnum::BUTTON_ESTOP_PRESSED){
+                actuator->global_shutdown();
+            } else {
+                actuator->reset();
+            }
+            sender->send_event((int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
+            return;
+            //break;
         case LASER_SORTING_BIT:
             event = pin_status ? InterruptEnum::LASER_SORTING_GATE_UNBLOCKED : InterruptEnum::LASER_SORTING_GATE_BLOCKED;
             break;
