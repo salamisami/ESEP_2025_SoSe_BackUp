@@ -13,6 +13,7 @@ HAL::HAL(const char* local_gns_name, const char* target_gns_name) {
 HAL::HAL(){
     local_receiver = new PulseMsg::Receiver();
     mock_dispatcher_receiver = new PulseMsg::Receiver();
+    //TODO converting mock_dispatcher_Receiver to stack casues problem
     local_sender = new PulseMsg::Sender(mock_dispatcher_receiver->getchid());
     mock_dispatcher_sender = new PulseMsg::Sender(local_receiver->getchid());
     init();
@@ -95,7 +96,7 @@ void HAL::test_ins() {
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
                 //running = false;
                 break;
-            case InterruptEnum::METAL_DETECTED:
+            case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
                 WAIT(500);
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
