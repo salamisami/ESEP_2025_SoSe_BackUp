@@ -5,18 +5,22 @@ using namespace Thread_COM;
 //================================================= contructors & destructors =================================================
 
 Sender::Sender(const char* name) {
-    receiver_coid = name_open(name,NAME_FLAG_ATTACH_GLOBAL);
-    if(receiver_coid < 0){
+    coid = name_open(name,NAME_FLAG_ATTACH_GLOBAL);
+    if(coid < 0){
         //error
     }
 }
 
 Sender::~Sender(){
-    name_close(receiver_coid);
+    name_close(coid);
 }
 
 void Sender::send_event(int8_t event_code, int event_value, int priority) {
-    MsgSendPulse(receiver_coid, priority, event_code, event_value);
+    MsgSendPulse(coid, priority, event_code, event_value);
+}
+
+int Sender::getcoid(){
+    return coid;
 }
 
 Receiver::Receiver(const char* name) {

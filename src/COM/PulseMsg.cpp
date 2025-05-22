@@ -9,11 +9,11 @@ Receiver::Receiver() {
     }
 }
 Receiver::~Receiver() {
-
+    ChannelDestroy(this->chid);
 }
 
 Sender::Sender(){
-    coid = -1;
+    //coid = -1;
 }
 Sender::Sender(int chid) {
     this->coid = ConnectAttach(0, 0, chid, _NTO_SIDE_CHANNEL, 0);
@@ -23,6 +23,7 @@ Sender::Sender(int chid) {
 }
 
 Sender::~Sender() {
+    ConnectDetach(this->coid);
 }
 
 
@@ -40,6 +41,7 @@ int Receiver::getchid() {
 }
 
 void Sender::send_event(int8_t code, int value, int priority) {
+    //DEBUG("Send event");
     int status = MsgSendPulse(coid, priority, code, value);
     if (status < 0){
         THROW("Cannot perform MsgSendPulse");

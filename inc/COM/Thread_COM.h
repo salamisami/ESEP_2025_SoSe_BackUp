@@ -71,6 +71,7 @@ namespace Thread_COM {
 
 	public: //================================================ public functions ================================================
 		void send_event(int8_t event_code, int event_value, int priority = (int) EventPriority::DEFAULT) override;
+		int getcoid() override;
 
 
 
@@ -78,7 +79,7 @@ namespace Thread_COM {
 		//classes, STL containers, and structs
 		//pointers
 		//primitive types
-		int receiver_coid;
+		int coid;
 		//bool and char
 
 

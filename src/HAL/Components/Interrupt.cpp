@@ -39,7 +39,7 @@
 #define PULSE_INTR_ON_PORT0 _PULSE_CODE_MINAVAIL + 2
 
 #define ONE_MILLISECOND 1000
-#define SHOW_EVENTS
+//#define SHOW_EVENTS
 #define GPIO_MMAP_SIZE   0x1000      //based on GPIO address range (4KB)
 using namespace std;
 
@@ -282,6 +282,8 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
             break;
     }
     sender->send_event((int8_t) Topic::INTERRUPT, (int) event);
+    //MsgSendPulse(sender->getcoid(),-1,(int8_t) Topic::INTERRUPT, (int) event);
+    //std::cout << "send event to: " << (int) sender->getcoid() << std::endl;
 }
 
 

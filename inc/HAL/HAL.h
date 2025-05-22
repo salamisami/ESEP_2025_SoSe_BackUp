@@ -27,8 +27,8 @@ private: //================================================ private variables ==
 	//classes, STL containers, and structs
 	std::thread halThread;
 	//mock here
-	PulseMsg::Receiver mock_dispatcher_receiver;
-	PulseMsg::Sender mock_dispatcher_sender;
+	PulseMsg::Receiver* mock_dispatcher_receiver;
+	PulseMsg::Sender* mock_dispatcher_sender;
 
 	I_Receiver* local_receiver;
 	I_Sender* local_sender;

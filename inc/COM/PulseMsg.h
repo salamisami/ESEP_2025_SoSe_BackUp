@@ -36,7 +36,7 @@ namespace PulseMsg {
 
 	public: //================================================ public functions ================================================
 		void send_event(int8_t code, int value, int priority = (int) EventPriority::DEFAULT) override;
-		int getcoid();
+		int getcoid() override;
 
 	private: //================================================ private variables ================================================
 		//classes, STL containers, and structs
