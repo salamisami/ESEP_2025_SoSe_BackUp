@@ -7,26 +7,33 @@
 #include "Interrupt.h"
 #include "ADC_Class.h"
 #include "Thread_COM.h"
+#include "PulseMsg.h"
+#include "QNet.h"
 #include "Mailbox.h"
 
 
 
 class HAL {
 public: //============================================ contructors & destructors ============================================
-	HAL(const char* gns_name, int dispatcher_rcvid = -1);
+	HAL();
+	HAL(const char* local_gns_name, const char* target_gns_name);
 	virtual ~HAL();
 
 
 public: //================================================ public functions ================================================
-	int getHAL_rcvid();
 	void test_ins();
 	void test_ins_ADC();
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	std::thread halThread;
-	name_attach_t hal_connection;
-	name_attach_t dispatcher_mock_connection;
+	//mock here
+	PulseMsg::Receiver* mock_dispatcher_receiver;
+	PulseMsg::Sender* mock_dispatcher_sender;
+
+	I_Receiver* local_receiver;
+	I_Sender* local_sender;
+
 	//pointers
 	Interrupt* interrupt;
 	Actuator* actuator;
@@ -43,6 +50,7 @@ private: //================================================ private variables ==
 
 
 private: //================================================ private functions ================================================
+void init();
 	void threadFunction();
 
 };

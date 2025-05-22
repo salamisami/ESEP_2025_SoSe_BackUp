@@ -4,7 +4,7 @@
 
 #include "Macros.h"
 #include "Event.h"
-#include "Thread_COM.h"
+#include "QNet.h"
 #include "EventPriority.h"
 
 #include <stdio.h>
@@ -33,7 +33,7 @@
 
 class Interrupt {
 public: //============================================ contructors & destructors ============================================
-    Interrupt(int dispatcher_rcvid);
+    Interrupt(I_Sender* sender);
     //Interrupt();
     virtual ~Interrupt();
 
@@ -48,9 +48,9 @@ private: //================================================ private variables ==
     //pointers
     std::thread interruptThread;
     uintptr_t gpio_bank_0;
+    I_Sender* sender;
     //primitive types
     uint32_t inputPins;
-    int dispatcher_rcvid;
     int interruptID;
     int internalConnectionID;
     int internalChannelID;

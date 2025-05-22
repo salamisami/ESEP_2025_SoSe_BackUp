@@ -44,10 +44,10 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Interrupt::Interrupt(int dispatcher_rcvid)
+Interrupt::Interrupt(I_Sender* sender)
     : gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
+    , sender(sender)
     , inputPins(0)
-    , dispatcher_rcvid(dispatcher_rcvid)
     , last_causing_pin(0)
     , test_mode(false)
     , last_pin_status(0)
@@ -183,7 +183,8 @@ void Interrupt::clean_internal_pulse_message() {
 
 int Interrupt::registerToBit(uint32_t inputRegister) {
     if(inputRegister == 0 || (inputRegister & (inputRegister - 1)) != 0) {
-        THROW("Cannot convert register to bit offset, value is not a power of 2");
+        DEBUG("Cannot convert register to bit offset, value is not a power of 2");
+        return -1;
     }
     return __builtin_ctz(inputRegister);  // Count trailing zeros
 }
@@ -223,6 +224,9 @@ void Interrupt::isr(void) {
     out32(uintptr_t(gpio_bank_0 + GPIO_IRQSTATUS_1), 0xffffffff);	//clear all interrupts.
     InterruptUnmask(INTR_GPIO_0, interruptID);				//unmask interrupt.
     int causing_pin = registerToBit(intrStatusReg);
+    if(causing_pin < 0){
+        return;
+    }
     int pin_status = (in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN) >> causing_pin) & 0x1;
     //if double events come at the same time, the system has to ignore it.
     if(last_causing_pin != causing_pin || last_pin_status != pin_status) {
@@ -254,15 +258,16 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
             event = pin_status ? InterruptEnum::BUTTON_START_PRESSED : InterruptEnum::BUTTON_START_RELEASED;
             break;
         case BUTTON_STOP_BIT:
-            event = pin_status ? InterruptEnum::BUTTON_STOP_PRESSED : InterruptEnum::BUTTON_STOP_RELEASED;
+            event = pin_status ? InterruptEnum::BUTTON_STOP_RELEASED : InterruptEnum::BUTTON_STOP_PRESSED;
             break;
         case BUTTON_RESET_BIT:
             event = pin_status ? InterruptEnum::BUTTON_RESET_PRESSED : InterruptEnum::BUTTON_RESET_RELEASED;
             break;
         case BUTTON_ESTOP_BIT:
-            event = pin_status ? InterruptEnum::BUTTON_ESTOP_PRESSED : InterruptEnum::BUTTON_ESTOP_RELEASED;
-            Thread_COM::send_event(dispatcher_rcvid, (int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
-            return;
+            event = pin_status ? InterruptEnum::BUTTON_ESTOP_RELEASED : InterruptEnum::BUTTON_ESTOP_PRESSED;
+            //sender->send_event((int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
+            //return;
+            break;
         case LASER_SORTING_BIT:
             event = pin_status ? InterruptEnum::LASER_SORTING_GATE_UNBLOCKED : InterruptEnum::LASER_SORTING_GATE_BLOCKED;
             break;
@@ -281,7 +286,9 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         default:
             break;
     }
-    Thread_COM::send_event(dispatcher_rcvid, (int8_t) Topic::INTERRUPT, (int) event);
+    sender->send_event((int8_t) Topic::INTERRUPT, (int) event);
+    //MsgSendPulse(sender->getcoid(),-1,(int8_t) Topic::INTERRUPT, (int) event);
+    //std::cout << "send event to: " << (int) sender->getcoid() << std::endl;
 }
 
 
