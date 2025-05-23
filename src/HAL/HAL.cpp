@@ -25,9 +25,11 @@ HAL::~HAL() {
     //delete adc;
     delete actuator;
     delete interrupt;
+    //DEBUG("Actuator and Interrupts are deleted");
 
     delete adc_mailbox;
     delete actuator_mailbox;
+    
     delete local_sender;
     delete local_receiver;
 }
@@ -47,8 +49,8 @@ void HAL::init() {
 void HAL::threadFunction() {
     DEBUG("HAL Thread started.");
     hal_running = true;
+    _pulse event;
     while(hal_running) {
-        _pulse event;
         local_receiver->receive_event(&event);
         Topic event_code = (Topic) event.code;
         switch(event_code) {
@@ -59,13 +61,14 @@ void HAL::threadFunction() {
                 adc_mailbox->put(event);
                 break;
             case Topic::STOP_THREAD:
-                actuator_mailbox->put(event);
                 hal_running = false;
                 break;
             default:
                 break;
         }
     }
+    actuator_mailbox->put(event);
+    adc_mailbox->put(event);
 }
 
 //===================================================== public functions =====================================================
