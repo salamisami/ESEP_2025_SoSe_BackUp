@@ -5,7 +5,6 @@
 
 #include "Timer.h"
 #include "QNet.h"
-#include "PulseMsg.h"
 #include <vector>
 #include <stack>
 #include <queue>

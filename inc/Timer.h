@@ -6,8 +6,6 @@
 #include "Event.h"
 #include "Macros.h"
 #include "QNet.h"
-#include <sys/dispatch.h>
-#include <sys/neutrino.h>
 #include <thread>
 
 

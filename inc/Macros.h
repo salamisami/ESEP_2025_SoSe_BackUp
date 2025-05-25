@@ -10,9 +10,13 @@
 
 
 #define THROW(msg) throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + ": " + msg)
+
+#ifdef MOCK
+#include <windows.h>
+#define WAIT(x) Sleep(x)
+#else
 #define WAIT(x) usleep(x * 1000)
+#endif
+
 #define DEBUG(msg) std::cout << msg << std::endl
-
-
-
 #endif

@@ -7,6 +7,8 @@ ContextData::ContextData(I_Sender* sender, I_Receiver* receiver) {
     this->sender = sender;
     this->receiver = receiver;
     stateStack = new std::stack<State*>();
+    #ifdef MOCK
+    timer_sender = new ChannelManager()
     timer_sender = new PulseMsg::Sender(receiver->getchid());
     timer = new Timer(timer_sender);
 
