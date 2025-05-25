@@ -13,12 +13,8 @@ TARGET = $(OUTPUT_DIR)/$(ARTIFACT)
 
 #Compiler definitions
 
-# CC = qcc -Vgcc_nto$(PLATFORM)
-# CXX = qcc -lang-c++ -Vgcc_nto$(PLATFORM)
-# LD = $(CXX)
-
-CC = gcc 
-CXX = g++
+CC = qcc -Vgcc_nto$(PLATFORM)
+CXX = qcc -lang-c++ -Vgcc_nto$(PLATFORM)
 LD = $(CXX)
 
 #User defined include/preprocessor flags and libraries
@@ -39,7 +35,7 @@ CCFLAGS_profile += -g -O0 -finstrument-functions
 LIBS_profile += -lprofilingS
 
 #Generic compiler flags (which include build type flags)
-CCFLAGS_all += -Wall -O2 -g -DMOCK
+CCFLAGS_all += -Wall -fmessage-length=0
 CCFLAGS_all += $(CCFLAGS_$(BUILD_PROFILE))
 #Shared library has to be compiled with -fPIC
 #CCFLAGS_all += -fPIC

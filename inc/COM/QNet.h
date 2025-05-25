@@ -3,7 +3,9 @@
 #pragma once
 
 #include "EventPriority.h"
+#include <cstdint>
 
+#ifdef MOCK
 union sigval {
 	int   sival_int;
 	void* sival_ptr;
@@ -13,6 +15,7 @@ typedef struct {
 	int8_t code;
 	union sigval value;
 } _pulse;
+#endif
 
 class I_Receiver {
 public:

@@ -37,6 +37,7 @@ Context<T>::Context(){
 template <typename T>
 Context<T>::Context(ContextData* data):state(new T(data)){
     this->data = data;
+    state->entry();
 }
 template <typename T>
 Context<T>::~Context() {

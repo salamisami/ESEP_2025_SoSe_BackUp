@@ -16,15 +16,16 @@ ModeHandler::~ModeHandler() {}
 
 void ModeHandler::entry() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
+    subState->entry();
 }
 
 void ModeHandler::exit() {
+    subState->exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 //===================================================== public functions =====================================================
 
-//void ModeHandler::publicFunction(){}
 State* ModeHandler::button_start_pressed(){
     State* newSubstate = subState->button_start_pressed();
     if(newSubstate != nullptr){

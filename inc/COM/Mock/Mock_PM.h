@@ -7,17 +7,6 @@
 
 
 
-union sigval {
-	int   sival_int;
-	void* sival_ptr;
-};
-
-typedef struct {
-	int8_t code;
-	union sigval value;
-} _pulse;
-
-
 namespace Mock_PM {
 	class Receiver : public I_Receiver {
 	public:

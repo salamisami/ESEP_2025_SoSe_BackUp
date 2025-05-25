@@ -2,7 +2,7 @@
 #define EVENT_H
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 
 enum class InterruptEnum : int {

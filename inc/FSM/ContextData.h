@@ -15,7 +15,7 @@ class State;
 class ContextData {
     //============================================ contructors & destructors ============================================
 public:
-    ContextData(I_Sender* sender, I_Receiver* receiver);
+    ContextData(I_Sender* sender, I_Receiver* receiver, I_Sender* timer_sender);
     ContextData();
     virtual ~ContextData();
 
