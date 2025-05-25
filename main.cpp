@@ -18,6 +18,7 @@
 #include <thread>
 #include <iostream>
 #include "TrafficUtility.h"
+#include "Thread_COM.h"
 
 #define ONE_MILLISECOND 1000
 
@@ -42,6 +43,12 @@ int main() {
 
     Thread_COM::Sender* abc = new Thread_COM::Sender(FBM_1_DISPATCHER);
     Thread_COM::Sender* def = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    traffic.trafficGreen(0.5);  // Green light at 1Hz
+    traffic.trafficYellow(2); // Yellow light at 2Hz
+    traffic.trafficRed(5);  // Red light at 0.5Hz
+    
+    // Let them run for 10 seconds
+    std::this_thread::sleep_for(std::chrono::seconds(100));
     
 
     ContextData* data = new ContextData(fsm_sender, fsm_receiver, timer_sender);
