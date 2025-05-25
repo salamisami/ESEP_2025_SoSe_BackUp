@@ -43,6 +43,7 @@ void HAL::init() {
     interrupt = new Interrupt(local_sender, actuator);
     
     //TODO call actuator isGate()
+    //TODO check that no sensors are blocked during init
     //adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
     halThread = std::thread(&HAL::threadFunction, this);
 }
