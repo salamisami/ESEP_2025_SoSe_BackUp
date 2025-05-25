@@ -16,6 +16,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <thread>
+#include <iostream>
+#include "TrafficUtility.h"
 
 #define ONE_MILLISECOND 1000
 
