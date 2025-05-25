@@ -2,8 +2,12 @@
 #define EVENTPRIORITY_H
 #pragma once
 
-#include <sched.h>
+
+#ifndef _WIN32
 #include <sys/neutrino.h>
+#else
+#define SIGEV_PULSE_PRIO_INHERIT -1
+#endif
 
 
 enum class EventPriority : int{

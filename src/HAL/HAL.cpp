@@ -3,14 +3,16 @@
 #define MAILBOX_SIZE 1
 
 //================================================= contructors & destructors =================================================
-HAL::HAL(const char* local_gns_name, const char* target_gns_name) {
-    local_receiver = new Thread_COM::Receiver(local_gns_name);
-    local_sender = new Thread_COM::Sender(target_gns_name);
+HAL::HAL(I_Receiver* local_receiver, I_Sender* local_sender) {
+    detached = false;
+    this->local_receiver = local_receiver;
+    this->local_sender = local_sender;
     mock_dispatcher_sender = new PulseMsg::Sender(local_receiver->getchid());
     init();
 }
 
 HAL::HAL() {
+    detached = true;
     local_receiver = new PulseMsg::Receiver();
     mock_dispatcher_receiver = new PulseMsg::Receiver();
     //TODO converting mock_dispatcher_Receiver to stack casues problem
@@ -23,15 +25,21 @@ HAL::~HAL() {
     mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
     halThread.join();
     //delete adc;
-    delete actuator;
     delete interrupt;
+    delete actuator;
     //DEBUG("Actuator and Interrupts are deleted");
 
     delete adc_mailbox;
     delete actuator_mailbox;
-    
-    delete local_sender;
-    delete local_receiver;
+
+    if(detached) {
+        delete mock_dispatcher_sender;
+        delete local_sender;
+        delete mock_dispatcher_receiver;
+        delete local_receiver;
+    } else {
+        delete mock_dispatcher_sender;
+    }
 }
 
 //===================================================== private functions =====================================================
@@ -41,7 +49,7 @@ void HAL::init() {
     DEBUG("Mailboxes are created");
     actuator = new Actuator(actuator_mailbox);
     interrupt = new Interrupt(local_sender, actuator);
-    
+
     //TODO call actuator isGate()
     //TODO check that no sensors are blocked during init
     //adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
