@@ -10,15 +10,17 @@
 *.xml
 # === Standard Output-Dateien von g++ oder clang++ ===
 a.out
-main
+main.cpp
 
 # === Build-Ordner (z. B. bei CMake oder Make) ===
 build/
 bin/
 lib/
+.metadata/
 
 # === VS Code Projektdateien ===
 .vscode/
+vsc.bat
 
 # === Temporäre Dateien ===
 *~

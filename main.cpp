@@ -6,6 +6,14 @@
 #include "HAL.h"
 
 #include <iostream>
+#include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/dispatch.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <thread>
 
 #define ONE_MILLISECOND 1000
 
