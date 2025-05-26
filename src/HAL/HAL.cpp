@@ -110,7 +110,7 @@ void HAL::test_ins() {
                     break;
                 }
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
-                WAIT(500);
+                WAIT(1000);
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                 break;
             case InterruptEnum::BUTTON_ESTOP_PRESSED:

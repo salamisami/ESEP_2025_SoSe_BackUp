@@ -278,7 +278,7 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         case BUTTON_ESTOP_BIT:
             event = pin_status ? InterruptEnum::BUTTON_ESTOP_RELEASED : InterruptEnum::BUTTON_ESTOP_PRESSED;
             if(event == InterruptEnum::BUTTON_ESTOP_PRESSED){
-                actuator->global_shutdown();
+                actuator->stop_moving_parts();
             } else {
                 actuator->reset();
             }
