@@ -6,6 +6,7 @@
 #include "Event.h"
 #include "QNet.h"
 #include "EventPriority.h"
+#include "Actuator.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -34,6 +35,7 @@
 class Interrupt {
 public: //============================================ contructors & destructors ============================================
     Interrupt(I_Sender* sender);
+    Interrupt(I_Sender* sender, Actuator* actuator);
     //Interrupt();
     virtual ~Interrupt();
 
@@ -49,6 +51,7 @@ private: //================================================ private variables ==
     std::thread interruptThread;
     uintptr_t gpio_bank_0;
     I_Sender* sender;
+    Actuator* actuator;
     //primitive types
     uint32_t inputPins;
     int interruptID;

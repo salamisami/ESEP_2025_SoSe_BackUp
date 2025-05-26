@@ -37,8 +37,6 @@ void HAL::init() {
     actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     DEBUG("Mailboxes are created");
-
-    interrupt = new Interrupt(local_sender);
     actuator = new Actuator(actuator_mailbox);
     adc = new ADC_Class(adc_mailbox, local_sender);
 
@@ -192,7 +190,7 @@ void HAL::test_ins() {
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                 break;
             case InterruptEnum::BUTTON_ESTOP_PRESSED:
-                running = false;
+                //running = false;
                 break;
             case InterruptEnum::BUTTON_STOP_PRESSED:
                 running = false;
