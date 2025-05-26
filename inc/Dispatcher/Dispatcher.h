@@ -34,7 +34,6 @@ private:
 
 	int coid_arr[MAX_NUM_COMP] = {0,0,0,0,0};
 
-	int handle_appl_pulse(header_t header,int rcvid);
 };
 
 

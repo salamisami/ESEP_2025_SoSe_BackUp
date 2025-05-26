@@ -30,13 +30,6 @@ Dispatcher::~Dispatcher() {
 
 }
 
-int Dispatcher::handle_appl_pulse(header_t header,int rcvid){
-	switch (header.code) {
-	}
-	//TODO is it true to return 0 here? Previously there was no return at all.
-	return 0;
-}
-
 void Dispatcher::run_dispatcher() {
 
 //waiting for all components to connect to DispatcherS
