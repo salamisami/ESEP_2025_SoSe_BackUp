@@ -3,10 +3,10 @@
 #pragma once
 
 
-#ifndef _WIN32
-#include <sys/neutrino.h>
-#else
+#ifdef MOCK
 #define SIGEV_PULSE_PRIO_INHERIT -1
+#else
+#include <sys/neutrino.h>
 #endif
 
 
