@@ -25,9 +25,11 @@ HAL::~HAL() {
     //delete adc;
     delete actuator;
     delete interrupt;
+    //DEBUG("Actuator and Interrupts are deleted");
 
     delete adc_mailbox;
     delete actuator_mailbox;
+    
     delete local_sender;
     delete local_receiver;
 }
@@ -41,13 +43,14 @@ void HAL::init() {
     adc = new ADC_Class(adc_mailbox, local_sender);
 
     //TODO call actuator isGate()
+    //TODO check that no sensors are blocked during init
     halThread = std::thread(&HAL::threadFunction, this);
 }
 void HAL::threadFunction() {
     DEBUG("HAL Thread started.");
     hal_running = true;
+    _pulse event;
     while(hal_running) {
-        _pulse event;
         local_receiver->receive_event(&event);
         Topic event_code = (Topic) event.code;
         switch(event_code) {
@@ -58,13 +61,14 @@ void HAL::threadFunction() {
                 adc_mailbox->put(event);
                 break;
             case Topic::STOP_THREAD:
-                actuator_mailbox->put(event);
                 hal_running = false;
                 break;
             default:
                 break;
         }
     }
+    actuator_mailbox->put(event);
+    adc_mailbox->put(event);
 }
 
 //===================================================== public functions =====================================================
@@ -186,7 +190,7 @@ void HAL::test_ins() {
                     break;
                 }
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
-                WAIT(500);
+                WAIT(1000);
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                 break;
             case InterruptEnum::BUTTON_ESTOP_PRESSED:
