@@ -5,6 +5,8 @@
 #include "Event.h"
 #include "ModeHandler.h"
 
+#include "Timer.h"
+
 #include <iostream>
 
 #define ONE_MILLISECOND 1000
@@ -20,24 +22,27 @@ int main() {
     Mock_PM::Sender* remote_control = new Mock_PM::Sender(local_receiver);
     I_Sender* timer_sender = new Mock_PM::Sender(local_receiver);
 
-    ContextData* data = new ContextData(remote_control, local_receiver, timer_sender);
-    Context<ModeHandler>* fsm = new Context<ModeHandler>(data);
+    //ContextData* data = new ContextData(remote_control, local_receiver, timer_sender);
+    //Context<ModeHandler>* fsm = new Context<ModeHandler>(data);
 
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    Timer* timer = new Timer(timer_sender);
 
+    timer->setTimer(2000, 1);
+    timer->setTimer(2000, 2);
+
+    //TODO Problem: Beide Timer müssen gleichzeitig beenden
     int eventNo = 0;
     for(int i = 0; i < 2; i++) {
         _pulse event;
         local_receiver->receive_event(&event);
         eventNo++;
         printf("Event Number: %d\n", eventNo);
-        fsm->handleEvent(event);
     }
     printf("End of State.\n");
 
-    delete fsm;
-    delete data;
+    delete timer;
+    // delete fsm;
+    // delete data;
     delete timer_sender;
     delete remote_control;
     delete local_receiver;

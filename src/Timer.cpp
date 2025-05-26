@@ -18,6 +18,9 @@ Timer::~Timer() {
 //===================================================== public functions =====================================================
 
 void Timer::setTimer(int miliseconds, int id) {
+    if(timerThread.joinable()){
+        timerThread.join();
+    }
     //TODO @Lucas please edit here
     timerThread = std::thread(&Timer::threadFunction, this, miliseconds, id);
 }
@@ -25,4 +28,5 @@ void Timer::setTimer(int miliseconds, int id) {
 void Timer::threadFunction(int miliseconds, int id) {
     WAIT(miliseconds);
     sender->send_event((int) Topic::TIMER, id, (int) EventPriority::SECOND_PRIO);
+    std::cout << "Timer for " << miliseconds << " ist abgelaufen" << std::endl;
 }
