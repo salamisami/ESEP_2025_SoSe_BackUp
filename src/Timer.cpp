@@ -28,7 +28,7 @@ void Timer::setTimer(int miliseconds, int id) {
 
 void Timer::threadFunction(int miliseconds, int id) {
     DEBUG("Timer Started...");
-    usleep(miliseconds * 1000);
+    WAIT(1000);
     DEBUG("Sending event....");
     sender->send_event((int) Topic::TIMER, id, (int) EventPriority::SECOND_PRIO);
     DEBUG("Timer ended...");
