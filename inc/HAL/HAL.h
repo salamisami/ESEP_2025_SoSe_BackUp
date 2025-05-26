@@ -14,12 +14,24 @@
 
 class HAL {
 public: //============================================ contructors & destructors ============================================
+	/**
+	 * @brief creates a hal without connection. Use this for test purposes
+	 */
 	HAL();
+
+	/**
+	 * @brief creates a hal with connection. The connection can be mocked, qnet, or gns. (Because they are all using the same interface)
+	 * @param local_receiver pointer to receiver, used by HAL to receive events
+	 * @param local_sender pointer so sender, used by HAL to send events
+	 */
 	HAL(I_Receiver* local_receiver, I_Sender* local_sender);
 	virtual ~HAL();
 
 
 public: //================================================ public functions ================================================
+	/**
+	 * @brief Tests the Interrupt and Actuators. Use this without external connection is recommended
+	 */
 	void test_ins();
 
 private: //================================================ private variables ================================================
