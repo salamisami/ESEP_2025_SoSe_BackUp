@@ -37,7 +37,7 @@ int main() {
         fsm_receiver->receive_event(&event);
         eventNo++;
         printf("Event Number: %d\n", eventNo);
-        if((Topic) event.code == Topic::INTERRUPT && (InterruptEnum) event.value.sival_int == InterruptEnum::BUTTON_STOP_PRESSED){
+        if((Topic) event.code == Topic::INTERRUPT && (InterruptEnum) event.value.sival_int == InterruptEnum::BUTTON_RESET_PRESSED){
             fsm_running = false;
         }
         fsm->handleEvent(event);

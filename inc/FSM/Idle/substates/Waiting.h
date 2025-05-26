@@ -7,6 +7,8 @@
 #include "Timer_Received.h"
 #include "Operating.h"
 
+#include "Macros.h"
+
 #define IDLE_TIMER 1
 
 class Waiting : public State {
