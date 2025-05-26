@@ -7,7 +7,7 @@ HAL::HAL(I_Receiver* local_receiver, I_Sender* local_sender) {
     detached = false;
     this->local_receiver = local_receiver;
     this->local_sender = local_sender;
-    mock_dispatcher_sender = new PulseMsg::Sender(local_receiver->getchid());
+    //mock_dispatcher_sender = new PulseMsg::Sender(local_receiver->getchid());
     init();
 }
 

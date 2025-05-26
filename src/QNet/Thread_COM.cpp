@@ -19,6 +19,10 @@ void Sender::send_event(int8_t event_code, int event_value, int priority) {
     MsgSendPulse(receiver_coid, priority, event_code, event_value);
 }
 
+int Sender::getcoid(){
+    return receiver_coid;
+}
+
 Receiver::Receiver(const char* name) {
     gns_name = name;
 

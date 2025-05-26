@@ -94,6 +94,10 @@ namespace Thread_COM {
 		 */
 		void send_event(int8_t event_code, int event_value, int priority = (int) EventPriority::DEFAULT) override;
 
+		/**
+		 * @brief returns connection ID
+		 */
+		int getcoid() override;
 
 
 	private: //================================================ private variables ================================================

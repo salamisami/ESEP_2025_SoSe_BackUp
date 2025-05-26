@@ -4,6 +4,8 @@
 #include "Event.h"
 #include "ModeHandler.h"
 #include "HAL.h"
+#include "Dispatcher.h"
+#include "Thread_COM.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -24,19 +26,27 @@ using namespace std;
 
 int main() {
     cout << "Starting Program..." << endl; // prints Hello World!!!
-
-    PulseMsg::Receiver* hal_receiver =  new PulseMsg::Receiver();
-    PulseMsg::Receiver* fsm_receiver = new PulseMsg::Receiver();
-
-    PulseMsg::Sender* fsm_sender = new PulseMsg::Sender(hal_receiver->getchid());
-    PulseMsg::Sender* hal_sender = new PulseMsg::Sender(fsm_receiver->getchid());
-
+    system("gns -s ");
     
-    I_Sender* timer_sender = new PulseMsg::Sender(fsm_receiver->getchid());
+    Dispatcher* dispatcher = new Dispatcher();
+    std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
+
+    Thread_COM::Receiver* hal_receiver =  new Thread_COM::Receiver(FBM_1_HAL);
+    Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
+    Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    
+    I_Sender* timer_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+
+    Thread_COM::Sender* abc = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    Thread_COM::Sender* def = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    
+
     ContextData* data = new ContextData(fsm_sender, fsm_receiver, timer_sender);
     Context<ModeHandler>* fsm = new Context<ModeHandler>(data);
 
     HAL* hal = new HAL(hal_receiver, hal_sender);
+    DEBUG("HAL is started");
 
     bool fsm_running = true;
     int eventNo = 0;
