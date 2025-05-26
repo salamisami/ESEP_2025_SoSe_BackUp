@@ -2,8 +2,12 @@
 #define EVENTPRIORITY_H
 #pragma once
 
-#include <sched.h>
+
+#ifdef MOCK
+#define SIGEV_PULSE_PRIO_INHERIT -1
+#else
 #include <sys/neutrino.h>
+#endif
 
 
 enum class EventPriority : int{

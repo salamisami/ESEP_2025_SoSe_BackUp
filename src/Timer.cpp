@@ -1,8 +1,8 @@
 #include "Timer.h"
 
 //================================================= contructors & destructors =================================================
-Timer::Timer(int feedbackConnectionID) : coid(feedbackConnectionID) {
-
+Timer::Timer(I_Sender* sender) {
+    this->sender = sender;
 }
 
 Timer::~Timer() {
@@ -18,13 +18,18 @@ Timer::~Timer() {
 //===================================================== public functions =====================================================
 
 void Timer::setTimer(int miliseconds, int id) {
+    //TODO calling this twice will not create 2 separate threads
+    if(timerThread.joinable()) {
+        timerThread.join();
+    }
+    DEBUG("Creating new timer thread");
     timerThread = std::thread(&Timer::threadFunction, this, miliseconds, id);
 }
 
 void Timer::threadFunction(int miliseconds, int id) {
-    WAIT(miliseconds);
-    int status = MsgSendPulse(coid, (int) EventPriority::SECOND_PRIO, (int) Topic::TIMER, id);
-    if(status < 0) {
-        THROW("Cannot set up a timer");
-    }
+    DEBUG("Timer Started...");
+    WAIT(1000);
+    DEBUG("Sending event....");
+    sender->send_event((int) Topic::TIMER, id, (int) EventPriority::SECOND_PRIO);
+    DEBUG("Timer ended...");
 }

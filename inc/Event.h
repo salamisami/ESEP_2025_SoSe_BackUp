@@ -2,7 +2,7 @@
 #define EVENT_H
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 
 enum class InterruptEnum : int {
@@ -54,16 +54,12 @@ enum class ActuatorEnum : int {
     LED_Q2_ON,
     LED_Q2_OFF
 };
-enum class Dispatcher : int {
-    HAL_READY = 1
-};
 
 
 enum class Topic : int8_t {
     INTERRUPT = 1,
     ACTUATOR,
     QNET,
-    DISPATCHER,
     ADC,
     STOP_THREAD,
     TIMER
