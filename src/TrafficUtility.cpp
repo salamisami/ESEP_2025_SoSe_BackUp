@@ -17,8 +17,11 @@ TrafficUtility::TrafficUtility(int chid)
 }
 
 TrafficUtility& TrafficUtility::getInstance(int chid) {
-    static TrafficUtility instance(chid);
-    return instance;
+    std::lock_guard<std::mutex> lock(instanceMutex_);
+    if (!instance_) {
+        instance_.reset(new TrafficUtility(chid));
+    }
+    return *instance_;
 }
 TrafficUtility::~TrafficUtility() {
 	stopAll();
@@ -29,16 +32,16 @@ void TrafficUtility::sendLightPulse(ActuatorEnum state) {
 		Thread_COM::send_event(coid_, static_cast<int8_t>(state), 1, 0);
 
 		// Debug output
-		const char* color = "";
-		switch (state) {
+		//const char* color = "";
+		/*switch (state) {
 		case ActuatorEnum::TRAFFIC_YELLOW_OFF:
 			color = "YELLOW";
 			break;
 		default:
 			color = "UNKNOWN";
 			break;
-		}
-		std::cout << "Sent pulse: " << color << " light" << std::endl;
+		}*/
+		//std::cout << "Sent pulse: " << color << " light" << std::endl;
 	} catch (...) {
 		std::cerr << "Failed to send pulse for light state: "
 				<< static_cast<int>(state) << std::endl;
