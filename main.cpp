@@ -41,9 +41,10 @@ int main() {
     
     I_Sender* timer_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
-    Thread_COM::Sender* abc = new Thread_COM::Sender(FBM_1_DISPATCHER);
-    Thread_COM::Sender* def = new Thread_COM::Sender(FBM_1_DISPATCHER);
-    traffic.trafficGreen(0.5);  // Green light at 1Hz
+    auto& traffic = TrafficUtility::getInstance();
+    /*Thread_COM::Sender* abc = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    Thread_COM::Sender* def = new Thread_COM::Sender(FBM_1_DISPATCHER);*/
+    traffic.trafficGreen(0.5);   //Green light at 1Hz
     traffic.trafficYellow(2); // Yellow light at 2Hz
     traffic.trafficRed(5);  // Red light at 0.5Hz
     

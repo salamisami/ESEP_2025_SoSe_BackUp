@@ -13,7 +13,7 @@
 class TrafficUtility {
 public:
     // Get the singleton instance
-    static TrafficUtility& getInstance(int chid = 0);
+    static TrafficUtility& getInstance();
 
     ~TrafficUtility();
     // Traffic light control functions
@@ -39,7 +39,8 @@ public:
     TrafficUtility& operator=(TrafficUtility&&) = delete;
 
 private:
-    TrafficUtility(int chid);
+    TrafficUtility();
+    Thread_COM::Sender* traffic_sender;
     int coid_;
     static std::mutex instanceMutex_;
     static std::unique_ptr<TrafficUtility> instance_;

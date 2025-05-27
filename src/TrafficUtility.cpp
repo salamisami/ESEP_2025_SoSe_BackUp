@@ -3,23 +3,21 @@
 #include <iostream>
 #include "Thread_COM.h"
 #include "Event.h"
+#include "EventPriority.h"
 
 std::mutex TrafficUtility::instanceMutex_;
 std::unique_ptr<TrafficUtility> TrafficUtility::instance_;
 
-TrafficUtility::TrafficUtility(int chid)
+TrafficUtility::TrafficUtility()
     : coid_(0)
 {
-    name_attach_t* attach = nullptr;
-    if (Thread_COM::setup_thread_communication(nullptr, attach, &coid_) != 0) {
-        throw std::runtime_error("Failed to initialize communication");
-    }
+	traffic_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 }
 
-TrafficUtility& TrafficUtility::getInstance(int chid) {
+TrafficUtility& TrafficUtility::getInstance() {
     std::lock_guard<std::mutex> lock(instanceMutex_);
     if (!instance_) {
-        instance_.reset(new TrafficUtility(chid));
+        instance_.reset(new TrafficUtility());
     }
     return *instance_;
 }
@@ -29,7 +27,7 @@ TrafficUtility::~TrafficUtility() {
 
 void TrafficUtility::sendLightPulse(ActuatorEnum state) {
 	try {
-		Thread_COM::send_event(coid_, static_cast<int8_t>(state), 1, 0);
+		traffic_sender->send_event((int8_t)Topic::ACTUATOR, static_cast<int8_t>(state));
 
 		// Debug output
 		//const char* color = "";
@@ -41,7 +39,7 @@ void TrafficUtility::sendLightPulse(ActuatorEnum state) {
 			color = "UNKNOWN";
 			break;
 		}*/
-		//std::cout << "Sent pulse: " << color << " light" << std::endl;
+		//std::cout << "Sent pulse: " << color << " light" << std::std::endl;
 	} catch (...) {
 		std::cerr << "Failed to send pulse for light state: "
 				<< static_cast<int>(state) << std::endl;
@@ -156,8 +154,10 @@ void TrafficUtility::greenWorker() {
 
 			// Alternate between on and off states
 			if (lightOn) {
+				std::cout << "traffic green off" << std::endl;
 				sendLightPulse(ActuatorEnum::TRAFFIC_GREEN_OFF);
 			} else {
+				std::cout << "traffic green on" << std::endl;
 				sendLightPulse (ActuatorEnum::TRAFFIC_GREEN_ON);
 			}
 			lightOn = !lightOn; // Toggle state
@@ -184,8 +184,10 @@ void TrafficUtility::yellowWorker() {
 
 			// Alternate between on and off states
 			if (lightOn) {
+				std::cout << "traffic yellow off" << std::endl;
 				sendLightPulse(ActuatorEnum::TRAFFIC_YELLOW_OFF);
 			} else {
+				std::cout << "traffic yellow on" << std::endl;
 				sendLightPulse (ActuatorEnum::TRAFFIC_YELLOW_ON);
 			}
 			lightOn = !lightOn; // Toggle state
@@ -212,8 +214,10 @@ void TrafficUtility::redWorker() {
 
 			// Alternate between on and off states
 			if (lightOn) {
+				std::cout << "traffic red off" << std::endl;
 				sendLightPulse(ActuatorEnum::TRAFFIC_RED_OFF);
 			} else {
+				std::cout << "traffic red on" << std::endl;
 				sendLightPulse (ActuatorEnum::TRAFFIC_RED_ON);
 			}
 			lightOn = !lightOn; // Toggle state
