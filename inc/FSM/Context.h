@@ -130,6 +130,8 @@ void Context<T>::handleEvent(_pulse event) {
         }   
     } else if(event_code == Topic::TIMER){
         newState = state->timer((int) event_value);
+    } else if(event_code == Topic::STOP_THREAD){
+        state->exit();
     }
     
     if(newState != nullptr) {
