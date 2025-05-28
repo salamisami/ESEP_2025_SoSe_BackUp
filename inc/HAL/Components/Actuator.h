@@ -40,14 +40,16 @@ public: //============================================ contructors & destructors
 public: //================================================ public functions ================================================
     bool isGate();
     void test_outs();
-    void global_shutdown();
-    void reset();
+    
+    void local_estop_activate();
+    void local_estop_deactivate();
 
 
 
 private: //================================================ private variables ================================================
     //classes, STL containers, and structs
     std::thread actuatorThread;
+    std::thread trafficThread;
     std::mutex mtx;
     //pointers
     Mailbox<_pulse>* mailbox;
@@ -57,7 +59,9 @@ private: //================================================ private variables ==
     //primitive types
     //bool and char
     volatile bool actuatorRunning;
-    bool global_estop;
+    bool is_local_estop;
+    bool is_neighbor_estop;
+    bool prohibit_operate;
 
 
 
@@ -66,6 +70,12 @@ private: //================================================ private functions ==
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
 
     void threadFunction();
+    void global_shutdown();
+    void check_estop();
+    void stop_moving_parts();
+
+    void handleActuatorEvent(int event_value);
+    //void handleEStop(int event_value);
 
     void motor_right();
     void motor_left();
@@ -79,6 +89,15 @@ private: //================================================ private functions ==
     void traffic_yellow_off();
     void traffic_green_on();
     void traffic_green_off();
+
+    void traffic_red_slow();
+    void traffic_red_fast();
+    void traffic_yellow_slow();
+    void traffic_yellow_fast();
+    void traffic_green_slow();
+    void traffic_green_fast();
+
+
 
     void sorting_on();
     void sorting_off();

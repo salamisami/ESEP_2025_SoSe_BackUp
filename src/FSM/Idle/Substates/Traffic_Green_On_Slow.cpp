@@ -13,7 +13,7 @@ Traffic_Green_On_Slow::~Traffic_Green_On_Slow() {}
 //===================================================== public functions =====================================================
 void Traffic_Green_On_Slow::entry() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    //TODO blink slow
+    DEBUG("Blinking slow...");
 }
 
 void Traffic_Green_On_Slow::exit() {

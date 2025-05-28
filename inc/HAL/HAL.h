@@ -20,9 +20,10 @@ public: //============================================ contructors & destructors
 	HAL();
 
 	/**
-	 * @brief creates a hal with connection. The connection can be mocked, qnet, or gns. (Because they are all using the same interface)
+	 * @brief creates a hal with connection. The connection can be mocked, qnet, or gns. (Because they are all using the same interface).
+	 * 
 	 * @param local_receiver pointer to receiver, used by HAL to receive events
-	 * @param local_sender pointer so sender, used by HAL to send events
+	 * @param local_sender pointer so sender, used by HAL to send events. HAL will use this @param local_sender to send a confirmation, whether it is a switch or a pusher.
 	 */
 	HAL(I_Receiver* local_receiver, I_Sender* local_sender);
 	virtual ~HAL();

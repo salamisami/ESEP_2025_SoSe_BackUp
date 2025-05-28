@@ -27,7 +27,9 @@ enum class InterruptEnum : int {
     ADC_TOP_AREA_BLOCKED,
     ADC_TOP_AREA_UNBLOCKED,
     ADC_SIDE_AREA_BLOCKED,
-    ADC_SIDE_AREA_UNBLOCKED
+    ADC_SIDE_AREA_UNBLOCKED,
+    IS_SWITCH,
+    IS_PUSHER
 };
 enum class ActuatorEnum : int {
     MOTOR_RIGHT_START = 1,
@@ -39,6 +41,10 @@ enum class ActuatorEnum : int {
     SORTING_OFF,
     TRAFFIC_GREEN_ON_SLOW,
     TRAFFIC_GREEN_ON_FAST,
+    TRAFFIC_YELLOW_ON_SLOW,
+    TRAFFIC_YELLOW_ON_FAST,
+    TRAFFIC_RED_ON_SLOW,
+    TRAFFIC_RED_ON_FAST,
     TRAFFIC_GREEN_ON,
     TRAFFIC_GREEN_OFF,
     TRAFFIC_RED_ON,
@@ -59,7 +65,7 @@ enum class ActuatorEnum : int {
 enum class Topic : int8_t {
     INTERRUPT = 1,
     ACTUATOR,
-    QNET,
+    COM,
     ADC,
     STOP_THREAD,
     TIMER
@@ -73,6 +79,11 @@ enum class ADC_Enum : int {
     ADC_CALIBRATE,
     ADC_MESURE,
     ADC_INVALID_MESURE,
+};
+
+enum class COM_Enum: int{
+    BUTTON_ESTOP_PRESSED = 1,
+    BUTTON_ESTOP_RELEASED
 };
 
 

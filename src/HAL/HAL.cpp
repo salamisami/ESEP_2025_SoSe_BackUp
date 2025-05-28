@@ -50,9 +50,14 @@ void HAL::init() {
     actuator = new Actuator(actuator_mailbox);
     interrupt = new Interrupt(local_sender, actuator);
 
-    //TODO call actuator isGate()
     //TODO check that no sensors are blocked during init
     //adc = new ADC_Class(dispatcher_rcvid, adc_mailbox);
+    bool isGate = actuator->isGate();
+    if(isGate) {
+        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
+    } else {
+        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_PUSHER);
+    }
     halThread = std::thread(&HAL::threadFunction, this);
 }
 void HAL::threadFunction() {
@@ -62,8 +67,12 @@ void HAL::threadFunction() {
     while(hal_running) {
         local_receiver->receive_event(&event);
         Topic event_code = (Topic) event.code;
+        //int event_value = event.value.sival_int;
         switch(event_code) {
             case Topic::ACTUATOR:
+                actuator_mailbox->put(event);
+                break;
+            case Topic::COM:
                 actuator_mailbox->put(event);
                 break;
             case Topic::ADC:
@@ -89,11 +98,18 @@ void HAL::test_ins() {
     int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
     bool allowGo = true;
     bool allowSorting = true;
+    bool is_weiche = false;
     while(running) {
         _pulse msg;
         mock_dispatcher_receiver->receive_event(&msg);
         InterruptEnum event = (InterruptEnum) msg.value.sival_int;
         switch(event) {
+            case InterruptEnum::IS_PUSHER:
+                is_weiche = false;
+                break;
+            case InterruptEnum::IS_SWITCH:
+                is_weiche = true;
+                break;
             case InterruptEnum::LASER_FRONT_BLOCKED:
                 std::cout << "Thanks!" << std::endl;
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
@@ -114,17 +130,36 @@ void HAL::test_ins() {
                 allowGo = true;
                 break;
             case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
-                if(!allowSorting) {
-                    break;
+                if(allowSorting) {
+                    if(is_weiche) {
+                        //let the piece go to ramp
+                    } else {
+                        //open the gate to allow piece go through
+                        mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
+                        WAIT(500);
+                        mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
+                    }
+                } else {
+                    if(is_weiche) {
+                        //push the piece to ramp
+                        mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
+                        WAIT(500);
+                        mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
+                    } else {
+                        //let the piece go through
+                    }
                 }
-                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
-                WAIT(500);
-                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                 break;
             case InterruptEnum::BUTTON_ESTOP_PRESSED:
                 //running = false;
                 break;
             case InterruptEnum::BUTTON_STOP_PRESSED:
+                mock_dispatcher_sender->send_event((int8_t) Topic::COM, (int) COM_Enum::BUTTON_ESTOP_PRESSED);
+                break;
+            case InterruptEnum::BUTTON_STOP_RELEASED:
+                mock_dispatcher_sender->send_event((int8_t) Topic::COM, (int) COM_Enum::BUTTON_ESTOP_RELEASED);
+                break;
+            case InterruptEnum::BUTTON_RESET_PRESSED:
                 running = false;
                 break;
             case InterruptEnum::ADC_TOP_AREA_BLOCKED:
