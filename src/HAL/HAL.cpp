@@ -98,11 +98,18 @@ void HAL::test_ins() {
     int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
     bool allowGo = true;
     bool allowSorting = true;
+    bool is_weiche = false;
     while(running) {
         _pulse msg;
         mock_dispatcher_receiver->receive_event(&msg);
         InterruptEnum event = (InterruptEnum) msg.value.sival_int;
         switch(event) {
+            case InterruptEnum::IS_PUSHER:
+                is_weiche = false;
+                break;
+            case InterruptEnum::IS_SWITCH:
+                is_weiche = true;
+                break;
             case InterruptEnum::LASER_FRONT_BLOCKED:
                 std::cout << "Thanks!" << std::endl;
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
@@ -123,12 +130,25 @@ void HAL::test_ins() {
                 allowGo = true;
                 break;
             case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
-                if(!allowSorting) {
-                    break;
+                if(allowSorting) {
+                    if(is_weiche) {
+                        //let the piece go to ramp
+                    } else {
+                        //open the gate to allow piece go through
+                        mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
+                        WAIT(500);
+                        mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
+                    }
+                } else {
+                    if(is_weiche) {
+                        //push the piece to ramp
+                        mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
+                        WAIT(500);
+                        mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
+                    } else {
+                        //let the piece go through
+                    }
                 }
-                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
-                WAIT(500);
-                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                 break;
             case InterruptEnum::BUTTON_ESTOP_PRESSED:
                 //running = false;
