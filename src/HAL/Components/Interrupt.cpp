@@ -244,11 +244,8 @@ void Interrupt::isr(void) {
     if(last_causing_pin != causing_pin || last_pin_status != pin_status) {
         last_causing_pin = causing_pin;
         last_pin_status = pin_status;
-
-        //TODO e-stopp is still trigerred 2x during e-stop pull. 
         sendEvent(causing_pin, pin_status);
     }
-
 }
 
 
@@ -278,9 +275,9 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         case BUTTON_ESTOP_BIT:
             event = pin_status ? InterruptEnum::BUTTON_ESTOP_RELEASED : InterruptEnum::BUTTON_ESTOP_PRESSED;
             if(event == InterruptEnum::BUTTON_ESTOP_PRESSED){
-                actuator->stop_moving_parts();
+                actuator->local_estop_activate();
             } else {
-                actuator->reset();
+                actuator->local_estop_deactivate();
             }
             sender->send_event((int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
             return;
