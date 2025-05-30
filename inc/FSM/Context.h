@@ -94,6 +94,13 @@ void Context<T>::handleEvent(_pulse event) {
         case InterruptEnum::BUTTON_ESTOP_RELEASED:
             newState = state->button_estop_released();
             break;
+        //TODO is this true?
+        case COM_Enum::BUTTON_ESTOP_PRESSED:
+            newState = state->button_estop_pressed();
+            break;
+        case COM_Enum::BUTTON_ESTOP_RELEASED:
+            newState = state->button_estop_released();
+            break;
         case InterruptEnum::METAL_DETECTED:
             newState = state->metal_detected();
             break;
