@@ -25,7 +25,10 @@ public: //============================================ contructors & destructors
 	
 
 public: //================================================ public functions ================================================
-	//void publicFunction();
+    /**
+     * @brief stops the ADC immediately. This function will be called, as soon as e-stop button is pressed.
+     */
+    void adc_estop();
     
 
 
@@ -51,6 +54,7 @@ private: //================================================ private functions ==
     void eventLoop();
     void calibrate();
     void measureClassifySend();
+    void adc_prepare();
 	
 };
 

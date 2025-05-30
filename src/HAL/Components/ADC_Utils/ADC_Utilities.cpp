@@ -18,7 +18,7 @@ void ADC_Utilities::saveProfile(const Profil& p) {
     }
 
     file << p.name << ","
-    	<< static_cast<int32_t>(p.eventValue) << ","
+        << static_cast<int32_t>(p.eventValue) << ","
         << p.hatLoch << ","
         << p.avg << ","
         << p.lochMin << ","
@@ -29,6 +29,38 @@ void ADC_Utilities::saveProfile(const Profil& p) {
     std::cout << "Profil erfolgreich gespeichert: " << p.name << "\n";
 }
 
+void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage) {
+    std::vector<float> werte;
+    struct timespec delay = { 0, SAMPLE_DELAY_NS };
+    bool erkannt = false;
+    while(true) {
+        adc.sample();
+        //TODO Magic number
+        usleep(1000);
+        uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
+        float voltage = (raw / 4095.0f) * REF_VOLTAGE;
+        float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
+
+        if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
+            erkannt = true;
+            DEBUG("adc new piece");
+        }
+        if(erkannt) {
+            werte.push_back(sensorVoltage);
+            if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT) {
+                break;
+            }
+            if(werte.size() >= MAX_WERT) {
+                //Error Event Ergänzen
+                std::cout << "Ungültige Messanzahl, Bitte Laufband Kontrollieren\n";
+                break;
+            }
+        }
+        nanosleep(&delay, NULL);
+    }
+}
+
+
 void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage) {
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
 
@@ -36,7 +68,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
     std::vector<Bauteil> bauteile = {
         { "WH", ADC_Enum::ADC_WH_DETECT, false },
         { "WF", ADC_Enum::ADC_WF_DETECT, false },
-        { "W_B", ADC_Enum::ADC_W_B_DETECT, true},
+        { "W_B", ADC_Enum::ADC_W_B_DETECT, true },
         { "W_BB", ADC_Enum::ADC_W_B_DETECT, true },
         { "W_BM", ADC_Enum::ADC_W_NOT_DETECT, true },
         { "W_BC", ADC_Enum::ADC_W_NOT_DETECT, true },
@@ -186,7 +218,7 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
 
         if(std::fabs(avg - p.avg) > MESS_TOLERANZ) {
             std::cout << "  → ❌ Mittelwert außerhalb Toleranz\n";
-            std::cout << "Aktuell:"<< avg <<"gespeichert:"<< p.avg << "\n";
+            std::cout << "Aktuell:" << avg << "gespeichert:" << p.avg << "\n";
             continue;
         }
 
@@ -230,6 +262,7 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
 
         if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
             erkannt = true;
+            //TODO As we now use ADC_Enum::ADC_Prepare, this function can start measuring right away, without checking if a piece is recognized or not.
             std::cout << "Bauteil erkannt – Messung startet\n";
         }
         if(erkannt) {

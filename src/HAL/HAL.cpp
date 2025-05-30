@@ -15,7 +15,6 @@ HAL::HAL() {
     detached = true;
     local_receiver = new PulseMsg::Receiver();
     mock_dispatcher_receiver = new PulseMsg::Receiver();
-    //TODO converting mock_dispatcher_Receiver to stack casues problem
     local_sender = new PulseMsg::Sender(mock_dispatcher_receiver->getchid());
     mock_dispatcher_sender = new PulseMsg::Sender(local_receiver->getchid());
     init();
@@ -97,12 +96,13 @@ void HAL::test_ins_ADC() {
     bool running = true;
     int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
     //int8_t AdcCode = (int8_t) Topic::ADC;
-    bool calibrated = true;
+    bool calibrated = false;
+    bool allowGo = true;
+    bool allowSorting = true;
+    bool is_weiche = false;
     if(!calibrated) {
         mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATE);
     }
-
-
     while(running) {
         _pulse msg;
         mock_dispatcher_receiver->receive_event(&msg);
@@ -118,54 +118,55 @@ void HAL::test_ins_ADC() {
                             std::cout << "Thanks!" << std::endl;
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_RIGHT_START);
-                            //mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
                             if(!calibrated) {
-
-                                //mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
+                                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
                             } else {
-                                //mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
-                                mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
-                                //this adc mesure sends an "Bauteil erkannt back as long as a piece is detected"
+                                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
                             }
+                            break;
+                        case InterruptEnum::LASER_FRONT_UNBLOCKED:
+                            mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_PREPARE);
                             break;
                         case InterruptEnum::LASER_BACK_BLOCKED:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_ON);
+                            allowGo = false;
                             break;
                         case InterruptEnum::LASER_BACK_UNBLOCKED:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_OFF);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+                            allowGo = true;
                             break;
                         case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
                             if(calibrated) {
-                                WAIT(500);
+                                //let through
+                                if(is_weiche) {
+                                    //open the gate to go through
+                                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
+                                    WAIT(500);
+                                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
+                                } else {
+                                    //do not push to the ramp
+                                }
                             } else {
-                                WAIT(2000);
+                                //send to ramp
+                                if(is_weiche) {
+                                    //do nothing and let it slide 🛝
+                                } else {
+                                    //push the piece to ramp
+                                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
+                                    WAIT(500);
+                                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
+                                }
                             }
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                             break;
                         case InterruptEnum::BUTTON_ESTOP_PRESSED:
                             //running = false;
                             break;
                         case InterruptEnum::BUTTON_STOP_PRESSED:
                             //running = false;
-                            break;
-                        case InterruptEnum::ADC_SIDE_AREA_BLOCKED:
-                            //mock_dispatcher_sender->send_event(AdcCode, (int) mode);
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
-                            if(calibrated) {
-                                //mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
-                            }
-                            break;
-                        case InterruptEnum::ADC_SIDE_AREA_UNBLOCKED:
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
-                            if(calibrated) {
-                                //mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
-                            }
-
                             break;
                         default:
                             break;
@@ -175,17 +176,29 @@ void HAL::test_ins_ADC() {
             case Topic::ADC: {
                     ADC_Enum AdcEvent = (ADC_Enum) msg.value.sival_int;
                     switch(AdcEvent) {
+                        case ADC_Enum::ADC_NEW_PIECE:
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
+                            mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
+                            break;
                         case ADC_Enum::ADC_CALIBRATION_DONE:
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
                             calibrated = true;
                             DEBUG("Calibration Done!");
                             break;
                         case ADC_Enum::ADC_WH_DETECT:
                             DEBUG("ADC_WH_DETECT");
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
                             break;
                         case ADC_Enum::ADC_WF_DETECT:
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
                             DEBUG("ADC_WF_DETECT");
                             break;
                         case ADC_Enum::ADC_W_B_DETECT:
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
                             DEBUG("ADC_W_B_DETECT");
                             break;
                         default:

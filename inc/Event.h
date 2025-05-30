@@ -79,7 +79,10 @@ enum class ADC_Enum : int {
     ADC_CALIBRATE,
     ADC_MESURE,
     ADC_INVALID_MESURE,
-    ADC_CALIBRATION_DONE
+    ADC_CALIBRATION_DONE,
+    ADC_PREPARE,
+    ADC_NEW_PIECE,
+    ADC_STOP
 };
 
 enum class COM_Enum: int{
