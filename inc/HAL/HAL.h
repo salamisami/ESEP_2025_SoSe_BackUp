@@ -40,6 +40,7 @@ public: //================================================ public functions ====
 	 * @brief Tests the Interrupt and Actuators. Use this without external connection is recommended
 	 */
 	void test_ins();
+	void test_ins_ADC();
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
