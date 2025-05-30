@@ -1,19 +1,8 @@
 #include "Logic.h"
 
 //================================================= contructors & destructors =================================================
-Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender) {
-    this->local_receiver = local_receiver;
-    this->local_sender = local_sender;
-    logicRunning = true;
 
-    #ifdef MOCK
-    #else
-    timer_sender = new PulseMsg::Sender(local_receiver->getchid());
-    #endif
-    logicThread = std::thread(&Logic::threadFunction, this);
-}
-
-Logic::Logic(Mock_PM::Receiver* local_receiver, Mock_PM::Sender* local_sender, I_Sender* timer_sender) {
+Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* timer_sender) {
     this->local_receiver = local_receiver;
     this->local_sender = local_sender;
     this->timer_sender = timer_sender;
@@ -26,10 +15,6 @@ Logic::~Logic() {
     if(logicThread.joinable()) {
         logicThread.join();
     }
-    #ifdef MOCK
-    #else
-    delete timer_sender;
-    #endif
 }
 
 //===================================================== private functions =====================================================

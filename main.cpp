@@ -50,9 +50,10 @@ int main() {
 
     remote_control->send_event((int8_t)Topic::STOP_THREAD,0);
 
-    Logic logic = Logic(logic_receiver, remote_control, timer_sender);
+    Logic* logic = new Logic(logic_receiver, remote_control, timer_sender);
     WAIT(1000);
 
+    delete logic;
     delete remote_control;
     delete logic_receiver;
     cout << "Program Finished." << endl;
