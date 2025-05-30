@@ -64,7 +64,6 @@ private: //================================================ private variables ==
 	//bool and char
 	volatile bool hal_running;
 	bool detached;
-	bool detached;
 
 
 
