@@ -17,6 +17,9 @@ public: //============================================ contructors & destructors
 	/**
 	 * @brief creates a hal without connection. Use this for test purposes
 	 */
+	/**
+	 * @brief creates a hal without connection. Use this for test purposes
+	 */
 	HAL();
 
 	/**
@@ -30,6 +33,9 @@ public: //============================================ contructors & destructors
 
 
 public: //================================================ public functions ================================================
+	/**
+	 * @brief Tests the Interrupt and Actuators. Use this without external connection is recommended
+	 */
 	/**
 	 * @brief Tests the Interrupt and Actuators. Use this without external connection is recommended
 	 */
@@ -57,6 +63,7 @@ private: //================================================ private variables ==
 	int dispatcher_mock_rcvid;
 	//bool and char
 	volatile bool hal_running;
+	bool detached;
 	bool detached;
 
 
