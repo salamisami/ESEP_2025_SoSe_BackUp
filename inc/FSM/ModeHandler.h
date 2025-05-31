@@ -21,6 +21,8 @@ public: //================================================ public functions ====
 	State* button_start_released() override;
 	State* button_stop_pressed() override;
 	State* button_estop_pressed() override;
+	State* laser_front_blocked() override;
+	State* adc_calibration_done() override;
 	State* timer(int id) override;
 
     
@@ -29,7 +31,7 @@ public: //================================================ public functions ====
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
-	State* subState;
+	State* substate;
 	//primitive types
 	//bool and char
    

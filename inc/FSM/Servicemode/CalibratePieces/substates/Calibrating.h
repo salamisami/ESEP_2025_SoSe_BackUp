@@ -1,23 +1,20 @@
-#ifndef SERVICEMODE_H
-#define SERVICEMODE_H
+#ifndef CALIBRATING_H
+#define CALIBRATING_H
 #pragma once
 
 #include "State.h"
-#include "Idle.h"
-#include "CalibratePieces.h"
+#include "CalibrationDone.h"
 
-class Servicemode : public State{
+class Calibrating : public State {
 public: //============================================ contructors & destructors ============================================
-    Servicemode(ContextData* data, State* initial_substate = nullptr);
-    virtual ~Servicemode();
+    Calibrating(ContextData* data);
+    virtual ~Calibrating();
 	
 
 public: //================================================ public functions ================================================
 	void entry() override;
 	void exit() override;
 
-	State* button_stop_pressed() override;
-	State* laser_front_blocked() override;
 	State* adc_calibration_done() override;
     
 
@@ -25,7 +22,6 @@ public: //================================================ public functions ====
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
-	State* substate;
 	//primitive types
 	//bool and char
    

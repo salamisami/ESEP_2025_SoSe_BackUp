@@ -1,40 +1,27 @@
-#include "Servicemode.h"
+#include "CalibratePieces.h"
 
 //================================================= contructors & destructors =================================================
-Servicemode::Servicemode(ContextData* data, State* initial_substate)
-    : State(data) {
+CalibratePieces::CalibratePieces(ContextData* data, State* initial_substate) :State(data){
     if(initial_substate == nullptr) {
-        substate = new CalibratePieces(data);
+        substate = new CalibrateReady(data);
     } else {
         substate = initial_substate;
     }
 }
 
-Servicemode::~Servicemode() {}
+CalibratePieces::~CalibratePieces() {}
 
-//===================================================== private functions =====================================================
-
-//void Servicemode::privateFunction(){}
-
-//===================================================== public functions =====================================================
-
-void Servicemode::entry() {
+void CalibratePieces::entry(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON_FAST);
     substate->entry();
 }
 
-void Servicemode::exit() {
+void CalibratePieces::exit(){
     substate->exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
 }
 
-State* Servicemode::button_stop_pressed(){
-    return new Idle(data);
-}
-
-State* Servicemode::laser_front_blocked(){
+State* CalibratePieces::laser_front_blocked(){
     State* newSubstate = substate->laser_front_blocked();
     if(newSubstate != nullptr){
         //there is substate change, change only the substate
@@ -46,7 +33,8 @@ State* Servicemode::laser_front_blocked(){
     return nullptr;
 }
 
-State* Servicemode::adc_calibration_done(){
+
+State* CalibratePieces::adc_calibration_done(){
     State* newSubstate = substate->adc_calibration_done();
     if(newSubstate != nullptr){
         //there is substate change, change only the substate

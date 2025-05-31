@@ -35,7 +35,7 @@ void Logic::threadFunction() {
         }
         fsm.handleEvent(event);
     }
-    delete timer_sender;
+    //delete timer_sender;
 }
 
 //===================================================== public functions =====================================================

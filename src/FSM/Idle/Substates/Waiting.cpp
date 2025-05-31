@@ -33,24 +33,24 @@ State* Waiting::timer(int id){
 
 /**
 State* Operating::estop() {
-    data->stateStack->push(subState);
+    data->stateStack->push(substate);
     return new EmergencyStop(data);
 }
 
 State* Operating::forward() {
-    State* newSubstate = subState->forward();
+    State* newSubstate = substate->forward();
     if(newSubstate != nullptr) {
-        subState->exit();
-        delete subState;
-        subState = newSubstate;
-        subState->entry();
+        substate->exit();
+        delete substate;
+        substate = newSubstate;
+        substate->entry();
     }
     return nullptr;
 }
 
 
 State* Operating::service() {
-    State* newSubstate = subState->service();
+    State* newSubstate = substate->service();
     if(newSubstate != nullptr) {
         return newSubstate;
     }

@@ -8,7 +8,7 @@
 class Idle : public State {
     //============================================ contructors & destructors ============================================
 public:
-    Idle(ContextData* data, State* previousState = nullptr);
+    Idle(ContextData* data, State* initial_substate = nullptr);
     virtual ~Idle();
 
     //================================================ public functions ================================================
@@ -27,7 +27,7 @@ private:
 
 //================================================ private functions ================================================
 private:
-    State* subState;
+    State* substate;
 
 };
 

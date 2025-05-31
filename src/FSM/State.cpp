@@ -98,6 +98,14 @@ State* State::adc_top_area_unblocked() {
     return nullptr;
 }
 
+State* State::adc_calibration_done(){
+    return nullptr;
+}
+
+State* State::adc_new_piece(){
+    return nullptr;
+}
+
 // State* State::adc_side_area_blocked() {
 //     return nullptr;
 // }

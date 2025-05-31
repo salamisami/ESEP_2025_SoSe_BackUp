@@ -4,9 +4,9 @@
 
 Operating::Operating(ContextData* data, State* previousState): State(data) {
     if(previousState == nullptr) {
-        subState = new Traffic_Green_On_Slow(data);
+        substate = new Traffic_Green_On_Slow(data);
     } else {
-        subState = previousState;
+        substate = previousState;
     }
 }
 
@@ -34,40 +34,40 @@ State* Operating::button_stop_pressed() {
 }
 
 // State* Operating::estop() {
-//     data->stateStack->push(subState);
+//     data->stateStack->push(substate);
 //     return new EmergencyStop(data);
 // }
 
 // State* Operating::forward() {
-//     State* newSubstate = subState->forward();
+//     State* newSubstate = substate->forward();
 //     if(newSubstate != nullptr) {
-//         subState->exit();
-//         delete subState;
-//         subState = newSubstate;
-//         subState->entry();
+//         substate->exit();
+//         delete substate;
+//         substate = newSubstate;
+//         substate->entry();
 //     }
 //     return nullptr;
 // }
 
 // State* Operating::backward() {
-//     State* newSubstate = subState->backward();
+//     State* newSubstate = substate->backward();
 //     if(newSubstate != nullptr) {
-//         subState->exit();
-//         delete subState;
-//         subState = newSubstate;
-//         subState->entry();
+//         substate->exit();
+//         delete substate;
+//         substate = newSubstate;
+//         substate->entry();
 //     }
 //     return nullptr;
 // }
 
 // State* Operating::tick() {
-//     subState->exit();
-//     subState->entry();
+//     substate->exit();
+//     substate->entry();
 //     return nullptr;
 // }
 
 // State* Operating::service() {
-//     State* newSubstate = subState->service();
+//     State* newSubstate = substate->service();
 //     if(newSubstate != nullptr) {
 //         return newSubstate;
 //     }

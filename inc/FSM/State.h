@@ -38,6 +38,9 @@ public:
     virtual State* laser_ramp_unblocked();
     virtual State* adc_top_area_blocked();
     virtual State* adc_top_area_unblocked();
+
+    virtual State* adc_calibration_done();
+    virtual State* adc_new_piece();
     //virtual State* adc_side_area_blocked();
     //virtual State* adc_side_area_unblocked();
 
