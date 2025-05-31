@@ -46,9 +46,11 @@ void HAL::init() {
     actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
     DEBUG("Mailboxes are created");
-    actuator = new Actuator(actuator_mailbox);
-    interrupt = new Interrupt(local_sender, actuator);
     adc = new ADC_Class(adc_mailbox, local_sender);
+    //TODO rethink SoC regarding the ESTOP
+    actuator = new Actuator(actuator_mailbox, adc);
+    interrupt = new Interrupt(local_sender, actuator);
+    
 
     //TODO check that no sensors are blocked during init
     bool isGate = actuator->isGate();

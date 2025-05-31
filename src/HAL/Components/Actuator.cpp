@@ -41,7 +41,7 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Actuator::Actuator(Mailbox<_pulse>* mailbox)
+Actuator::Actuator(Mailbox<_pulse>* mailbox, ADC_Class* adc)
     : mailbox(mailbox)
     , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
     , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
@@ -54,6 +54,7 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox)
     prohibit_operate = false;
     is_local_estop = false;
     is_local_estop = false;
+    this->adc = adc;
     actuatorThread = std::thread(&Actuator::threadFunction, this);
 }
 
@@ -61,8 +62,6 @@ Actuator::~Actuator() {
     actuatorRunning = false;
     actuatorThread.join();
     global_shutdown();
-
-
     if(gpio_bank_1) {
         munmap_device_io(gpio_bank_1, GPIO_MMAP_SIZE);
     }
@@ -365,6 +364,7 @@ void Actuator::stop_moving_parts() {
     DEBUG("Stoping moving parts...");
     sorting_off();
     motor_stop();
+    adc->adc_estop();
 }
 
 
