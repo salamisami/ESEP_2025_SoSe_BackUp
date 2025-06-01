@@ -11,12 +11,15 @@ class State {
     //============================================ contructors & destructors ============================================
 public:
     State(ContextData* data);
+
+    //copy constructor
+    State(const State& other);
     virtual ~State();
 
     //================================================ public functions ================================================
 public:
-    virtual void entry() = 0;
-    virtual void exit() = 0;
+    virtual void entry();
+    virtual void exit();
 
     virtual State* laser_front_blocked();
     virtual State* laser_front_unblocked();

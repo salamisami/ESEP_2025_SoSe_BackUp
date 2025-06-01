@@ -7,6 +7,17 @@ State::State(ContextData* data)
     //std::cout << "State Constructor" << std::endl;
 }
 
+//copy constructor
+State::State(const State& other) {
+    if(other.substate != nullptr){
+        this->substate = new State(*other.substate);
+    } else {
+        this->substate = nullptr;
+    }
+    this->data = other.data;
+    //std::cout << "copy constructor called." << std::endl;
+}
+
 State::~State() {
     //std::cout << "State Destructor" << std::endl;
     if(substate != nullptr){
@@ -32,9 +43,9 @@ State* State::handle_event_using_function(State* (State::* handler_function)()) 
 }
 
 //save history
-//TODO stack must save the state using deep copy
 // State* StateA::estop_pressed() {
-//     data->stateStack->push(substate);
+//     State* clone_substate = new State(*substate);
+//     data->stateStack->push(clone_substate);
 //     return new EmergencyStop(data);
 // }
 
@@ -73,6 +84,15 @@ State* State::handle_event_using_function(State* (State::* handler_function)()) 
 // }
 
 //===================================================== public functions =====================================================
+
+void State::entry(){
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+void State::exit(){
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
 State* State::timer(int id) {
     if(substate == nullptr) {
         return nullptr;
