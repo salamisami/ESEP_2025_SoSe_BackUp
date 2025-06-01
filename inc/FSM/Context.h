@@ -181,6 +181,9 @@ void Context<T>::handleEvent(_pulse event) {
         case Topic::TIMER:
             newState = state->timer((int) event_value);
             break;
+        case Topic::ADC:
+            newState = handleADC(event_value);
+            break;
         case Topic::STOP_THREAD:
             state->exit();
             break;

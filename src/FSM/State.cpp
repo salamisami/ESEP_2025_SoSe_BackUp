@@ -9,7 +9,9 @@ State::State(ContextData* data)
 
 State::~State() {
     //std::cout << "State Destructor" << std::endl;
-    //delete stateStack;
+    if(substate != nullptr){
+        delete substate;
+    }
 }
 
 //===================================================== private functions =====================================================
@@ -29,7 +31,64 @@ State* State::handle_event_using_function(State* (State::* handler_function)()) 
     return nullptr;
 }
 
+//save history
+//TODO stack must save the state using deep copy
+// State* StateA::estop_pressed() {
+//     data->stateStack->push(substate);
+//     return new EmergencyStop(data);
+// }
+
+//load history
+// State* EmergencyStop::estop_released() {
+//     State* loaded_state = data->stateStack->top();
+//     data->stateStack->pop();
+//     return new StateA(data, loaded_state);
+// }
+
+//outside loop
+// State* StateA::restart(){
+//     return new StateA(data);
+// }
+
+//inside loop
+// State* StateA::tick() {
+//     super_substate->exit();
+//     super_substate->entry();
+//     return nullptr;
+// }
+
+//explicit entry
+// State* StateA::service() {
+//      State* initial_explicit_substate = new StartEngine(data);
+//      return new StartCar(data, initial_explicit_substate);
+// }
+
+//explicit exit
+// State* StateA::service() {
+//     State* newSubstate = substate->service();
+//     if(newSubstate != nullptr) {
+//         return newSubstate;
+//     }
+//     return nullptr;
+// }
+
 //===================================================== public functions =====================================================
+State* State::timer(int id) {
+    if(substate == nullptr) {
+        return nullptr;
+    }
+    State* newSubstate = substate->timer(id);
+    if(newSubstate != nullptr) {
+        // there is substate change, change only the substate
+        substate->exit();
+        delete substate;
+        substate = newSubstate;
+        substate->entry();
+    }
+    return nullptr;
+}
+
+
 State* State::laser_front_blocked() {
     return handle_event_using_function(&State::laser_front_blocked);
 }
@@ -110,6 +169,14 @@ State* State::adc_top_area_unblocked() {
     return handle_event_using_function(&State::adc_top_area_unblocked);
 }
 
+State* State::adc_side_area_blocked() {
+    return handle_event_using_function(&State::adc_side_area_blocked);
+}
+
+State* State::adc_side_area_unblocked() {
+    return handle_event_using_function(&State::adc_side_area_unblocked);
+}
+
 State* State::adc_calibration_done() {
     return handle_event_using_function(&State::adc_calibration_done);
 }
@@ -117,27 +184,3 @@ State* State::adc_calibration_done() {
 State* State::adc_new_piece() {
     return handle_event_using_function(&State::adc_new_piece);
 }
-
-// State* State::adc_side_area_blocked() {
-//     return nullptr;
-// }
-
-// State* State::adc_side_area_unblocked() {
-//     return nullptr;
-// }
-
-State* State::timer(int id) {
-    if(substate == nullptr) {
-        return nullptr;
-    }
-    State* newSubstate = substate->timer(id);
-    if(newSubstate != nullptr) {
-        // there is substate change, change only the substate
-        substate->exit();
-        delete substate;
-        substate = newSubstate;
-        substate->entry();
-    }
-    return nullptr;
-}
-

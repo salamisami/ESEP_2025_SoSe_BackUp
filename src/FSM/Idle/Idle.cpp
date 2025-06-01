@@ -37,25 +37,3 @@ State* Idle::button_start_released(){
     }
     return nullptr;
 }
-
-
-//super_substate change
-// State* Operating::forward() {
-//     State* newSubstate = subState->forward();
-//     if(newSubstate != nullptr) {
-//         subState->exit();
-//         delete subState;
-//         subState = newSubstate;
-//         subState->entry();
-//     }
-//     return nullptr;
-// }
-
-//explicit exit
-// State* Operating::service() {
-//     State* newSubstate = subState->service();
-//     if(newSubstate != nullptr) {
-//         return newSubstate;
-//     }
-//     return nullptr;
-// }
