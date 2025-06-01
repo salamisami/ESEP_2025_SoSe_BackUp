@@ -21,7 +21,7 @@ Logic::~Logic() {
 
 void Logic::threadFunction() {
     int eventNo = 0;
-    ContextData data = ContextData(local_sender, local_receiver, timer_sender);
+    ContextData data = ContextData(local_sender,timer_sender);
     Context<ModeHandler> fsm = Context<ModeHandler>(&data);
     while(logicRunning) {
         _pulse event;

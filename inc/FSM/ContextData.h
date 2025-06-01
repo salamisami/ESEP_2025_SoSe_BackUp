@@ -15,7 +15,7 @@ class State;
 class ContextData {
     //============================================ contructors & destructors ============================================
 public:
-    ContextData(I_Sender* sender, I_Receiver* receiver, I_Sender* timer_sender);
+    ContextData(I_Sender* sender, I_Sender* timer_sender);
     ContextData();
     virtual ~ContextData();
 
@@ -30,7 +30,6 @@ public:
     std::stack<State*>* stateStack;
     I_Sender* timer_sender;
     Timer* timer;
-    I_Receiver* receiver;
     I_Sender* sender;
 
 };
