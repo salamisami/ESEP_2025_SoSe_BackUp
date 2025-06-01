@@ -17,7 +17,7 @@ public:
 public:
     virtual void entry() = 0;
     virtual void exit() = 0;
-    
+
     virtual State* laser_front_blocked();
     virtual State* laser_front_unblocked();
     virtual State* laser_back_blocked();
@@ -45,19 +45,17 @@ public:
     //virtual State* adc_side_area_unblocked();
 
     virtual State* timer(int id);
-    
-
-
-
 
 
 
     //================================================ private variables ================================================
 protected:
     ContextData* data;
+    State* substate;
 
     //================================================ private functions ================================================
 private:
+    State* handle_event_using_function(State* (State::* handler_function)());
 
 
 };

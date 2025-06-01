@@ -29,38 +29,17 @@ void Idle::exit() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Idle::button_start_pressed(){
-    State* newSubstate = substate->button_start_pressed();
-    if(newSubstate != nullptr){
-        //there is a substate change, change only the substate
-        substate->exit();
-        delete substate;
-        substate = newSubstate;
-        substate->entry();
-    }
-    return nullptr;
-}
 State* Idle::button_start_released(){
     State* newSubstate = substate->button_start_released();
     if(newSubstate != nullptr){
-        //there is a substate change, explicit exit
+        //there is a super_substate change, explicit exit
         return newSubstate;
     }
     return nullptr;
 }
 
-State* Idle::timer(int id){
-    State* newSubstate = substate->timer(id);
-    if(newSubstate != nullptr) {
-        substate->exit();
-        delete substate;
-        substate = newSubstate;
-        substate->entry();
-    }
-    return nullptr;
-}
 
-//substate change
+//super_substate change
 // State* Operating::forward() {
 //     State* newSubstate = subState->forward();
 //     if(newSubstate != nullptr) {

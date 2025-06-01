@@ -17,15 +17,12 @@ public: //================================================ public functions ====
 	void exit() override;
 
 	State* button_stop_pressed() override;
-	State* laser_front_blocked() override;
-	State* adc_calibration_done() override;
     
 
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
-	State* substate;
 	//primitive types
 	//bool and char
    

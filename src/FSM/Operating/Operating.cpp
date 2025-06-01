@@ -34,40 +34,40 @@ State* Operating::button_stop_pressed() {
 }
 
 // State* Operating::estop() {
-//     data->stateStack->push(substate);
+//     data->stateStack->push(super_substate);
 //     return new EmergencyStop(data);
 // }
 
 // State* Operating::forward() {
-//     State* newSubstate = substate->forward();
+//     State* newSubstate = super_substate->forward();
 //     if(newSubstate != nullptr) {
-//         substate->exit();
-//         delete substate;
-//         substate = newSubstate;
-//         substate->entry();
+//         super_substate->exit();
+//         delete super_substate;
+//         super_substate = newSubstate;
+//         super_substate->entry();
 //     }
 //     return nullptr;
 // }
 
 // State* Operating::backward() {
-//     State* newSubstate = substate->backward();
+//     State* newSubstate = super_substate->backward();
 //     if(newSubstate != nullptr) {
-//         substate->exit();
-//         delete substate;
-//         substate = newSubstate;
-//         substate->entry();
+//         super_substate->exit();
+//         delete super_substate;
+//         super_substate = newSubstate;
+//         super_substate->entry();
 //     }
 //     return nullptr;
 // }
 
 // State* Operating::tick() {
-//     substate->exit();
-//     substate->entry();
+//     super_substate->exit();
+//     super_substate->entry();
 //     return nullptr;
 // }
 
 // State* Operating::service() {
-//     State* newSubstate = substate->service();
+//     State* newSubstate = super_substate->service();
 //     if(newSubstate != nullptr) {
 //         return newSubstate;
 //     }

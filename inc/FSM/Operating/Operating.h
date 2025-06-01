@@ -8,7 +8,7 @@
 class Operating : public State {
 //============================================ contructors & destructors ============================================
 public:
-    Operating(ContextData* data, State* previousState = nullptr);
+    Operating(ContextData* data, State* initial_substate = nullptr);
     virtual ~Operating();
 	
 //================================================ public functions ================================================
@@ -21,7 +21,6 @@ public:
 
 //================================================ private variables ================================================
 private:
-    State* substate;
 	
 //================================================ private functions ================================================
 private:
