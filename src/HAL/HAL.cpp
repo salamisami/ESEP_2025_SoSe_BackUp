@@ -50,7 +50,7 @@ void HAL::init() {
     //TODO rethink SoC regarding the ESTOP
     actuator = new Actuator(actuator_mailbox, adc);
     interrupt = new Interrupt(local_sender, actuator);
-    
+
 
     //TODO check that no sensors are blocked during init
     bool isGate = actuator->isGate();
@@ -113,6 +113,12 @@ void HAL::test_ins_ADC() {
             case Topic::INTERRUPT: {
                     InterruptEnum InterEvent = (InterruptEnum) msg.value.sival_int;
                     switch(InterEvent) {
+                        case InterruptEnum::IS_PUSHER:
+                            is_weiche = false;
+                            break;
+                        case InterruptEnum::IS_SWITCH:
+                            is_weiche = true;
+                            break;
                         case InterruptEnum::BUTTON_RESET_PRESSED:
                             running = false;
                             break;
@@ -202,6 +208,14 @@ void HAL::test_ins_ADC() {
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
                             DEBUG("ADC_W_B_DETECT");
+                            break;
+                        case ADC_Enum::ADC_W_NOT_DETECT:
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+                            DEBUG("ADC_W_NOT_DETECT");
+                            break;
+                        case ADC_Enum::ADC_INVALID_MESURE:
+                            //TODO implement this event
                             break;
                         default:
                             break;
