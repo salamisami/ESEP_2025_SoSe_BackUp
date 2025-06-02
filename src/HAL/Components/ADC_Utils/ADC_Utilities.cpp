@@ -43,18 +43,7 @@ void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage) {
 
         if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
             erkannt = true;
-            DEBUG("adc new piece");
-        }
-        if(erkannt) {
-            werte.push_back(sensorVoltage);
-            if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT) {
-                break;
-            }
-            if(werte.size() >= MAX_WERT) {
-                //Error Event Ergänzen
-                std::cout << "Ungültige Messanzahl, Bitte Laufband Kontrollieren\n";
-                break;
-            }
+            return;
         }
         nanosleep(&delay, NULL);
     }
@@ -260,22 +249,17 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
         float voltage = (raw / 4095.0f) * REF_VOLTAGE;
         float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
 
-        if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
-            erkannt = true;
-            //TODO As we now use ADC_Enum::ADC_Prepare, this function can start measuring right away, without checking if a piece is recognized or not.
-            std::cout << "Bauteil erkannt – Messung startet\n";
+       
+
+        werte.push_back(sensorVoltage);
+        if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT) {
+            break;
         }
-        if(erkannt) {
-            werte.push_back(sensorVoltage);
-            if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT) {
-                break;
-            }
-            if(werte.size() >= MAX_WERT) {
-                //Error Event Ergänzen
-                std::cout << "Ungültige Messanzahl, Bitte Laufband Kontrollieren\n";
-                break;
-            }
+        if(werte.size() >= MAX_WERT) {
+            //Error Event Ergänzen
+            return ADC_Enum::ADC_INVALID_MESURE;
         }
+        
         nanosleep(&delay, NULL);
     }
 
