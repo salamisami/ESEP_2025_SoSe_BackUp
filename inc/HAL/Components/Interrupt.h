@@ -34,8 +34,7 @@
 
 class Interrupt {
 public: //============================================ contructors & destructors ============================================
-    Interrupt(I_Sender* sender);
-    Interrupt(I_Sender* sender, Actuator* actuator);
+    Interrupt(I_Sender* sender, Actuator* actuator = nullptr);
     //Interrupt();
     virtual ~Interrupt();
 

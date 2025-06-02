@@ -5,7 +5,9 @@
 #include "TSCADC.h"
 #include "ADC.h"
 #include "Macros.h"
+#include "Event.h"
 
+#include <thread>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -19,23 +21,30 @@
 
 #define REF_VOLTAGE 1.8f
 #define SAMPLE_DELAY_NS 5000000L
-#define TRIGGER_SCHRITT 0.1f
+#define TRIGGER_SCHRITT 0.3f
 #define SAMPLE_COUNT 100
 #define R25 1000.0f
 #define R26 4700.0f
 #define VOLTAGE_DIVIDER_FACTOR ((R25 + R26) / R25)
 #define PROFIL_DATEI "ESEP-Team-1-1_25/profile_calibration.csv"
-#define MESS_TOLERANZ  0.1f
+#define MESS_TOLERANZ  0.15f
 #define MAX_WERT 400
 
 typedef struct {
 	std::string name;
+	ADC_Enum eventValue;
 	float avg;
 	float lochMin; 
 	int lochStartIndex;
 	int lochEndIndex;
 	bool hatLoch;
 } Profil;
+
+typedef struct{
+    std::string name;
+    ADC_Enum eventValue;
+    bool hatLoch;
+} Bauteil;
 
 class ADC_Utilities {
 public: //============================================ contructors & destructors ============================================
@@ -47,13 +56,14 @@ public: //============================================ contructors & destructors
 
 
 public: //================================================ public functions ================================================
-	static void saveProfile(const Profil& p);
-	static std::vector<Profil> loadProfile();
-	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage);
-	static std::string classify(const std::vector<float>& value, const std::vector<Profil>& profile);
-	static std::string executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage);
+	static ADC_Enum executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage);
 	static float define_band_voltage(ADC& adc, TSCADC& tscadc);
-	
+	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage);
+
+	/**
+	 * @brief blocks the thread running this function, until a piece is detected
+	 */
+	static void expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage);
 
 
 
@@ -66,7 +76,10 @@ private: //================================================ private variables ==
 
 
 private: //================================================ private functions ================================================
-	//void privateFunction();
+	static ADC_Enum classify(const std::vector<float>& value, const std::vector<Profil>& profile);
+	static void saveProfile(const Profil& p);
+	static std::vector<Profil> loadProfile();
+
 
 };
 

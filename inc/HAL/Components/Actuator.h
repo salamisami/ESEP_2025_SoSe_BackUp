@@ -5,6 +5,7 @@
 #include "Macros.h"
 #include "Event.h"
 #include "Mailbox.h"
+#include "ADC_Class.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -33,7 +34,7 @@
 
 class Actuator {
 public: //============================================ contructors & destructors ============================================
-    Actuator(Mailbox<_pulse>* mailbox);
+    Actuator(Mailbox<_pulse>* mailbox, ADC_Class* adc = nullptr);
     virtual ~Actuator();
 
 
@@ -53,6 +54,7 @@ private: //================================================ private variables ==
     std::mutex mtx;
     //pointers
     Mailbox<_pulse>* mailbox;
+    ADC_Class* adc;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
 

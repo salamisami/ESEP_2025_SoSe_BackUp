@@ -44,16 +44,6 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Interrupt::Interrupt(I_Sender* sender)
-    : gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
-    , sender(sender)
-    , inputPins(0)
-    , last_causing_pin(0)
-    , test_mode(false)
-    , last_pin_status(0)
-    , interruptRunning(false) {
-    setup_interrupts();
-}
 
 Interrupt::Interrupt(I_Sender* sender, Actuator* actuator)
     : gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
@@ -275,8 +265,10 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         case BUTTON_ESTOP_BIT:
             event = pin_status ? InterruptEnum::BUTTON_ESTOP_RELEASED : InterruptEnum::BUTTON_ESTOP_PRESSED;
             if(event == InterruptEnum::BUTTON_ESTOP_PRESSED){
+                DEBUG("E-STOP is pressed 🛑");
                 actuator->local_estop_activate();
             } else {
+                 DEBUG("E-STOP is released ✅");
                 actuator->local_estop_deactivate();
             }
             sender->send_event((int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
