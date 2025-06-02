@@ -9,17 +9,16 @@
 #include "Event.h"
 
 #include "Mock_PM.h"
-#include "PulseMsg.h"
 #include "Thread_COM.h"
-
 
 #include <thread>
 
 class Logic {
 public: //============================================ contructors & destructors ============================================
-	//Logic(Mock_PM::Receiver* local_receiver, Mock_PM::Sender* local_sender, I_Sender* timer_sender);
-    Logic(I_Receiver* local_receiver, I_Sender* local_sender);
-	//Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* timer_sender);
+	//for testing
+    Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* loopback_sender);
+	//for real usage
+	Logic(I_Receiver* local_receiver, I_Sender* local_sender);
     virtual ~Logic();
 	
 

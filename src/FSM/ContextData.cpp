@@ -3,9 +3,8 @@
 
 //================================================= contructors & destructors =================================================
 ContextData::ContextData(){}
-ContextData::ContextData(I_Sender* sender, I_Receiver* receiver, I_Sender* timer_sender) {
+ContextData::ContextData(I_Sender* sender, I_Sender* timer_sender) {
     this->sender = sender;
-    this->receiver = receiver;
     stateStack = new std::stack<State*>();
     timer = new Timer(timer_sender);
 

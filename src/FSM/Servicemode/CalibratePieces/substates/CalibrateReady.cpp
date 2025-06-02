@@ -1,26 +1,26 @@
-#include "Timer_Received.h"
+#include "CalibrateReady.h"
 
 //================================================= contructors & destructors =================================================
-Timer_Received::Timer_Received(ContextData* data) :State(data) {}
+CalibrateReady::CalibrateReady(ContextData* data) : State(data){
 
-Timer_Received::~Timer_Received() {}
+}
+
+CalibrateReady::~CalibrateReady() {}
 
 //===================================================== private functions =====================================================
 
-//void Timer_Received::privateFunction(){}
+//void CalibrateReady::privateFunction(){}
 
 //===================================================== public functions =====================================================
 
-//void Timer_Received::publicFunction(){}
-void Timer_Received::entry(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
-}
-
-void Timer_Received::exit(){
+void CalibrateReady::entry(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Timer_Received::button_start_released(){
-    return new Servicemode(data);
+void CalibrateReady::exit(){
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+State* CalibrateReady::laser_front_blocked(){
+    return new Calibrating(data);
 }

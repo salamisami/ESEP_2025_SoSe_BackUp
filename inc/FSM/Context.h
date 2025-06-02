@@ -26,16 +26,17 @@ protected:
 
     //================================================ private functions ================================================
 private:
-    //int myVariable
-
+    State* handleInterrupt(int event_value);
+    State* handleCOM(int event_value);
+    State* handleADC(int event_value);
 };
 
 //================================================= contructors & destructors =================================================
 template <typename T>
-Context<T>::Context(){
+Context<T>::Context() {
 }
 template <typename T>
-Context<T>::Context(ContextData* data):state(new T(data)){
+Context<T>::Context(ContextData* data) :state(new T(data)) {
     this->data = data;
     state->entry();
 }
@@ -45,19 +46,53 @@ Context<T>::~Context() {
 }
 
 //===================================================== private functions =====================================================
-
-//void Context<T>::privateFunction(){}
-
-//===================================================== public functions =====================================================
-template <typename T>
-void Context<T>::handleEvent(_pulse event) {
+template<typename T>
+State* Context<T>::handleADC(int event_value) {
+    //TODO put newState = state->function() here
     State* newState = nullptr;
-    Topic event_code = (Topic) event.code;
-    InterruptEnum event_value = (InterruptEnum) event.value.sival_int;
+    switch((ADC_Enum) event_value) {
+        case ADC_Enum::ADC_NEW_PIECE:
+            newState = state->adc_new_piece();
+            break;
+        case ADC_Enum::ADC_CALIBRATION_DONE:
+            newState = state->adc_calibration_done();
+            break;
+        case ADC_Enum::ADC_W_B_DETECT:
+            break;
+        case ADC_Enum::ADC_WF_DETECT:
+            break;
+        case ADC_Enum::ADC_WH_DETECT:
+            break;
+        case ADC_Enum::ADC_W_NOT_DETECT:
+            break;
+        default:
+            break;
+    }
+    return newState;
 
-    if(event_code == Topic::INTERRUPT){
-        switch(event_value) {
-        //TODO implement ADC_Enum
+}
+
+template <typename T>
+State* Context<T>::handleCOM(int event_value) {
+    State* newState = nullptr;
+    switch((COM_Enum) event_value) {
+        //TODO is this true?
+        case COM_Enum::BUTTON_ESTOP_PRESSED:
+            newState = state->button_estop_pressed();
+            break;
+        case COM_Enum::BUTTON_ESTOP_RELEASED:
+            newState = state->button_estop_released();
+            break;
+        default:
+            break;
+    }
+    return newState;
+}
+
+template <typename T>
+State* Context<T>::handleInterrupt(int event_value) {
+    State* newState = nullptr;
+    switch((InterruptEnum) event_value) {
         case InterruptEnum::LASER_FRONT_BLOCKED:
             newState = state->laser_front_blocked();
             break;
@@ -118,30 +153,49 @@ void Context<T>::handleEvent(_pulse event) {
         case InterruptEnum::ADC_TOP_AREA_UNBLOCKED:
             newState = state->adc_top_area_unblocked();
             break;
-        // case InterruptEnum::ADC_SIDE_AREA_BLOCKED:
-        //     newState = state->adc_side_area_blocked();
-        //     break;
-        // case InterruptEnum::ADC_SIDE_AREA_UNBLOCKED:
-        //     newState = state->adc_side_area_unblocked();
-        //     break;
-
+            // case InterruptEnum::ADC_SIDE_AREA_BLOCKED:
+            //     newState = state->adc_side_area_blocked();
+            //     break;
+            // case InterruptEnum::ADC_SIDE_AREA_UNBLOCKED:
+            //     newState = state->adc_side_area_unblocked();
+            //     break;
         default:
             break;
-        }   
-    } else if(event_code == Topic::TIMER){
-        newState = state->timer((int) event_value);
-    } else if(event_code == Topic::STOP_THREAD){
-        state->exit();
     }
-    
-    //there is a state change
+    return newState;
+}
+
+//===================================================== public functions =====================================================
+template <typename T>
+void Context<T>::handleEvent(_pulse event) {
+    State* newState = nullptr;
+    Topic event_code = (Topic) event.code;
+    int event_value = event.value.sival_int;
+    switch(event_code) {
+        case Topic::INTERRUPT:
+            newState = handleInterrupt(event_value);
+            break;
+        case Topic::COM:
+            newState = handleCOM(event_value);
+            break;
+        case Topic::TIMER:
+            newState = state->timer((int) event_value);
+            break;
+        case Topic::ADC:
+            newState = handleADC(event_value);
+            break;
+        case Topic::STOP_THREAD:
+            state->exit();
+            break;
+        default:
+            break;
+    }
     if(newState != nullptr) {
         state->exit();
         delete state;
         state = newState;
         state->entry();
     }
-
 }
 
 #endif

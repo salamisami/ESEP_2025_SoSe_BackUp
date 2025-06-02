@@ -11,13 +11,16 @@ class State {
     //============================================ contructors & destructors ============================================
 public:
     State(ContextData* data);
+
+    //copy constructor
+    State(const State& other);
     virtual ~State();
 
     //================================================ public functions ================================================
 public:
-    virtual void entry() = 0;
-    virtual void exit() = 0;
-    
+    virtual void entry();
+    virtual void exit();
+
     virtual State* laser_front_blocked();
     virtual State* laser_front_unblocked();
     virtual State* laser_back_blocked();
@@ -38,23 +41,25 @@ public:
     virtual State* laser_ramp_unblocked();
     virtual State* adc_top_area_blocked();
     virtual State* adc_top_area_unblocked();
-    //virtual State* adc_side_area_blocked();
-    //virtual State* adc_side_area_unblocked();
+    virtual State* adc_side_area_blocked();     //unused
+    virtual State* adc_side_area_unblocked();   //unused
+
+
+    virtual State* adc_calibration_done();
+    virtual State* adc_new_piece();
 
     virtual State* timer(int id);
-    
-
-
-
 
 
 
     //================================================ private variables ================================================
 protected:
     ContextData* data;
+    State* substate;
 
     //================================================ private functions ================================================
 private:
+    State* handle_event_using_function(State* (State::* handler_function)());
 
 
 };

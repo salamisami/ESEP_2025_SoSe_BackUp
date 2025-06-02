@@ -8,14 +8,12 @@
 class Idle : public State {
     //============================================ contructors & destructors ============================================
 public:
-    Idle(ContextData* data, State* previousState = nullptr);
+    Idle(ContextData* data, State* initial_substate = nullptr);
     virtual ~Idle();
 
     //================================================ public functions ================================================
 public:
-    State* button_start_pressed() override;
     State* button_start_released() override;
-    State* timer(int id) override;
 
     void entry() override;
     void exit() override;
@@ -27,7 +25,6 @@ private:
 
 //================================================ private functions ================================================
 private:
-    State* subState;
 
 };
 

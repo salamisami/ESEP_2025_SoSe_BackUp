@@ -1,27 +1,19 @@
-#ifndef WAITING_H
-#define WAITING_H
+#ifndef CALIBRATEPIECES_H
+#define CALIBRATEPIECES_H
 #pragma once
 
 #include "State.h"
-#include "Timer.h"
-#include "Timer_Received.h"
-#include "Operating.h"
+#include "CalibrateReady.h"
 
-#define IDLE_TIMER 1
-
-class Waiting : public State {
+class CalibratePieces : public State {
 public: //============================================ contructors & destructors ============================================
-    Waiting(ContextData* data);
-    virtual ~Waiting();
-	
+	CalibratePieces(ContextData* data, State* initial_substate = nullptr);
+	virtual ~CalibratePieces();
+
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
-
-	State* button_start_released() override;
-	State* timer(int id) override;
-    
+	void entry() override;
+	void exit() override;
 
 
 private: //================================================ private variables ================================================
@@ -29,12 +21,12 @@ private: //================================================ private variables ==
 	//pointers
 	//primitive types
 	//bool and char
-   
-	
+
+
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
-	
+
 };
 
 #endif

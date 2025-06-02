@@ -26,6 +26,7 @@ int main() {
     Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
+    //Thread_COM::Sender* fsm_loopback = new Thread_COM::Sender(FBM_1_DISPATCHER);
     Thread_COM::Sender* abc = new Thread_COM::Sender(FBM_1_DISPATCHER);
     Thread_COM::Sender* def = new Thread_COM::Sender(FBM_1_DISPATCHER);
 

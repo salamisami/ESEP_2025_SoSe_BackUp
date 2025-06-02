@@ -1,26 +1,18 @@
-#ifndef WAITING_H
-#define WAITING_H
+#ifndef CALIBRATIONDONE_H
+#define CALIBRATIONDONE_H
 #pragma once
 
 #include "State.h"
-#include "Timer.h"
-#include "Timer_Received.h"
-#include "Operating.h"
 
-#define IDLE_TIMER 1
-
-class Waiting : public State {
+class CalibrationDone: public State {
 public: //============================================ contructors & destructors ============================================
-    Waiting(ContextData* data);
-    virtual ~Waiting();
+    CalibrationDone(ContextData* data);
+    virtual ~CalibrationDone();
 	
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
-
-	State* button_start_released() override;
-	State* timer(int id) override;
+	void entry() override;
+	void exit() override;
     
 
 

@@ -4,10 +4,11 @@
 
 #include "State.h"
 #include "Idle.h"
+#include "CalibratePieces.h"
 
 class Servicemode : public State{
 public: //============================================ contructors & destructors ============================================
-    Servicemode(ContextData* data, State* previousState = nullptr);
+    Servicemode(ContextData* data, State* initial_substate = nullptr);
     virtual ~Servicemode();
 	
 
@@ -22,7 +23,6 @@ public: //================================================ public functions ====
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
-	State* subState;
 	//primitive types
 	//bool and char
    
