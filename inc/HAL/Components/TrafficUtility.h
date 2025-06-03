@@ -8,12 +8,14 @@
 #include <functional>
 
 #include "Thread_COM.h"
+#include "QNet.h"
 #include "Event.h"
 
 class TrafficUtility {
 public:
-    // Get the singleton instance
+
     static TrafficUtility& getInstance();
+    static TrafficUtility& getInstance(I_Sender* sender);
 
     ~TrafficUtility();
     // Traffic light control functions
@@ -40,8 +42,9 @@ public:
 
 private:
     TrafficUtility();
-    Thread_COM::Sender* traffic_sender;
-    int coid_;
+    TrafficUtility(I_Sender* sender);
+    I_Sender* traffic_sender;
+
     static std::mutex instanceMutex_;
     static std::unique_ptr<TrafficUtility> instance_;
 

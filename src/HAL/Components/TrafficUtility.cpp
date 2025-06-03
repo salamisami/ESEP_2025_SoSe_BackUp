@@ -8,11 +8,29 @@
 std::mutex TrafficUtility::instanceMutex_;
 std::unique_ptr<TrafficUtility> TrafficUtility::instance_;
 
-TrafficUtility::TrafficUtility()
-    : coid_(0)
+TrafficUtility::TrafficUtility(I_Sender* sender)
 {
+	if (nullptr == sender){
+		throw std::runtime_error{"Sender not initialized."};
+	}
 	//TODO TrafficUtility should be capsulated inside Actuator. Therefore sending event to dispatcher and therefore back to HAL is not a good idea :) see "Diagramms Combined for more info"
+	traffic_sender = sender;
+}
+
+TrafficUtility::TrafficUtility()
+{
 	traffic_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+}
+
+TrafficUtility& TrafficUtility::getInstance(I_Sender* sender) {
+    std::lock_guard<std::mutex> lock(instanceMutex_);
+    if (!instance_) {
+    	if (nullptr == sender){
+    		throw std::runtime_error{"Sender not initialized."};
+    	}
+        instance_.reset(new TrafficUtility(sender));
+    }
+    return *instance_;
 }
 
 TrafficUtility& TrafficUtility::getInstance() {
@@ -22,6 +40,7 @@ TrafficUtility& TrafficUtility::getInstance() {
     }
     return *instance_;
 }
+
 TrafficUtility::~TrafficUtility() {
 	stopAll();
 }
@@ -29,18 +48,6 @@ TrafficUtility::~TrafficUtility() {
 void TrafficUtility::sendLightPulse(ActuatorEnum state) {
 	try {
 		traffic_sender->send_event((int8_t)Topic::ACTUATOR, static_cast<int8_t>(state));
-
-		// Debug output
-		//const char* color = "";
-		/*switch (state) {
-		case ActuatorEnum::TRAFFIC_YELLOW_OFF:
-			color = "YELLOW";
-			break;
-		default:
-			color = "UNKNOWN";
-			break;
-		}*/
-		//std::cout << "Sent pulse: " << color << " light" << std::std::endl;
 	} catch (...) {
 		std::cerr << "Failed to send pulse for light state: "
 				<< static_cast<int>(state) << std::endl;
