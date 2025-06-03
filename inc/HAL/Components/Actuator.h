@@ -5,6 +5,7 @@
 #include "Macros.h"
 #include "Event.h"
 #include "Mailbox.h"
+#include "TrafficUtility.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -52,6 +53,7 @@ private: //================================================ private variables ==
     std::thread trafficThread;
     std::mutex mtx;
     //pointers
+    TrafficUtility* traffic;
     Mailbox<_pulse>* mailbox;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;

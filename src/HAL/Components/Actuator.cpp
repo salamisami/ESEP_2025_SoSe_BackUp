@@ -55,6 +55,7 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox)
     is_local_estop = false;
     is_local_estop = false;
     actuatorThread = std::thread(&Actuator::threadFunction, this);
+    traffic = &TrafficUtility::getInstance();
 }
 
 Actuator::~Actuator() {
@@ -179,17 +180,23 @@ void Actuator::handleActuatorEvent(int event_value) {
 
 
 void Actuator::traffic_red_fast() {
+	traffic ->trafficRed(2);
 
 }
 void Actuator::traffic_red_slow() {
+	traffic ->trafficRed(0.5);
 }
 void Actuator::traffic_yellow_fast() {
+	traffic ->trafficYellow(2);
 }
 void Actuator::traffic_yellow_slow() {
+	traffic ->trafficYellow(0.5);
 }
 void Actuator::traffic_green_fast() {
+	traffic ->trafficGreen(2);
 }
 void Actuator::traffic_green_slow() {
+	traffic ->trafficGreen(0.5);
 }
 
 

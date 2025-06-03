@@ -48,27 +48,33 @@ void TrafficUtility::sendLightPulse(ActuatorEnum state) {
 }
 
 void TrafficUtility::trafficGreen(double frequency) {
-	if (frequency <= 0) {
-		throw std::invalid_argument("Frequency must be positive");
-	}
-	std::lock_guard<std::mutex> lock(green_.mutex);
-	if (green_.running)
-		stopGreen();
+    if (frequency <= 0) {
+        throw std::invalid_argument("Frequency must be positive");
+    }
 
-	green_.frequency = frequency;
-	green_.stopFlag = false;
-	green_.running = true;
-	green_.worker = std::thread(&TrafficUtility::greenWorker, this);
+    std::unique_lock<std::mutex> lock(green_.mutex);
+    if (green_.running) {
+        lock.unlock();
+        stopGreen();
+        lock.lock();
+    }
+
+    green_.frequency = frequency;
+    green_.stopFlag = false;
+    green_.running = true;
+    green_.worker = std::thread(&TrafficUtility::greenWorker, this);
 }
 
 void TrafficUtility::trafficYellow(double frequency) {
 	if (frequency <= 0) {
 		throw std::invalid_argument("Frequency must be positive");
 	}
-	std::lock_guard<std::mutex> lock(yellow_.mutex);
-	if (yellow_.running)
+	std::unique_lock<std::mutex> lock(yellow_.mutex);
+	if (yellow_.running){
+        lock.unlock();
 		stopYellow();
-
+		lock.lock();
+	}
 	yellow_.frequency = frequency;
 	yellow_.stopFlag = false;
 	yellow_.running = true;
@@ -79,10 +85,12 @@ void TrafficUtility::trafficRed(double frequency) {
 	if (frequency <= 0) {
 		throw std::invalid_argument("Frequency must be positive");
 	}
-	std::lock_guard<std::mutex> lock(red_.mutex);
-	if (red_.running)
+	std::unique_lock<std::mutex> lock(red_.mutex);
+	if (red_.running){
+		lock.unlock();
 		stopRed();
-
+		lock.lock();
+	}
 	red_.frequency = frequency;
 	red_.stopFlag = false;
 	red_.running = true;
@@ -90,42 +98,57 @@ void TrafficUtility::trafficRed(double frequency) {
 }
 
 void TrafficUtility::stopGreen() {
-	{
-		std::lock_guard<std::mutex> lock(green_.mutex);
-		if (!green_.running)
-			return;
-		green_.stopFlag = true;
-		green_.cv.notify_all();
-	}
-	if (green_.worker.joinable())
-		green_.worker.join();
-	green_.running = false;
+    std::unique_lock<std::mutex> lock(green_.mutex);
+    if (!green_.running) return;
+
+    green_.stopFlag = true;
+    green_.cv.notify_all();
+
+    // Release lock before joining to prevent deadlock
+    lock.unlock();
+
+    if (green_.worker.joinable()) {
+        green_.worker.join();
+    }
+
+    lock.lock();
+    green_.running = false;
 }
 
 void TrafficUtility::stopYellow() {
-	{
-		std::lock_guard<std::mutex> lock(yellow_.mutex);
-		if (!yellow_.running)
-			return;
-		yellow_.stopFlag = true;
-		yellow_.cv.notify_all();
-	}
-	if (yellow_.worker.joinable())
-		yellow_.worker.join();
-	yellow_.running = false;
+    std::unique_lock<std::mutex> lock(yellow_.mutex);
+    if (!yellow_.running) return;
+
+    yellow_.stopFlag = true;
+    yellow_.cv.notify_all();
+
+    // Release lock before joining to prevent deadlock
+    lock.unlock();
+
+    if (yellow_.worker.joinable()) {
+    	yellow_.worker.join();
+    }
+
+    lock.lock();
+    yellow_.running = false;
 }
 
 void TrafficUtility::stopRed() {
-	{
-		std::lock_guard<std::mutex> lock(red_.mutex);
-		if (!red_.running)
-			return;
-		red_.stopFlag = true;
-		red_.cv.notify_all();
-	}
-	if (red_.worker.joinable())
-		red_.worker.join();
-	red_.running = false;
+    std::unique_lock<std::mutex> lock(red_.mutex);
+    if (!red_.running) return;
+
+    red_.stopFlag = true;
+    red_.cv.notify_all();
+
+    // Release lock before joining to prevent deadlock
+    lock.unlock();
+
+    if (red_.worker.joinable()) {
+    	red_.worker.join();
+    }
+
+    lock.lock();
+    red_.running = false;
 }
 
 void TrafficUtility::stopAll() {
@@ -145,33 +168,38 @@ bool TrafficUtility::isRedRunning() const {
 }
 
 void TrafficUtility::greenWorker() {
-	bool lightOn = false; // Track current light state
+    bool lightOn = false;
 
-	while (!green_.stopFlag.load(std::memory_order_acquire)) {
-		auto start = std::chrono::steady_clock::now();
+    while (!green_.stopFlag.load(std::memory_order_acquire)) {
+        // Get frequency under lock
+        double frequency;
+        {
+            std::lock_guard<std::mutex> lock(green_.mutex);
+            frequency = green_.frequency;
+        }
 
-		{
-			std::unique_lock<std::mutex> lock(green_.mutex);
+        // Send pulse
+        if (lightOn) {
+            std::cout << "traffic green off" << std::endl;
+            sendLightPulse(ActuatorEnum::TRAFFIC_GREEN_OFF);
+        } else {
+            std::cout << "traffic green on" << std::endl;
+            sendLightPulse(ActuatorEnum::TRAFFIC_GREEN_ON);
+        }
+        lightOn = !lightOn;
 
-			// Alternate between on and off states
-			if (lightOn) {
-				std::cout << "traffic green off" << std::endl;
-				sendLightPulse(ActuatorEnum::TRAFFIC_GREEN_OFF);
-			} else {
-				std::cout << "traffic green on" << std::endl;
-				sendLightPulse (ActuatorEnum::TRAFFIC_GREEN_ON);
-			}
-			lightOn = !lightOn; // Toggle state
-
-			// Calculate wait time (half period for blinking effect)
-			auto halfPeriod = std::chrono::milliseconds(
-					static_cast<int>(500.0 / green_.frequency));
-			green_.cv.wait_for(lock,
-					halfPeriod - (std::chrono::steady_clock::now() - start),
-					[this] {return green_.stopFlag.load(std::memory_order_acquire);});
-		}
-	}
-	sendLightPulse (ActuatorEnum::TRAFFIC_YELLOW_OFF);
+        // Wait with timeout
+        {
+            std::unique_lock<std::mutex> lock(green_.mutex);
+            auto halfPeriod = std::chrono::milliseconds(
+                static_cast<int>(500.0 / frequency)
+            );
+            green_.cv.wait_for(lock, halfPeriod, [this] {
+                return green_.stopFlag.load(std::memory_order_acquire);
+            });
+        }
+    }
+    sendLightPulse(ActuatorEnum::TRAFFIC_GREEN_OFF);
 }
 
 void TrafficUtility::yellowWorker() {
