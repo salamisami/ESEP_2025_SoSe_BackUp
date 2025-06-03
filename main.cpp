@@ -25,6 +25,8 @@ void on_command(const char* payload) {
     }
 }
 
+
+
 int main() {
 //    cout << "Starting Program..." << endl; // prints Hello World!!!
 //
@@ -67,7 +69,12 @@ int main() {
 //
 //    cout << "Program Finished." << endl;
 
-	int rc = mqtt_festo_init("tcp://192.168.101.6:1883", "festo_anlage1");
+
+
+	// setup MQTT client in synchronous mode
+
+
+	int rc = mqtt_festo_init("tcp://192.168.101.5:1883", "QNX_node_1");
 	if (rc != 0) {
 	    printf("MQTT init failed! Fehlercode: %d\n", rc);
 	    return 1;
@@ -75,11 +82,13 @@ int main() {
 	    mqtt_festo_subscribe_command(on_command);
 
 	    // Beispiel: Initialstatus publishen
-	    mqtt_festo_publish("festo/anlage1-2/status/Q1", "0");
-	    mqtt_festo_publish("festo/anlage1-2/status/Q2", "0");
-	    mqtt_festo_publish("festo/anlage1/status/rutsche", "0");
-	    mqtt_festo_publish("festo/anlage1/status/ampel", "red");
-	    mqtt_festo_publish("festo/anlage1-2/console", "BeagleBone bereit");
+	    publishMsg("QNX_node_1","festo/anlage1/status/q1", "1");
+	    publishMsg("QNX_node_1","festo/anlage1/status/q2", "1");
+	    publishMsg("QNX_node_1","festo/anlage1/status/rutsche", "0");
+	    publishMsg("QNX_node_1","festo/anlage2/status/rutsche", "0");
+	    publishMsg("QNX_node_1","festo/anlage1/status/ampel", "red");
+	    publishMsg("QNX_node_1","festo/anlage2/status/ampel", "red");
+	    publishMsg("QNX_node_1","festo/anlage1-2/console", "BeagleBone bereit");
 
 	    // Hauptloop, z. B. Heartbeat und Statusmeldung
 	    while (1) {
