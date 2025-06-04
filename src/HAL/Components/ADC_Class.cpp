@@ -73,7 +73,7 @@ void ADC_Class::eventLoop() {
                 adc_estop();
                 break;
             default:
-                THROW("unexpected event value");
+                break;
         }
     }
 }
