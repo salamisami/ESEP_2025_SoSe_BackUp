@@ -55,6 +55,10 @@ Interrupt::Interrupt(I_Sender* sender, Actuator* actuator)
     , last_pin_status(0)
     , interruptRunning(false) {
     setup_interrupts();
+    if(isEstop()){
+        actuator->local_estop_activate();
+        sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED, (int) EventPriority::FIRST_PRIO);
+    }
 }
 
 // Interrupt::Interrupt()
@@ -72,11 +76,6 @@ Interrupt::Interrupt(I_Sender* sender, Actuator* actuator)
 Interrupt::~Interrupt() {
     MsgSendPulse(internalConnectionID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
     interruptThread.join();
-    if(test_mode) {
-
-    } else {
-
-    }
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
     out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig ^ inputPins));//Write new config back.
@@ -236,6 +235,16 @@ void Interrupt::isr(void) {
         last_pin_status = pin_status;
         sendEvent(causing_pin, pin_status);
     }
+}
+
+bool Interrupt::isEstop(){
+    //gpio_bank_0 = mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0));
+
+    uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
+    //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
+    uint32_t status_pin = (1 << BUTTON_ESTOP_BIT);
+    bool status = (status_register & status_pin);
+    return !status;
 }
 
 
