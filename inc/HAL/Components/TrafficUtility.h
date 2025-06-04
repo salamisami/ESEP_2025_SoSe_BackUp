@@ -10,12 +10,14 @@
 #include "Thread_COM.h"
 #include "QNet.h"
 #include "Event.h"
+#include "Mailbox.h"
 
 class TrafficUtility {
 public:
 
     static TrafficUtility& getInstance();
     static TrafficUtility& getInstance(I_Sender* sender);
+    static TrafficUtility& getInstance(Mailbox<_pulse>* mailbox);
 
     ~TrafficUtility();
     // Traffic light control functions
@@ -43,7 +45,9 @@ public:
 private:
     TrafficUtility();
     TrafficUtility(I_Sender* sender);
+    TrafficUtility(Mailbox<_pulse>* mailbox);
     I_Sender* traffic_sender;
+    Mailbox<_pulse>* mailbox;
 
     static std::mutex instanceMutex_;
     static std::unique_ptr<TrafficUtility> instance_;

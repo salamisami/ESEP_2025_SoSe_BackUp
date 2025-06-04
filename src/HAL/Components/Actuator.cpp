@@ -56,7 +56,7 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox, ADC_Class* adc)
     is_local_estop = false;
     this->adc = adc;
     actuatorThread = std::thread(&Actuator::threadFunction, this);
-    traffic = &TrafficUtility::getInstance();
+    traffic = &TrafficUtility::getInstance(mailbox);
 }
 
 Actuator::~Actuator() {
@@ -179,23 +179,23 @@ void Actuator::handleActuatorEvent(int event_value) {
 
 
 void Actuator::traffic_red_fast() {
-	traffic ->trafficRed(2);
+    traffic->trafficRed(2);
 
 }
 void Actuator::traffic_red_slow() {
-	traffic ->trafficRed(0.5);
+    traffic->trafficRed(0.5);
 }
 void Actuator::traffic_yellow_fast() {
-	traffic ->trafficYellow(2);
+    traffic->trafficYellow(2);
 }
 void Actuator::traffic_yellow_slow() {
-	traffic ->trafficYellow(0.5);
+    traffic->trafficYellow(0.5);
 }
 void Actuator::traffic_green_fast() {
-	traffic ->trafficGreen(2);
+    traffic->trafficGreen(2);
 }
 void Actuator::traffic_green_slow() {
-	traffic ->trafficGreen(0.5);
+    traffic->trafficGreen(0.5);
 }
 
 
@@ -285,26 +285,33 @@ void Actuator::motor_stop() {
 }
 
 void Actuator::traffic_red_on() {
+    //traffic->stopRed();
     set_data(gpio_bank_1, TRAFFIC_RED_BIT);
 }
 
 void Actuator::traffic_red_off() {
+    //traffic->stopRed();
     clear_data(gpio_bank_1, TRAFFIC_RED_BIT);
+
 }
 
 void Actuator::traffic_yellow_on() {
+    //traffic->stopYellow();
     set_data(gpio_bank_1, TRAFFIC_YELLOW_BIT);
 }
 
 void Actuator::traffic_yellow_off() {
+    //traffic->stopYellow();
     clear_data(gpio_bank_1, TRAFFIC_YELLOW_BIT);
 }
 
 void Actuator::traffic_green_on() {
+    //traffic->stopGreen();
     set_data(gpio_bank_1, TRAFFIC_GREEN_BIT);
 }
 
 void Actuator::traffic_green_off() {
+    //traffic->stopGreen();
     clear_data(gpio_bank_1, TRAFFIC_GREEN_BIT);
 }
 
