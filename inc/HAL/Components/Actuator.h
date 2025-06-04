@@ -6,6 +6,7 @@
 #include "Event.h"
 #include "Mailbox.h"
 #include "ADC_Class.h"
+#include "TrafficUtility.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -53,6 +54,7 @@ private: //================================================ private variables ==
     std::thread trafficThread;
     std::mutex mtx;
     //pointers
+    TrafficUtility* traffic;
     Mailbox<_pulse>* mailbox;
     ADC_Class* adc;
     uintptr_t gpio_bank_1;
