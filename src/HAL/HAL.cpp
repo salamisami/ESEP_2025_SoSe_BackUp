@@ -239,6 +239,7 @@ void HAL::test_ins() {
     bool allowGo = true;
     bool allowSorting = true;
     bool is_weiche = false;
+    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
     while(running) {
         _pulse msg;
         mock_dispatcher_receiver->receive_event(&msg);
@@ -252,9 +253,9 @@ void HAL::test_ins() {
                 break;
             case InterruptEnum::LASER_FRONT_BLOCKED:
                 std::cout << "Thanks!" << std::endl;
-                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
                 if(allowGo) {
                     mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_RIGHT_START);
+                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON_FAST);
                 }
                 break;
             case InterruptEnum::LASER_BACK_BLOCKED:
@@ -267,6 +268,8 @@ void HAL::test_ins() {
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_OFF);
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
                 mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+
+                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
                 allowGo = true;
                 break;
             case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
