@@ -6,7 +6,12 @@
 #include "Event.h"
 #include "Mailbox.h"
 #include "ADC_Class.h"
-#include "TrafficUtility.h"
+
+#include <thread>
+#include <mutex>
+#include <atomic>
+#include <condition_variable>
+#include <functional>
 
 #include <stdio.h>
 #include <errno.h>
@@ -31,6 +36,16 @@
 
 #define GNS_NAME "Actuator"
 
+// Thread control structure
+typedef struct {
+    std::thread worker;
+    std::mutex mutex;
+    std::condition_variable cv;
+    std::atomic<bool> stopFlag{ false };
+    std::atomic<bool> running{ false };
+    std::atomic<double> frequency{ 0 };
+}TrafficLight;
+
 
 
 class Actuator {
@@ -42,7 +57,7 @@ public: //============================================ contructors & destructors
 public: //================================================ public functions ================================================
     bool isGate();
     void test_outs();
-    
+
     void local_estop_activate();
     void local_estop_deactivate();
 
@@ -53,8 +68,15 @@ private: //================================================ private variables ==
     std::thread actuatorThread;
     std::thread trafficThread;
     std::mutex mtx;
+    std::mutex green_mtx;
+    std::mutex yellow_mtx;
+    std::mutex red_mtx;
+
+    TrafficLight green_;
+    TrafficLight yellow_;
+    TrafficLight red_;
+
     //pointers
-    TrafficUtility* traffic;
     Mailbox<_pulse>* mailbox;
     ADC_Class* adc;
     uintptr_t gpio_bank_1;
@@ -69,9 +91,33 @@ private: //================================================ private variables ==
 
 
 
+
+
+
 private: //================================================ private functions ================================================
     void set_data(uintptr_t gpio_bank, uint32_t bit);
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
+
+    // Traffic light control functions
+    void trafficGreen(double frequency);
+    void trafficYellow(double frequency);
+    void trafficRed(double frequency);
+
+    // Stop all traffic lights
+    void stopAll();
+    void stopGreen();
+    void stopYellow();
+    void stopRed();
+
+    // Check status
+    bool isGreenRunning() const;
+    bool isYellowRunning() const;
+    bool isRedRunning() const;
+
+    // Worker functions
+    void greenWorker();
+    void yellowWorker();
+    void redWorker();
 
     void threadFunction();
     void global_shutdown();
