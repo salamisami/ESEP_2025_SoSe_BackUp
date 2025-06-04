@@ -43,8 +43,8 @@ HAL::~HAL() {
 
 //===================================================== private functions =====================================================
 void HAL::init() {
-    actuator_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
-    adc_mailbox = new Mailbox<_pulse>(MAILBOX_SIZE);
+    actuator_mailbox = new Mailbox<_pulse>();
+    adc_mailbox = new Mailbox<_pulse>();
     DEBUG("Mailboxes are created");
     adc = new ADC_Class(adc_mailbox, local_sender);
     //TODO rethink SoC regarding the ESTOP
@@ -97,14 +97,13 @@ void HAL::test_ins_ADC() {
     std::cout << "Testing ADC... Please put Piece on the front laser" << std::endl;
     bool running = true;
     int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
-    //int8_t AdcCode = (int8_t) Topic::ADC;
-    bool calibrated = false;
-    //bool allowGo = true;
-    //bool allowSorting = true;
+    bool calibrated = true;
     bool is_weiche = false;
+    bool allowGo = true;
     if(!calibrated) {
         mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATE);
     }
+    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
     while(running) {
         _pulse msg;
         mock_dispatcher_receiver->receive_event(&msg);
@@ -123,13 +122,15 @@ void HAL::test_ins_ADC() {
                             running = false;
                             break;
                         case InterruptEnum::LASER_FRONT_BLOCKED:
-                            std::cout << "Thanks!" << std::endl;
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_RIGHT_START);
-                            if(!calibrated) {
-                                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
-                            } else {
-                                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+                            if(allowGo) {
+                                std::cout << "Thanks!" << std::endl;
+                                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
+                                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_RIGHT_START);
+                                if(!calibrated) {
+                                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
+                                } else {
+                                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+                                }
                             }
                             break;
                         case InterruptEnum::LASER_FRONT_UNBLOCKED:
@@ -144,8 +145,8 @@ void HAL::test_ins_ADC() {
                         case InterruptEnum::LASER_BACK_UNBLOCKED:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_OFF);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
-                            //allowGo = true;
+                            allowGo = true;
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
                             break;
                         case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
                             if(calibrated) {

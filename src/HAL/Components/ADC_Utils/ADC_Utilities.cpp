@@ -240,8 +240,6 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
 ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage) {
     std::vector<float> werte;
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
-    bool erkannt = false;
-
     while(true) {
         adc.sample();
         usleep(1000);
