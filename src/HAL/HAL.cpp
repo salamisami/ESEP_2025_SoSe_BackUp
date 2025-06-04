@@ -105,6 +105,7 @@ void HAL::test_ins_ADC() {
     if(!calibrated) {
         mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATE);
     }
+    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
     while(running) {
         _pulse msg;
         mock_dispatcher_receiver->receive_event(&msg);
@@ -144,8 +145,8 @@ void HAL::test_ins_ADC() {
                         case InterruptEnum::LASER_BACK_UNBLOCKED:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_OFF);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
                             allowGo = true;
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
                             break;
                         case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
                             if(calibrated) {
