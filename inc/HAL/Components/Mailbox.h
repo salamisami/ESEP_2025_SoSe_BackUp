@@ -3,10 +3,10 @@
 #pragma once
 
 #include "Macros.h"
-
 #include <mutex>
 #include <semaphore.h>
 #include <stdint.h>
+#include <queue>
 
 
 /**
@@ -15,19 +15,22 @@
 template <typename T>
 class Mailbox {
 public: //============================================ contructors & destructors ============================================
-	Mailbox(uint8_t mailbox_size) {
-		int initVacant = sem_init(&vacant, 0, mailbox_size);
-		int initOccupied = sem_init(&occupied, 0, 0);
-
-		if(initVacant == -1 || initOccupied == -1) {
-			THROW("Failed to initialize Semaphores in ThreadSafeQueue");
+	Mailbox(uint8_t mailbox_size) : limited_size(true), capacity(mailbox_size) {
+		if(sem_init(&vacant, 0, mailbox_size) == -1 ||
+			sem_init(&occupied, 0, 0) == -1) {
+			THROW("Failed to initialize Semaphores in Mailbox");
 		}
 	}
-	virtual ~Mailbox() {
-		mtx.lock();
-		sem_destroy(&vacant);
+	Mailbox() : limited_size(false) {
+		if(sem_init(&occupied, 0, 0) == -1) {
+			THROW("Failed to initialize Semaphore in Mailbox");
+		}
+	}
+	~Mailbox() {
+		if(limited_size) {
+			sem_destroy(&vacant);
+		}
 		sem_destroy(&occupied);
-		mtx.unlock();
 	}
 
 
@@ -37,9 +40,11 @@ public: //================================================ public functions ====
 	 * @param element the item to be added to the Mailbox
 	 */
 	void put(T element) {
-		sem_wait(&vacant);
+		if(limited_size) {
+			sem_wait(&vacant);
+		}
 		mtx.lock();
-		this->element = element;
+		queue.push(element);
 		mtx.unlock();
 		sem_post(&occupied);
 	}
@@ -51,9 +56,12 @@ public: //================================================ public functions ====
 	T take() {
 		sem_wait(&occupied);
 		mtx.lock();
-		T element = this->element;
+		T element = queue.front();
+		queue.pop();
 		mtx.unlock();
-		sem_post(&vacant);
+		if(limited_size) {
+			sem_post(&vacant);
+		}
 		return element;
 	}
 
@@ -61,12 +69,14 @@ public: //================================================ public functions ====
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	std::mutex mtx;
+	std::queue<T> queue;
 	sem_t vacant;
 	sem_t occupied;
 	//pointers
 	//primitive types
-	T element;
+	uint8_t capacity;
 	//bool and char
+	bool limited_size;
 
 
 
