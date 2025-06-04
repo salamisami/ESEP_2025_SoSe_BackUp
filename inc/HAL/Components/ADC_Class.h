@@ -30,6 +30,8 @@ public: //================================================ public functions ====
      */
     void adc_estop();
     
+    void adc_reset();
+
 
 
 
@@ -46,6 +48,7 @@ private: //================================================ private variables ==
     //primitive Types
     float bandVoltage;
     bool running;
+    bool adcStopped;
    
 	
 
