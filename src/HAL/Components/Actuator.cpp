@@ -578,7 +578,6 @@ void Actuator::stop_moving_parts() {
     DEBUG("Stoping moving parts...");
     sorting_off();
     motor_stop();
-    adc->adc_estop();
 }
 
 
@@ -586,6 +585,9 @@ void Actuator::check_estop() {
     prohibit_operate = (is_local_estop || is_neighbor_estop);
     if(prohibit_operate) {
         stop_moving_parts();
+        adc->adc_estop();
+    } else {
+        adc->adc_reset();
     }
 }
 

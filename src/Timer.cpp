@@ -18,11 +18,10 @@ Timer::~Timer() {
 //===================================================== public functions =====================================================
 
 void Timer::setTimer(int miliseconds, int id) {
-    //TODO calling this twice will not create 2 separate threads
-    if(timerThread.joinable()) {
+    if(timerThread.joinable()){
         timerThread.join();
     }
-    DEBUG("Creating new timer thread");
+    //TODO @Lucas please edit here
     timerThread = std::thread(&Timer::threadFunction, this, miliseconds, id);
 }
 
@@ -31,5 +30,5 @@ void Timer::threadFunction(int miliseconds, int id) {
     WAIT(1000);
     DEBUG("Sending event....");
     sender->send_event((int) Topic::TIMER, id, (int) EventPriority::SECOND_PRIO);
-    DEBUG("Timer ended...");
+    std::cout << "Timer for " << miliseconds << " ist abgelaufen" << std::endl;
 }

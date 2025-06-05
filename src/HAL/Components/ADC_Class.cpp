@@ -7,6 +7,7 @@ ADC_Class::ADC_Class(Mailbox<_pulse>* mailbox, I_Sender* sender)
     adc(tscadc),
     sender(sender),
     mailbox(mailbox),
+	adcStopped(false),
     running(false) {
     ADCThread = std::thread(&ADC_Class::eventLoop, this);
     ThreadCtl(_NTO_TCTL_IO, 0);
@@ -15,31 +16,55 @@ ADC_Class::ADC_Class(Mailbox<_pulse>* mailbox, I_Sender* sender)
 }
 
 ADC_Class::~ADC_Class() {
+	adcStopped = false;
     running = false;
     ADCThread.join();
 }
 
 void ADC_Class::calibrate() {
+	if(adcStopped){
+		//TODO mögliches Event Hinzufügen
+		std::cout << "E-Stopp gedrückt, Calibrierung nicht möglich "<< "\n";
+		return;
+	}
+
     ADC_Utilities::calibrateComponents(adc, tscadc, bandVoltage);
     sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATION_DONE);
 }
 
 void ADC_Class::measureClassifySend() {
+	if(adcStopped){
+		//TODO mögliches Event Hinzufügen
+		std::cout << "E-Stopp gedrückt, Messung nicht möglich "<< "\n";
+		return;
+	}
+
     ADC_Enum name = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage);
     sender->send_event((int8_t) Topic::ADC, (int) name);
     std::cout << "Erkanntes Event " << (int) name << "\n";
 }
 
 void ADC_Class::adc_prepare(){
-    ADC_Utilities::expect_piece(adc, tscadc, bandVoltage);
+	if(adcStopped){
+		//TODO mögliches Event Hinzufügen
+		std::cout << "E-Stopp gedrückt, Vorbereitung nicht mögllich"<< "\n";
+		return;
+	}
+
+    ADC_Utilities::expect_piece(adc, tscadc, bandVoltage, &adcStopped);
     sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
 }
 
 //===================================================== public functions ===============================================
 
 void ADC_Class::adc_estop(){
-    //TODO implement adc estop. Do not stop the eventLoop. Please see this function in .h file.
+    adcStopped = true;
     std::cout << "Estop erhalten. Stoppe die ADC gerade 🛑" << std::endl;
+}
+
+void ADC_Class::adc_reset(){
+    adcStopped = false;
+    std::cout << "Reset Erhalten. ADC funktionen wieder verfügbar ✅" << std::endl;
 }
 
 void ADC_Class::eventLoop() {
@@ -71,6 +96,9 @@ void ADC_Class::eventLoop() {
                 break;
             case ADC_Enum::ADC_STOP:
                 adc_estop();
+                break;
+            case ADC_Enum::ADC_RESET:
+                adc_reset();
                 break;
             default:
                 break;

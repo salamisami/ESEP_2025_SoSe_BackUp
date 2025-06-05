@@ -140,7 +140,7 @@ void HAL::test_ins_ADC() {
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_ON);
-                            allowGo = false;
+                            //allowGo = false;
                             break;
                         case InterruptEnum::LASER_BACK_UNBLOCKED:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_OFF);
