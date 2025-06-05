@@ -51,7 +51,7 @@ void ADC_Class::adc_prepare(){
 		return;
 	}
 
-    ADC_Utilities::expect_piece(adc, tscadc, bandVoltage);
+    ADC_Utilities::expect_piece(adc, tscadc, bandVoltage, &adcStopped);
     sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
 }
 

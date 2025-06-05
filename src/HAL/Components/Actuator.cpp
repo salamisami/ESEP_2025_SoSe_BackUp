@@ -49,8 +49,8 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox, ADC_Class* adc)
     , is_local_estop(false) {
     out32((uintptr_t) (gpio_bank_1 + GPIO_OE), 0);
     out32((uintptr_t) (gpio_bank_2 + GPIO_OE), 0);
-    global_shutdown();
-    local_estop_deactivate();
+//    global_shutdown();
+//    local_estop_deactivate();
     prohibit_operate = false;
     is_local_estop = false;
     is_local_estop = false;

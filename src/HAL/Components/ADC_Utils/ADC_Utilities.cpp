@@ -29,11 +29,11 @@ void ADC_Utilities::saveProfile(const Profil& p) {
     std::cout << "Profil erfolgreich gespeichert: " << p.name << "\n";
 }
 
-void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage) {
+void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
     std::vector<float> werte;
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
     bool erkannt = false;
-    while(true) {
+    while(*adcStopped) {
         adc.sample();
         //TODO Magic number
         usleep(1000);
