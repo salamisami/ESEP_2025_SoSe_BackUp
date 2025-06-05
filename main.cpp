@@ -113,31 +113,54 @@ int main() {
 	        case 4: break;
 	        }
 
-	        _pulse event;
-	        while(hal_running) {
-	        local_receiver->receive_event(&event);
-			Topic event_code = (Topic) event.code;
-			switch(event_code) {
-				case Topic::ACTUATOR:
-					actuator_mailbox->put(event);
+	        _pulse msg;
+			mock_dispatcher_receiver->receive_event(&msg);
+			ActuatorEnum event = (ActuatorEnum) msg.value.sival_int;
+			switch(event) {
+				case ActuatorEnum::LED_Q1_OFF:
+					mqtt_festo_publish("festo/anlage1/status/q1", "0");
 					break;
-				case Topic::ADC:
-					adc_mailbox->put(event);
+				case ActuatorEnum::LED_Q1_ON:
+					mqtt_festo_publish("festo/anlage1/status/q1", "1");
 					break;
-				case Topic::STOP_THREAD:
-					hal_running = false;
+				case ActuatorEnum::LED_Q2_OFF:
+					mqtt_festo_publish("festo/anlage1/status/q2", "0");
 					break;
-				default:
+				case ActuatorEnum::LED_Q2_ON:
+					mqtt_festo_publish("festo/anlage1/status/q2", "1");
+					break;
+				case ActuatorEnum::TRAFFIC_GREEN_ON:
+					mqtt_festo_publish("festo/anlage1/status/ampel/green", "on");
+					break;
+				case ActuatorEnum::TRAFFIC_GREEN_OFF:
+					mqtt_festo_publish("festo/anlage1/status/ampel/green", "off");
+					break;
+				case ActuatorEnum::TRAFFIC_YELLOW_ON:
+					mqtt_festo_publish("festo/anlage1/status/ampel/yellow", "on");
+					break;
+				case ActuatorEnum::TRAFFIC_YELLOW_OFF:
+					mqtt_festo_publish("festo/anlage1/status/ampel/yellow", "off");
+					break;
+				case ActuatorEnum::TRAFFIC_RED_ON:
+					mqtt_festo_publish("festo/anlage1/status/ampel/red", "on");
+					break;
+				case ActuatorEnum::TRAFFIC_RED_OFF:
+					mqtt_festo_publish("festo/anlage1/status/ampel/red", "off");
+					break;
+				case ActuatorEnum::LED_START_ON:
+					mqtt_festo_publish("festo/anlage1/status/start", "1");
+					break;
+				case ActuatorEnum::LED_START_OFF:
+					mqtt_festo_publish("festo/anlage1/status/start", "0");
+					break;
+				case ActuatorEnum::LED_RESET_ON:
+					mqtt_festo_publish("festo/anlage1/status/reset", "1");
+					break;
+				case ActuatorEnum::LED_RESET_OFF:
+					mqtt_festo_publish("festo/anlage1/status/reset", "0");
 					break;
 			}
-		}
 
-
-
-	        mqtt_festo_publish("festo/anlage1-2/status/Q1", "1");
-	        mqtt_festo_publish("festo/anlage1/status/ampel", "red");
-	        sleep(1);
-	        mqtt_festo_publish("festo/anlage2/status/ampel", "green");
 	    }
 
 	    mqtt_festo_cleanup();
