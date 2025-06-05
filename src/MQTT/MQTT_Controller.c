@@ -7,7 +7,7 @@
 static MQTTClient client;
 static void (*g_command_callback)(const char* payload) = NULL;
 
-#define QOS 0
+#define QOS 1
 #define TIMEOUT 10000L
 
 // Helper
@@ -25,30 +25,30 @@ int mqtt_festo_publish(const char* topic, const char* payload) {
     return rc;
 }
 
-int publishMsg(char * clientId, char * topic, char *payload){
-	MQTTClient_message pubmsg = MQTTClient_message_initializer;
-	MQTTClient_deliveryToken token;
-
-	pubmsg.payload = payload;
-	pubmsg.payloadlen = strlen(payload);
-	pubmsg.qos = QOS;
-	pubmsg.retained = 1;
-	int rc;
-
-	if ((rc = MQTTClient_publishMessage(client, topic, &pubmsg, &token)) != MQTTCLIENT_SUCCESS) {
-		printf("Failed to publish topic %s (value = %s), return code %d\n", topic, payload, rc);
-		return rc;
-	};
-	printf("Waiting for up to %d seconds for publication of %s\n"
-	       "on topic %s for client with ClientID: %s\n",
-	       (int)(TIMEOUT/1000), payload, topic, clientId);
-	if ((rc = MQTTClient_waitForCompletion(client, token, TIMEOUT)) != MQTTCLIENT_SUCCESS) {
-		printf("Failed to publish topic %s (value = %s) - not completed, return code %d\n", topic, payload, rc);
-		return rc;
-	}
-	printf("Message with delivery token %d delivered\n", token);
-	return rc;
-}
+//int publishMsg(char * clientId, char * topic, char *payload){
+//	MQTTClient_message pubmsg = MQTTClient_message_initializer;
+//	MQTTClient_deliveryToken token;
+//
+//	pubmsg.payload = payload;
+//	pubmsg.payloadlen = strlen(payload);
+//	pubmsg.qos = QOS;
+//	pubmsg.retained = 1;
+//	int rc;
+//
+//	if ((rc = MQTTClient_publishMessage(client, topic, &pubmsg, &token)) != MQTTCLIENT_SUCCESS) {
+//		printf("Failed to publish topic %s (value = %s), return code %d\n", topic, payload, rc);
+//		return rc;
+//	};
+//	printf("Waiting for up to %d seconds for publication of %s\n"
+//	       "on topic %s for client with ClientID: %s\n",
+//	       (int)(TIMEOUT/1000), payload, topic, clientId);
+//	if ((rc = MQTTClient_waitForCompletion(client, token, TIMEOUT)) != MQTTCLIENT_SUCCESS) {
+//		printf("Failed to publish topic %s (value = %s) - not completed, return code %d\n", topic, payload, rc);
+//		return rc;
+//	}
+//	printf("Message with delivery token %d delivered\n", token);
+//	return rc;
+//}
 
 static int internal_msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
     if (strcmp(topicName, "festo/anlage1-2/command") == 0 && g_command_callback) {
@@ -57,7 +57,7 @@ static int internal_msgarrvd(void *context, char *topicName, int topicLen, MQTTC
         payload[message->payloadlen] = '\0';
         g_command_callback(payload);
     }
-    // weitere callbacks nach Bedarf...
+    // weitere callbacks nach Bedarf
     MQTTClient_freeMessage(&message);
     MQTTClient_free(topicName);
     return 1;
@@ -115,39 +115,54 @@ void mqtt_festo_heartbeat(void) {
     mqtt_festo_publish("festo/anlage1-2/status/online", "online");
 }
 
-int connectClient(const char * brokerAdr, const char * clientId){
-	MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
-	int rc;
-
-	if ((rc = MQTTClient_create(&client, brokerAdr, clientId,
-	    MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
-	    printf("Failed to create client, return code %d\n", rc);
-	    return rc;
-	}
-
-	if ((rc = MQTTClient_setCallbacks(client, NULL, connlost, msgarrvd, delivered)) != MQTTCLIENT_SUCCESS) {
-	        printf("Failed to set callbacks, return code %d\n", rc);
-	        MQTTClient_destroy(&client);
-	        return rc;
-	}
-
-	conn_opts.keepAliveInterval = 20;
-	conn_opts.cleansession = 1;
-	if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
-		printf("Failed to connect, return code %d\n", rc);
-		MQTTClient_destroy(&client);
-		return rc;
-	}
-	return rc;
-}
+//int connectClient(const char * brokerAdr, const char * clientId){
+//	MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
+//	int rc;
+//
+//	if ((rc = MQTTClient_create(&client, brokerAdr, clientId,
+//	    MQTTCLIENT_PERSISTENCE_NONE, NULL)) != MQTTCLIENT_SUCCESS) {
+//	    printf("Failed to create client, return code %d\n", rc);
+//	    return rc;
+//	}
+//
+//	if ((rc = MQTTClient_setCallbacks(client, NULL, connlost, msgarrvd, delivered)) != MQTTCLIENT_SUCCESS) {
+//	        printf("Failed to set callbacks, return code %d\n", rc);
+//	        MQTTClient_destroy(&client);
+//	        return rc;
+//	}
+//
+//	conn_opts.keepAliveInterval = 20;
+//	conn_opts.cleansession = 1;
+//	if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
+//		printf("Failed to connect, return code %d\n", rc);
+//		MQTTClient_destroy(&client);
+//		return rc;
+//	}
+//	return rc;
+//}
 
 int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
-    printf("Message arrived\n");
-    printf("     topic: %s\n", topicName);
-    printf("   message: %.*s\n", message->payloadlen, (char*)message->payload);
+    printf("Message arrived on topic: %s\n", topicName);
+    // Annahme: Command-Topic
+    if(strcmp(topicName, "festo/anlage1-2/command") == 0) {
+        // Payload als String verarbeiten
+        char cmd[32] = {0};
+        strncpy(cmd, (char*)message->payload, message->payloadlen);
+        cmd[message->payloadlen] = '\0';
+        if(strcmp(cmd, "start") == 0) {
+            // Starte Anlage
+        } else if(strcmp(cmd, "stop") == 0) {
+            // Stoppe Anlage
+        } else if(strcmp(cmd, "notaus") == 0) {
+            // Not-Aus auslösen
+        } else if(strcmp(cmd, "reset") == 0) {
+            // Anlage zurücksetzen
+        } else {
+            printf("Unbekannter Befehl: %s\n", cmd);
+        }
+    }
     MQTTClient_freeMessage(&message);
     MQTTClient_free(topicName);
-    atLeastOneTopicArrived = 1;
     return 1;
 }
 

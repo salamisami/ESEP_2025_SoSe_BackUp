@@ -47,11 +47,11 @@ void mqtt_festo_heartbeat(void);
 
 // ... weitere Funktionen nach Bedarf
 
-int connectClient(const char* , const char* );
-
-int msgarrvd(void *context, char *, int , MQTTClient_message *);
-
-int publishMsg(char *, char * , char *);
+//int connectClient(const char* , const char* );
+//
+//int msgarrvd(void *context, char *, int , MQTTClient_message *);
+//
+//int publishMsg(char *, char * , char *);
 
 #ifdef __cplusplus
 }

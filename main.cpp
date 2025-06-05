@@ -12,16 +12,28 @@
 
 using namespace std;
 
-// Beispiel-Callback: Was tun, wenn ein Befehl über MQTT kommt?
+volatile int lastCommand = 0;
 void on_command(const char* payload) {
-
     printf("Befehl empfangen: %s\n", payload);
     if (strcmp(payload, "start") == 0) {
-        mqtt_festo_publish("festo/anlage1-2/status/Start", "1");
-        mqtt_festo_publish("festo/anlage1-2/console", "Anlage gestartet");
+    	lastCommand = 1;
+//        mqtt_festo_publish("festo/anlage1-2/status/Start", "1");
+//        mqtt_festo_publish("festo/anlage1-2/console", "Anlage gestartet");
     } else if (strcmp(payload, "stop") == 0) {
-        mqtt_festo_publish("festo/anlage1-2/status/Start", "0");
-        mqtt_festo_publish("festo/anlage1-2/console", "Anlage gestoppt");
+    	lastCommand = 2;
+//        mqtt_festo_publish("festo/anlage1-2/status/Start", "0");
+//        mqtt_festo_publish("festo/anlage1-2/console", "Anlage gestoppt");
+    } else if (strcmp(payload, "notaus") == 0) {
+    	lastCommand = 3;
+//        mqtt_festo_publish("festo/anlage1-2/status/Reset", "0");
+//        mqtt_festo_publish("festo/anlage1-2/console", "NOT-AUS aktiviert");
+        // Hier ggf. deine eigentliche Notaus-Logik ergänzen!
+    } else if (strcmp(payload, "reset") == 0) {
+    	lastCommand = 4;
+//        mqtt_festo_publish("festo/anlage1-2/status/Reset", "1");
+//        mqtt_festo_publish("festo/anlage1-2/console", "Anlage zurückgesetzt");
+    } else {
+        //mqtt_festo_publish("festo/anlage1-2/console", "Unbekannter Befehl!");
     }
 }
 
@@ -82,20 +94,49 @@ int main() {
 	    mqtt_festo_subscribe_command(on_command);
 
 	    // Beispiel: Initialstatus publishen
-	    publishMsg("QNX_node_1","festo/anlage1/status/q1", "1");
-	    publishMsg("QNX_node_1","festo/anlage1/status/q2", "1");
-	    publishMsg("QNX_node_1","festo/anlage1/status/rutsche", "0");
-	    publishMsg("QNX_node_1","festo/anlage2/status/rutsche", "0");
-	    publishMsg("QNX_node_1","festo/anlage1/status/ampel", "red");
-	    publishMsg("QNX_node_1","festo/anlage2/status/ampel", "red");
-	    publishMsg("QNX_node_1","festo/anlage1-2/console", "BeagleBone bereit");
+	    mqtt_festo_publish("festo/anlage1/status/q1", "1");
+	    mqtt_festo_publish("festo/anlage1/status/q2", "1");
+	    mqtt_festo_publish("festo/anlage1/status/rutsche", "0");
+	    mqtt_festo_publish("festo/anlage2/status/rutsche", "0");
+	    mqtt_festo_publish("festo/anlage1/status/ampel", "red");
+	    mqtt_festo_publish("festo/anlage2/status/ampel", "red");
+	    mqtt_festo_publish("festo/anlage1-2/console", "BeagleBone bereit");
 
 	    // Hauptloop, z. B. Heartbeat und Statusmeldung
 	    while (1) {
 	        mqtt_festo_heartbeat();
+
+	        switch(lastCommand){
+	        case 1: break;
+	        case 2: break;
+	        case 3: break;
+	        case 4: break;
+	        }
+
+	        _pulse event;
+	        while(hal_running) {
+	        local_receiver->receive_event(&event);
+			Topic event_code = (Topic) event.code;
+			switch(event_code) {
+				case Topic::ACTUATOR:
+					actuator_mailbox->put(event);
+					break;
+				case Topic::ADC:
+					adc_mailbox->put(event);
+					break;
+				case Topic::STOP_THREAD:
+					hal_running = false;
+					break;
+				default:
+					break;
+			}
+		}
+
+
+
 	        mqtt_festo_publish("festo/anlage1-2/status/Q1", "1");
 	        mqtt_festo_publish("festo/anlage1/status/ampel", "red");
-	        sleep(100);
+	        sleep(1);
 	        mqtt_festo_publish("festo/anlage2/status/ampel", "green");
 	    }
 
