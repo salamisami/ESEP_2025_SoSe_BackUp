@@ -16,11 +16,11 @@ ModeHandler::~ModeHandler() {}
 
 void ModeHandler::entry() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    substate->entry();
+    State::entry();
 }
 
 void ModeHandler::exit() {
-    substate->exit();
+    State::exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 

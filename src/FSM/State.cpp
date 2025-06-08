@@ -34,10 +34,10 @@ State* State::handle_event_using_function(State* (State::* handler_function)()) 
     State* newSubstate = (substate->*handler_function)();
     if(newSubstate != nullptr) {
         // there is substate change, change only the substate
-        substate->exit();
+        State::exit();
         delete substate;
         substate = newSubstate;
-        substate->entry();
+        State::entry();
     }
     return nullptr;
 }
@@ -63,8 +63,8 @@ State* State::handle_event_using_function(State* (State::* handler_function)()) 
 
 //inside loop
 // State* StateA::tick() {
-//     super_substate->exit();
-//     super_substate->entry();
+//     super_State::exit();
+//     super_State::entry();
 //     return nullptr;
 // }
 
@@ -86,11 +86,13 @@ State* State::handle_event_using_function(State* (State::* handler_function)()) 
 //===================================================== public functions =====================================================
 
 void State::entry(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    substate->entry();
 }
 
 void State::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    substate->exit();
 }
 
 State* State::timer(int id) {
@@ -100,10 +102,10 @@ State* State::timer(int id) {
     State* newSubstate = substate->timer(id);
     if(newSubstate != nullptr) {
         // there is substate change, change only the substate
-        substate->exit();
+        State::exit();
         delete substate;
         substate = newSubstate;
-        substate->entry();
+        State::entry();
     }
     return nullptr;
 }

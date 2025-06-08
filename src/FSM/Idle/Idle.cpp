@@ -21,11 +21,11 @@ Idle::~Idle() {
 
 void Idle::entry() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    substate->entry();
+    State::entry();
 }
 
 void Idle::exit() {
-    substate->exit();
+    State::exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 

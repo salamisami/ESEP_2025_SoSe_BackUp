@@ -63,7 +63,7 @@ int main() {
     remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATION_DONE);
     WAIT(1000);
     remote_control->send_event((int8_t) Topic::STOP_THREAD, 0);
-    WAIT(3000);
+    WAIT(1000);
 
     delete logic;
     delete timer_sender;

@@ -40,10 +40,10 @@ State* Operating::estop() {
 State* Operating::forward() {
     State* newSubstate = substate->forward();
     if(newSubstate != nullptr) {
-        substate->exit();
+        State::exit();
         delete substate;
         substate = newSubstate;
-        substate->entry();
+        State::entry();
     }
     return nullptr;
 }
