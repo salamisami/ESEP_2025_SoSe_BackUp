@@ -129,7 +129,7 @@ void HAL::test_ins_ADC() {
                                 if(!calibrated) {
                                     mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
                                 } else {
-                                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+                                    //mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
                                 }
                             }
                             break;
@@ -149,12 +149,12 @@ void HAL::test_ins_ADC() {
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
                             break;
                         case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
-                            if(calibrated) {
+                            if(!calibrated) {
                                 //let through
                                 if(is_weiche) {
                                     //open the gate to go through
                                     mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
-                                    WAIT(500);
+                                    WAIT(1500);
                                     mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                                 } else {
                                     //do not push to the ramp
@@ -192,6 +192,7 @@ void HAL::test_ins_ADC() {
                             break;
                         case ADC_Enum::ADC_CALIBRATION_DONE:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
                             calibrated = true;
                             DEBUG("Calibration Done!");
                             break;

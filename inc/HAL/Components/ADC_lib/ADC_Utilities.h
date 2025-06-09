@@ -63,7 +63,7 @@ public: //================================================ public functions ====
 	/**
 	 * @brief blocks the thread running this function, until a piece is detected
 	 */
-	static void expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage);
+	static void expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool*);
 
 
 

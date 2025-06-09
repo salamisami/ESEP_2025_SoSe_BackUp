@@ -17,6 +17,7 @@
 
 //GPIO_0
 #define SORTING_STATUS_BIT  14
+#define BUTTON_ESTOP_BIT    27
 
 
 //GPIO_1 - Internal actuator pin mapping
@@ -417,13 +418,15 @@ bool Actuator::isGate() {
 
     uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
     //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
-    uint32_t sorting_status_pin = (1 << SORTING_STATUS_BIT);
-    bool status = (status_register & sorting_status_pin);
+    uint32_t status_pin = (1 << SORTING_STATUS_BIT);
+    bool status = (status_register & status_pin);
     return !status;
 }
 
+
+
 //GPIO_1
-void Actuator::motor_right() {
+void Actuator::motor_right() { 
     if(prohibit_operate) {
         return;
     }
@@ -575,7 +578,6 @@ void Actuator::stop_moving_parts() {
     DEBUG("Stoping moving parts...");
     sorting_off();
     motor_stop();
-    adc->adc_estop();
 }
 
 
@@ -583,6 +585,9 @@ void Actuator::check_estop() {
     prohibit_operate = (is_local_estop || is_neighbor_estop);
     if(prohibit_operate) {
         stop_moving_parts();
+        adc->adc_estop();
+    } else {
+        adc->adc_reset();
     }
 }
 

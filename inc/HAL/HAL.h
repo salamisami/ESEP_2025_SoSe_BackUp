@@ -17,13 +17,13 @@ public: //============================================ contructors & destructors
 	/**
 	 * @brief creates a hal without connection. Use this for test purposes
 	 */
-	/**
-	 * @brief creates a hal without connection. Use this for test purposes
-	 */
 	HAL();
 
 	/**
 	 * @brief creates a hal with connection. The connection can be mocked, qnet, or gns. (Because they are all using the same interface).
+	 * 
+	 * The HAL will send an initial event during initialization, whether the machine has a pusher or a switch gate.
+	 * Additionally, if the estop is pressed during initialization, it will prevent moving parts from moving, and send an estop event using @param local_sender
 	 * 
 	 * @param local_receiver pointer to receiver, used by HAL to receive events
 	 * @param local_sender pointer so sender, used by HAL to send events. HAL will use this @param local_sender to send a confirmation, whether it is a switch or a pusher.
