@@ -22,8 +22,6 @@ struct Piece {
     std::string typ;          // String type
     int id;                   // Unique identifier
     PieceState zustand;       // Current state of the piece
-    bool wurdeGeprueft;       // Whether the piece has been checked
-    bool korrektSortiert;     // Whether the piece is correctly sorted
     bool hoch;                // Whether the piece is high (height-related)
     bool metall;              // Whether the piece is metal
     bool bohrung;             // Whether the piece has a bore (drill hole)
