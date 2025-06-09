@@ -4,66 +4,65 @@
 
 #include "Event.h"
 #include "ContextData.h"
-#include "State.h"
+#include "I_State.h"
 
 #include <vector>
 #include <iostream>
 
 
-class OrthogonalState {
+class OrthogonalState : public I_State {
     //============================================ contructors & destructors ============================================
 public:
-    OrthogonalState(ContextData* data);
+    OrthogonalState(ContextData* data, std::vector<I_State*>* initial_substates);
 
-    //copy constructor
-    OrthogonalState(const OrthogonalState& other);
-    virtual ~OrthogonalState();
+    virtual ~OrthogonalState() override;
 
     //================================================ public functions ================================================
 public:
-    virtual void entry();
-    virtual void exit();
+    virtual void entry() override;
+    virtual void exit() override;
 
-    virtual OrthogonalState* laser_front_blocked();
-    virtual OrthogonalState* laser_front_unblocked();
-    virtual OrthogonalState* laser_back_blocked();
-    virtual OrthogonalState* laser_back_unblocked();
-    virtual OrthogonalState* button_start_pressed();
-    virtual OrthogonalState* button_start_released();
-    virtual OrthogonalState* button_stop_pressed();
-    virtual OrthogonalState* button_stop_released();
-    virtual OrthogonalState* button_reset_pressed();
-    virtual OrthogonalState* button_reset_released();
-    virtual OrthogonalState* button_estop_pressed();
-    virtual OrthogonalState* button_estop_released();
-    virtual OrthogonalState* metal_detected();
-    virtual OrthogonalState* metal_not_detected();
-    virtual OrthogonalState* laser_sorting_gate_blocked();
-    virtual OrthogonalState* laser_sorting_gate_unblocked();
-    virtual OrthogonalState* laser_ramp_blocked();
-    virtual OrthogonalState* laser_ramp_unblocked();
-    virtual OrthogonalState* adc_top_area_blocked();
-    virtual OrthogonalState* adc_top_area_unblocked();
-    virtual OrthogonalState* adc_side_area_blocked();     //unused
-    virtual OrthogonalState* adc_side_area_unblocked();   //unused
+    virtual OrthogonalState* clone() override;
+
+    virtual I_State* laser_front_blocked() override;
+    virtual I_State* laser_front_unblocked() override;
+    virtual I_State* laser_back_blocked() override;
+    virtual I_State* laser_back_unblocked() override;
+    virtual I_State* button_start_pressed() override;
+    virtual I_State* button_start_released() override;
+    virtual I_State* button_stop_pressed() override;
+    virtual I_State* button_stop_released() override;
+    virtual I_State* button_reset_pressed() override;
+    virtual I_State* button_reset_released() override;
+    virtual I_State* button_estop_pressed() override;
+    virtual I_State* button_estop_released() override;
+    virtual I_State* metal_detected() override;
+    virtual I_State* metal_not_detected() override;
+    virtual I_State* laser_sorting_gate_blocked() override;
+    virtual I_State* laser_sorting_gate_unblocked() override;
+    virtual I_State* laser_ramp_blocked() override;
+    virtual I_State* laser_ramp_unblocked() override;
+    virtual I_State* adc_top_area_blocked() override;
+    virtual I_State* adc_top_area_unblocked() override;
+    virtual I_State* adc_side_area_blocked() override;     //unused
+    virtual I_State* adc_side_area_unblocked() override;   //unused
 
 
-    virtual OrthogonalState* adc_calibration_done();
-    virtual OrthogonalState* adc_new_piece();
+    virtual I_State* adc_calibration_done() override;
+    virtual I_State* adc_new_piece() override;
 
-    virtual OrthogonalState* timer(int id);
+    virtual I_State* timer(int id) override;
 
 
 
     //================================================ private variables ================================================
 protected:
     ContextData* data;
-    //OrthogonalState* suborthogonalstates;
-    std::vector<OrthogonalState*>* list_of_suborthogonalstates;
+    std::vector<I_State*>* substates;
 
     //================================================ private functions ================================================
 private:
-    OrthogonalState* handle_event_using_function(OrthogonalState* (OrthogonalState::* handler_function)());
+    I_State* handle_event_using_function(I_State* (I_State::* handler_function)());
 
 
 };

@@ -1,238 +1,168 @@
 #include "OrthogonalState.h"
 
-#include "State.h"
-
 //================================================= contructors & destructors =================================================
-OrthogonalState::OrthogonalState(ContextData* data)
-    : data(data) {
+OrthogonalState::OrthogonalState(ContextData* data, std::vector<I_State*>* initial_substates)
+    : data(data)
+    , substates(initial_substates) {
     //std::cout << "OrthogonalState Constructor" << std::endl;
-    list_of_suborthogonalstates = new std::vector<OrthogonalState*>();
 
 }
 
-//copy constructor (deep copy)
-OrthogonalState::OrthogonalState(const OrthogonalState& other) :data(other.data) {
-    list_of_suborthogonalstates = new std::vector<OrthogonalState*>();
-    for(OrthogonalState* current_orthogonalstate : *other.list_of_suborthogonalstates) {
-        if(current_orthogonalstate != nullptr) {
-            OrthogonalState* copy_current_orthogonalstate = new OrthogonalState(*current_orthogonalstate);
-            list_of_suborthogonalstates->emplace_back(copy_current_orthogonalstate);
-        } else {
 
-        }
-        this->data = other.data;
-    }
-}
 
 OrthogonalState::~OrthogonalState() {
     //std::cout << "OrthogonalState Destructor" << std::endl;
-    for(OrthogonalState* current_orthogonalstate : *list_of_suborthogonalstates) {
-        if(current_orthogonalstate != nullptr) {
-            delete current_orthogonalstate;
-        }
+    if(substates != nullptr) {
+        delete substates;
     }
-    delete list_of_suborthogonalstates;
 }
 
 //===================================================== private functions =====================================================
 
-OrthogonalState* OrthogonalState::handle_event_using_function(OrthogonalState* (OrthogonalState::* handler_function)()) {
-    for(OrthogonalState* current_orthogonalstate : *list_of_suborthogonalstates) { 
-        if(current_orthogonalstate == nullptr) {
-            //do nothing
-        } else {
-            OrthogonalState* newSuborthogonalstate = (current_orthogonalstate->*handler_function)();
-            if(newSuborthogonalstate != nullptr) {
-                // there is suborthogonalstates change, change only the suborthogonalstates
-                current_orthogonalstate->exit();
-                delete current_orthogonalstate;
-                current_orthogonalstate = newSuborthogonalstate;
-                current_orthogonalstate->entry();
-            }
+I_State* OrthogonalState::handle_event_using_function(I_State* (I_State::* handler_function)()) {
+    for(I_State* current_substate : *substates) {
+        I_State* newSubstate = (current_substate->*handler_function)();
+        if(newSubstate != nullptr) {
+            // there is substate change, change only the substate
+            current_substate->exit();
+            delete current_substate;
+            current_substate = newSubstate;
+            current_substate->entry();
         }
     }
     return nullptr;
 }
 
-//save history
-// OrthogonalState* OrthogonalStateA::estop_pressed() {
-//     OrthogonalState* clone_suborthogonalstate = new OrthogonalState(*suborthogonalstates);
-//     data->orthogonalstateStack->push(clone_suborthogonalstate);
-//     return new EmergencyStop(data);
-// }
-
-//load history
-// OrthogonalState* EmergencyStop::estop_released() {
-//     OrthogonalState* loaded_orthogonalstate = data->orthogonalstateStack->top();
-//     data->orthogonalstateStack->pop();
-//     return new OrthogonalStateA(data, loaded_orthogonalstate);
-// }
-
-//outside loop
-// OrthogonalState* OrthogonalStateA::restart(){
-//     return new OrthogonalStateA(data);
-// }
-
-//inside loop
-// OrthogonalState* OrthogonalStateA::tick() {
-//     super_suborthogonalstate->exit();
-//     super_suborthogonalstate->entry();
-//     return nullptr;
-// }
-
-//explicit entry
-// OrthogonalState* OrthogonalStateA::service() {
-//      OrthogonalState* initial_explicit_suborthogonalstate = new StartEngine(data);
-//      return new StartCar(data, initial_explicit_suborthogonalstate);
-// }
-
-//explicit exit
-// OrthogonalState* OrthogonalStateA::service()  {
-//     for(auto current_orthogonalstate : *list_of_suborthogonalstates) {
-//         if(current_orthogonalstate == nullptr) {
-//             //do nothing
-//         } else {
-//             OrthogonalState* newSuborthogonalstate = current_orthogonalstate->service();
-//             if(newSuborthogonalstate != nullptr) {
-//                 //there is a super_suborthogonalstate change, explicit exit
-//                 return newSuborthogonalstate;
-//             }
-//         }
-//     }
-//     return nullptr;
-// }
 
 //===================================================== public functions =====================================================
 
 void OrthogonalState::entry() {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    for(auto current_orthogonalstate : *list_of_suborthogonalstates) {
-        if(current_orthogonalstate != nullptr) {
-            current_orthogonalstate->entry();
-        }
+    for(I_State* current_substate : *substates) {
+        current_substate->entry();
     }
 }
 
 void OrthogonalState::exit() {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    for(auto current_orthogonalstate : *list_of_suborthogonalstates) {
-        if(current_orthogonalstate != nullptr) {
-            current_orthogonalstate->exit();
-        }
+    for(I_State* current_substate : *substates) {
+        current_substate->exit();
     }
 }
 
-OrthogonalState* OrthogonalState::timer(int id) {
-    for(OrthogonalState* current_orthogonalstate : *list_of_suborthogonalstates) {
-        if(current_orthogonalstate == nullptr) {
-            //do nothing
-        } else {
-            OrthogonalState* newSuborthogonalstate = current_orthogonalstate->timer(id);
-            if(newSuborthogonalstate != nullptr) {
-                // there is suborthogonalstates change, change only the suborthogonalstates
-                current_orthogonalstate->exit();
-                delete current_orthogonalstate;
-                current_orthogonalstate = newSuborthogonalstate;
-                current_orthogonalstate->entry();
-            }
+
+OrthogonalState* OrthogonalState::clone() {
+    //TODO make a clone function here to act as a copy constructor
+    return nullptr;
+}
+
+I_State* OrthogonalState::timer(int id) {
+    for(I_State* current_substate : *substates) {
+        I_State* newSubstate = current_substate->timer(id);
+        if(newSubstate != nullptr) {
+            // there is substate change, change only the substate
+            current_substate->exit();
+            delete substates;
+            current_substate = newSubstate;
+            current_substate->entry();
         }
     }
     return nullptr;
 }
 
 
-OrthogonalState* OrthogonalState::laser_front_blocked() {
-    return handle_event_using_function(&OrthogonalState::laser_front_blocked);
+I_State* OrthogonalState::laser_front_blocked() {
+    return handle_event_using_function(&I_State::laser_front_blocked);
 }
 
-OrthogonalState* OrthogonalState::laser_front_unblocked() {
-    return handle_event_using_function(&OrthogonalState::laser_front_unblocked);
+I_State* OrthogonalState::laser_front_unblocked() {
+    return handle_event_using_function(&I_State::laser_front_unblocked);
 }
 
-OrthogonalState* OrthogonalState::laser_back_blocked() {
-    return handle_event_using_function(&OrthogonalState::laser_back_blocked);
+I_State* OrthogonalState::laser_back_blocked() {
+    return handle_event_using_function(&I_State::laser_back_blocked);
 }
 
-OrthogonalState* OrthogonalState::laser_back_unblocked() {
-    return handle_event_using_function(&OrthogonalState::laser_back_unblocked);
+I_State* OrthogonalState::laser_back_unblocked() {
+    return handle_event_using_function(&I_State::laser_back_unblocked);
 }
 
-OrthogonalState* OrthogonalState::button_start_pressed() {
-    return handle_event_using_function(&OrthogonalState::button_start_pressed);
+I_State* OrthogonalState::button_start_pressed() {
+    return handle_event_using_function(&I_State::button_start_pressed);
 }
 
-OrthogonalState* OrthogonalState::button_start_released() {
-    return handle_event_using_function(&OrthogonalState::button_start_released);
+I_State* OrthogonalState::button_start_released() {
+    return handle_event_using_function(&I_State::button_start_released);
 }
 
-OrthogonalState* OrthogonalState::button_stop_pressed() {
-    return handle_event_using_function(&OrthogonalState::button_stop_pressed);
+I_State* OrthogonalState::button_stop_pressed() {
+    return handle_event_using_function(&I_State::button_stop_pressed);
 }
 
-OrthogonalState* OrthogonalState::button_stop_released() {
-    return handle_event_using_function(&OrthogonalState::button_stop_released);
+I_State* OrthogonalState::button_stop_released() {
+    return handle_event_using_function(&I_State::button_stop_released);
 }
 
-OrthogonalState* OrthogonalState::button_reset_pressed() {
-    return handle_event_using_function(&OrthogonalState::button_reset_pressed);
+I_State* OrthogonalState::button_reset_pressed() {
+    return handle_event_using_function(&I_State::button_reset_pressed);
 }
 
-OrthogonalState* OrthogonalState::button_reset_released() {
-    return handle_event_using_function(&OrthogonalState::button_reset_released);
+I_State* OrthogonalState::button_reset_released() {
+    return handle_event_using_function(&I_State::button_reset_released);
 }
 
-OrthogonalState* OrthogonalState::button_estop_pressed() {
-    return handle_event_using_function(&OrthogonalState::button_estop_pressed);
+I_State* OrthogonalState::button_estop_pressed() {
+    return handle_event_using_function(&I_State::button_estop_pressed);
 }
 
-OrthogonalState* OrthogonalState::button_estop_released() {
-    return handle_event_using_function(&OrthogonalState::button_estop_released);
+I_State* OrthogonalState::button_estop_released() {
+    return handle_event_using_function(&I_State::button_estop_released);
 }
 
-OrthogonalState* OrthogonalState::metal_detected() {
-    return handle_event_using_function(&OrthogonalState::metal_detected);
+I_State* OrthogonalState::metal_detected() {
+    return handle_event_using_function(&I_State::metal_detected);
 }
 
-OrthogonalState* OrthogonalState::metal_not_detected() {
-    return handle_event_using_function(&OrthogonalState::metal_not_detected);
+I_State* OrthogonalState::metal_not_detected() {
+    return handle_event_using_function(&I_State::metal_not_detected);
 }
 
-OrthogonalState* OrthogonalState::laser_sorting_gate_blocked() {
-    return handle_event_using_function(&OrthogonalState::laser_sorting_gate_blocked);
+I_State* OrthogonalState::laser_sorting_gate_blocked() {
+    return handle_event_using_function(&I_State::laser_sorting_gate_blocked);
 }
 
-OrthogonalState* OrthogonalState::laser_sorting_gate_unblocked() {
-    return handle_event_using_function(&OrthogonalState::laser_sorting_gate_unblocked);
+I_State* OrthogonalState::laser_sorting_gate_unblocked() {
+    return handle_event_using_function(&I_State::laser_sorting_gate_unblocked);
 }
 
-OrthogonalState* OrthogonalState::laser_ramp_blocked() {
-    return handle_event_using_function(&OrthogonalState::laser_ramp_blocked);
+I_State* OrthogonalState::laser_ramp_blocked() {
+    return handle_event_using_function(&I_State::laser_ramp_blocked);
 }
 
-OrthogonalState* OrthogonalState::laser_ramp_unblocked() {
-    return handle_event_using_function(&OrthogonalState::laser_ramp_unblocked);
+I_State* OrthogonalState::laser_ramp_unblocked() {
+    return handle_event_using_function(&I_State::laser_ramp_unblocked);
 }
 
-OrthogonalState* OrthogonalState::adc_top_area_blocked() {
-    return handle_event_using_function(&OrthogonalState::adc_top_area_blocked);
+I_State* OrthogonalState::adc_top_area_blocked() {
+    return handle_event_using_function(&I_State::adc_top_area_blocked);
 }
 
-OrthogonalState* OrthogonalState::adc_top_area_unblocked() {
-    return handle_event_using_function(&OrthogonalState::adc_top_area_unblocked);
+I_State* OrthogonalState::adc_top_area_unblocked() {
+    return handle_event_using_function(&I_State::adc_top_area_unblocked);
 }
 
-OrthogonalState* OrthogonalState::adc_side_area_blocked() {
-    return handle_event_using_function(&OrthogonalState::adc_side_area_blocked);
+I_State* OrthogonalState::adc_side_area_blocked() {
+    return handle_event_using_function(&I_State::adc_side_area_blocked);
 }
 
-OrthogonalState* OrthogonalState::adc_side_area_unblocked() {
-    return handle_event_using_function(&OrthogonalState::adc_side_area_unblocked);
+I_State* OrthogonalState::adc_side_area_unblocked() {
+    return handle_event_using_function(&I_State::adc_side_area_unblocked);
 }
 
-OrthogonalState* OrthogonalState::adc_calibration_done() {
-    return handle_event_using_function(&OrthogonalState::adc_calibration_done);
+I_State* OrthogonalState::adc_calibration_done() {
+    return handle_event_using_function(&I_State::adc_calibration_done);
 }
 
-OrthogonalState* OrthogonalState::adc_new_piece() {
-    return handle_event_using_function(&OrthogonalState::adc_new_piece);
+I_State* OrthogonalState::adc_new_piece() {
+    return handle_event_using_function(&I_State::adc_new_piece);
 }
