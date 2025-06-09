@@ -1,4 +1,5 @@
 #include "OrthogonalState.h"
+#include <assert.h>
 
 //================================================= contructors & destructors =================================================
 OrthogonalState::OrthogonalState(ContextData* data, std::vector<I_State*>* initial_substates)
@@ -13,6 +14,9 @@ OrthogonalState::OrthogonalState(ContextData* data, std::vector<I_State*>* initi
 OrthogonalState::~OrthogonalState() {
     //std::cout << "OrthogonalState Destructor" << std::endl;
     if(substates != nullptr) {
+        for(I_State* current_substate : *substates) {
+            delete current_substate;
+        }
         delete substates;
     }
 }
@@ -25,7 +29,8 @@ I_State* OrthogonalState::handle_event_using_function(I_State* (I_State::* handl
         if(newSubstate != nullptr) {
             // there is substate change, change only the substate
             current_substate->exit();
-            delete current_substate;
+            //TODO what's wrong with this delete 
+            //delete current_substate;
             current_substate = newSubstate;
             current_substate->entry();
         }
@@ -62,7 +67,8 @@ I_State* OrthogonalState::timer(int id) {
         if(newSubstate != nullptr) {
             // there is substate change, change only the substate
             current_substate->exit();
-            delete substates;
+            //TODO what's wrong with the delete substates?
+            //delete substates;
             current_substate = newSubstate;
             current_substate->entry();
         }
