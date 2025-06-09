@@ -14,7 +14,7 @@ OrthogonalState::OrthogonalState(ContextData* data, std::vector<I_State*>* initi
 OrthogonalState::~OrthogonalState() {
     //std::cout << "OrthogonalState Destructor" << std::endl;
     if(substates != nullptr) {
-        for(I_State* current_substate : *substates) {
+        for(auto& current_substate : *substates) {
             delete current_substate;
         }
         delete substates;
@@ -24,13 +24,12 @@ OrthogonalState::~OrthogonalState() {
 //===================================================== private functions =====================================================
 
 I_State* OrthogonalState::handle_event_using_function(I_State* (I_State::* handler_function)()) {
-    for(I_State* current_substate : *substates) {
+    for(auto& current_substate : *substates) {
         I_State* newSubstate = (current_substate->*handler_function)();
         if(newSubstate != nullptr) {
             // there is substate change, change only the substate
             current_substate->exit();
-            //TODO what's wrong with this delete 
-            //delete current_substate;
+            delete current_substate;
             current_substate = newSubstate;
             current_substate->entry();
         }
@@ -43,14 +42,14 @@ I_State* OrthogonalState::handle_event_using_function(I_State* (I_State::* handl
 
 void OrthogonalState::entry() {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    for(I_State* current_substate : *substates) {
+    for(auto& current_substate : *substates) {
         current_substate->entry();
     }
 }
 
 void OrthogonalState::exit() {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    for(I_State* current_substate : *substates) {
+    for(auto& current_substate : *substates) {
         current_substate->exit();
     }
 }
@@ -59,7 +58,7 @@ void OrthogonalState::exit() {
 OrthogonalState* OrthogonalState::clone() {
     //TODO test and review
     auto cloned_substates = new std::vector<I_State*>();
-    for(auto current_substate : *substates){
+    for(auto& current_substate : *substates){
         cloned_substates->push_back(current_substate->clone());
     }
     OrthogonalState* cloned_ortho = new OrthogonalState(data, cloned_substates);
@@ -67,13 +66,12 @@ OrthogonalState* OrthogonalState::clone() {
 }
 
 I_State* OrthogonalState::timer(int id) {
-    for(I_State* current_substate : *substates) {
+    for(auto& current_substate : *substates) {
         I_State* newSubstate = current_substate->timer(id);
         if(newSubstate != nullptr) {
             // there is substate change, change only the substate
             current_substate->exit();
-            //TODO what's wrong with the delete substates?
-            //delete substates;
+            delete substates;
             current_substate = newSubstate;
             current_substate->entry();
         }
