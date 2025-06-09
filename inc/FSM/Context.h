@@ -22,13 +22,13 @@ public:
     //================================================ private variables ================================================
 protected:
     ContextData* data;
-    State* state;
+    I_State* state;
 
     //================================================ private functions ================================================
 private:
-    State* handleInterrupt(int event_value);
-    State* handleCOM(int event_value);
-    State* handleADC(int event_value);
+    I_State* handleInterrupt(int event_value);
+    I_State* handleCOM(int event_value);
+    I_State* handleADC(int event_value);
 };
 
 //================================================= contructors & destructors =================================================
@@ -47,9 +47,9 @@ Context<T>::~Context() {
 
 //===================================================== private functions =====================================================
 template<typename T>
-State* Context<T>::handleADC(int event_value) {
+I_State* Context<T>::handleADC(int event_value) {
     //TODO put newState = state->function() here
-    State* newState = nullptr;
+    I_State* newState = nullptr;
     switch((ADC_Enum) event_value) {
         case ADC_Enum::ADC_NEW_PIECE:
             newState = state->adc_new_piece();
@@ -73,15 +73,15 @@ State* Context<T>::handleADC(int event_value) {
 }
 
 template <typename T>
-State* Context<T>::handleCOM(int event_value) {
-    State* newState = nullptr;
+I_State* Context<T>::handleCOM(int event_value) {
+    I_State* newState = nullptr;
     switch((COM_Enum) event_value) {
         //TODO is this true?
         case COM_Enum::BUTTON_ESTOP_PRESSED:
-            newState = state->button_estop_pressed();
+            newState = state->com_button_estop_pressed();
             break;
         case COM_Enum::BUTTON_ESTOP_RELEASED:
-            newState = state->button_estop_released();
+            newState = state->com_button_estop_released();
             break;
         default:
             break;
@@ -90,8 +90,8 @@ State* Context<T>::handleCOM(int event_value) {
 }
 
 template <typename T>
-State* Context<T>::handleInterrupt(int event_value) {
-    State* newState = nullptr;
+I_State* Context<T>::handleInterrupt(int event_value) {
+    I_State* newState = nullptr;
     switch((InterruptEnum) event_value) {
         case InterruptEnum::LASER_FRONT_BLOCKED:
             newState = state->laser_front_blocked();
@@ -168,7 +168,7 @@ State* Context<T>::handleInterrupt(int event_value) {
 //===================================================== public functions =====================================================
 template <typename T>
 void Context<T>::handleEvent(_pulse event) {
-    State* newState = nullptr;
+    I_State* newState = nullptr;
     Topic event_code = (Topic) event.code;
     int event_value = event.value.sival_int;
     switch(event_code) {

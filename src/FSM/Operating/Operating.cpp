@@ -29,6 +29,6 @@ void Operating::exit() {
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
 }
 
-State* Operating::button_stop_pressed() {
+I_State* Operating::button_stop_pressed() {
     return new Idle(data);
 }

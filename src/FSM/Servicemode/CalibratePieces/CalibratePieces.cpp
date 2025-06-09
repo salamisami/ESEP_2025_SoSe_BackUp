@@ -13,10 +13,10 @@ CalibratePieces::~CalibratePieces() {}
 
 void CalibratePieces::entry(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    substate->entry();
+    State::entry();
 }
 
 void CalibratePieces::exit(){
-    substate->exit();
+    State::exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }

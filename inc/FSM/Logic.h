@@ -7,9 +7,9 @@
 #include "Idle.h"
 #include "ModeHandler.h"
 #include "Event.h"
+#include "Thread_COM.h"
 
 #include "Mock_PM.h"
-#include "Thread_COM.h"
 
 #include <thread>
 

@@ -1,26 +1,18 @@
-#ifndef WAITING_H
-#define WAITING_H
+#ifndef ESTOPQUIT_H
+#define ESTOPQUIT_H
 #pragma once
 
 #include "State.h"
-#include "Timer.h"
-#include "Timer_Received.h"
-#include "Operating.h"
 
-#define IDLE_TIMER 1
-
-class Waiting : public State {
+class EStopQuit: public State{
 public: //============================================ contructors & destructors ============================================
-    Waiting(ContextData* data);
-    virtual ~Waiting();
+    EStopQuit(ContextData* data);
+    virtual ~EStopQuit();
 	
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
-
-	I_State* button_start_released() override;
-	I_State* timer(int id) override;
+	void entry() override;
+	void exit() override;
     
 
 

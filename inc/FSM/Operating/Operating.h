@@ -16,7 +16,7 @@ public:
     void entry() override;
     void exit() override;
     
-    State* button_stop_pressed() override;
+    I_State* button_stop_pressed() override;
     
 
 //================================================ private variables ================================================

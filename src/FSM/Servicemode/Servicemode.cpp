@@ -21,11 +21,11 @@ Servicemode::~Servicemode() {}
 void Servicemode::entry() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON_FAST);
-    substate->entry();
+    State::entry();
 }
 
 void Servicemode::exit() {
-    substate->exit();
+    State::exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
 }

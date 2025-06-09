@@ -1,25 +1,25 @@
-#include "Traffic_Green_On_Slow.h"
+#include "EStopReleased.h"
 
 //================================================= contructors & destructors =================================================
-Traffic_Green_On_Slow::Traffic_Green_On_Slow(ContextData* data) :State(data) {
+EStopReleased::EStopReleased(ContextData* data) : State(data) {}
 
-}
-
-Traffic_Green_On_Slow::~Traffic_Green_On_Slow() {}
+EStopReleased::~EStopReleased() {}
 
 //===================================================== private functions =====================================================
 
+//void EStopReleased::privateFunction(){}
 
 //===================================================== public functions =====================================================
-void Traffic_Green_On_Slow::entry() {
+
+void EStopReleased::entry(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON);
 }
 
-void Traffic_Green_On_Slow::exit() {
+void EStopReleased::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* Traffic_Green_On_Slow::button_start_pressed(){
-    return new Waiting(data);
+I_State* EStopReleased::button_reset_pressed(){
+    return new EStopQuit(data);
 }

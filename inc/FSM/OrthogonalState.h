@@ -1,28 +1,28 @@
-#ifndef STATE_H
-#define STATE_H
+#ifndef ORTHOGONALSTATE_H
+#define ORTHOGONALSTATE_H
 #pragma once
 
 #include "Event.h"
 #include "ContextData.h"
 #include "I_State.h"
+
+#include <vector>
 #include <iostream>
 
 
-class State : public I_State{
+class OrthogonalState : public I_State {
     //============================================ contructors & destructors ============================================
 public:
-    State(ContextData* data);
-
-    //Disable copy constructor, because we're going to use clone() instead
-    State(const State& other) = delete;
-    virtual ~State() override;
+    OrthogonalState(ContextData* data, std::vector<I_State*>* initial_substates);
+    OrthogonalState(const OrthogonalState&) = delete;
+    virtual ~OrthogonalState() override;
 
     //================================================ public functions ================================================
 public:
     virtual void entry() override;
     virtual void exit() override;
 
-    virtual State* clone() override;
+    virtual OrthogonalState* clone() override;
 
     virtual I_State* laser_front_blocked() override;
     virtual I_State* laser_front_unblocked() override;
@@ -51,8 +51,6 @@ public:
     virtual I_State* com_button_estop_released() override;
 
 
-
-
     virtual I_State* adc_calibration_done() override;
     virtual I_State* adc_new_piece() override;
 
@@ -63,7 +61,7 @@ public:
     //================================================ private variables ================================================
 protected:
     ContextData* data;
-    I_State* substate;
+    std::vector<I_State*>* substates;
 
     //================================================ private functions ================================================
 private:

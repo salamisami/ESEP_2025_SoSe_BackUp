@@ -1,26 +1,23 @@
-#include "Timer_Received.h"
+#include "EStopQuit.h"
 
 //================================================= contructors & destructors =================================================
-Timer_Received::Timer_Received(ContextData* data) :State(data) {}
+EStopQuit::EStopQuit(ContextData* data) : State(data) {}
 
-Timer_Received::~Timer_Received() {}
+EStopQuit::~EStopQuit() {}
 
 //===================================================== private functions =====================================================
 
-//void Timer_Received::privateFunction(){}
+//void EStopQuit::privateFunction(){}
 
 //===================================================== public functions =====================================================
 
-//void Timer_Received::publicFunction(){}
-void Timer_Received::entry(){
+void EStopQuit::entry(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON_FAST);
 }
 
-void Timer_Received::exit(){
+void EStopQuit::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-I_State* Timer_Received::button_start_released(){
-    return new Servicemode(data);
 }
