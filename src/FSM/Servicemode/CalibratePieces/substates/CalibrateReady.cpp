@@ -21,6 +21,6 @@ void CalibrateReady::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* CalibrateReady::laser_front_blocked(){
+I_State* CalibrateReady::laser_front_blocked(){
     return new Calibrating(data);
 }

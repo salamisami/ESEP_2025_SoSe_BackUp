@@ -26,7 +26,7 @@ void ModeHandler::exit() {
 
 //===================================================== public functions =====================================================
 
-State* ModeHandler::button_estop_pressed(){
+I_State* ModeHandler::button_estop_pressed(){
     return new Error(data);
 }
 

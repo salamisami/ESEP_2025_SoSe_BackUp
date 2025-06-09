@@ -13,7 +13,7 @@ public:
 
     //================================================ public functions ================================================
 public:
-    State* button_start_released() override;
+    I_State* button_start_released() override;
 
     void entry() override;
     void exit() override;

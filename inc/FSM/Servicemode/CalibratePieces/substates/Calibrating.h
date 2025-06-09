@@ -15,7 +15,7 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	State* adc_calibration_done() override;
+	I_State* adc_calibration_done() override;
     
 
 

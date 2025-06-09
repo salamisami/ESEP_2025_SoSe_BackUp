@@ -20,6 +20,6 @@ void Traffic_Green_On_Slow::exit() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Traffic_Green_On_Slow::button_start_pressed(){
+I_State* Traffic_Green_On_Slow::button_start_pressed(){
     return new Waiting(data);
 }

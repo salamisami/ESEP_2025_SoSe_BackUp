@@ -19,8 +19,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	State* button_start_released() override;
-	State* timer(int id) override;
+	I_State* button_start_released() override;
+	I_State* timer(int id) override;
     
 
 

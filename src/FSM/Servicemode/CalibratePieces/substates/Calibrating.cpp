@@ -22,6 +22,6 @@ void Calibrating::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Calibrating::adc_calibration_done(){
+I_State* Calibrating::adc_calibration_done(){
     return new CalibrationDone(data);
 }

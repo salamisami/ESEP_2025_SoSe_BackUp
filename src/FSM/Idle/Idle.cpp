@@ -29,8 +29,8 @@ void Idle::exit() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Idle::button_start_released(){
-    State* newSubstate = substate->button_start_released();
+I_State* Idle::button_start_released(){
+    I_State* newSubstate = substate->button_start_released();
     if(newSubstate != nullptr){
         //there is a super_substate change, explicit exit
         return newSubstate;

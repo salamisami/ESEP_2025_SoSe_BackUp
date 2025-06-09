@@ -20,11 +20,11 @@ void Waiting::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Waiting::button_start_released(){
+I_State* Waiting::button_start_released(){
     return new Operating(data);
 }
 
-State* Waiting::timer(int id){
+I_State* Waiting::timer(int id){
     if(id == IDLE_TIMER){
         return new Timer_Received(data);
     }

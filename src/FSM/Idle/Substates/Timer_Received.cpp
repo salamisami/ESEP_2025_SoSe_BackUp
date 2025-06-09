@@ -21,6 +21,6 @@ void Timer_Received::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-State* Timer_Received::button_start_released(){
+I_State* Timer_Received::button_start_released(){
     return new Servicemode(data);
 }
