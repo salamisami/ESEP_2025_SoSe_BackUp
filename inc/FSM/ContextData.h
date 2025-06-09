@@ -28,6 +28,7 @@ public:
 
 //================================================ private variables ================================================
 public:
+    //TODO implement a safe stack here, that returns nullptr if no elements left in the stack
     std::stack<I_State*>* stateStack;
     I_Sender* timer_sender;
     Timer* timer;

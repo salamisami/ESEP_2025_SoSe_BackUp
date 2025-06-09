@@ -57,8 +57,13 @@ void OrthogonalState::exit() {
 
 
 OrthogonalState* OrthogonalState::clone() {
-    //TODO make a clone function here to act as a copy constructor
-    return nullptr;
+    //TODO test and review
+    auto cloned_substates = new std::vector<I_State*>();
+    for(auto current_substate : *substates){
+        cloned_substates->push_back(current_substate->clone());
+    }
+    OrthogonalState* cloned_ortho = new OrthogonalState(data, cloned_substates);
+    return cloned_ortho;
 }
 
 I_State* OrthogonalState::timer(int id) {

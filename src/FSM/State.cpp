@@ -44,8 +44,8 @@ I_State* State::handle_event_using_function(I_State* (I_State::* handler_functio
 
 //save history
 // I_State* StateA::estop_pressed() {
-//     I_State* clone_substate = substate->clone();
-//     data->stateStack->push(clone_substate);
+//     I_State* cloned_state = clone();
+//     data->stateStack->push(cloned_substate);
 //     return new EmergencyStop(data);
 // }
 
@@ -53,7 +53,10 @@ I_State* State::handle_event_using_function(I_State* (I_State::* handler_functio
 // I_State* EmergencyStop::estop_released() {
 //     I_State* loaded_state = data->stateStack->top();
 //     data->stateStack->pop();
-//     return new StateA(data, loaded_state);
+//     if(loaded_state != nullptr){
+//         return loaded_state;
+//     }
+//     return StateA(data);
 // }
 
 //outside loop

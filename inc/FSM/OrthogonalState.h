@@ -14,7 +14,7 @@ class OrthogonalState : public I_State {
     //============================================ contructors & destructors ============================================
 public:
     OrthogonalState(ContextData* data, std::vector<I_State*>* initial_substates);
-
+    OrthogonalState(const OrthogonalState&) = delete;
     virtual ~OrthogonalState() override;
 
     //================================================ public functions ================================================
