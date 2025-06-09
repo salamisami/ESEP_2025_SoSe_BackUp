@@ -13,6 +13,8 @@ public: //================================================ public functions ====
     virtual void entry() = 0;
     virtual void exit() = 0;
 
+    virtual I_State* clone() = 0;
+
     virtual I_State* laser_front_blocked() = 0;
     virtual I_State* laser_front_unblocked() = 0;
     virtual I_State* laser_back_blocked() = 0;

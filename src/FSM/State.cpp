@@ -43,45 +43,47 @@ I_State* State::handle_event_using_function(I_State* (I_State::* handler_functio
 }
 
 //save history
-// State* StateA::estop_pressed() {
-//     State* clone_substate = new State(*substate);
+// I_State* StateA::estop_pressed() {
+//     I_State* clone_substate = substate->clone();
 //     data->stateStack->push(clone_substate);
 //     return new EmergencyStop(data);
 // }
 
 //load history
-// State* EmergencyStop::estop_released() {
-//     State* loaded_state = data->stateStack->top();
+// I_State* EmergencyStop::estop_released() {
+//     I_State* loaded_state = data->stateStack->top();
 //     data->stateStack->pop();
 //     return new StateA(data, loaded_state);
 // }
 
 //outside loop
-// State* StateA::restart(){
+// I_State* StateA::restart(){
 //     return new StateA(data);
 // }
 
 //inside loop
-// State* StateA::tick() {
+// I_State* StateA::tick() {
 //     super_State::exit();
 //     super_State::entry();
 //     return nullptr;
 // }
 
 //explicit entry
-// State* StateA::service() {
-//      State* initial_explicit_substate = new StartEngine(data);
+// I_State* StateA::service() {
+//      I_State* initial_explicit_substate = new StartEngine(data);
 //      return new StartCar(data, initial_explicit_substate);
 // }
 
 //explicit exit
-// State* StateA::service() {
-//     State* newSubstate = substate->service();
+// I_State* StateA::service() {
+//     I_State* newSubstate = substate->service();
 //     if(newSubstate != nullptr) {
 //         return newSubstate;
 //     }
 //     return nullptr;
 // }
+
+
 
 //===================================================== public functions =====================================================
 
@@ -93,6 +95,17 @@ void State::entry() {
 void State::exit() {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     substate->exit();
+}
+
+
+State* State::clone(){
+    State* clonedState = new State(data);
+    if(substate != nullptr){
+        clonedState->substate = substate->clone();
+    } else {
+        clonedState->substate = nullptr;
+    }
+    return clonedState;
 }
 
 I_State* State::timer(int id) {

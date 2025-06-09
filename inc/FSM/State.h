@@ -13,14 +13,16 @@ class State : public I_State{
 public:
     State(ContextData* data);
 
-    //copy constructor
-    //State(const State& other);
+    //Disable copy constructor, because we're going to use clone() instead
+    State(const State& other) = delete;
     virtual ~State() override;
 
     //================================================ public functions ================================================
 public:
     virtual void entry() override;
     virtual void exit() override;
+
+    virtual State* clone() override;
 
     virtual I_State* laser_front_blocked() override;
     virtual I_State* laser_front_unblocked() override;
