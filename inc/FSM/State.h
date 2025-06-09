@@ -4,51 +4,52 @@
 
 #include "Event.h"
 #include "ContextData.h"
+#include "I_State.h"
 #include <iostream>
 
 
-class State {
+class State : public I_State{
     //============================================ contructors & destructors ============================================
 public:
     State(ContextData* data);
 
     //copy constructor
     State(const State& other);
-    virtual ~State();
+    virtual ~State() override;
 
     //================================================ public functions ================================================
 public:
-    virtual void entry();
-    virtual void exit();
+    virtual void entry() override;
+    virtual void exit() override;
 
-    virtual State* laser_front_blocked();
-    virtual State* laser_front_unblocked();
-    virtual State* laser_back_blocked();
-    virtual State* laser_back_unblocked();
-    virtual State* button_start_pressed();
-    virtual State* button_start_released();
-    virtual State* button_stop_pressed();
-    virtual State* button_stop_released();
-    virtual State* button_reset_pressed();
-    virtual State* button_reset_released();
-    virtual State* button_estop_pressed();
-    virtual State* button_estop_released();
-    virtual State* metal_detected();
-    virtual State* metal_not_detected();
-    virtual State* laser_sorting_gate_blocked();
-    virtual State* laser_sorting_gate_unblocked();
-    virtual State* laser_ramp_blocked();
-    virtual State* laser_ramp_unblocked();
-    virtual State* adc_top_area_blocked();
-    virtual State* adc_top_area_unblocked();
-    virtual State* adc_side_area_blocked();     //unused
-    virtual State* adc_side_area_unblocked();   //unused
+    virtual State* laser_front_blocked() override;
+    virtual State* laser_front_unblocked() override;
+    virtual State* laser_back_blocked() override;
+    virtual State* laser_back_unblocked() override;
+    virtual State* button_start_pressed() override;
+    virtual State* button_start_released() override;
+    virtual State* button_stop_pressed() override;
+    virtual State* button_stop_released() override;
+    virtual State* button_reset_pressed() override;
+    virtual State* button_reset_released() override;
+    virtual State* button_estop_pressed() override;
+    virtual State* button_estop_released() override;
+    virtual State* metal_detected() override;
+    virtual State* metal_not_detected() override;
+    virtual State* laser_sorting_gate_blocked() override;
+    virtual State* laser_sorting_gate_unblocked() override;
+    virtual State* laser_ramp_blocked() override;
+    virtual State* laser_ramp_unblocked() override;
+    virtual State* adc_top_area_blocked() override;
+    virtual State* adc_top_area_unblocked() override;
+    virtual State* adc_side_area_blocked() override;     //unused
+    virtual State* adc_side_area_unblocked() override;   //unused
 
 
-    virtual State* adc_calibration_done();
-    virtual State* adc_new_piece();
+    virtual State* adc_calibration_done() override;
+    virtual State* adc_new_piece() override;
 
-    virtual State* timer(int id);
+    virtual State* timer(int id) override;
 
 
 
