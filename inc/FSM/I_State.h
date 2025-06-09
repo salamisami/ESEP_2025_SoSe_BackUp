@@ -38,6 +38,9 @@ public: //================================================ public functions ====
     virtual I_State* adc_side_area_blocked() = 0;     //unused
     virtual I_State* adc_side_area_unblocked() = 0;   //unused
 
+    virtual I_State* com_button_estop_pressed() = 0;
+    virtual I_State* com_button_estop_released() = 0;
+
 
     virtual I_State* adc_calibration_done() = 0;
     virtual I_State* adc_new_piece() = 0;

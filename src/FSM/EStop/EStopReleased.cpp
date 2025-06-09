@@ -1,22 +1,25 @@
-#include "Error.h"
+#include "EStopReleased.h"
 
 //================================================= contructors & destructors =================================================
-Error::Error(ContextData* data) : State(data){
+EStopReleased::EStopReleased(ContextData* data) : State(data) {}
 
-}
-
-Error::~Error() {}
+EStopReleased::~EStopReleased() {}
 
 //===================================================== private functions =====================================================
 
-void Error::entry() {
+//void EStopReleased::privateFunction(){}
+
+//===================================================== public functions =====================================================
+
+void EStopReleased::entry(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON);
 }
 
-void Error::exit() {
+void EStopReleased::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
 }
 
-//===================================================== public functions =====================================================
+I_State* EStopReleased::button_reset_pressed(){
+    return new EStopQuit(data);
+}

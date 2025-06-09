@@ -215,6 +215,14 @@ I_State* State::adc_side_area_unblocked() {
     return handle_event_using_function(&I_State::adc_side_area_unblocked);
 }
 
+I_State* State::com_button_estop_pressed() {
+    return handle_event_using_function(&I_State::com_button_estop_pressed);
+}
+
+I_State* State::com_button_estop_released() {
+    return handle_event_using_function(&I_State::com_button_estop_released);
+}
+
 I_State* State::adc_calibration_done() {
     return handle_event_using_function(&I_State::adc_calibration_done);
 }

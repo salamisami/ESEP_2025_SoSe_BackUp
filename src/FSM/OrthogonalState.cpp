@@ -175,3 +175,11 @@ I_State* OrthogonalState::adc_calibration_done() {
 I_State* OrthogonalState::adc_new_piece() {
     return handle_event_using_function(&I_State::adc_new_piece);
 }
+
+I_State* OrthogonalState::com_button_estop_pressed() {
+    return handle_event_using_function(&I_State::com_button_estop_pressed);
+}
+
+I_State* OrthogonalState::com_button_estop_released() {
+    return handle_event_using_function(&I_State::com_button_estop_released);
+}

@@ -78,10 +78,10 @@ I_State* Context<T>::handleCOM(int event_value) {
     switch((COM_Enum) event_value) {
         //TODO is this true?
         case COM_Enum::BUTTON_ESTOP_PRESSED:
-            newState = state->button_estop_pressed();
+            newState = state->com_button_estop_pressed();
             break;
         case COM_Enum::BUTTON_ESTOP_RELEASED:
-            newState = state->button_estop_released();
+            newState = state->com_button_estop_released();
             break;
         default:
             break;

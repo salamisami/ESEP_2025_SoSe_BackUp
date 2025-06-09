@@ -47,6 +47,9 @@ public:
     virtual I_State* adc_side_area_blocked() override;     //unused
     virtual I_State* adc_side_area_unblocked() override;   //unused
 
+    virtual I_State* com_button_estop_pressed() override;
+    virtual I_State* com_button_estop_released() override;
+
 
     virtual I_State* adc_calibration_done() override;
     virtual I_State* adc_new_piece() override;
