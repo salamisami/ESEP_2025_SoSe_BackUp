@@ -33,6 +33,7 @@ public:
     I_Sender* timer_sender;
     Timer* timer;
     I_Sender* sender;
+    bool is_switch = false;
 
 };
 

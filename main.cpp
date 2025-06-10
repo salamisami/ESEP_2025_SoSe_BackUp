@@ -54,6 +54,7 @@ int main() {
 
     Logic* logic = new Logic(logic_receiver, logic_sender, timer_sender);
     WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
     remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::BUTTON_ESTOP_PRESSED);
     remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::BUTTON_ESTOP_RELEASED);
