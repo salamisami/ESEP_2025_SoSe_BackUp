@@ -41,27 +41,15 @@ using namespace std;
 
 
 int main() {
-	cout << "Starting Program..." << endl; // prints Hello World!!!
-	    system("gns -s ");
-
-	    Dispatcher* dispatcher = new Dispatcher();
-	    std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
-
-	    Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_1_HAL);
-	    Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-	    Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
-	    Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-	    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE);
-	    Thread_COM::Sender* RemCon_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-
-	    //Thread_COM::Sender* fsm_loopback = new Thread_COM::Sender(FBM_1_DISPATCHER);
-	    Thread_COM::Sender* abc = new Thread_COM::Sender(FBM_1_DISPATCHER);
-	    Thread_COM::Sender* def = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
 
-	    HAL* hal = new HAL(hal_receiver, hal_sender);
-	    //Logic* logic = new Logic(fsm_receiver, fsm_sender);
-	    Remote_Controller* remCon = new Remote_Controller(RemCon_receiver, RemCon_sender);
+
+	    HAL* hal = new HAL();
+	    Remote_Controller* remCon = new Remote_Controller();
+
+	    hal->test_ins();
+	    delete hal;
+
 	    // WAIT(3000);
 
 	    // delete def;
@@ -72,41 +60,41 @@ int main() {
 	    // delete fsm_receiver;
 	    // delete hal_receiver;
 
-	    while(1){
-
-	    }
-
-	    cout << "Program Finished." << endl;
-	    return 0;
-
-
-
-
-    bool fsm_running = true;
-    int eventNo = 0;
-    while(fsm_running) {
-        _pulse event;
-        fsm_receiver->receive_event(&event);
-        eventNo++;
-        printf("Event Number: %d\n", eventNo);
-        if((Topic) event.code == Topic::INTERRUPT && (InterruptEnum) event.value.sival_int == InterruptEnum::BUTTON_RESET_PRESSED){
-            fsm_running = false;
-        }
-        fsm->handleEvent(event);
-    }
-    printf("End of State.\n");
-
-    delete remCon;
-    delete fsm;
-    delete data;
-    delete timer_sender;
-
-    delete hal_sender;
-    delete fsm_sender;
-    delete fsm_receiver;
-    delete hal_receiver;
-
-    cout << "Program Finished." << endl;
+//	    while(1){
+//
+//	    }
+//
+//	    cout << "Program Finished." << endl;
+//	    return 0;
+//
+//
+//
+//
+//    bool fsm_running = true;
+//    int eventNo = 0;
+//    while(fsm_running) {
+//        _pulse event;
+//        fsm_receiver->receive_event(&event);
+//        eventNo++;
+//        printf("Event Number: %d\n", eventNo);
+//        if((Topic) event.code == Topic::INTERRUPT && (InterruptEnum) event.value.sival_int == InterruptEnum::BUTTON_RESET_PRESSED){
+//            fsm_running = false;
+//        }
+//        fsm->handleEvent(event);
+//    }
+//    printf("End of State.\n");
+//
+//    delete remCon;
+//    delete fsm;
+//    delete data;
+//    delete timer_sender;
+//
+//    delete hal_sender;
+//    delete fsm_sender;
+//    delete fsm_receiver;
+//    delete hal_receiver;
+//
+//    cout << "Program Finished." << endl;
 
 
 
