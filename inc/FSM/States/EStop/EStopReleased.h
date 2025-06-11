@@ -1,0 +1,35 @@
+#ifndef ESTOPRELEASED_H
+#define ESTOPRELEASED_H
+#pragma once
+
+#include "State.h"
+#include "EStopQuit.h"
+
+class EStopReleased : public State {
+public: //============================================ contructors & destructors ============================================
+    EStopReleased(ContextData* data);
+    virtual ~EStopReleased();
+	
+
+public: //================================================ public functions ================================================
+	void entry() override;
+	void exit() override;
+
+	I_State* button_reset_pressed() override;
+    
+
+
+private: //================================================ private variables ================================================
+	//classes, STL containers, and structs
+	//pointers
+	//primitive types
+	//bool and char
+   
+	
+
+private: //================================================ private functions ================================================
+	//void privateFunction();
+	
+};
+
+#endif
