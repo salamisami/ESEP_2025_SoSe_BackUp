@@ -183,3 +183,11 @@ I_State* OrthogonalState::com_button_estop_pressed() {
 I_State* OrthogonalState::com_button_estop_released() {
     return handle_event_using_function(&I_State::com_button_estop_released);
 }
+
+I_State* OrthogonalState::is_pusher() {
+    return handle_event_using_function(&I_State::is_pusher);
+}
+
+I_State* OrthogonalState::is_switch() {
+    return handle_event_using_function(&I_State::is_switch);
+}

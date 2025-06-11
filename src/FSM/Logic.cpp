@@ -29,19 +29,23 @@ Logic::~Logic() {
 
 void Logic::threadFunction() {
     int eventNo = 0;
-    ContextData data = ContextData(local_sender,timer_sender);
-    Context<ModeHandler> fsm = Context<ModeHandler>(&data);
+    ContextData data = ContextData(local_sender, timer_sender);
+    auto fsm = Context<Boot>(&data);
     while(logicRunning) {
         _pulse event;
-        local_receiver->receive_event(&event);
-        eventNo++;
-        printf("Event Number: %d\n", eventNo);
+        int status = local_receiver->receive_event(&event);
+        if(status == 0) {
+            eventNo++;
+            printf("Event Code: %d, Event Value: %d\n", event.code, event.value.sival_int);
 
-        int8_t topic = event.code;
-        if(topic == (int8_t) Topic::STOP_THREAD) {
-            logicRunning = false;
+
+            int8_t topic = event.code;
+            if(topic == (int8_t) Topic::STOP_THREAD) {
+                logicRunning = false;
+            }
+            fsm.handleEvent(event);
         }
-        fsm.handleEvent(event);
+
     }
     //delete timer_sender;
 }

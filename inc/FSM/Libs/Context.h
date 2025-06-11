@@ -159,6 +159,12 @@ I_State* Context<T>::handleInterrupt(int event_value) {
             // case InterruptEnum::ADC_SIDE_AREA_UNBLOCKED:
             //     newState = state->adc_side_area_unblocked();
             //     break;
+        case InterruptEnum::IS_SWITCH:
+            newState = state->is_switch();
+            break;
+        case InterruptEnum::IS_PUSHER:
+            newState = state->is_pusher();
+            break;
         default:
             break;
     }

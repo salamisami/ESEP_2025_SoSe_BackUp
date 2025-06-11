@@ -230,3 +230,11 @@ I_State* State::adc_calibration_done() {
 I_State* State::adc_new_piece() {
     return handle_event_using_function(&I_State::adc_new_piece);
 }
+
+I_State* State::is_pusher(){
+    return handle_event_using_function(&I_State::is_pusher);
+}
+
+I_State* State::is_switch(){
+    return handle_event_using_function(&I_State::is_switch);
+}

@@ -41,6 +41,9 @@ public: //================================================ public functions ====
     virtual I_State* com_button_estop_pressed() = 0;
     virtual I_State* com_button_estop_released() = 0;
 
+    virtual I_State* is_pusher() = 0;
+    virtual I_State* is_switch() = 0;
+
 
     virtual I_State* adc_calibration_done() = 0;
     virtual I_State* adc_new_piece() = 0;

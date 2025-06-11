@@ -50,6 +50,9 @@ public:
     virtual I_State* com_button_estop_pressed() override;
     virtual I_State* com_button_estop_released() override;
 
+    virtual I_State* is_pusher() override;
+    virtual I_State* is_switch() override;
+
 
 
 

@@ -52,22 +52,25 @@ void HAL::init() {
     interrupt = new Interrupt(local_sender, actuator);
 
 
+
+
+    halThread = std::thread(&HAL::threadFunction, this);
+}
+void HAL::threadFunction() {
+    DEBUG("HAL Thread started.");
     //TODO check that no sensors are blocked during init
+
     if(interrupt->is_switch()) {
         local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
     } else {
         local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_PUSHER);
     }
 
-    if(interrupt->button_estop_pressed()){
+    if(interrupt->button_estop_pressed()) {
         actuator->local_estop_activate();
         local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
     }
 
-    halThread = std::thread(&HAL::threadFunction, this);
-}
-void HAL::threadFunction() {
-    DEBUG("HAL Thread started.");
     hal_running = true;
     _pulse event;
     while(hal_running) {

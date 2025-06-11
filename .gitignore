@@ -8,6 +8,8 @@
 *.dll
 *.dylib
 *.xml
+.idea/
+
 # === Standard Output-Dateien von g++ oder clang++ ===
 a.out
 main.cpp
