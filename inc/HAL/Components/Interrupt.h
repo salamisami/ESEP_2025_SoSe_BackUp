@@ -43,7 +43,8 @@ public: //============================================ contructors & destructors
 
 
 public: //================================================ public functions ================================================
-
+    bool button_estop_pressed();
+    bool is_switch();
 
 
 private: //================================================ private variables ================================================
@@ -75,7 +76,7 @@ private: //================================================ private functions ==
     void isr(void);
     int registerToBit(uint32_t inputRegister);
     void sendEvent(int causing_pin, int pin_status);
-    bool isEstop();
+
 
 
 };

@@ -412,17 +412,6 @@ void Actuator::threadFunction() {
     }
 }
 
-//GPIO_0
-bool Actuator::isGate() {
-    uintptr_t gpio_bank_0 = mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0));
-
-    uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
-    //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
-    uint32_t status_pin = (1 << SORTING_STATUS_BIT);
-    bool status = (status_register & status_pin);
-    return !status;
-}
-
 
 
 //GPIO_1

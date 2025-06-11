@@ -55,10 +55,6 @@ Interrupt::Interrupt(I_Sender* sender, Actuator* actuator)
     , last_pin_status(0)
     , interruptRunning(false) {
     setup_interrupts();
-    if(isEstop()){
-        actuator->local_estop_activate();
-        sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED, (int) EventPriority::FIRST_PRIO);
-    }
 }
 
 // Interrupt::Interrupt()
@@ -237,9 +233,8 @@ void Interrupt::isr(void) {
     }
 }
 
-bool Interrupt::isEstop(){
+bool Interrupt::button_estop_pressed(){
     //gpio_bank_0 = mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0));
-
     uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
     //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
     uint32_t status_pin = (1 << BUTTON_ESTOP_BIT);
@@ -247,6 +242,13 @@ bool Interrupt::isEstop(){
     return !status;
 }
 
+bool Interrupt::is_switch(){
+    uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
+    //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
+    uint32_t status_pin = (1 << SORTING_STATUS_BIT);
+    bool status = (status_register & status_pin);
+    return !status;
+}
 
 void Interrupt::sendEvent(int causing_pin, int pin_status) {
     InterruptEnum event;
@@ -290,12 +292,12 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         case LASER_METAL_BIT:
             event = pin_status ? InterruptEnum::METAL_DETECTED : InterruptEnum::METAL_NOT_DETECTED;
             break;
-        case ADC_SIDE_AREA_BIT:
-            event = pin_status ? InterruptEnum::ADC_SIDE_AREA_UNBLOCKED : InterruptEnum::ADC_SIDE_AREA_BLOCKED;
-            break;
-        case ADC_TOP_AREA_BIT:
-            event = pin_status ? InterruptEnum::ADC_TOP_AREA_BLOCKED : InterruptEnum::ADC_TOP_AREA_UNBLOCKED;
-            break;
+        // case ADC_SIDE_AREA_BIT:
+        //     event = pin_status ? InterruptEnum::ADC_SIDE_AREA_UNBLOCKED : InterruptEnum::ADC_SIDE_AREA_BLOCKED;
+        //     break;
+        // case ADC_TOP_AREA_BIT:
+        //     event = pin_status ? InterruptEnum::ADC_TOP_AREA_BLOCKED : InterruptEnum::ADC_TOP_AREA_UNBLOCKED;
+        //     break;
         default:
             break;
     }

@@ -55,9 +55,6 @@ public: //============================================ contructors & destructors
 
 
 public: //================================================ public functions ================================================
-    bool isGate();
-    bool isEstop();
-
     void test_outs();
 
     void local_estop_activate();

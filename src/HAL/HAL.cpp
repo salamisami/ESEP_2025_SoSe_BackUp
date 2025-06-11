@@ -53,12 +53,17 @@ void HAL::init() {
 
 
     //TODO check that no sensors are blocked during init
-    bool isGate = actuator->isGate();
-    if(isGate) {
+    if(interrupt->is_switch()) {
         local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
     } else {
         local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_PUSHER);
     }
+
+    if(interrupt->button_estop_pressed()){
+        actuator->local_estop_activate();
+        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
+    }
+
     halThread = std::thread(&HAL::threadFunction, this);
 }
 void HAL::threadFunction() {
@@ -97,7 +102,7 @@ void HAL::test_ins_ADC() {
     std::cout << "Testing ADC... Please put Piece on the front laser" << std::endl;
     bool running = true;
     int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
-    bool calibrated = true;
+    bool calibrated = false;
     bool is_weiche = false;
     bool allowGo = true;
     if(!calibrated) {
