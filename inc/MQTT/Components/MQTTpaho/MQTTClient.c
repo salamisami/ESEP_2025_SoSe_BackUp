@@ -2419,7 +2419,7 @@ exit:
 }
 
 
-int MQTTClient_publishMessage(MQTTClient handle, const char* topicName, MQTTClient_message* message,
+int QTTClient.c nicht mehr zugreifen wie bei(MQTTClient handle, const char* topicName, MQTTClient_message* message,
 															 MQTTClient_deliveryToken* deliveryToken)
 {
 	MQTTClients* m = handle;

@@ -106,7 +106,7 @@
 #if !defined(MQTTCLIENT_H)
 #define MQTTCLIENT_H
 
-#if defined(__cplusplus)
+#if defined __cplusplus
  extern "C" {
 #endif
 
