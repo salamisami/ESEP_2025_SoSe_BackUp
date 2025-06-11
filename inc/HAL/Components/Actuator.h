@@ -41,6 +41,7 @@ public: //================================================ public functions ====
     bool isGate();
     void test_outs();
     void global_shutdown();
+    void stop_moving_parts();
     void reset();
 
 
@@ -66,6 +67,9 @@ private: //================================================ private functions ==
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
 
     void threadFunction();
+
+    void handleActuatorEvent(int event_value);
+    void handleEStop(int event_value);
 
     void motor_right();
     void motor_left();

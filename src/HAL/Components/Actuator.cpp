@@ -73,10 +73,8 @@ Actuator::~Actuator() {
 
 void Actuator::set_data(uintptr_t gpio_bank, uint32_t bit) {
     mtx.lock();
-    if(!global_estop) {
-        uint32_t pin = (1 << bit);
-        out32((uintptr_t) (gpio_bank + GPIO_SETDATAOUT), pin);
-    }
+    uint32_t pin = (1 << bit);
+    out32((uintptr_t) (gpio_bank + GPIO_SETDATAOUT), pin);
     mtx.unlock();
 }
 
@@ -87,83 +85,101 @@ void Actuator::clear_data(uintptr_t gpio_bank, uint32_t bit) {
     mtx.unlock();
 }
 
+void Actuator::handleActuatorEvent(int event_value) {
+    switch((ActuatorEnum) event_value) {
+        case ActuatorEnum::MOTOR_SLOW_ON:
+            motor_slow_on();
+            break;
+        case ActuatorEnum::MOTOR_SLOW_OFF:
+            motor_slow_off();
+            break;
+        case ActuatorEnum::MOTOR_RIGHT_START:
+            motor_right();
+            break;
+        case ActuatorEnum::MOTOR_LEFT_START:
+            motor_left();
+            break;
+        case ActuatorEnum::MOTOR_STOP:
+            motor_stop();
+            break;
+        case ActuatorEnum::SORTING_ON:
+            sorting_on();
+            break;
+        case ActuatorEnum::SORTING_OFF:
+            sorting_off();
+            break;
+        case ActuatorEnum::TRAFFIC_RED_ON:
+            traffic_red_on();
+            break;
+        case ActuatorEnum::TRAFFIC_RED_OFF:
+            traffic_red_off();
+            break;
+        case ActuatorEnum::TRAFFIC_YELLOW_ON:
+            traffic_yellow_on();
+            break;
+        case ActuatorEnum::TRAFFIC_YELLOW_OFF:
+            traffic_yellow_off();
+            break;
+        case ActuatorEnum::TRAFFIC_GREEN_ON:
+            traffic_green_on();
+            break;
+        case ActuatorEnum::TRAFFIC_GREEN_OFF:
+            traffic_green_off();
+            break;
+        case ActuatorEnum::LED_START_ON:
+            led_start_on();
+            break;
+        case ActuatorEnum::LED_START_OFF:
+            led_start_off();
+            break;
+        case ActuatorEnum::LED_RESET_ON:
+            led_reset_on();
+            break;
+        case ActuatorEnum::LED_RESET_OFF:
+            led_reset_off();
+            break;
+        case ActuatorEnum::LED_Q1_ON:
+            led_q1_on();
+            break;
+        case ActuatorEnum::LED_Q1_OFF:
+            led_q1_off();
+            break;
+        case ActuatorEnum::LED_Q2_ON:
+            led_q2_on();
+            break;
+        case ActuatorEnum::LED_Q2_OFF:
+            led_q2_off();
+            break;
+        default:
+            //THROW("Invalid Actuator Event!");
+            break;
+    }
+}
+
+void Actuator::handleEStop(int event_value) {
+    if((InterruptEnum) event_value == InterruptEnum::BUTTON_ESTOP_PRESSED) {
+        stop_moving_parts();
+    }
+}
+
+
 void Actuator::threadFunction() {
     actuatorRunning = true;
     while(actuatorRunning) {
         _pulse pulse = mailbox->take();
         Topic event_code = (Topic) pulse.code;
-        ActuatorEnum event_value = (ActuatorEnum) pulse.value.sival_int;
-        if(event_code == Topic::STOP_THREAD) {
-            actuatorRunning = false;
-        } else if(event_code != Topic::ACTUATOR) {
-            THROW("Error not a Actuator function");
-        }
-        switch(event_value) {
-            case ActuatorEnum::MOTOR_SLOW_ON:
-                motor_slow_on();
+        int event_value = pulse.value.sival_int;
+        switch(event_code) {
+            case Topic::INTERRUPT:
+                handleEStop(event_value);
                 break;
-            case ActuatorEnum::MOTOR_SLOW_OFF:
-                motor_slow_off();
+            case Topic::ACTUATOR:
+                handleActuatorEvent(event_value);
                 break;
-            case ActuatorEnum::MOTOR_RIGHT_START:
-                motor_right();
-                break;
-            case ActuatorEnum::MOTOR_LEFT_START:
-                motor_left();
-                break;
-            case ActuatorEnum::MOTOR_STOP:
-                motor_stop();
-                break;
-            case ActuatorEnum::SORTING_ON:
-                sorting_on();
-                break;
-            case ActuatorEnum::SORTING_OFF:
-                sorting_off();
-                break;
-            case ActuatorEnum::TRAFFIC_RED_ON:
-                traffic_red_on();
-                break;
-            case ActuatorEnum::TRAFFIC_RED_OFF:
-                traffic_red_off();
-                break;
-            case ActuatorEnum::TRAFFIC_YELLOW_ON:
-                traffic_yellow_on();
-                break;
-            case ActuatorEnum::TRAFFIC_YELLOW_OFF:
-                traffic_yellow_off();
-                break;
-            case ActuatorEnum::TRAFFIC_GREEN_ON:
-                traffic_green_on();
-                break;
-            case ActuatorEnum::TRAFFIC_GREEN_OFF:
-                traffic_green_off();
-                break;
-            case ActuatorEnum::LED_START_ON:
-                led_start_on();
-                break;
-            case ActuatorEnum::LED_START_OFF:
-                led_start_off();
-                break;
-            case ActuatorEnum::LED_RESET_ON:
-                led_reset_on();
-                break;
-            case ActuatorEnum::LED_RESET_OFF:
-                led_reset_off();
-                break;
-            case ActuatorEnum::LED_Q1_ON:
-                led_q1_on();
-                break;
-            case ActuatorEnum::LED_Q1_OFF:
-                led_q1_off();
-                break;
-            case ActuatorEnum::LED_Q2_ON:
-                led_q2_on();
-                break;
-            case ActuatorEnum::LED_Q2_OFF:
-                led_q2_off();
+            case Topic::STOP_THREAD:
+                actuatorRunning = false;
                 break;
             default:
-                //THROW("Invalid Actuator Event!");
                 break;
         }
     }
@@ -182,11 +198,17 @@ bool Actuator::isGate() {
 
 //GPIO_1
 void Actuator::motor_right() {
+    if(global_estop) {
+        return;
+    }
     clear_data(gpio_bank_1, MOTOR_LEFT_BIT);
     set_data(gpio_bank_1, MOTOR_RIGHT_BIT);
 }
 
 void Actuator::motor_left() {
+    if(global_estop) {
+        return;
+    }
     clear_data(gpio_bank_1, MOTOR_RIGHT_BIT);
     set_data(gpio_bank_1, MOTOR_LEFT_BIT);
 }
@@ -234,6 +256,9 @@ void Actuator::traffic_green_off() {
 }
 
 void Actuator::sorting_on() {
+    if(global_estop) {
+        return;
+    }
     set_data(gpio_bank_1, SORTING_BIT);
 }
 
@@ -289,6 +314,12 @@ void Actuator::global_shutdown() {
     led_reset_off();
     led_q1_off();
     led_q2_off();
+}
+
+void Actuator::stop_moving_parts() {
+    global_estop = true;
+    sorting_off();
+    motor_stop();
 }
 
 void Actuator::reset() {
