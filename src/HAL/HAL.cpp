@@ -61,7 +61,7 @@ void HAL::init() {
 
     if(interrupt->button_estop_pressed()){
         actuator->local_estop_activate();
-        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED, (int) EventPriority::FIRST_PRIO);
+        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
     }
 
     halThread = std::thread(&HAL::threadFunction, this);
