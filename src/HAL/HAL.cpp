@@ -97,7 +97,7 @@ void HAL::test_ins_ADC() {
     std::cout << "Testing ADC... Please put Piece on the front laser" << std::endl;
     bool running = true;
     int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
-    bool calibrated = true;
+    bool calibrated = false;
     bool is_weiche = false;
     bool allowGo = true;
     if(!calibrated) {
