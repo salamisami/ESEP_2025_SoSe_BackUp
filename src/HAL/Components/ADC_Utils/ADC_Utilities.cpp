@@ -55,13 +55,14 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
 
     // Liste der Bauteile und ob sie ein Loch besitzen
     std::vector<Bauteil> bauteile = {
-        { "WH", ADC_Enum::ADC_WH_DETECT, false },
+        //TODO don't forget that this is commented out
+        //{ "WH", ADC_Enum::ADC_WH_DETECT, false },
         { "WF", ADC_Enum::ADC_WF_DETECT, false },
         { "W_B", ADC_Enum::ADC_W_B_DETECT, true },
-        { "W_BB", ADC_Enum::ADC_W_B_DETECT, true },
-        { "W_BM", ADC_Enum::ADC_W_NOT_DETECT, true },
-        { "W_BC", ADC_Enum::ADC_W_NOT_DETECT, true },
-        { "WH_Harz", ADC_Enum::ADC_W_NOT_DETECT, false }
+        { "W_BB", ADC_Enum::ADC_W_B_DETECT, true } //,
+        // { "W_BM", ADC_Enum::ADC_W_NOT_DETECT, true },
+        // { "W_BC", ADC_Enum::ADC_W_NOT_DETECT, true },
+        // { "WH_Harz", ADC_Enum::ADC_W_NOT_DETECT, false }
     };
 
     // Alte Datei löschen
