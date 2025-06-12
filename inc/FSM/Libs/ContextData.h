@@ -17,7 +17,12 @@
 class ContextData {
     //============================================ contructors & destructors ============================================
 public:
-    ContextData(I_Sender* sender, I_Sender* timer_sender);
+    /**
+     * @brief Creates a context data by injecting the sender interface
+     * @param sender to send events out
+     * @param to_self_sender to send events to self
+     */
+    ContextData(I_Sender* sender, I_Sender* to_self_sender);
     ContextData();
     virtual ~ContextData();
 

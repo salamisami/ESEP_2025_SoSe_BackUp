@@ -24,7 +24,7 @@ int main() {
 
     Mock_PM::Receiver* hal_receiver = new Mock_PM::Receiver();
     Mock_PM::Sender* logic_sender = new Mock_PM::Sender(hal_receiver);
-    I_Sender* timer_sender = new Mock_PM::Sender(logic_receiver);
+    I_Sender* to_self_sender = new Mock_PM::Sender(logic_receiver);
 
 
 
@@ -52,7 +52,7 @@ int main() {
     // delete timer_sender;
 
 
-    Logic* logic = new Logic(logic_receiver, logic_sender, timer_sender);
+    Logic* logic = new Logic(logic_receiver, logic_sender, to_self_sender);
     WAIT(1000); 
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
@@ -63,7 +63,7 @@ int main() {
     WAIT(1000);
 
     delete logic;
-    delete timer_sender;
+    delete to_self_sender;
     delete logic_sender;
     delete hal_receiver;
     delete remote_control;

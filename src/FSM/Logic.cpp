@@ -2,13 +2,23 @@
 
 //================================================= contructors & destructors =================================================
 
-Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* timer_sender) {
+Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender) {
     this->local_receiver = local_receiver;
     this->local_sender = local_sender;
-    this->timer_sender = timer_sender;
+    this->to_self_sender = to_self_sender;
     logicRunning = true;
     logicThread = std::thread(&Logic::threadFunction, this);
 }
+
+Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender) {
+    this->local_receiver = local_receiver;
+    this->local_sender = local_sender;
+    this->to_self_sender = local_sender;
+    //this->timer_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    logicRunning = true;
+    logicThread = std::thread(&Logic::threadFunction, this);
+}
+
 
 Logic::~Logic() {
     logicRunning = false;
@@ -21,7 +31,7 @@ Logic::~Logic() {
 
 void Logic::threadFunction() {
     int eventNo = 0;
-    ContextData data = ContextData(local_sender,timer_sender);
+    ContextData data = ContextData(local_sender, to_self_sender);
     auto fsm = Context<Boot>(&data);
     while(logicRunning) {
         _pulse event;
