@@ -18,17 +18,12 @@ Timer::~Timer() {
 //===================================================== public functions =====================================================
 
 void Timer::start_timer(int miliseconds, TIMER_ID id) {
-    if(timerThread.joinable()){
-        timerThread.join();
-    }
     //TODO @Lucas please edit here
     timerThread = std::thread(&Timer::threadFunction, this, miliseconds, id);
+    timerThread.detach();
 }
 
 void Timer::threadFunction(int miliseconds, TIMER_ID id) {
-    DEBUG("Timer Started...");
-    WAIT(1000);
-    DEBUG("Sending event....");
+    WAIT(miliseconds);
     sender->send_event((int) Topic::TIMER, (int) id, (int) EventPriority::SECOND_PRIO);
-    std::cout << "Timer for " << miliseconds << " ist abgelaufen" << std::endl;
 }
