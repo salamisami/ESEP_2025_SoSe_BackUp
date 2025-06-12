@@ -1,22 +1,27 @@
-#include "EStopQuit.h"
+#include "IdleGateCDS.h"
 
 //================================================= contructors & destructors =================================================
-EStopQuit::EStopQuit(ContextData* data) : State(data) {}
+IdleGateCDS::IdleGateCDS(ContextData* data) : State(data) {
+    //substate = new SubState(data);
+}
 
-EStopQuit::~EStopQuit() {}
+IdleGateCDS::~IdleGateCDS() {}
 
 //===================================================== private functions =====================================================
 
-//void EStopQuit::privateFunction(){}
 
 //===================================================== public functions =====================================================
-
-void EStopQuit::entry(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+void IdleGateCDS::entry(){
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-void EStopQuit::exit(){
+void IdleGateCDS::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+I_State* IdleGateCDS::laser_sorting_gate_blocked(){
+	if(data->is_switch){
+		return new OpenGateCDS(data);
+	}
+	return nullptr;
 }

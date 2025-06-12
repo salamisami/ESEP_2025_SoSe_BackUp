@@ -1,22 +1,25 @@
-#include "EStopQuit.h"
+#include "StartCDS.h"
 
 //================================================= contructors & destructors =================================================
-EStopQuit::EStopQuit(ContextData* data) : State(data) {}
+StartCDS::StartCDS(ContextData* data) : State(data) {
+    //substate = new SubState(data);
+}
 
-EStopQuit::~EStopQuit() {}
+StartCDS::~StartCDS() {}
 
 //===================================================== private functions =====================================================
 
-//void EStopQuit::privateFunction(){}
 
 //===================================================== public functions =====================================================
-
-void EStopQuit::entry(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+void StartCDS::entry(){
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	data->stopwatch.start();
 }
 
-void EStopQuit::exit(){
+void StartCDS::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
+
+I_State* StartCDS::laser_back_blocked(){
+	return new StopCDS(data);
 }

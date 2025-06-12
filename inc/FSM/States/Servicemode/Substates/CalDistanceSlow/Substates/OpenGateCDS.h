@@ -1,22 +1,21 @@
-#ifndef SERVICEMODE_H
-#define SERVICEMODE_H
+#ifndef OPENGATECDS_H
+#define OPENGATECDS_H
 #pragma once
 
 #include "State.h"
-#include "Idle.h"
-#include "IdleServiceMode.h"
+#include "IdleGateCDS.h"
 
-class Servicemode : public State{
+class OpenGateCDS : public State {
 public: //============================================ contructors & destructors ============================================
-    Servicemode(ContextData* data);
-    virtual ~Servicemode();
+    OpenGateCDS(ContextData* data) ;
+    virtual ~OpenGateCDS();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
+    void entry() override;
+    void exit() override;
 
-	State* button_stop_pressed() override;
+	I_State* timer(TIMER_ID id) override;
     
 
 

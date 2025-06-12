@@ -1,26 +1,25 @@
-#include "CalibrateReady.h"
+#include "IdleServiceMode.h"
 
 //================================================= contructors & destructors =================================================
-CalibrateReady::CalibrateReady(ContextData* data) : State(data){
-
+IdleServiceMode::IdleServiceMode(ContextData* data) : State(data) {
+    //substate = new SubState(data);
 }
 
-CalibrateReady::~CalibrateReady() {}
+IdleServiceMode::~IdleServiceMode() {}
 
 //===================================================== private functions =====================================================
 
-//void CalibrateReady::privateFunction(){}
 
 //===================================================== public functions =====================================================
+void IdleServiceMode::entry(){
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	DEBUG("Please put W_H");
+}
 
-void CalibrateReady::entry(){
+void IdleServiceMode::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-void CalibrateReady::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
-}
-
-I_State* CalibrateReady::laser_front_blocked(){
-    return new Calibrating(data);
+I_State* IdleServiceMode::laser_front_blocked(){
+	return new CalDistanceSlow(data);
 }

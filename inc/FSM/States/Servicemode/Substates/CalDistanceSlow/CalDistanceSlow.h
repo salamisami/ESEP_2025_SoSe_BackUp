@@ -1,18 +1,20 @@
-#ifndef CALIBRATIONDONE_H
-#define CALIBRATIONDONE_H
+#ifndef CALDISTANCESLOW_H
+#define CALDISTANCESLOW_H
 #pragma once
 
-#include "State.h"
+#include "OrthogonalState.h"
+#include "IdleCDS.h"
+#include "IdleGateCDS.h"
 
-class CalibrationDone: public State {
+class CalDistanceSlow : public OrthogonalState{
 public: //============================================ contructors & destructors ============================================
-    CalibrationDone(ContextData* data);
-    virtual ~CalibrationDone();
+    CalDistanceSlow(ContextData* data) ;
+    virtual ~CalDistanceSlow();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
+    void entry() override;
+    void exit() override;
     
 
 

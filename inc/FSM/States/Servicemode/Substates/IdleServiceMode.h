@@ -1,21 +1,21 @@
-#ifndef CALIBRATING_H
-#define CALIBRATING_H
+#ifndef IDLESERVICEMODE_H
+#define IDLESERVICEMODE_H
 #pragma once
 
 #include "State.h"
-#include "CalibrationDone.h"
+#include "CalDistanceSlow.h"
 
-class Calibrating : public State {
+class IdleServiceMode : public State {
 public: //============================================ contructors & destructors ============================================
-    Calibrating(ContextData* data);
-    virtual ~Calibrating();
+    IdleServiceMode(ContextData* data) ;
+    virtual ~IdleServiceMode();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
+    void entry() override;
+    void exit() override;
 
-	I_State* adc_calibration_done() override;
+	I_State* laser_front_blocked() override;
     
 
 

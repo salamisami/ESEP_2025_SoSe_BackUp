@@ -1,22 +1,21 @@
-#ifndef SERVICEMODE_H
-#define SERVICEMODE_H
+#ifndef STARTCDS_H
+#define STARTCDS_H
 #pragma once
 
 #include "State.h"
-#include "Idle.h"
-#include "IdleServiceMode.h"
+#include "StopCDS.h"
 
-class Servicemode : public State{
+class StartCDS : public State {
 public: //============================================ contructors & destructors ============================================
-    Servicemode(ContextData* data);
-    virtual ~Servicemode();
+    StartCDS(ContextData* data) ;
+    virtual ~StartCDS();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
+    void entry() override;
+    void exit() override;
 
-	State* button_stop_pressed() override;
+	I_State* laser_back_blocked() override;
     
 
 

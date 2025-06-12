@@ -1,19 +1,22 @@
-#ifndef CALIBRATEPIECES_H
-#define CALIBRATEPIECES_H
+#ifndef IDLECDS_H
+#define IDLECDS_H
 #pragma once
 
 #include "State.h"
-#include "CalibrateReady.h"
+#include "StartCDS.h"
 
-class CalibratePieces : public State {
+class IdleCDS : public State {
 public: //============================================ contructors & destructors ============================================
-	CalibratePieces(ContextData* data, State* initial_substate = nullptr);
-	virtual ~CalibratePieces();
-
+    IdleCDS(ContextData* data) ;
+    virtual ~IdleCDS();
+	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
+    void entry() override;
+    void exit() override;
+
+	I_State* laser_front_unblocked() override;
+    
 
 
 private: //================================================ private variables ================================================
@@ -21,12 +24,12 @@ private: //================================================ private variables ==
 	//pointers
 	//primitive types
 	//bool and char
-
-
+   
+	
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
-
+	
 };
 
 #endif
