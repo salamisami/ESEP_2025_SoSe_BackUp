@@ -91,5 +91,11 @@ enum class COM_Enum: int{
     BUTTON_ESTOP_RELEASED
 };
 
+enum class TIMER_ID: int {
+    WAITING_BUTTON_START = 1,
+    OPEN_GATE_CDS,
+    OPEN_GATE_CDF
+};
+
 
 #endif

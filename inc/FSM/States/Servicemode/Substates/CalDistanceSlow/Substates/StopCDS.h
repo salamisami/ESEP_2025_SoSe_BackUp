@@ -1,25 +1,18 @@
-#ifndef WAITING_H
-#define WAITING_H
+#ifndef STOPCDS_H
+#define STOPCDS_H
 #pragma once
 
 #include "State.h"
-#include "Timer.h"
-#include "Timer_Received.h"
-#include "Operating.h"
 
-
-class Waiting : public State {
+class StopCDS : public State {
 public: //============================================ contructors & destructors ============================================
-    Waiting(ContextData* data);
-    virtual ~Waiting();
+    StopCDS(ContextData* data) ;
+    virtual ~StopCDS();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	I_State* button_start_released() override;
-	I_State* timer(TIMER_ID id) override;
     
 
 

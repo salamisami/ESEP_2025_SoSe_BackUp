@@ -1,13 +1,9 @@
 #include "Servicemode.h"
 
 //================================================= contructors & destructors =================================================
-Servicemode::Servicemode(ContextData* data, State* initial_substate)
+Servicemode::Servicemode(ContextData* data)
     : State(data) {
-    if(initial_substate == nullptr) {
-        substate = new CalibratePieces(data);
-    } else {
-        substate = initial_substate;
-    }
+    substate = new IdleServiceMode(data);
 }
 
 Servicemode::~Servicemode() {}
@@ -28,8 +24,11 @@ void Servicemode::exit() {
     State::exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
 }
 
-State* Servicemode::button_stop_pressed(){
+State* Servicemode::button_stop_pressed() {
     return new Idle(data);
 }

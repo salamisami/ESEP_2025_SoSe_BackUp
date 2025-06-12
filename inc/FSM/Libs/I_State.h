@@ -2,7 +2,7 @@
 #define I_STATE_H
 #pragma once
 
-//#include
+#include "Event.h"
 
 class I_State {
 public: //============================================ contructors & destructors ============================================
@@ -48,7 +48,7 @@ public: //================================================ public functions ====
     virtual I_State* adc_calibration_done() = 0;
     virtual I_State* adc_new_piece() = 0;
 
-    virtual I_State* timer(int id) = 0;
+    virtual I_State* timer(TIMER_ID id) = 0;
     
 
 

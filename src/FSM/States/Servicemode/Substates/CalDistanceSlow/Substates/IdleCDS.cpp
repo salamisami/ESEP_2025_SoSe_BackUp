@@ -1,32 +1,24 @@
-#include "Waiting.h"
+#include "IdleCDS.h"
 
 //================================================= contructors & destructors =================================================
-Waiting::Waiting(ContextData* data):State(data){
-    
+IdleCDS::IdleCDS(ContextData* data) : State(data) {
+    //substate = new SubState(data);
 }
 
-Waiting::~Waiting() {}
+IdleCDS::~IdleCDS() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void Waiting::entry(){
+void IdleCDS::entry(){
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->timer->start_timer(2000, TIMER_ID::WAITING_BUTTON_START);
 }
 
-void Waiting::exit(){
+void IdleCDS::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* Waiting::button_start_released(){
-    return new Operating(data);
-}
-
-I_State* Waiting::timer(TIMER_ID id){
-    if(id == TIMER_ID::WAITING_BUTTON_START){
-        return new Timer_Received(data);
-    }
-    return nullptr;
+I_State* IdleCDS::laser_front_unblocked(){
+	return new StartCDS(data);
 }

@@ -1,39 +1,46 @@
-#ifndef WAITING_H
-#define WAITING_H
+#ifndef STOPWATCH_H
+#define STOPWATCH_H
 #pragma once
 
-#include "State.h"
-#include "Timer.h"
-#include "Timer_Received.h"
-#include "Operating.h"
+#include "Macros.h"
+
+#include <chrono>
+#include <mutex>
+#include <thread>
 
 
-class Waiting : public State {
+class Stopwatch {
 public: //============================================ contructors & destructors ============================================
-    Waiting(ContextData* data);
-    virtual ~Waiting();
-	
+	Stopwatch() = default;
+	virtual ~Stopwatch() = default;
+
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
+	/**
+	 * @brief starts a stopwatch. If it's called more than once, the previous stopwatch will be discarded
+	 */
+	void start();
+	/**
+	 * @brief stops a stopwatch. If it's called without start(), it will throw an exception
+	 * @return the duration of the stopwatch in miliseconds
+	 */
+	long stop();
 
-	I_State* button_start_released() override;
-	I_State* timer(TIMER_ID id) override;
-    
 
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
+	std::mutex mtx;
+	 std::chrono::time_point<std::chrono::steady_clock> start_time;
 	//pointers
 	//primitive types
 	//bool and char
-   
-	
+	bool is_running = false;
+
+
 
 private: //================================================ private functions ================================================
-	//void privateFunction();
-	
+
 };
 
 #endif

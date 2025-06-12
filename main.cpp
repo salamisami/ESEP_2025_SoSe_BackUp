@@ -27,6 +27,7 @@ int main() {
     
     Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
     Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    Thread_COM::Sender* com_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
     Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_1_HAL);
     Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
