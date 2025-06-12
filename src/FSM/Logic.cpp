@@ -31,8 +31,8 @@ Logic::~Logic() {
 
 void Logic::threadFunction() {
     int eventNo = 0;
-    ContextData data = ContextData(local_sender, to_self_sender);
-    auto fsm = Context<Boot>(&data);
+    ContextData* data = new ContextData(local_sender, to_self_sender);
+    auto fsm = Context<Boot>(data);
     while(logicRunning) {
         _pulse event;
         local_receiver->receive_event(&event);
@@ -45,7 +45,7 @@ void Logic::threadFunction() {
         }
         fsm.handleEvent(event);
     }
-    //delete timer_sender;
+    delete data;
 }
 
 //===================================================== public functions =====================================================
