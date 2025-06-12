@@ -28,30 +28,6 @@ int main() {
 
 
 
-    //ContextData* data = new ContextData(remote_control, local_receiver, timer_sender);
-    //Context<ModeHandler>* fsm = new Context<ModeHandler>(data);
-
-    //Timer* timer = new Timer(timer_sender);
-
-    //timer->setTimer(2000, 1);
-    //timer->setTimer(2000, 2);
-
-    // //TODO Problem: Beide Timer müssen gleichzeitig beenden
-    // int eventNo = 0;
-    // for(int i = 0; i < 2; i++) {
-    //     _pulse event;
-    //     local_receiver->receive_event(&event);
-    //     eventNo++;
-    //     printf("Event Number: %d\n", eventNo);
-    // }
-    // printf("End of State.\n");
-
-    // delete timer;
-    // // delete fsm;
-    // // delete data;
-    // delete timer_sender;
-
-
     Logic* logic = new Logic(logic_receiver, logic_sender, to_self_sender);
     WAIT(1000); 
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
@@ -59,6 +35,13 @@ int main() {
     WAIT(3000);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(5000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
     remote_control->send_event((int8_t) Topic::STOP_THREAD, 0);
     WAIT(1000);
 

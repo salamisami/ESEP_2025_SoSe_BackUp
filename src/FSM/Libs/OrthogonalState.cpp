@@ -82,7 +82,7 @@ I_State* OrthogonalState::timer(TIMER_ID id) {
         if(newSubstate != nullptr) {
             // there is substate change, change only the substate
             current_substate->exit();
-            delete substates;
+            delete current_substate;
             current_substate = newSubstate;
             current_substate->entry();
         }
