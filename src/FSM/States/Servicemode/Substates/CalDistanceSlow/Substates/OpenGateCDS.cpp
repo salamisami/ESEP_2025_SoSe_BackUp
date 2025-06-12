@@ -23,5 +23,8 @@ void OpenGateCDS::exit(){
 }
 
 I_State* OpenGateCDS::timer(TIMER_ID id){
-    return new IdleGateCDS(data);
+    if(id == TIMER_ID::OPEN_GATE_CDS){
+        return new IdleGateCDS(data);
+    }
+    return nullptr;
 }
