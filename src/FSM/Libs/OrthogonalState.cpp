@@ -37,6 +37,17 @@ I_State* OrthogonalState::handle_event_using_function(I_State* (I_State::* handl
     return nullptr;
 }
 
+//explicit exit
+// I_State* StateA::service() {
+//     for(auto& current_substate : *substates) {
+//         I_State* newSubstate = current_substate->service();
+//         if(newSubstate != nullptr) {
+//             return newSubstate;
+//         }
+//         return nullptr;
+//     }
+// }
+
 
 //===================================================== public functions =====================================================
 
@@ -58,14 +69,14 @@ void OrthogonalState::exit() {
 OrthogonalState* OrthogonalState::clone() {
     //TODO test and review
     auto cloned_substates = new std::vector<I_State*>();
-    for(auto& current_substate : *substates){
+    for(auto& current_substate : *substates) {
         cloned_substates->push_back(current_substate->clone());
     }
     OrthogonalState* cloned_ortho = new OrthogonalState(data, cloned_substates);
     return cloned_ortho;
 }
 
-I_State* OrthogonalState::timer(int id) {
+I_State* OrthogonalState::timer(TIMER_ID id) {
     for(auto& current_substate : *substates) {
         I_State* newSubstate = current_substate->timer(id);
         if(newSubstate != nullptr) {

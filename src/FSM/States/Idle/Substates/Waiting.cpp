@@ -13,7 +13,7 @@ Waiting::~Waiting() {}
 //===================================================== public functions =====================================================
 void Waiting::entry(){
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-    data->timer->setTimer(2000, IDLE_TIMER);
+    data->timer->start_timer(2000, TIMER_ID::WAITING_BUTTON_START);
 }
 
 void Waiting::exit(){
@@ -24,8 +24,8 @@ I_State* Waiting::button_start_released(){
     return new Operating(data);
 }
 
-I_State* Waiting::timer(int id){
-    if(id == IDLE_TIMER){
+I_State* Waiting::timer(TIMER_ID id){
+    if(id == TIMER_ID::WAITING_BUTTON_START){
         return new Timer_Received(data);
     }
     return nullptr;

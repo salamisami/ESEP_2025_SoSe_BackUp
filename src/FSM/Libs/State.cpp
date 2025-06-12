@@ -111,7 +111,7 @@ State* State::clone(){
     return clonedState;
 }
 
-I_State* State::timer(int id) {
+I_State* State::timer(TIMER_ID id) {
     if(substate == nullptr) {
         return nullptr;
     }

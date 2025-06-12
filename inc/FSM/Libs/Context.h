@@ -185,7 +185,7 @@ void Context<T>::handleEvent(_pulse event) {
             newState = handleCOM(event_value);
             break;
         case Topic::TIMER:
-            newState = state->timer((int) event_value);
+            newState = state->timer((TIMER_ID) event_value);
             break;
         case Topic::ADC:
             newState = handleADC(event_value);

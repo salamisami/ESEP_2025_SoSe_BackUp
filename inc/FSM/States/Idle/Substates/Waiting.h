@@ -7,7 +7,6 @@
 #include "Timer_Received.h"
 #include "Operating.h"
 
-#define IDLE_TIMER 1
 
 class Waiting : public State {
 public: //============================================ contructors & destructors ============================================
@@ -20,7 +19,7 @@ public: //================================================ public functions ====
     void exit() override;
 
 	I_State* button_start_released() override;
-	I_State* timer(int id) override;
+	I_State* timer(TIMER_ID id) override;
     
 
 

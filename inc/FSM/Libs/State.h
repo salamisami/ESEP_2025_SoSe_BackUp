@@ -59,7 +59,7 @@ public:
     virtual I_State* adc_calibration_done() override;
     virtual I_State* adc_new_piece() override;
 
-    virtual I_State* timer(int id) override;
+    virtual I_State* timer(TIMER_ID id) override;
 
 
 
