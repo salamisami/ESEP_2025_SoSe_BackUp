@@ -26,3 +26,7 @@ void CalDistanceFast::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
+
+I_State* CalDistanceFast::laser_back_unblocked(){
+	return new CalDistanceSlow(data);
+}

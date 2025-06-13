@@ -1,27 +1,24 @@
-#include "IdleGateCDF.h"
+#include "IdleSMSR.h"
 
 //================================================= contructors & destructors =================================================
-IdleGateCDF::IdleGateCDF(ContextData* data) : State(data) {
+IdleSMSR::IdleSMSR(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-IdleGateCDF::~IdleGateCDF() {}
+IdleSMSR::~IdleSMSR() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void IdleGateCDF::entry(){
+void IdleSMSR::entry(){
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-void IdleGateCDF::exit(){
+void IdleSMSR::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* IdleGateCDF::laser_sorting_gate_blocked(){
-    if(data->is_switch){
-        return new OpenGateCDF(data);
-    }
-    return nullptr;
+I_State* IdleSMSR::adc_calibration_done(){
+    return new CalibrationDoneSMSR(data);
 }

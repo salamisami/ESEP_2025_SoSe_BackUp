@@ -5,6 +5,7 @@
 #include "OrthogonalState.h"
 #include "IdleCDF.h"
 #include "IdleGateCDF.h"
+#include "CalDistanceSlow.h"
 
 class CalDistanceFast : public OrthogonalState{
 public: //============================================ contructors & destructors ============================================
@@ -15,6 +16,8 @@ public: //============================================ contructors & destructors
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	I_State* laser_back_unblocked() override;
     
 
 
