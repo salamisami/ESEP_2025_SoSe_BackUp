@@ -2,7 +2,7 @@
 
 //================================================= contructors & destructors =================================================
 CalDistanceSlow::CalDistanceSlow(ContextData* data) : OrthogonalState(data,
-	new std::vector<I_State*>({
+	std::vector<I_State*>({
 		new IdleCDS(data),
 		new IdleGateCDS(data)
 		})

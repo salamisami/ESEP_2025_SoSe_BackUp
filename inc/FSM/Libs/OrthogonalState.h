@@ -13,7 +13,7 @@
 class OrthogonalState : public I_State {
     //============================================ contructors & destructors ============================================
 public:
-    OrthogonalState(ContextData* data, std::vector<I_State*>* initial_substates);
+    OrthogonalState(ContextData* data, std::vector<I_State*> initial_substates);
     OrthogonalState(const OrthogonalState&) = delete;
     virtual ~OrthogonalState() override;
 
@@ -64,7 +64,7 @@ public:
     //================================================ private variables ================================================
 protected:
     ContextData* data;
-    std::vector<I_State*>* substates;
+    std::vector<I_State*> substates;
 
     //================================================ private functions ================================================
 private:
