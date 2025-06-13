@@ -20,8 +20,8 @@ void IdleServiceMode::exit() {
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* IdleServiceMode::laser_front_blocked() {
-	return new CalDistanceFast(data);
+I_State* IdleServiceMode::laser_back_unblocked() {
+	return new ReadyForCDF(data);
 }
 
 //check for explicit exit
