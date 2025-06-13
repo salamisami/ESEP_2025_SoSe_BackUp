@@ -4,6 +4,8 @@
 
 #include "State.h"
 #include "EStopQuit.h"
+#include "EStopViaLocal.h"
+#include "EStopViaNeigbor.h"
 
 class EStopReleased : public State {
 public: //============================================ contructors & destructors ============================================
@@ -16,6 +18,8 @@ public: //================================================ public functions ====
 	void exit() override;
 
 	I_State* button_reset_pressed() override;
+	I_State* button_estop_pressed() override;
+	I_State* com_button_estop_pressed() override;
     
 
 

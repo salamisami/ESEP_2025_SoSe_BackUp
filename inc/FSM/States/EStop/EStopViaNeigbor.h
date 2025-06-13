@@ -3,13 +3,13 @@
 #pragma once
 
 #include "State.h"
-#include "BothEStopPressed.h"
-#include "EStopInactive.h"
+#include "BothEstopPressed.h"
+#include "EStopReleased.h"
 
-class EStopViaNeigbor : public State{
+class EStopViaNeighbor : public State{
 public: //============================================ contructors & destructors ============================================
-    EStopViaNeigbor(ContextData* data);
-    virtual ~EStopViaNeigbor();
+    EStopViaNeighbor(ContextData* data);
+    virtual ~EStopViaNeighbor();
 	
 
 public: //================================================ public functions ================================================

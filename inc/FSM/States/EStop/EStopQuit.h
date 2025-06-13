@@ -3,6 +3,9 @@
 #pragma once
 
 #include "State.h"
+#include "EStopViaLocal.h"
+#include "EStopViaNeigbor.h"
+#include "ModeHandler.h"
 
 class EStopQuit: public State{
 public: //============================================ contructors & destructors ============================================
@@ -13,6 +16,10 @@ public: //============================================ contructors & destructors
 public: //================================================ public functions ================================================
 	void entry() override;
 	void exit() override;
+
+	I_State* button_estop_pressed() override;
+	I_State* com_button_estop_pressed() override;
+	I_State* button_reset_released() override;
     
 
 

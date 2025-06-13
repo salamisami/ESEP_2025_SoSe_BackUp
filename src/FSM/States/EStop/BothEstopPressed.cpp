@@ -19,7 +19,7 @@ void BothEstopPressed::exit(){
 }
 
 I_State* BothEstopPressed::button_estop_released(){
-    return new EStopViaNeigbor(data);
+    return new EStopViaNeighbor(data);
 }
 
 I_State* BothEstopPressed::com_button_estop_released(){
