@@ -29,5 +29,5 @@ I_State* EStopViaLocal::com_button_estop_pressed(){
 }
 
 I_State* EStopViaLocal::button_estop_released(){
-    return new EStopInactive(data);
+    return new EStopReleased(data);
 }

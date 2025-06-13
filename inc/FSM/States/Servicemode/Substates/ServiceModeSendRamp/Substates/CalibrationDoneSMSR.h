@@ -1,24 +1,18 @@
-#ifndef ESTOPINACTIVE_H
-#define ESTOPINACTIVE_H
+#ifndef CALIBRATIONDONESMSR_H
+#define CALIBRATIONDONESMSR_H
 #pragma once
 
 #include "State.h"
-#include "ModeHandler.h"
-#include "EStopReleased.h"
 
-class EStopInactive : public State {
+class CalibrationDoneSMSR : public State {
 public: //============================================ contructors & destructors ============================================
-    EStopInactive(ContextData* data);
-    virtual ~EStopInactive();
+    CalibrationDoneSMSR(ContextData* data) ;
+    virtual ~CalibrationDoneSMSR();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
-
-	I_State* com_button_estop_pressed() override;
-	I_State* button_estop_pressed() override;
-	I_State* button_reset_released() override;
+    void entry() override;
+    void exit() override;
     
 
 

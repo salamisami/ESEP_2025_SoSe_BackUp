@@ -3,8 +3,8 @@
 #pragma once
 
 #include "State.h"
-#include "EStopInactive.h"
 #include "BothEstopPressed.h"
+#include "EStopReleased.h"
 
 class EStopViaLocal: public State {
 public: //============================================ contructors & destructors ============================================

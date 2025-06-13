@@ -1,25 +1,21 @@
-#ifndef IDLESERVICEMODE_H
-#define IDLESERVICEMODE_H
+#ifndef IDLECDF_H
+#define IDLECDF_H
 #pragma once
 
 #include "State.h"
-#include "ServiceModeSendRamp.h"
-#include "CalDistanceFast.h"
+#include "StartCDF.h"
 
-class IdleServiceMode : public State {
+class IdleCDF : public State {
 public: //============================================ contructors & destructors ============================================
-    IdleServiceMode(ContextData* data) ;
-    virtual ~IdleServiceMode();
+    IdleCDF(ContextData* data) ;
+    virtual ~IdleCDF();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	I_State* laser_front_blocked() override;
-	
-	//TODO explicit exit later?
-	//I_State* laser_sorting_gate_blocked() override;
+	I_State* laser_front_unblocked() override;
     
 
 

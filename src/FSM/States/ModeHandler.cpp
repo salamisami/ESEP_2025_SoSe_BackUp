@@ -31,6 +31,6 @@ I_State* ModeHandler::button_estop_pressed(){
 }
 
 I_State* ModeHandler::com_button_estop_pressed(){
-    return new EStopViaNeigbor(data);
+    return new EStopViaNeighbor(data);
 }
 

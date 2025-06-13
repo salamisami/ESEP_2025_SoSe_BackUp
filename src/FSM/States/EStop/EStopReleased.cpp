@@ -23,3 +23,11 @@ void EStopReleased::exit(){
 I_State* EStopReleased::button_reset_pressed(){
     return new EStopQuit(data);
 }
+
+I_State* EStopReleased::button_estop_pressed(){
+    return new EStopViaLocal(data);
+}
+
+I_State* EStopReleased::com_button_estop_pressed(){
+    return new EStopViaNeighbor(data);
+}

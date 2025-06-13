@@ -1,30 +1,31 @@
-#include "OpenGateCDS.h"
+#include "OpenGateCDF.h"
 
 //================================================= contructors & destructors =================================================
-OpenGateCDS::OpenGateCDS(ContextData* data) : State(data) {
+OpenGateCDF::OpenGateCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-OpenGateCDS::~OpenGateCDS() {}
+OpenGateCDF::~OpenGateCDF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void OpenGateCDS::entry(){
+void OpenGateCDF::entry(){
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	data->timer->start_timer(2000, TIMER_ID::OPEN_GATE_CDS);
+    data->timer->start_timer(600, TIMER_ID::OPEN_GATE_CDF);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
+    
 }
 
-void OpenGateCDS::exit(){
+void OpenGateCDF::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 
-I_State* OpenGateCDS::timer(TIMER_ID id){
-    if(id == TIMER_ID::OPEN_GATE_CDS){
-        return new IdleGateCDS(data);
+I_State* OpenGateCDF::timer(TIMER_ID id){
+    if(id == TIMER_ID::OPEN_GATE_CDF){
+        return new IdleGateCDF(data);    
     }
     return nullptr;
 }

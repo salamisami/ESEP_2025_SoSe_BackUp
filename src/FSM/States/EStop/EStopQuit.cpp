@@ -20,3 +20,15 @@ void EStopQuit::entry(){
 void EStopQuit::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
+
+I_State* EStopQuit::button_estop_pressed(){
+    return new EStopViaLocal(data);
+}
+
+I_State* EStopQuit::com_button_estop_pressed(){
+    return new EStopViaNeighbor(data);
+}
+
+I_State* EStopQuit::button_reset_released(){
+    return new ModeHandler(data);
+}

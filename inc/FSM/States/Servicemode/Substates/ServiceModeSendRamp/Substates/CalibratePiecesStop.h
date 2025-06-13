@@ -1,26 +1,21 @@
-#ifndef IDLESERVICEMODE_H
-#define IDLESERVICEMODE_H
+#ifndef CALIBRATEPIECESSTOP_H
+#define CALIBRATEPIECESSTOP_H
 #pragma once
 
 #include "State.h"
-#include "ServiceModeSendRamp.h"
 #include "CalDistanceFast.h"
 
-class IdleServiceMode : public State {
+class CalibratePiecesStop : public State {
 public: //============================================ contructors & destructors ============================================
-    IdleServiceMode(ContextData* data) ;
-    virtual ~IdleServiceMode();
+    CalibratePiecesStop(ContextData* data) ;
+    virtual ~CalibratePiecesStop();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	I_State* laser_front_blocked() override;
-	
-	//TODO explicit exit later?
-	//I_State* laser_sorting_gate_blocked() override;
     
+	I_State* laser_front_blocked() override;
 
 
 private: //================================================ private variables ================================================
