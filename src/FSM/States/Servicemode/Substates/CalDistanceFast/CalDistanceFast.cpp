@@ -28,5 +28,5 @@ void CalDistanceFast::exit(){
 }
 
 I_State* CalDistanceFast::laser_back_unblocked(){
-	return new CalDistanceSlow(data);
+	return new ReadyForCDS(data);
 }

@@ -5,7 +5,7 @@
 #include "OrthogonalState.h"
 #include "IdleCDF.h"
 #include "IdleGateCDF.h"
-#include "CalDistanceSlow.h"
+#include "ReadyForCDS.h"
 
 class CalDistanceFast : public OrthogonalState{
 public: //============================================ contructors & destructors ============================================
