@@ -35,15 +35,17 @@ void Logic::threadFunction() {
     auto fsm = Context<Boot>(data);
     while(logicRunning) {
         _pulse event;
-        local_receiver->receive_event(&event);
-        eventNo++;
-        printf("Event Number: %d\n", eventNo);
+        int status = local_receiver->receive_event(&event);
+        if(status == 0) {
+            eventNo++;
+            printf("Event Number: %d\n", eventNo);
 
-        int8_t topic = event.code;
-        if(topic == (int8_t) Topic::STOP_THREAD) {
-            logicRunning = false;
+            int8_t topic = event.code;
+            if(topic == (int8_t) Topic::STOP_THREAD) {
+                logicRunning = false;
+            }
+            fsm.handleEvent(event);
         }
-        fsm.handleEvent(event);
     }
     delete data;
 }
