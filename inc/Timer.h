@@ -10,7 +10,7 @@
 
 
 class Timer {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
 	/**
 	 * @brief Creates a timer linked to a connection ID, on which the timer events are sent
 	 * @param sender the timer will use this sender interface to send the timer events

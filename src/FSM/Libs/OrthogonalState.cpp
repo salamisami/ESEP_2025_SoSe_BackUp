@@ -1,7 +1,7 @@
 #include "OrthogonalState.h"
 #include <assert.h>
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 OrthogonalState::OrthogonalState(ContextData* data, std::vector<I_State*> initial_substates)
     : data(data)
     , substates(initial_substates) {

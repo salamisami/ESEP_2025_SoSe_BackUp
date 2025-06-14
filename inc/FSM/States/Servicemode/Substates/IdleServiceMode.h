@@ -6,7 +6,7 @@
 #include "ServiceModeSendRamp.h"
 
 class IdleServiceMode : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     IdleServiceMode(ContextData* data) ;
     virtual ~IdleServiceMode();
 	

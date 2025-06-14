@@ -6,7 +6,7 @@
 #include "Traffic_Green_On_Slow.h"
 
 class Idle : public State {
-    //============================================ contructors & destructors ============================================
+    //============================================ constructors & destructors ============================================
 public:
     Idle(ContextData* data, State* initial_substate = nullptr);
     virtual ~Idle();

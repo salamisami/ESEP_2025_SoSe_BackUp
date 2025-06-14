@@ -1,6 +1,6 @@
 #include "CalibratePiecesStop.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 CalibratePiecesStop::CalibratePiecesStop(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }

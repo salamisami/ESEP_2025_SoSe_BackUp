@@ -6,7 +6,7 @@
 #include "StartCDF.h"
 
 class IdleCDF : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     IdleCDF(ContextData* data) ;
     virtual ~IdleCDF();
 	

@@ -6,7 +6,7 @@
 #include "CalDistanceFast.h"
 
 class ReadyForCDF : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     ReadyForCDF(ContextData* data) ;
     virtual ~ReadyForCDF();
 	

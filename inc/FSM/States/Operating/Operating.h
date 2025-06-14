@@ -6,7 +6,7 @@
 #include "Idle.h"
 
 class Operating : public State {
-//============================================ contructors & destructors ============================================
+//============================================ constructors & destructors ============================================
 public:
     Operating(ContextData* data, State* initial_substate = nullptr);
     virtual ~Operating();

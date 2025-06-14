@@ -4,12 +4,12 @@
 
 #include "State.h"
 #include "EStopViaLocal.h"
-#include "EStopViaNeigbor.h"
+#include "EStopViaNeighbor.h"
 
 //#include
 
 class BothEstopPressed : public State{
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     BothEstopPressed(ContextData* data);
     virtual ~BothEstopPressed();
 	

@@ -1,6 +1,6 @@
 #include "IdleCDF.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 IdleCDF::IdleCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }

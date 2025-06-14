@@ -8,7 +8,7 @@
 #include "ReadyForCDS.h"
 
 class CalDistanceFast : public OrthogonalState{
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     CalDistanceFast(ContextData* data) ;
     virtual ~CalDistanceFast();
 	

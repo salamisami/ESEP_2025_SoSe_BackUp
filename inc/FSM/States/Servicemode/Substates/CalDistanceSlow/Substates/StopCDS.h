@@ -5,7 +5,7 @@
 #include "State.h"
 
 class StopCDS : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     StopCDS(ContextData* data) ;
     virtual ~StopCDS();
 	

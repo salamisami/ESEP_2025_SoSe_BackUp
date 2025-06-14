@@ -13,7 +13,7 @@
 #include <thread>
 
 class Logic {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
 	/**
 	 * @brief This constructor is used, if the dispatcher is smart, so that the logic will use 2 different senders to send events out and send event to itself.
 	 * @param local sender to send events out

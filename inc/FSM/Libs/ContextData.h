@@ -15,7 +15,7 @@
 //class I_State;
 
 class ContextData {
-    //============================================ contructors & destructors ============================================
+    //============================================ constructors & destructors ============================================
 public:
     /**
      * @brief Creates a context data by injecting the sender interface

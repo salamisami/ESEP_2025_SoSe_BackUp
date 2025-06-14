@@ -1,5 +1,5 @@
-#ifndef ESTOPVIANEIGBOR_H
-#define ESTOPVIANEIGBOR_H
+#ifndef ESTOPVIANEIGHBOR_H
+#define ESTOPVIANEIGHBOR_H
 #pragma once
 
 #include "State.h"
@@ -7,7 +7,7 @@
 #include "EStopReleased.h"
 
 class EStopViaNeighbor : public State{
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     EStopViaNeighbor(ContextData* data);
     virtual ~EStopViaNeighbor();
 	

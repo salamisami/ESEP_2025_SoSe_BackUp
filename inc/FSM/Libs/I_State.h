@@ -5,7 +5,7 @@
 #include "Event.h"
 
 class I_State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     virtual ~I_State() = default;
 	
 

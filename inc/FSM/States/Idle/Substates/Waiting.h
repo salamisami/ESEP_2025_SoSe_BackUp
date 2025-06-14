@@ -9,7 +9,7 @@
 
 
 class Waiting : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     Waiting(ContextData* data);
     virtual ~Waiting();
 	

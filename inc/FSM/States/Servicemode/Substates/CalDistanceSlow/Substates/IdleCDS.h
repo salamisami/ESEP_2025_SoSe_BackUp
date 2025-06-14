@@ -6,7 +6,7 @@
 #include "StartCDS.h"
 
 class IdleCDS : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     IdleCDS(ContextData* data) ;
     virtual ~IdleCDS();
 	

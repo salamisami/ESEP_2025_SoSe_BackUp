@@ -5,10 +5,10 @@
 #include "State.h"
 #include "Idle.h"
 #include "EStopViaLocal.h"
-#include "EStopViaNeigbor.h"
+#include "EStopViaNeighbor.h"
 
 class ModeHandler : public State{
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     ModeHandler(ContextData* data, State* initial_substate = nullptr);
     virtual ~ModeHandler();
 	

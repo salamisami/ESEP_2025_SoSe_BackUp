@@ -1,6 +1,6 @@
 #include "CalDistanceSlow.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 CalDistanceSlow::CalDistanceSlow(ContextData* data) : OrthogonalState(data,
 	std::vector<I_State*>({
 		new IdleCDS(data),

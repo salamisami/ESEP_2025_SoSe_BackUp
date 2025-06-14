@@ -1,6 +1,6 @@
 #include "Idle.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 Idle::Idle(ContextData* data, State* initial_substate) : State(data) {
     if(initial_substate == nullptr) {
         substate = new Traffic_Green_On_Slow(data);

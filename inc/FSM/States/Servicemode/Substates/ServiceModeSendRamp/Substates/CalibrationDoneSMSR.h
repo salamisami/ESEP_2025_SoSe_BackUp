@@ -6,7 +6,7 @@
 #include "ReadyForCDF.h"
 
 class CalibrationDoneSMSR : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     CalibrationDoneSMSR(ContextData* data) ;
     virtual ~CalibrationDoneSMSR();
 	

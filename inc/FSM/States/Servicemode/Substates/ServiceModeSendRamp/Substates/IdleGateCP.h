@@ -6,7 +6,7 @@
 #include "OpenGateCP.h"
 
 class IdleGateCP : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     IdleGateCP(ContextData* data) ;
     virtual ~IdleGateCP();
 	

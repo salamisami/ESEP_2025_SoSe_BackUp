@@ -1,6 +1,6 @@
 #include "EStopReleased.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 EStopReleased::EStopReleased(ContextData* data) : State(data) {}
 
 EStopReleased::~EStopReleased() {}

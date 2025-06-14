@@ -1,6 +1,6 @@
 #include "Operating.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 
 Operating::Operating(ContextData* data, State* previousState): State(data) {
     if(previousState == nullptr) {

@@ -8,7 +8,7 @@
 
 
 class Servicemode : public State{
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     Servicemode(ContextData* data);
     virtual ~Servicemode();
 	

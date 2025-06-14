@@ -8,7 +8,7 @@
 
 
 class ServiceModeSendRamp : public OrthogonalState {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     ServiceModeSendRamp(ContextData* data) ;
     virtual ~ServiceModeSendRamp();
 	

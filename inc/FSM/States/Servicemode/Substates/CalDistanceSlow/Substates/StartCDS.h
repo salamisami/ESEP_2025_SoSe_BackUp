@@ -6,7 +6,7 @@
 #include "StopCDS.h"
 
 class StartCDS : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     StartCDS(ContextData* data) ;
     virtual ~StartCDS();
 	

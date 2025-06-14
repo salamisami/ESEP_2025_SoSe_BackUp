@@ -1,6 +1,6 @@
 #include "IdleServiceMode.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 IdleServiceMode::IdleServiceMode(ContextData* data) : State(data) {
 	//substate = new SubState(data);
 }

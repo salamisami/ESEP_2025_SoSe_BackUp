@@ -1,6 +1,6 @@
 #include "OpenGateCDF.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 OpenGateCDF::OpenGateCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }

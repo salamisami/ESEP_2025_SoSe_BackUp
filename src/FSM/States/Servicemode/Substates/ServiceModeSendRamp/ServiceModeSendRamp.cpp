@@ -1,6 +1,6 @@
 #include "ServiceModeSendRamp.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data) : OrthogonalState(data,
 	std::vector<I_State*>({
 		new IdleSMSR(data),

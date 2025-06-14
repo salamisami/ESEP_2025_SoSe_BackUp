@@ -11,7 +11,7 @@
 
 
 class OrthogonalState : public I_State {
-    //============================================ contructors & destructors ============================================
+    //============================================ constructors & destructors ============================================
 public:
     OrthogonalState(ContextData* data, std::vector<I_State*> initial_substates);
     OrthogonalState(const OrthogonalState&) = delete;

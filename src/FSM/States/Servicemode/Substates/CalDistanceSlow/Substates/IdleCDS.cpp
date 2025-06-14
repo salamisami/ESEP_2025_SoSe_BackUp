@@ -1,6 +1,6 @@
 #include "IdleCDS.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 IdleCDS::IdleCDS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }

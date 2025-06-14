@@ -9,7 +9,7 @@
 
 
 class State : public I_State{
-    //============================================ contructors & destructors ============================================
+    //============================================ constructors & destructors ============================================
 public:
     State(ContextData* data);
 

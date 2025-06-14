@@ -1,6 +1,6 @@
 #include "Logic.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 
 Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender) {
     this->local_receiver = local_receiver;

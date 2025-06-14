@@ -6,7 +6,7 @@
 #include "CalDistanceSlow.h"
 
 class ReadyForCDS : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     ReadyForCDS(ContextData* data) ;
     virtual ~ReadyForCDS();
 	

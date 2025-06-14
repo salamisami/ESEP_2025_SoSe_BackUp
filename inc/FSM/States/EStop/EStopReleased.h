@@ -5,10 +5,10 @@
 #include "State.h"
 #include "EStopQuit.h"
 #include "EStopViaLocal.h"
-#include "EStopViaNeigbor.h"
+#include "EStopViaNeighbor.h"
 
 class EStopReleased : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     EStopReleased(ContextData* data);
     virtual ~EStopReleased();
 	

@@ -6,7 +6,7 @@
 #include "ModeHandler.h"
 
 class Boot : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     Boot(ContextData* data);
     virtual ~Boot();
 	

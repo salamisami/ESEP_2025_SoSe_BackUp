@@ -4,11 +4,11 @@
 
 #include "State.h"
 #include "EStopViaLocal.h"
-#include "EStopViaNeigbor.h"
+#include "EStopViaNeighbor.h"
 #include "ModeHandler.h"
 
 class EStopQuit: public State{
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     EStopQuit(ContextData* data);
     virtual ~EStopQuit();
 	

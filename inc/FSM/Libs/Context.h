@@ -8,7 +8,7 @@
 template<typename T>
 class Context {
     static_assert(std::is_base_of<State, T>::value, "Template parameter must inherit from State");
-    //============================================ contructors & destructors ============================================
+    //============================================ constructors & destructors ============================================
 public:
     Context();
     Context(ContextData* data);
@@ -31,7 +31,7 @@ private:
     I_State* handleADC(int event_value);
 };
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 template <typename T>
 Context<T>::Context() {
 }

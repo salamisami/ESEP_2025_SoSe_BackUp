@@ -1,6 +1,6 @@
 #include "StartCDF.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 StartCDF::StartCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }

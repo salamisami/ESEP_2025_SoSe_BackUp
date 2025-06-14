@@ -6,7 +6,7 @@
 #include "CalDistanceFast.h"
 
 class CalibratePiecesStop : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     CalibratePiecesStop(ContextData* data) ;
     virtual ~CalibratePiecesStop();
 	

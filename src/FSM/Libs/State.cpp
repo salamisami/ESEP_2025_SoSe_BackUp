@@ -1,6 +1,6 @@
 #include "State.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 State::State(ContextData* data)
     : data(data)
     , substate(nullptr) {

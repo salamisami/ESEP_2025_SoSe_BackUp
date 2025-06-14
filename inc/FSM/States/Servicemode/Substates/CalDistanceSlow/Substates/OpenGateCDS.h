@@ -6,7 +6,7 @@
 #include "IdleGateCDS.h"
 
 class OpenGateCDS : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     OpenGateCDS(ContextData* data) ;
     virtual ~OpenGateCDS();
 	

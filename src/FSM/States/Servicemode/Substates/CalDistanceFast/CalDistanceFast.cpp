@@ -1,6 +1,6 @@
 #include "CalDistanceFast.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 CalDistanceFast::CalDistanceFast(ContextData* data) : OrthogonalState(data,
 	std::vector<I_State*>({
 		new IdleCDF(data),

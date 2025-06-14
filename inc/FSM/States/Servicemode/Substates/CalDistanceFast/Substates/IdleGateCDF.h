@@ -6,7 +6,7 @@
 #include "OpenGateCDF.h"
 
 class IdleGateCDF : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     IdleGateCDF(ContextData* data) ;
     virtual ~IdleGateCDF();
 	

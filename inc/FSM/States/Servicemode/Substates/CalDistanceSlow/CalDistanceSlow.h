@@ -7,7 +7,7 @@
 #include "IdleGateCDS.h"
 
 class CalDistanceSlow : public OrthogonalState{
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     CalDistanceSlow(ContextData* data) ;
     virtual ~CalDistanceSlow();
 	

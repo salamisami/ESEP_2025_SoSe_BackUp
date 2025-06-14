@@ -1,6 +1,6 @@
 #include "OpenGateCDS.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 OpenGateCDS::OpenGateCDS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }

@@ -7,7 +7,7 @@
 #include "EStopReleased.h"
 
 class EStopViaLocal: public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     EStopViaLocal(ContextData* data);
     virtual ~EStopViaLocal();
 	
