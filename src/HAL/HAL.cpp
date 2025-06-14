@@ -1,6 +1,5 @@
 #include "HAL.h"
 
-#define MAILBOX_SIZE 1
 
 //================================================= contructors & destructors =================================================
 HAL::HAL(I_Receiver* local_receiver, I_Sender* local_sender) {
@@ -28,9 +27,6 @@ HAL::~HAL() {
     delete actuator;
     //DEBUG("Actuator and Interrupts are deleted");
 
-    delete adc_mailbox;
-    delete actuator_mailbox;
-
     if(detached) {
         delete mock_dispatcher_sender;
         delete local_sender;
@@ -43,12 +39,9 @@ HAL::~HAL() {
 
 //===================================================== private functions =====================================================
 void HAL::init() {
-    actuator_mailbox = new Mailbox<_pulse>();
-    adc_mailbox = new Mailbox<_pulse>();
-    DEBUG("Mailboxes are created");
-    adc = new ADC_Class(adc_mailbox, local_sender);
+    adc = new ADC_Class(local_sender);
     //TODO rethink SoC regarding the ESTOP
-    actuator = new Actuator(actuator_mailbox, adc);
+    actuator = new Actuator(adc);
     interrupt = new Interrupt(local_sender, actuator);
 
 
@@ -74,16 +67,15 @@ void HAL::threadFunction() {
         int status = local_receiver->receive_event(&event);
         if(status == 0) {
             Topic event_code = (Topic) event.code;
-            //int event_value = event.value.sival_int;
             switch(event_code) {
                 case Topic::ACTUATOR:
-                    actuator_mailbox->put(event);
+                    actuator->handle_event(event);
                     break;
                 case Topic::COM:
-                    actuator_mailbox->put(event);
+                    actuator->handle_event(event);
                     break;
                 case Topic::ADC:
-                    adc_mailbox->put(event);
+                    adc->handle_event(event);
                     break;
                 case Topic::STOP_THREAD:
                     hal_running = false;
@@ -91,8 +83,6 @@ void HAL::threadFunction() {
                 default:
                     break;
             }
-            actuator_mailbox->put(event);
-            adc_mailbox->put(event);
         }
     }
 }

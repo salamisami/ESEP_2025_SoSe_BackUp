@@ -6,7 +6,6 @@
 #include "Macros.h"
 #include "Event.h"
 #include "Thread_COM.h"
-#include "Mailbox.h"
 
 #include <thread>
 #include <iostream>
@@ -16,11 +15,10 @@
 class ADC_Class {
 public: //============================================ contructors & destructors ============================================
 	/**
-	 * @brief Creates a constructor with rcvid and mailbox as parameters
+	 * @brief Creates a constructor with rcvid as parameters
 	 * @param dispatcher_rcvid id used to send events to dispatcher
-	 * @param mailbox a name_attach_t* connection, used to receive events
 	 */
-    ADC_Class(Mailbox<_pulse>* mailbox, I_Sender* sender);
+    ADC_Class(I_Sender* sender);
     virtual ~ADC_Class();
 	
 
@@ -29,8 +27,9 @@ public: //================================================ public functions ====
      * @brief stops the ADC immediately. This function will be called, as soon as e-stop button is pressed.
      */
     void adc_estop();
-    
     void adc_reset();
+
+    void handle_event(_pulse event);
 
 
 
@@ -41,9 +40,8 @@ private: //================================================ private variables ==
     ADC adc;
 
     //pointers
-    std::thread ADCThread;
+    std::thread adc_thread;
     I_Sender* sender;
-    Mailbox<_pulse>* mailbox;
 
     //primitive Types
     float bandVoltage;
@@ -54,7 +52,6 @@ private: //================================================ private variables ==
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
-    void eventLoop();
     void calibrate();
     void measureClassifySend();
     void adc_prepare();
