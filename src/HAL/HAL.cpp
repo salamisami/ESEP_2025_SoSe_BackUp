@@ -59,7 +59,7 @@ void HAL::init() {
         local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_PUSHER);
     }
 
-    if(interrupt->button_estop_pressed()){
+    if(interrupt->button_estop_pressed()) {
         actuator->local_estop_activate();
         local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
     }
@@ -71,28 +71,30 @@ void HAL::threadFunction() {
     hal_running = true;
     _pulse event;
     while(hal_running) {
-        local_receiver->receive_event(&event);
-        Topic event_code = (Topic) event.code;
-        //int event_value = event.value.sival_int;
-        switch(event_code) {
-            case Topic::ACTUATOR:
-                actuator_mailbox->put(event);
-                break;
-            case Topic::COM:
-                actuator_mailbox->put(event);
-                break;
-            case Topic::ADC:
-                adc_mailbox->put(event);
-                break;
-            case Topic::STOP_THREAD:
-                hal_running = false;
-                break;
-            default:
-                break;
+        int status = local_receiver->receive_event(&event);
+        if(status == 0) {
+            Topic event_code = (Topic) event.code;
+            //int event_value = event.value.sival_int;
+            switch(event_code) {
+                case Topic::ACTUATOR:
+                    actuator_mailbox->put(event);
+                    break;
+                case Topic::COM:
+                    actuator_mailbox->put(event);
+                    break;
+                case Topic::ADC:
+                    adc_mailbox->put(event);
+                    break;
+                case Topic::STOP_THREAD:
+                    hal_running = false;
+                    break;
+                default:
+                    break;
+            }
+            actuator_mailbox->put(event);
+            adc_mailbox->put(event);
         }
     }
-    actuator_mailbox->put(event);
-    adc_mailbox->put(event);
 }
 
 //===================================================== public functions =====================================================
