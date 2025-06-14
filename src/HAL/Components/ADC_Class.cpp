@@ -69,20 +69,25 @@ void ADC_Class::adc_reset() {
 void ADC_Class::handle_event(_pulse event) {
     ADC_Enum value = static_cast<ADC_Enum>(event.value.sival_int);
     switch(value) {
+        //TODO async
         case ADC_Enum::ADC_CALIBRATE:
             DEBUG("Calibrating Pieces 🛠️");
             calibrate();
             DEBUG("Calibrating Pieces done ✅");
             break;
+            //TODO async
         case ADC_Enum::ADC_MESURE:
             measureClassifySend();
             break;
+            //TODO async
         case ADC_Enum::ADC_PREPARE:
             adc_prepare();
             break;
+            //async
         case ADC_Enum::ADC_STOP:
             adc_estop();
             break;
+            //async
         case ADC_Enum::ADC_RESET:
             adc_reset();
             break;
