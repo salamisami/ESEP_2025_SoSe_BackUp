@@ -1,7 +1,7 @@
 #include "OpenGateCP.h"
 
 //================================================= constructors & destructors =================================================
-OpenGateCP::OpenGateCP(ContextData* data) : HState(data) {
+OpenGateCP::OpenGateCP(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

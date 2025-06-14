@@ -1,7 +1,7 @@
 #include "ReadyForCDF.h"
 
 //================================================= constructors & destructors =================================================
-ReadyForCDF::ReadyForCDF(ContextData* data) : HState(data) {
+ReadyForCDF::ReadyForCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

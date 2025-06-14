@@ -2,10 +2,10 @@
 #define READYFORCDF_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "CalDistanceFast.h"
 
-class ReadyForCDF : public HState {
+class ReadyForCDF : public State {
 public: //============================================ constructors & destructors ============================================
     ReadyForCDF(ContextData* data) ;
     virtual ~ReadyForCDF();

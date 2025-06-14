@@ -1,7 +1,7 @@
 #include "Timer_Received.h"
 
 //================================================= constructors & destructors =================================================
-Timer_Received::Timer_Received(ContextData* data) :HState(data) {}
+Timer_Received::Timer_Received(ContextData* data) :State(data) {}
 
 Timer_Received::~Timer_Received() {}
 

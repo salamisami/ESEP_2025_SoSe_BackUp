@@ -2,12 +2,12 @@
 #define ESTOPQUIT_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "EStopViaLocal.h"
 #include "EStopViaNeighbor.h"
 #include "ModeHandler.h"
 
-class EStopQuit: public HState{
+class EStopQuit: public State{
 public: //============================================ constructors & destructors ============================================
     EStopQuit(ContextData* data);
     virtual ~EStopQuit();

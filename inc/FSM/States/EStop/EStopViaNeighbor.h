@@ -2,11 +2,11 @@
 #define ESTOPVIANEIGHBOR_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "BothEstopPressed.h"
 #include "EStopReleased.h"
 
-class EStopViaNeighbor : public HState{
+class EStopViaNeighbor : public State{
 public: //============================================ constructors & destructors ============================================
     EStopViaNeighbor(ContextData* data);
     virtual ~EStopViaNeighbor();

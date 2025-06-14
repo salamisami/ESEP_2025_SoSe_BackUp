@@ -8,10 +8,10 @@
 #include <iostream>
 
 
-class HState : public State{
+class HState : public State {
     //============================================ constructors & destructors ============================================
 public:
-    HState(ContextData* data);
+    HState(ContextData* data, State* initial_substate);
 
     //Disable copy constructor, because we're going to use clone() instead
     HState(const HState& other) = delete;

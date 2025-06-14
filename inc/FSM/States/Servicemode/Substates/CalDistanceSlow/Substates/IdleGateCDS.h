@@ -2,10 +2,10 @@
 #define IDLEGATECDS_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "OpenGateCDS.h"
 
-class IdleGateCDS : public HState {
+class IdleGateCDS : public State {
 public: //============================================ constructors & destructors ============================================
     IdleGateCDS(ContextData* data) ;
     virtual ~IdleGateCDS();

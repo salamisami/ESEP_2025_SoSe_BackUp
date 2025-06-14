@@ -1,7 +1,7 @@
 #include "CalibrationDoneSMSR.h"
 
 //================================================= constructors & destructors =================================================
-CalibrationDoneSMSR::CalibrationDoneSMSR(ContextData* data) : HState(data) {
+CalibrationDoneSMSR::CalibrationDoneSMSR(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

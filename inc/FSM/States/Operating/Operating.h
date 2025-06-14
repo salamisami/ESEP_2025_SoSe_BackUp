@@ -5,10 +5,10 @@
 #include "HState.h"
 #include "Idle.h"
 
-class Operating : public HState {
+class Operating : public State {
 //============================================ constructors & destructors ============================================
 public:
-    Operating(ContextData* data, HState* initial_substate = nullptr);
+    Operating(ContextData* data);
     virtual ~Operating();
 	
 //================================================ public functions ================================================

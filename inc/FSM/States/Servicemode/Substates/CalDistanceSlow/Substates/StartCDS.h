@@ -2,10 +2,10 @@
 #define STARTCDS_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "StopCDS.h"
 
-class StartCDS : public HState {
+class StartCDS : public State {
 public: //============================================ constructors & destructors ============================================
     StartCDS(ContextData* data) ;
     virtual ~StartCDS();

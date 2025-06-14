@@ -1,7 +1,7 @@
 #include "StartCDS.h"
 
 //================================================= constructors & destructors =================================================
-StartCDS::StartCDS(ContextData* data) : HState(data) {
+StartCDS::StartCDS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

@@ -1,7 +1,7 @@
 #include "EStopQuit.h"
 
 //================================================= constructors & destructors =================================================
-EStopQuit::EStopQuit(ContextData* data) : HState(data) {}
+EStopQuit::EStopQuit(ContextData* data) : State(data) {}
 
 EStopQuit::~EStopQuit() {}
 

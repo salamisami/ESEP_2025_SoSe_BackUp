@@ -2,10 +2,10 @@
 #define BOOT_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "ModeHandler.h"
 
-class Boot : public HState {
+class Boot : public State {
 public: //============================================ constructors & destructors ============================================
     Boot(ContextData* data);
     virtual ~Boot();

@@ -1,7 +1,7 @@
 #include "Waiting.h"
 
 //================================================= constructors & destructors =================================================
-Waiting::Waiting(ContextData* data):HState(data){
+Waiting::Waiting(ContextData* data):State(data){
     
 }
 

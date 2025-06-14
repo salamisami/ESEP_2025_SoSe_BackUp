@@ -1,7 +1,7 @@
 #include "StopCDF.h"
 
 //================================================= constructors & destructors =================================================
-StopCDF::StopCDF(ContextData* data) : HState(data) {
+StopCDF::StopCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

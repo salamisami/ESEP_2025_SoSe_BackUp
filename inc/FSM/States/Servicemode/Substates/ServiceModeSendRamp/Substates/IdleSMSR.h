@@ -2,10 +2,10 @@
 #define IDLESMSR_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "CalibrationDoneSMSR.h"
 
-class IdleSMSR : public HState {
+class IdleSMSR : public State {
 public: //============================================ constructors & destructors ============================================
     IdleSMSR(ContextData* data) ;
     virtual ~IdleSMSR();

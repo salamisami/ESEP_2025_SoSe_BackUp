@@ -1,7 +1,7 @@
 #include "StopCDS.h"
 
 //================================================= constructors & destructors =================================================
-StopCDS::StopCDS(ContextData* data) : HState(data) {
+StopCDS::StopCDS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

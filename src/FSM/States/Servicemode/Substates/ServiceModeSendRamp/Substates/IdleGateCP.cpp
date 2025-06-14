@@ -1,7 +1,7 @@
 #include "IdleGateCP.h"
 
 //================================================= constructors & destructors =================================================
-IdleGateCP::IdleGateCP(ContextData* data) : HState(data) {
+IdleGateCP::IdleGateCP(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

@@ -1,12 +1,7 @@
 #include "ModeHandler.h"
 
 //================================================= constructors & destructors =================================================
-ModeHandler::ModeHandler(ContextData* data, HState* initial_substate) : HState(data){
-    if(initial_substate == nullptr) {
-        substate = new Idle(data);
-    } else {
-        substate = initial_substate;
-    }
+ModeHandler::ModeHandler(ContextData* data) : HState(data, new Idle(data)){
     
 }
 

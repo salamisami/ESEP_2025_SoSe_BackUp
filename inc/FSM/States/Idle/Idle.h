@@ -8,7 +8,7 @@
 class Idle : public HState {
     //============================================ constructors & destructors ============================================
 public:
-    Idle(ContextData* data, HState* initial_substate = nullptr);
+    Idle(ContextData* data);
     virtual ~Idle();
 
     //================================================ public functions ================================================

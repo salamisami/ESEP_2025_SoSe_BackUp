@@ -2,10 +2,10 @@
 #define IDLESERVICEMODE_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "ServiceModeSendRamp.h"
 
-class IdleServiceMode : public HState {
+class IdleServiceMode : public State {
 public: //============================================ constructors & destructors ============================================
     IdleServiceMode(ContextData* data) ;
     virtual ~IdleServiceMode();

@@ -1,7 +1,7 @@
 #include "IdleGateCDF.h"
 
 //================================================= constructors & destructors =================================================
-IdleGateCDF::IdleGateCDF(ContextData* data) : HState(data) {
+IdleGateCDF::IdleGateCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

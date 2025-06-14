@@ -2,9 +2,9 @@
 #define STOPCDF_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 
-class StopCDF : public HState {
+class StopCDF : public State {
 public: //============================================ constructors & destructors ============================================
     StopCDF(ContextData* data) ;
     virtual ~StopCDF();

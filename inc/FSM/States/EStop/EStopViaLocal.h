@@ -2,11 +2,11 @@
 #define ESTOPVIALOCAL_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "BothEstopPressed.h"
 #include "EStopReleased.h"
 
-class EStopViaLocal: public HState {
+class EStopViaLocal: public State {
 public: //============================================ constructors & destructors ============================================
     EStopViaLocal(ContextData* data);
     virtual ~EStopViaLocal();

@@ -2,13 +2,13 @@
 #define BOTHESTOPPRESSED_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "EStopViaLocal.h"
 #include "EStopViaNeighbor.h"
 
 //#include
 
-class BothEstopPressed : public HState{
+class BothEstopPressed : public State{
 public: //============================================ constructors & destructors ============================================
     BothEstopPressed(ContextData* data);
     virtual ~BothEstopPressed();

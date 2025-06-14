@@ -1,7 +1,7 @@
 #include "ReadyForCDS.h"
 
 //================================================= constructors & destructors =================================================
-ReadyForCDS::ReadyForCDS(ContextData* data) : HState(data) {
+ReadyForCDS::ReadyForCDS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

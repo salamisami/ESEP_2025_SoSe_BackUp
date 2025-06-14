@@ -2,10 +2,10 @@
 #define IDLECDF_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "StartCDF.h"
 
-class IdleCDF : public HState {
+class IdleCDF : public State {
 public: //============================================ constructors & destructors ============================================
     IdleCDF(ContextData* data) ;
     virtual ~IdleCDF();

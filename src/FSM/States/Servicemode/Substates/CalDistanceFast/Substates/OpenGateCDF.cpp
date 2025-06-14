@@ -1,7 +1,7 @@
 #include "OpenGateCDF.h"
 
 //================================================= constructors & destructors =================================================
-OpenGateCDF::OpenGateCDF(ContextData* data) : HState(data) {
+OpenGateCDF::OpenGateCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

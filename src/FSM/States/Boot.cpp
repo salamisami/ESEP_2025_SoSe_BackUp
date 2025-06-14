@@ -1,7 +1,7 @@
 #include "Boot.h"
 
 //================================================= constructors & destructors =================================================
-Boot::Boot(ContextData* data): HState(data) {}
+Boot::Boot(ContextData* data): State(data) {}
 
 Boot::~Boot() {}
 

@@ -1,7 +1,7 @@
 #include "BothEstopPressed.h"
 
 //================================================= constructors & destructors =================================================
-BothEstopPressed::BothEstopPressed(ContextData* data) : HState(data) {}
+BothEstopPressed::BothEstopPressed(ContextData* data) : State(data) {}
 
 BothEstopPressed::~BothEstopPressed() {}
 

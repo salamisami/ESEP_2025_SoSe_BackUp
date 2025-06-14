@@ -2,10 +2,10 @@
 #define CALIBRATIONDONESMSR_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "ReadyForCDF.h"
 
-class CalibrationDoneSMSR : public HState {
+class CalibrationDoneSMSR : public State {
 public: //============================================ constructors & destructors ============================================
     CalibrationDoneSMSR(ContextData* data) ;
     virtual ~CalibrationDoneSMSR();

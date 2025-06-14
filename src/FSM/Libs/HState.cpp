@@ -1,9 +1,9 @@
 #include "HState.h"
 
 //================================================= constructors & destructors =================================================
-HState::HState(ContextData* data)
+HState::HState(ContextData* data, State* initial_substate)
     : State(data)
-    , substate(nullptr) {
+    , substate(initial_substate) {
     //std::cout << "HState Constructor" << std::endl;
 }
 
@@ -102,13 +102,8 @@ void HState::exit() {
 
 
 HState* HState::clone(){
-    HState* clonedState = new HState(data);
-    if(substate != nullptr){
-        clonedState->substate = substate->clone();
-    } else {
-        clonedState->substate = nullptr;
-    }
-    return clonedState;
+    HState* cloned_state = new HState(data, substate->clone());
+    return cloned_state;
 }
 
 State* HState::timer(TIMER_ID id) {

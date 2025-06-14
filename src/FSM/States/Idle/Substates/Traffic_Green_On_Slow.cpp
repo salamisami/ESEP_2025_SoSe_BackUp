@@ -1,7 +1,7 @@
 #include "Traffic_Green_On_Slow.h"
 
 //================================================= constructors & destructors =================================================
-Traffic_Green_On_Slow::Traffic_Green_On_Slow(ContextData* data) :HState(data) {
+Traffic_Green_On_Slow::Traffic_Green_On_Slow(ContextData* data) :State(data) {
 
 }
 

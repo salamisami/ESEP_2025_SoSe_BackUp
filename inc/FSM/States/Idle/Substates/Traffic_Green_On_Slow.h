@@ -2,10 +2,10 @@
 #define TRAFFIC_GREEN_ON_SLOW_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "Waiting.h"
 
-class Traffic_Green_On_Slow : public HState {
+class Traffic_Green_On_Slow : public State {
 public: //============================================ constructors & destructors ============================================
 	Traffic_Green_On_Slow(ContextData* data);
 	virtual ~Traffic_Green_On_Slow();

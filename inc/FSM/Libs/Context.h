@@ -2,12 +2,12 @@
 #define CONTEXT_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "Macros.h"
 
 template<typename T>
 class Context {
-    static_assert(std::is_base_of<HState, T>::value, "Template parameter must inherit from HState");
+    static_assert(std::is_base_of<State, T>::value, "Template parameter must inherit from HState");
     //============================================ constructors & destructors ============================================
 public:
     Context();

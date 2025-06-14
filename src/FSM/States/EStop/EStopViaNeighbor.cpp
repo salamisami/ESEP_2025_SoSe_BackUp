@@ -1,7 +1,7 @@
 #include "EStopViaNeighbor.h"
 
 //================================================= constructors & destructors =================================================
-EStopViaNeighbor::EStopViaNeighbor(ContextData* data) : HState(data) {}
+EStopViaNeighbor::EStopViaNeighbor(ContextData* data) : State(data) {}
 
 EStopViaNeighbor::~EStopViaNeighbor() {}
 

@@ -2,12 +2,12 @@
 #define ESTOPRELEASED_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "EStopQuit.h"
 #include "EStopViaLocal.h"
 #include "EStopViaNeighbor.h"
 
-class EStopReleased : public HState {
+class EStopReleased : public State {
 public: //============================================ constructors & destructors ============================================
     EStopReleased(ContextData* data);
     virtual ~EStopReleased();

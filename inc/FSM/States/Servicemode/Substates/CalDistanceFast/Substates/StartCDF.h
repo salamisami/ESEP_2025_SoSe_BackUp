@@ -2,10 +2,10 @@
 #define STARTCDF_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "StopCDF.h"
 
-class StartCDF : public HState {
+class StartCDF : public State {
 public: //============================================ constructors & destructors ============================================
     StartCDF(ContextData* data) ;
     virtual ~StartCDF();

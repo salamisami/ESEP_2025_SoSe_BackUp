@@ -2,10 +2,10 @@
 #define OPENGATECP_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "IdleGateCP.h"
 
-class OpenGateCP : public HState {
+class OpenGateCP : public State {
 public: //============================================ constructors & destructors ============================================
     OpenGateCP(ContextData* data) ;
     virtual ~OpenGateCP();

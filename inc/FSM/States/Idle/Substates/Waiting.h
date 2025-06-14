@@ -2,13 +2,13 @@
 #define WAITING_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "Timer.h"
 #include "Timer_Received.h"
 #include "Operating.h"
 
 
-class Waiting : public HState {
+class Waiting : public State {
 public: //============================================ constructors & destructors ============================================
     Waiting(ContextData* data);
     virtual ~Waiting();

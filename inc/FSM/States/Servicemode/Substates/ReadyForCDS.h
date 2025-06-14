@@ -2,10 +2,10 @@
 #define READYFORCDS_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "CalDistanceSlow.h"
 
-class ReadyForCDS : public HState {
+class ReadyForCDS : public State {
 public: //============================================ constructors & destructors ============================================
     ReadyForCDS(ContextData* data) ;
     virtual ~ReadyForCDS();

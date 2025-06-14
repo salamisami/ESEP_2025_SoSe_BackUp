@@ -2,11 +2,11 @@
 #define TIMER_RECEIVED_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "Timer.h"
 #include "Servicemode.h"
 
-class Timer_Received: public HState{
+class Timer_Received: public State{
 public: //============================================ constructors & destructors ============================================
     Timer_Received(ContextData* data);
     virtual ~Timer_Received();

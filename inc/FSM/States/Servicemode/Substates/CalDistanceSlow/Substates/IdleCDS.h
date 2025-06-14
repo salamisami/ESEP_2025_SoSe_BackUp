@@ -2,10 +2,10 @@
 #define IDLECDS_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "StartCDS.h"
 
-class IdleCDS : public HState {
+class IdleCDS : public State {
 public: //============================================ constructors & destructors ============================================
     IdleCDS(ContextData* data) ;
     virtual ~IdleCDS();

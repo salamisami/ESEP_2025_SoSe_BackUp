@@ -1,7 +1,7 @@
 #include "State.h"
 
 //================================================= constructors & destructors =================================================
-State::State(ContextData* data): data(data){
+State::State(ContextData* data) : data(data) {
     //std::cout << "State Constructor" << std::endl;
 }
 
@@ -29,7 +29,7 @@ void State::exit() {
 
 //===================================================== public functions =====================================================
 
-State* State::clone(){
+State* State::clone() {
     return new State(data);
 }
 
@@ -62,89 +62,89 @@ State* State::button_start_released() {
 }
 
 State* State::button_stop_pressed() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::button_stop_released() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::button_reset_pressed() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::button_reset_released() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::button_estop_pressed() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::button_estop_released() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::metal_detected() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::metal_not_detected() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::laser_sorting_gate_blocked() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::laser_sorting_gate_unblocked() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::laser_ramp_blocked() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::laser_ramp_unblocked() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::adc_top_area_blocked() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::adc_top_area_unblocked() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::adc_side_area_blocked() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::adc_side_area_unblocked() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::com_button_estop_pressed() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::com_button_estop_released() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::adc_calibration_done() {
-return nullptr;
+    return nullptr;
 }
 
 State* State::adc_new_piece() {
-return nullptr;
+    return nullptr;
 }
 
-State* State::is_pusher(){
-return nullptr;
+State* State::is_pusher() {
+    return nullptr;
 }
 
-State* State::is_switch(){
-return nullptr;
+State* State::is_switch() {
+    return nullptr;
 }

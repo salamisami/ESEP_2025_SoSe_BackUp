@@ -1,7 +1,7 @@
 #include "IdleSMSR.h"
 
 //================================================= constructors & destructors =================================================
-IdleSMSR::IdleSMSR(ContextData* data) : HState(data) {
+IdleSMSR::IdleSMSR(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 

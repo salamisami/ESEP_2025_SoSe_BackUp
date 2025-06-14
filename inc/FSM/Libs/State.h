@@ -7,9 +7,9 @@
 
 class State {
 public: //============================================ constructors & destructors ============================================
-	State(ContextData* data);
+    State(ContextData* data);
     virtual ~State() = default;
-	
+
 
 public: //================================================ public functions ================================================
     virtual void entry();
@@ -51,21 +51,21 @@ public: //================================================ public functions ====
     virtual State* adc_new_piece();
 
     virtual State* timer(TIMER_ID id);
-    
+
 
 
 protected: //================================================ private variables ================================================
-	//classes, STL containers, and structs
-	//pointers
-	ContextData* data;
-	//primitive types
-	//bool and char
-   
-	
+    //classes, STL containers, and structs
+    //pointers
+    ContextData* data;
+    //primitive types
+    //bool and char
+
+
 
 private: //================================================ private functions ================================================
-	//void privateFunction();
-	
+    //void privateFunction();
+
 };
 
 #endif

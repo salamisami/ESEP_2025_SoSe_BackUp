@@ -9,7 +9,7 @@
 
 class ModeHandler : public HState{
 public: //============================================ constructors & destructors ============================================
-    ModeHandler(ContextData* data, HState* initial_substate = nullptr);
+    ModeHandler(ContextData* data);
     virtual ~ModeHandler();
 	
 

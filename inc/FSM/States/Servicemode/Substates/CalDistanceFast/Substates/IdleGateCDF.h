@@ -2,10 +2,10 @@
 #define IDLEGATECDF_H
 #pragma once
 
-#include "HState.h"
+#include "State.h"
 #include "OpenGateCDF.h"
 
-class IdleGateCDF : public HState {
+class IdleGateCDF : public State {
 public: //============================================ constructors & destructors ============================================
     IdleGateCDF(ContextData* data) ;
     virtual ~IdleGateCDF();
