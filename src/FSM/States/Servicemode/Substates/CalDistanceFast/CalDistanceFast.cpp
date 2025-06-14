@@ -19,9 +19,11 @@ CalDistanceFast::~CalDistanceFast() {}
 void CalDistanceFast::entry(){
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
+	OrthogonalState::entry();
 }
 
 void CalDistanceFast::exit(){
+	OrthogonalState::exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);

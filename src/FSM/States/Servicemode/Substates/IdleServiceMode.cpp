@@ -20,15 +20,6 @@ void IdleServiceMode::exit() {
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* IdleServiceMode::laser_back_unblocked() {
-	return new ReadyForCDF(data);
+I_State* IdleServiceMode::laser_front_blocked() {
+	return new ServiceModeSendRamp(data);
 }
-
-//check for explicit exit
-// I_State* IdleServiceMode::laser_sorting_gate_blocked() {
-// 	I_State* newSubstate = substate->laser_sorting_gate_blocked();
-// 	if(newSubstate != nullptr) {
-// 		return newSubstate;
-// 	}
-// 	return nullptr;
-// }

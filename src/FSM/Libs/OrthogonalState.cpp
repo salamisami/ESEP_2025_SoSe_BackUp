@@ -40,9 +40,9 @@ I_State* OrthogonalState::handle_event_using_function(I_State* (I_State::* handl
 //         I_State* newSubstate = current_substate->service();
 //         if(newSubstate != nullptr) {
 //             return newSubstate;
-//         }
-//         return nullptr;
+//         }   
 //     }
+//     return nullptr;
 // }
 
 

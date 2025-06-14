@@ -4,7 +4,6 @@
 
 #include "State.h"
 #include "ServiceModeSendRamp.h"
-#include "ReadyForCDF.h"
 
 class IdleServiceMode : public State {
 public: //============================================ contructors & destructors ============================================
@@ -16,12 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_back_unblocked() override;
-	
-	//TODO explicit exit later?
-	//I_State* laser_sorting_gate_blocked() override;
-    
-
+	I_State* laser_front_blocked() override;
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

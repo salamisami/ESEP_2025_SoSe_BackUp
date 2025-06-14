@@ -18,3 +18,8 @@ void CalibrationDoneSMSR::entry(){
 void CalibrationDoneSMSR::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
+
+//explicit exit 
+I_State* CalibrationDoneSMSR::laser_ramp_blocked(){
+    return new ReadyForCDF(data);
+}
