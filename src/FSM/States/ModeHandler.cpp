@@ -1,7 +1,7 @@
 #include "ModeHandler.h"
 
 //================================================= constructors & destructors =================================================
-ModeHandler::ModeHandler(ContextData* data, State* initial_substate) : State(data){
+ModeHandler::ModeHandler(ContextData* data, HState* initial_substate) : HState(data){
     if(initial_substate == nullptr) {
         substate = new Idle(data);
     } else {
@@ -16,21 +16,21 @@ ModeHandler::~ModeHandler() {}
 
 void ModeHandler::entry() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    State::entry();
+    HState::entry();
 }
 
 void ModeHandler::exit() {
-    State::exit();
+    HState::exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
 //===================================================== public functions =====================================================
 
-I_State* ModeHandler::button_estop_pressed(){
+State* ModeHandler::button_estop_pressed(){
     return new EStopViaLocal(data);
 }
 
-I_State* ModeHandler::com_button_estop_pressed(){
+State* ModeHandler::com_button_estop_pressed(){
     return new EStopViaNeighbor(data);
 }
 

@@ -2,11 +2,11 @@
 #define ESTOPVIANEIGHBOR_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "BothEstopPressed.h"
 #include "EStopReleased.h"
 
-class EStopViaNeighbor : public State{
+class EStopViaNeighbor : public HState{
 public: //============================================ constructors & destructors ============================================
     EStopViaNeighbor(ContextData* data);
     virtual ~EStopViaNeighbor();
@@ -16,8 +16,8 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* button_estop_pressed() override;
-	I_State* com_button_estop_released() override;
+	State* button_estop_pressed() override;
+	State* com_button_estop_released() override;
     
 
 

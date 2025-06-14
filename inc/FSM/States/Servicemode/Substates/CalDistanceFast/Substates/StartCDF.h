@@ -2,10 +2,10 @@
 #define STARTCDF_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "StopCDF.h"
 
-class StartCDF : public State {
+class StartCDF : public HState {
 public: //============================================ constructors & destructors ============================================
     StartCDF(ContextData* data) ;
     virtual ~StartCDF();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_back_blocked() override;
+	State* laser_back_blocked() override;
     
 
 

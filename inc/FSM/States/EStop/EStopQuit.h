@@ -2,12 +2,12 @@
 #define ESTOPQUIT_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "EStopViaLocal.h"
 #include "EStopViaNeighbor.h"
 #include "ModeHandler.h"
 
-class EStopQuit: public State{
+class EStopQuit: public HState{
 public: //============================================ constructors & destructors ============================================
     EStopQuit(ContextData* data);
     virtual ~EStopQuit();
@@ -17,9 +17,9 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* button_estop_pressed() override;
-	I_State* com_button_estop_pressed() override;
-	I_State* button_reset_released() override;
+	State* button_estop_pressed() override;
+	State* com_button_estop_pressed() override;
+	State* button_reset_released() override;
     
 
 

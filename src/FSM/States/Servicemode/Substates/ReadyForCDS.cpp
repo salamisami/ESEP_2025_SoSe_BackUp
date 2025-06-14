@@ -1,7 +1,7 @@
 #include "ReadyForCDS.h"
 
 //================================================= constructors & destructors =================================================
-ReadyForCDS::ReadyForCDS(ContextData* data) : State(data) {
+ReadyForCDS::ReadyForCDS(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -20,6 +20,6 @@ void ReadyForCDS::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* ReadyForCDS::laser_front_blocked(){
+State* ReadyForCDS::laser_front_blocked(){
     return new CalDistanceSlow(data);
 }

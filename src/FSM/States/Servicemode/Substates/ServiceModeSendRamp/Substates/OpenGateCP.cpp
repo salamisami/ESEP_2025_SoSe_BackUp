@@ -1,7 +1,7 @@
 #include "OpenGateCP.h"
 
 //================================================= constructors & destructors =================================================
-OpenGateCP::OpenGateCP(ContextData* data) : State(data) {
+OpenGateCP::OpenGateCP(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -22,7 +22,7 @@ void OpenGateCP::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 
-I_State* OpenGateCP::timer(TIMER_ID id){
+State* OpenGateCP::timer(TIMER_ID id){
     if(id == TIMER_ID::OPEN_GATE_CP){
         return new IdleGateCP(data);
     }

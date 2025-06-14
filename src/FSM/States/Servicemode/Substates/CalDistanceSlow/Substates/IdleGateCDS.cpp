@@ -1,7 +1,7 @@
 #include "IdleGateCDS.h"
 
 //================================================= constructors & destructors =================================================
-IdleGateCDS::IdleGateCDS(ContextData* data) : State(data) {
+IdleGateCDS::IdleGateCDS(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -19,7 +19,7 @@ void IdleGateCDS::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* IdleGateCDS::laser_sorting_gate_blocked(){
+State* IdleGateCDS::laser_sorting_gate_blocked(){
 	if(data->is_switch){
 		return new OpenGateCDS(data);
 	}

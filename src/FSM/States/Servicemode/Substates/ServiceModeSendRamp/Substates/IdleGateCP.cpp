@@ -1,7 +1,7 @@
 #include "IdleGateCP.h"
 
 //================================================= constructors & destructors =================================================
-IdleGateCP::IdleGateCP(ContextData* data) : State(data) {
+IdleGateCP::IdleGateCP(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -19,7 +19,7 @@ void IdleGateCP::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* IdleGateCP::laser_sorting_gate_blocked(){
+State* IdleGateCP::laser_sorting_gate_blocked(){
     if(!data->is_switch){
         return new OpenGateCP(data);
     }

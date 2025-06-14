@@ -2,10 +2,10 @@
 #define READYFORCDF_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "CalDistanceFast.h"
 
-class ReadyForCDF : public State {
+class ReadyForCDF : public HState {
 public: //============================================ constructors & destructors ============================================
     ReadyForCDF(ContextData* data) ;
     virtual ~ReadyForCDF();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_front_blocked() override;
+	State* laser_front_blocked() override;
     
 
 

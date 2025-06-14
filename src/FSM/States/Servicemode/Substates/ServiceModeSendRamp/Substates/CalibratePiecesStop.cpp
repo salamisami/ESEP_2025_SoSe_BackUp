@@ -1,7 +1,7 @@
 #include "CalibratePiecesStop.h"
 
 //================================================= constructors & destructors =================================================
-CalibratePiecesStop::CalibratePiecesStop(ContextData* data) : State(data) {
+CalibratePiecesStop::CalibratePiecesStop(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -23,6 +23,6 @@ void CalibratePiecesStop::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* CalibratePiecesStop::laser_front_blocked(){
+State* CalibratePiecesStop::laser_front_blocked(){
     return new CalDistanceFast(data);
 }

@@ -2,12 +2,12 @@
 #define SERVICEMODESENDRAMP_H
 #pragma once
 
-#include "OrthogonalState.h"
+#include "OrthState.h"
 #include "IdleSMSR.h"
 #include "IdleGateCP.h"
 
 
-class ServiceModeSendRamp : public OrthogonalState {
+class ServiceModeSendRamp : public OrthState {
 public: //============================================ constructors & destructors ============================================
     ServiceModeSendRamp(ContextData* data) ;
     virtual ~ServiceModeSendRamp();
@@ -17,7 +17,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_ramp_blocked() override;
+	State* laser_ramp_blocked() override;
     
 
 

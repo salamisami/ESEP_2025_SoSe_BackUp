@@ -2,10 +2,10 @@
 #define CALIBRATIONDONESMSR_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "ReadyForCDF.h"
 
-class CalibrationDoneSMSR : public State {
+class CalibrationDoneSMSR : public HState {
 public: //============================================ constructors & destructors ============================================
     CalibrationDoneSMSR(ContextData* data) ;
     virtual ~CalibrationDoneSMSR();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_ramp_blocked() override;
+	State* laser_ramp_blocked() override;
     
 
 

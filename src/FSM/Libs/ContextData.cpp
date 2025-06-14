@@ -1,11 +1,11 @@
 #include "ContextData.h"
-#include "State.h"
+#include "HState.h"
 
 //================================================= constructors & destructors =================================================
 ContextData::ContextData(){}
 ContextData::ContextData(I_Sender* sender, I_Sender* to_self_sender) {
     this->sender = sender;
-    stateStack = new std::stack<I_State*>();
+    stateStack = new std::stack<State*>();
     timer = new Timer(to_self_sender);
 }
 

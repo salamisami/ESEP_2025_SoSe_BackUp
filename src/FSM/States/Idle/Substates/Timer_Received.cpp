@@ -1,7 +1,7 @@
 #include "Timer_Received.h"
 
 //================================================= constructors & destructors =================================================
-Timer_Received::Timer_Received(ContextData* data) :State(data) {}
+Timer_Received::Timer_Received(ContextData* data) :HState(data) {}
 
 Timer_Received::~Timer_Received() {}
 
@@ -21,6 +21,6 @@ void Timer_Received::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* Timer_Received::button_start_released(){
+State* Timer_Received::button_start_released(){
     return new Servicemode(data);
 }

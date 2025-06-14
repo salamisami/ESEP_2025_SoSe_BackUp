@@ -2,77 +2,70 @@
 #define STATE_H
 #pragma once
 
-#include "Event.h"
 #include "ContextData.h"
-#include "I_State.h"
-#include <iostream>
+#include "Event.h"
+
+class State {
+public: //============================================ constructors & destructors ============================================
+	State(ContextData* data);
+    virtual ~State() = default;
+	
+
+public: //================================================ public functions ================================================
+    virtual void entry();
+    virtual void exit();
+
+    virtual State* clone();
+
+    virtual State* laser_front_blocked();
+    virtual State* laser_front_unblocked();
+    virtual State* laser_back_blocked();
+    virtual State* laser_back_unblocked();
+    virtual State* button_start_pressed();
+    virtual State* button_start_released();
+    virtual State* button_stop_pressed();
+    virtual State* button_stop_released();
+    virtual State* button_reset_pressed();
+    virtual State* button_reset_released();
+    virtual State* button_estop_pressed();
+    virtual State* button_estop_released();
+    virtual State* metal_detected();
+    virtual State* metal_not_detected();
+    virtual State* laser_sorting_gate_blocked();
+    virtual State* laser_sorting_gate_unblocked();
+    virtual State* laser_ramp_blocked();
+    virtual State* laser_ramp_unblocked();
+    virtual State* adc_top_area_blocked();
+    virtual State* adc_top_area_unblocked();
+    virtual State* adc_side_area_blocked();     //unused
+    virtual State* adc_side_area_unblocked();   //unused
+
+    virtual State* com_button_estop_pressed();
+    virtual State* com_button_estop_released();
+
+    virtual State* is_pusher();
+    virtual State* is_switch();
 
 
-class State : public I_State{
-    //============================================ constructors & destructors ============================================
-public:
-    State(ContextData* data);
+    virtual State* adc_calibration_done();
+    virtual State* adc_new_piece();
 
-    //Disable copy constructor, because we're going to use clone() instead
-    State(const State& other) = delete;
-    virtual ~State() override;
-
-    //================================================ public functions ================================================
-public:
-    virtual void entry() override;
-    virtual void exit() override;
-
-    virtual State* clone() override;
-
-    virtual I_State* laser_front_blocked() override;
-    virtual I_State* laser_front_unblocked() override;
-    virtual I_State* laser_back_blocked() override;
-    virtual I_State* laser_back_unblocked() override;
-    virtual I_State* button_start_pressed() override;
-    virtual I_State* button_start_released() override;
-    virtual I_State* button_stop_pressed() override;
-    virtual I_State* button_stop_released() override;
-    virtual I_State* button_reset_pressed() override;
-    virtual I_State* button_reset_released() override;
-    virtual I_State* button_estop_pressed() override;
-    virtual I_State* button_estop_released() override;
-    virtual I_State* metal_detected() override;
-    virtual I_State* metal_not_detected() override;
-    virtual I_State* laser_sorting_gate_blocked() override;
-    virtual I_State* laser_sorting_gate_unblocked() override;
-    virtual I_State* laser_ramp_blocked() override;
-    virtual I_State* laser_ramp_unblocked() override;
-    virtual I_State* adc_top_area_blocked() override;
-    virtual I_State* adc_top_area_unblocked() override;
-    virtual I_State* adc_side_area_blocked() override;     //unused
-    virtual I_State* adc_side_area_unblocked() override;   //unused
-
-    virtual I_State* com_button_estop_pressed() override;
-    virtual I_State* com_button_estop_released() override;
-
-    virtual I_State* is_pusher() override;
-    virtual I_State* is_switch() override;
+    virtual State* timer(TIMER_ID id);
+    
 
 
+protected: //================================================ private variables ================================================
+	//classes, STL containers, and structs
+	//pointers
+	ContextData* data;
+	//primitive types
+	//bool and char
+   
+	
 
-
-    virtual I_State* adc_calibration_done() override;
-    virtual I_State* adc_new_piece() override;
-
-    virtual I_State* timer(TIMER_ID id) override;
-
-
-
-    //================================================ private variables ================================================
-protected:
-    ContextData* data;
-    I_State* substate;
-
-    //================================================ private functions ================================================
-private:
-    I_State* handle_event_using_function(I_State* (I_State::* handler_function)());
-
-
+private: //================================================ private functions ================================================
+	//void privateFunction();
+	
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include "IdleCDS.h"
 
 //================================================= constructors & destructors =================================================
-IdleCDS::IdleCDS(ContextData* data) : State(data) {
+IdleCDS::IdleCDS(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -19,6 +19,6 @@ void IdleCDS::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* IdleCDS::laser_front_unblocked(){
+State* IdleCDS::laser_front_unblocked(){
 	return new StartCDS(data);
 }

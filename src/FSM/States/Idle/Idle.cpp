@@ -1,7 +1,7 @@
 #include "Idle.h"
 
 //================================================= constructors & destructors =================================================
-Idle::Idle(ContextData* data, State* initial_substate) : State(data) {
+Idle::Idle(ContextData* data, HState* initial_substate) : HState(data) {
     if(initial_substate == nullptr) {
         substate = new Traffic_Green_On_Slow(data);
     } else {
@@ -21,16 +21,16 @@ Idle::~Idle() {
 
 void Idle::entry() {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
-    State::entry();
+    HState::entry();
 }
 
 void Idle::exit() {
-    State::exit();
+    HState::exit();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* Idle::button_start_released(){
-    I_State* newSubstate = substate->button_start_released();
+State* Idle::button_start_released(){
+    State* newSubstate = substate->button_start_released();
     if(newSubstate != nullptr){
         //there is a super_substate change, explicit exit
         return newSubstate;

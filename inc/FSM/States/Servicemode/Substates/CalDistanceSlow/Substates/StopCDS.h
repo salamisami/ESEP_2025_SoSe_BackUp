@@ -2,9 +2,9 @@
 #define STOPCDS_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 
-class StopCDS : public State {
+class StopCDS : public HState {
 public: //============================================ constructors & destructors ============================================
     StopCDS(ContextData* data) ;
     virtual ~StopCDS();

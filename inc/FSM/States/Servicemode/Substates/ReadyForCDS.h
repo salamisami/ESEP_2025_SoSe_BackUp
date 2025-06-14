@@ -2,10 +2,10 @@
 #define READYFORCDS_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "CalDistanceSlow.h"
 
-class ReadyForCDS : public State {
+class ReadyForCDS : public HState {
 public: //============================================ constructors & destructors ============================================
     ReadyForCDS(ContextData* data) ;
     virtual ~ReadyForCDS();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_front_blocked() override;
+	State* laser_front_blocked() override;
     
 
 

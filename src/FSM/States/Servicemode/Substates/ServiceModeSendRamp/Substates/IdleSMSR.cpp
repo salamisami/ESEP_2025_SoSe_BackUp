@@ -1,7 +1,7 @@
 #include "IdleSMSR.h"
 
 //================================================= constructors & destructors =================================================
-IdleSMSR::IdleSMSR(ContextData* data) : State(data) {
+IdleSMSR::IdleSMSR(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -19,6 +19,6 @@ void IdleSMSR::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* IdleSMSR::adc_calibration_done(){
+State* IdleSMSR::adc_calibration_done(){
     return new CalibrationDoneSMSR(data);
 }

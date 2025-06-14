@@ -1,7 +1,7 @@
 #include "EStopViaNeighbor.h"
 
 //================================================= constructors & destructors =================================================
-EStopViaNeighbor::EStopViaNeighbor(ContextData* data) : State(data) {}
+EStopViaNeighbor::EStopViaNeighbor(ContextData* data) : HState(data) {}
 
 EStopViaNeighbor::~EStopViaNeighbor() {}
 
@@ -24,10 +24,10 @@ void EStopViaNeighbor::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 }
 
-I_State* EStopViaNeighbor::button_estop_pressed(){
+State* EStopViaNeighbor::button_estop_pressed(){
     return new BothEstopPressed(data);
 }
 
-I_State* EStopViaNeighbor::com_button_estop_released(){
+State* EStopViaNeighbor::com_button_estop_released(){
     return new EStopReleased(data);
 }

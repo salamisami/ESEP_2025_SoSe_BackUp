@@ -1,7 +1,7 @@
 #include "StartCDS.h"
 
 //================================================= constructors & destructors =================================================
-StartCDS::StartCDS(ContextData* data) : State(data) {
+StartCDS::StartCDS(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -20,6 +20,6 @@ void StartCDS::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* StartCDS::laser_back_blocked(){
+State* StartCDS::laser_back_blocked(){
 	return new StopCDS(data);
 }

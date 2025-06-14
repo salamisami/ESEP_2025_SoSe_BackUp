@@ -1,7 +1,7 @@
 #include "BothEstopPressed.h"
 
 //================================================= constructors & destructors =================================================
-BothEstopPressed::BothEstopPressed(ContextData* data) : State(data) {}
+BothEstopPressed::BothEstopPressed(ContextData* data) : HState(data) {}
 
 BothEstopPressed::~BothEstopPressed() {}
 
@@ -18,10 +18,10 @@ void BothEstopPressed::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* BothEstopPressed::button_estop_released(){
+State* BothEstopPressed::button_estop_released(){
     return new EStopViaNeighbor(data);
 }
 
-I_State* BothEstopPressed::com_button_estop_released(){
+State* BothEstopPressed::com_button_estop_released(){
     return new EStopViaLocal(data);
 }

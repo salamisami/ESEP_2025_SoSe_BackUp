@@ -2,10 +2,10 @@
 #define CALIBRATEPIECESSTOP_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "CalDistanceFast.h"
 
-class CalibratePiecesStop : public State {
+class CalibratePiecesStop : public HState {
 public: //============================================ constructors & destructors ============================================
     CalibratePiecesStop(ContextData* data) ;
     virtual ~CalibratePiecesStop();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
     
-	I_State* laser_front_blocked() override;
+	State* laser_front_blocked() override;
 
 
 private: //================================================ private variables ================================================

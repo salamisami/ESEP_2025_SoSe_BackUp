@@ -2,10 +2,10 @@
 #define OPENGATECDS_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "IdleGateCDS.h"
 
-class OpenGateCDS : public State {
+class OpenGateCDS : public HState {
 public: //============================================ constructors & destructors ============================================
     OpenGateCDS(ContextData* data) ;
     virtual ~OpenGateCDS();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* timer(TIMER_ID id) override;
+	State* timer(TIMER_ID id) override;
     
 
 

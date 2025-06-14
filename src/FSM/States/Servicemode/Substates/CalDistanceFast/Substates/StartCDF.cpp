@@ -1,7 +1,7 @@
 #include "StartCDF.h"
 
 //================================================= constructors & destructors =================================================
-StartCDF::StartCDF(ContextData* data) : State(data) {
+StartCDF::StartCDF(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -20,6 +20,6 @@ void StartCDF::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* StartCDF::laser_back_blocked(){
+State* StartCDF::laser_back_blocked(){
     return new StopCDF(data);
 }

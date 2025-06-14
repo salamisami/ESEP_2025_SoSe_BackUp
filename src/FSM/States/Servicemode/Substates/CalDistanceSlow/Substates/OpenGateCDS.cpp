@@ -1,7 +1,7 @@
 #include "OpenGateCDS.h"
 
 //================================================= constructors & destructors =================================================
-OpenGateCDS::OpenGateCDS(ContextData* data) : State(data) {
+OpenGateCDS::OpenGateCDS(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -22,7 +22,7 @@ void OpenGateCDS::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 
-I_State* OpenGateCDS::timer(TIMER_ID id){
+State* OpenGateCDS::timer(TIMER_ID id){
     if(id == TIMER_ID::OPEN_GATE_CDS){
         return new IdleGateCDS(data);
     }

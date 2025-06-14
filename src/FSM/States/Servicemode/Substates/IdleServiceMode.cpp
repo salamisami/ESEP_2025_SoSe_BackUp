@@ -1,7 +1,7 @@
 #include "IdleServiceMode.h"
 
 //================================================= constructors & destructors =================================================
-IdleServiceMode::IdleServiceMode(ContextData* data) : State(data) {
+IdleServiceMode::IdleServiceMode(ContextData* data) : HState(data) {
 	//substate = new SubState(data);
 }
 
@@ -20,6 +20,6 @@ void IdleServiceMode::exit() {
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* IdleServiceMode::laser_front_blocked() {
+State* IdleServiceMode::laser_front_blocked() {
 	return new ServiceModeSendRamp(data);
 }

@@ -1,7 +1,7 @@
 #include "OpenGateCDF.h"
 
 //================================================= constructors & destructors =================================================
-OpenGateCDF::OpenGateCDF(ContextData* data) : State(data) {
+OpenGateCDF::OpenGateCDF(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -23,7 +23,7 @@ void OpenGateCDF::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 
-I_State* OpenGateCDF::timer(TIMER_ID id){
+State* OpenGateCDF::timer(TIMER_ID id){
     if(id == TIMER_ID::OPEN_GATE_CDF){
         return new IdleGateCDF(data);    
     }

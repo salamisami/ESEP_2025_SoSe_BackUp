@@ -2,10 +2,10 @@
 #define IDLESMSR_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "CalibrationDoneSMSR.h"
 
-class IdleSMSR : public State {
+class IdleSMSR : public HState {
 public: //============================================ constructors & destructors ============================================
     IdleSMSR(ContextData* data) ;
     virtual ~IdleSMSR();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* adc_calibration_done() override;
+	State* adc_calibration_done() override;
     
 
 

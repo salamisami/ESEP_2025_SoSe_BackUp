@@ -1,9 +1,7 @@
 #include "State.h"
 
 //================================================= constructors & destructors =================================================
-State::State(ContextData* data)
-    : data(data)
-    , substate(nullptr) {
+State::State(ContextData* data): data(data){
     //std::cout << "State Constructor" << std::endl;
 }
 
@@ -18,223 +16,135 @@ State::State(ContextData* data)
 //     //std::cout << "copy constructor called." << std::endl;
 // }
 
-State::~State() {
-    //std::cout << "State Destructor" << std::endl;
-    if(substate != nullptr) {
-        delete substate;
-    }
-}
-
 //===================================================== private functions =====================================================
 
-I_State* State::handle_event_using_function(I_State* (I_State::* handler_function)()) {
-    if(substate == nullptr) {
-        return nullptr;
-    }
-    I_State* newSubstate = (substate->*handler_function)();
-    if(newSubstate != nullptr) {
-        // there is substate change, change only the substate
-        substate->exit();
-        delete substate;
-        substate = newSubstate;
-        substate->entry();
-    }
-    return nullptr;
+void State::entry() {
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-//save history
-// I_State* StateA::estop_pressed() {
-//     I_State* cloned_state = clone();
-//     data->stateStack->push(cloned_substate);
-//     return new EmergencyStop(data);
-// }
-
-//load history
-// I_State* EmergencyStop::estop_released() {
-//     I_State* loaded_state = data->stateStack->top();
-//     data->stateStack->pop();
-//     if(loaded_state != nullptr){
-//         return loaded_state;
-//     }
-//     return StateA(data);
-// }
-
-//outside loop
-// I_State* StateA::restart(){
-//     return new StateA(data);
-// }
-
-//inside loop
-// I_State* StateA::tick() {
-//     super_State::exit();
-//     super_State::entry();
-//     return nullptr;
-// }
-
-//explicit entry
-// I_State* StateA::service() {
-//      I_State* initial_explicit_substate = new StartEngine(data);
-//      return new StartCar(data, initial_explicit_substate);
-// }
-
-//explicit exit
-// I_State* StateA::service() {
-//     I_State* newSubstate = substate->service();
-//     if(newSubstate != nullptr) {
-//         return newSubstate;
-//     }
-//     return nullptr;
-// }
-
+void State::exit() {
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+}
 
 
 //===================================================== public functions =====================================================
 
-void State::entry() {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    substate->entry();
-}
-
-void State::exit() {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    substate->exit();
-}
-
-
 State* State::clone(){
-    State* clonedState = new State(data);
-    if(substate != nullptr){
-        clonedState->substate = substate->clone();
-    } else {
-        clonedState->substate = nullptr;
-    }
-    return clonedState;
+    return new State(data);
 }
 
-I_State* State::timer(TIMER_ID id) {
-    if(substate == nullptr) {
-        return nullptr;
-    }
-    I_State* newSubstate = substate->timer(id);
-    if(newSubstate != nullptr) {
-        // there is substate change, change only the substate
-        substate->exit();
-        delete substate;
-        substate = newSubstate;
-        substate->entry();
-    }
+State* State::timer(TIMER_ID id) {
     return nullptr;
 }
 
-
-I_State* State::laser_front_blocked() {
-    return handle_event_using_function(&I_State::laser_front_blocked);
+State* State::laser_front_blocked() {
+    return nullptr;
 }
 
-I_State* State::laser_front_unblocked() {
-    return handle_event_using_function(&I_State::laser_front_unblocked);
+State* State::laser_front_unblocked() {
+    return nullptr;
 }
 
-I_State* State::laser_back_blocked() {
-    return handle_event_using_function(&I_State::laser_back_blocked);
+State* State::laser_back_blocked() {
+    return nullptr;
 }
 
-I_State* State::laser_back_unblocked() {
-    return handle_event_using_function(&I_State::laser_back_unblocked);
+State* State::laser_back_unblocked() {
+    return nullptr;
 }
 
-I_State* State::button_start_pressed() {
-    return handle_event_using_function(&I_State::button_start_pressed);
+State* State::button_start_pressed() {
+    return nullptr;
 }
 
-I_State* State::button_start_released() {
-    return handle_event_using_function(&I_State::button_start_released);
+State* State::button_start_released() {
+    return nullptr;
 }
 
-I_State* State::button_stop_pressed() {
-    return handle_event_using_function(&I_State::button_stop_pressed);
+State* State::button_stop_pressed() {
+return nullptr;
 }
 
-I_State* State::button_stop_released() {
-    return handle_event_using_function(&I_State::button_stop_released);
+State* State::button_stop_released() {
+return nullptr;
 }
 
-I_State* State::button_reset_pressed() {
-    return handle_event_using_function(&I_State::button_reset_pressed);
+State* State::button_reset_pressed() {
+return nullptr;
 }
 
-I_State* State::button_reset_released() {
-    return handle_event_using_function(&I_State::button_reset_released);
+State* State::button_reset_released() {
+return nullptr;
 }
 
-I_State* State::button_estop_pressed() {
-    return handle_event_using_function(&I_State::button_estop_pressed);
+State* State::button_estop_pressed() {
+return nullptr;
 }
 
-I_State* State::button_estop_released() {
-    return handle_event_using_function(&I_State::button_estop_released);
+State* State::button_estop_released() {
+return nullptr;
 }
 
-I_State* State::metal_detected() {
-    return handle_event_using_function(&I_State::metal_detected);
+State* State::metal_detected() {
+return nullptr;
 }
 
-I_State* State::metal_not_detected() {
-    return handle_event_using_function(&I_State::metal_not_detected);
+State* State::metal_not_detected() {
+return nullptr;
 }
 
-I_State* State::laser_sorting_gate_blocked() {
-    return handle_event_using_function(&I_State::laser_sorting_gate_blocked);
+State* State::laser_sorting_gate_blocked() {
+return nullptr;
 }
 
-I_State* State::laser_sorting_gate_unblocked() {
-    return handle_event_using_function(&I_State::laser_sorting_gate_unblocked);
+State* State::laser_sorting_gate_unblocked() {
+return nullptr;
 }
 
-I_State* State::laser_ramp_blocked() {
-    return handle_event_using_function(&I_State::laser_ramp_blocked);
+State* State::laser_ramp_blocked() {
+return nullptr;
 }
 
-I_State* State::laser_ramp_unblocked() {
-    return handle_event_using_function(&I_State::laser_ramp_unblocked);
+State* State::laser_ramp_unblocked() {
+return nullptr;
 }
 
-I_State* State::adc_top_area_blocked() {
-    return handle_event_using_function(&I_State::adc_top_area_blocked);
+State* State::adc_top_area_blocked() {
+return nullptr;
 }
 
-I_State* State::adc_top_area_unblocked() {
-    return handle_event_using_function(&I_State::adc_top_area_unblocked);
+State* State::adc_top_area_unblocked() {
+return nullptr;
 }
 
-I_State* State::adc_side_area_blocked() {
-    return handle_event_using_function(&I_State::adc_side_area_blocked);
+State* State::adc_side_area_blocked() {
+return nullptr;
 }
 
-I_State* State::adc_side_area_unblocked() {
-    return handle_event_using_function(&I_State::adc_side_area_unblocked);
+State* State::adc_side_area_unblocked() {
+return nullptr;
 }
 
-I_State* State::com_button_estop_pressed() {
-    return handle_event_using_function(&I_State::com_button_estop_pressed);
+State* State::com_button_estop_pressed() {
+return nullptr;
 }
 
-I_State* State::com_button_estop_released() {
-    return handle_event_using_function(&I_State::com_button_estop_released);
+State* State::com_button_estop_released() {
+return nullptr;
 }
 
-I_State* State::adc_calibration_done() {
-    return handle_event_using_function(&I_State::adc_calibration_done);
+State* State::adc_calibration_done() {
+return nullptr;
 }
 
-I_State* State::adc_new_piece() {
-    return handle_event_using_function(&I_State::adc_new_piece);
+State* State::adc_new_piece() {
+return nullptr;
 }
 
-I_State* State::is_pusher(){
-    return handle_event_using_function(&I_State::is_pusher);
+State* State::is_pusher(){
+return nullptr;
 }
 
-I_State* State::is_switch(){
-    return handle_event_using_function(&I_State::is_switch);
+State* State::is_switch(){
+return nullptr;
 }

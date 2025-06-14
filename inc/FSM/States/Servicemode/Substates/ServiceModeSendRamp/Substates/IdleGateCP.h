@@ -2,10 +2,10 @@
 #define IDLEGATECP_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "OpenGateCP.h"
 
-class IdleGateCP : public State {
+class IdleGateCP : public HState {
 public: //============================================ constructors & destructors ============================================
     IdleGateCP(ContextData* data) ;
     virtual ~IdleGateCP();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_sorting_gate_blocked() override;
+	State* laser_sorting_gate_blocked() override;
     
 
 

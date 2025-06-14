@@ -1,7 +1,7 @@
 #include "ReadyForCDF.h"
 
 //================================================= constructors & destructors =================================================
-ReadyForCDF::ReadyForCDF(ContextData* data) : State(data) {
+ReadyForCDF::ReadyForCDF(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -20,6 +20,6 @@ void ReadyForCDF::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* ReadyForCDF::laser_front_blocked(){
+State* ReadyForCDF::laser_front_blocked(){
     return new CalDistanceFast(data);
 }

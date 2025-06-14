@@ -2,12 +2,12 @@
 #define ESTOPRELEASED_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "EStopQuit.h"
 #include "EStopViaLocal.h"
 #include "EStopViaNeighbor.h"
 
-class EStopReleased : public State {
+class EStopReleased : public HState {
 public: //============================================ constructors & destructors ============================================
     EStopReleased(ContextData* data);
     virtual ~EStopReleased();
@@ -17,9 +17,9 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* button_reset_pressed() override;
-	I_State* button_estop_pressed() override;
-	I_State* com_button_estop_pressed() override;
+	State* button_reset_pressed() override;
+	State* button_estop_pressed() override;
+	State* com_button_estop_pressed() override;
     
 
 

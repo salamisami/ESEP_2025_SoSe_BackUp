@@ -2,10 +2,10 @@
 #define IDLECDS_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "StartCDS.h"
 
-class IdleCDS : public State {
+class IdleCDS : public HState {
 public: //============================================ constructors & destructors ============================================
     IdleCDS(ContextData* data) ;
     virtual ~IdleCDS();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_front_unblocked() override;
+	State* laser_front_unblocked() override;
     
 
 

@@ -2,10 +2,10 @@
 #define IDLECDF_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "StartCDF.h"
 
-class IdleCDF : public State {
+class IdleCDF : public HState {
 public: //============================================ constructors & destructors ============================================
     IdleCDF(ContextData* data) ;
     virtual ~IdleCDF();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_front_unblocked() override;
+	State* laser_front_unblocked() override;
     
 
 

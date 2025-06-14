@@ -2,13 +2,13 @@
 #define WAITING_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "Timer.h"
 #include "Timer_Received.h"
 #include "Operating.h"
 
 
-class Waiting : public State {
+class Waiting : public HState {
 public: //============================================ constructors & destructors ============================================
     Waiting(ContextData* data);
     virtual ~Waiting();
@@ -18,8 +18,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* button_start_released() override;
-	I_State* timer(TIMER_ID id) override;
+	State* button_start_released() override;
+	State* timer(TIMER_ID id) override;
     
 
 

@@ -2,10 +2,10 @@
 #define STARTCDS_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "StopCDS.h"
 
-class StartCDS : public State {
+class StartCDS : public HState {
 public: //============================================ constructors & destructors ============================================
     StartCDS(ContextData* data) ;
     virtual ~StartCDS();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_back_blocked() override;
+	State* laser_back_blocked() override;
     
 
 

@@ -2,10 +2,10 @@
 #define BOOT_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "ModeHandler.h"
 
-class Boot : public State {
+class Boot : public HState {
 public: //============================================ constructors & destructors ============================================
     Boot(ContextData* data);
     virtual ~Boot();
@@ -15,8 +15,8 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* is_switch() override;
-	I_State* is_pusher() override;
+	State* is_switch() override;
+	State* is_pusher() override;
     
 
 

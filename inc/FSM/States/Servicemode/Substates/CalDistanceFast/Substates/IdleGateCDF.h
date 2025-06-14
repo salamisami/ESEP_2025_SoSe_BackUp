@@ -2,10 +2,10 @@
 #define IDLEGATECDF_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "OpenGateCDF.h"
 
-class IdleGateCDF : public State {
+class IdleGateCDF : public HState {
 public: //============================================ constructors & destructors ============================================
     IdleGateCDF(ContextData* data) ;
     virtual ~IdleGateCDF();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_sorting_gate_blocked() override;
+	State* laser_sorting_gate_blocked() override;
     
 
 

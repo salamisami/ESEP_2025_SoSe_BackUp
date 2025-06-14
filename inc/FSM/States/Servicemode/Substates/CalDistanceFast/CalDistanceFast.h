@@ -2,12 +2,12 @@
 #define CALDISTANCEFAST_H
 #pragma once
 
-#include "OrthogonalState.h"
+#include "OrthState.h"
 #include "IdleCDF.h"
 #include "IdleGateCDF.h"
 #include "ReadyForCDS.h"
 
-class CalDistanceFast : public OrthogonalState{
+class CalDistanceFast : public OrthState{
 public: //============================================ constructors & destructors ============================================
     CalDistanceFast(ContextData* data) ;
     virtual ~CalDistanceFast();
@@ -17,7 +17,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_back_unblocked() override;
+	State* laser_back_unblocked() override;
     
 
 

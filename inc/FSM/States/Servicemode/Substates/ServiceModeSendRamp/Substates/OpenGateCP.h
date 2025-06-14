@@ -2,10 +2,10 @@
 #define OPENGATECP_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "IdleGateCP.h"
 
-class OpenGateCP : public State {
+class OpenGateCP : public HState {
 public: //============================================ constructors & destructors ============================================
     OpenGateCP(ContextData* data) ;
     virtual ~OpenGateCP();
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* timer(TIMER_ID id) override;
+	State* timer(TIMER_ID id) override;
     
 
 

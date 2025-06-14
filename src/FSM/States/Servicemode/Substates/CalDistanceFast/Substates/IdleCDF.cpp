@@ -1,7 +1,7 @@
 #include "IdleCDF.h"
 
 //================================================= constructors & destructors =================================================
-IdleCDF::IdleCDF(ContextData* data) : State(data) {
+IdleCDF::IdleCDF(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -19,6 +19,6 @@ void IdleCDF::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* IdleCDF::laser_front_unblocked(){
+State* IdleCDF::laser_front_unblocked(){
     return new StartCDF(data);
 }

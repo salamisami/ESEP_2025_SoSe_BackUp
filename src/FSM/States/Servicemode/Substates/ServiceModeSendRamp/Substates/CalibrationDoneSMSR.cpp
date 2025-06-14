@@ -1,7 +1,7 @@
 #include "CalibrationDoneSMSR.h"
 
 //================================================= constructors & destructors =================================================
-CalibrationDoneSMSR::CalibrationDoneSMSR(ContextData* data) : State(data) {
+CalibrationDoneSMSR::CalibrationDoneSMSR(ContextData* data) : HState(data) {
     //substate = new SubState(data);
 }
 
@@ -20,6 +20,6 @@ void CalibrationDoneSMSR::exit(){
 }
 
 //explicit exit 
-I_State* CalibrationDoneSMSR::laser_ramp_blocked(){
+State* CalibrationDoneSMSR::laser_ramp_blocked(){
     return new ReadyForCDF(data);
 }

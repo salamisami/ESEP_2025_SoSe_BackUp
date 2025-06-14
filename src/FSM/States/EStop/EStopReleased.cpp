@@ -1,7 +1,7 @@
 #include "EStopReleased.h"
 
 //================================================= constructors & destructors =================================================
-EStopReleased::EStopReleased(ContextData* data) : State(data) {}
+EStopReleased::EStopReleased(ContextData* data) : HState(data) {}
 
 EStopReleased::~EStopReleased() {}
 
@@ -20,14 +20,14 @@ void EStopReleased::exit(){
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-I_State* EStopReleased::button_reset_pressed(){
+State* EStopReleased::button_reset_pressed(){
     return new EStopQuit(data);
 }
 
-I_State* EStopReleased::button_estop_pressed(){
+State* EStopReleased::button_estop_pressed(){
     return new EStopViaLocal(data);
 }
 
-I_State* EStopReleased::com_button_estop_pressed(){
+State* EStopReleased::com_button_estop_pressed(){
     return new EStopViaNeighbor(data);
 }
