@@ -23,6 +23,7 @@ public:
     virtual void exit() override;
 
     virtual OrthState* clone() override;
+    void spawn_orthogonal_state(State* input_state);
 
     virtual State* laser_front_blocked() override;
     virtual State* laser_front_unblocked() override;

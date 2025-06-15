@@ -73,6 +73,11 @@ OrthState* OrthState::clone() {
     return cloned_ortho;
 }
 
+void OrthState::spawn_orthogonal_state(State* input_state){
+    substates.push_back(input_state);
+    input_state->entry();
+}
+
 State* OrthState::timer(TIMER_ID id) {
     for(auto& current_substate : substates) {
         State* newSubstate = current_substate->timer(id);
