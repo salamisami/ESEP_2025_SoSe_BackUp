@@ -28,4 +28,4 @@ bool PriorityQueue::isEmpty() const {
 // Get the size of the priority queue
 size_t PriorityQueue::size() const {
     return pq.size();
-}
+}<
