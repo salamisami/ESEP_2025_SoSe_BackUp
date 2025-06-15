@@ -12,13 +12,13 @@ OpenGateCDS::~OpenGateCDS() {}
 
 //===================================================== public functions =====================================================
 void OpenGateCDS::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 	data->timer->start_timer(2000, TIMER_ID::OPEN_GATE_CDS);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
 }
 
 void OpenGateCDS::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 

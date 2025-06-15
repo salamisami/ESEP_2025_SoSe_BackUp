@@ -16,13 +16,13 @@ Idle::~Idle() {
 //===================================================== public functions =====================================================
 
 void Idle::entry() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     HState::entry();
 }
 
 void Idle::exit() {
     HState::exit();
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 State* Idle::button_start_released(){

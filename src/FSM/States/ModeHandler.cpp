@@ -10,13 +10,13 @@ ModeHandler::~ModeHandler() {}
 //===================================================== private functions =====================================================
 
 void ModeHandler::entry() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     HState::entry();
 }
 
 void ModeHandler::exit() {
     HState::exit();
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 //===================================================== public functions =====================================================

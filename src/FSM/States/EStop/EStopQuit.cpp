@@ -12,13 +12,13 @@ EStopQuit::~EStopQuit() {}
 //===================================================== public functions =====================================================
 
 void EStopQuit::entry(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 }
 
 void EStopQuit::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 State* EStopQuit::button_estop_pressed(){

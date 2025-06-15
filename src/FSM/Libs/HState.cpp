@@ -91,12 +91,12 @@ State* HState::handle_event_using_function(State* (State::* handler_function)())
 //===================================================== public functions =====================================================
 
 void HState::entry() {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    //PRINT_STATE;
     substate->entry();
 }
 
 void HState::exit() {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    //PRINT_STATE;
     substate->exit();
 }
 

@@ -17,7 +17,7 @@ ServiceModeSendRamp::~ServiceModeSendRamp() {}
 
 //===================================================== public functions =====================================================
 void ServiceModeSendRamp::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
 	data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATE);
@@ -26,7 +26,7 @@ void ServiceModeSendRamp::entry(){
 
 void ServiceModeSendRamp::exit(){
 	OrthState::exit();
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);

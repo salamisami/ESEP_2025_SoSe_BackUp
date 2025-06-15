@@ -12,7 +12,7 @@ StopCDS::~StopCDS() {}
 
 //===================================================== public functions =====================================================
 void StopCDS::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 	long total_slow_travel_time = data->stopwatch.stop();
 	std::cout << "Total Slow Travel Time: " << (float) total_slow_travel_time/1000 << std::endl;
 	//TODO save the time to a file
@@ -22,5 +22,5 @@ void StopCDS::entry(){
 }
 
 void StopCDS::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }

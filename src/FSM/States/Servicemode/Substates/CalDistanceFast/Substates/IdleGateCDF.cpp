@@ -12,11 +12,11 @@ IdleGateCDF::~IdleGateCDF() {}
 
 //===================================================== public functions =====================================================
 void IdleGateCDF::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 }
 
 void IdleGateCDF::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 State* IdleGateCDF::laser_sorting_gate_blocked(){

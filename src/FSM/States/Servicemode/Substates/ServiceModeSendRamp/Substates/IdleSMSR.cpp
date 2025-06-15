@@ -12,11 +12,11 @@ IdleSMSR::~IdleSMSR() {}
 
 //===================================================== public functions =====================================================
 void IdleSMSR::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 }
 
 void IdleSMSR::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 State* IdleSMSR::adc_calibration_done(){

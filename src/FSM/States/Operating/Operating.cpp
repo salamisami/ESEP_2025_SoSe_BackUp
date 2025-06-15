@@ -15,12 +15,12 @@ Operating::~Operating() {
 //===================================================== public functions =====================================================
 
 void Operating::entry() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
 }
 
 void Operating::exit() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
 }
 

@@ -12,12 +12,12 @@ Waiting::~Waiting() {}
 
 //===================================================== public functions =====================================================
 void Waiting::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
     data->timer->start_timer(2000, TIMER_ID::WAITING_BUTTON_START);
 }
 
 void Waiting::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 State* Waiting::button_start_released(){

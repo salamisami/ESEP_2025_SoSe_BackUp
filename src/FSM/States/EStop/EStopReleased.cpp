@@ -12,12 +12,12 @@ EStopReleased::~EStopReleased() {}
 //===================================================== public functions =====================================================
 
 void EStopReleased::entry(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON);
 }
 
 void EStopReleased::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 State* EStopReleased::button_reset_pressed(){

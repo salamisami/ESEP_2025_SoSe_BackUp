@@ -12,10 +12,10 @@ BothEstopPressed::~BothEstopPressed() {}
 //===================================================== public functions =====================================================
 
 void BothEstopPressed::entry(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 void BothEstopPressed::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 State* BothEstopPressed::button_estop_released(){

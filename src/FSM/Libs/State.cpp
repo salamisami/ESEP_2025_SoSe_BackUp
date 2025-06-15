@@ -19,11 +19,11 @@ State::State(ContextData* data) : data(data) {
 //===================================================== private functions =====================================================
 
 void State::entry() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 void State::exit() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 

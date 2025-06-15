@@ -49,14 +49,14 @@ State* OrthState::handle_event_using_function(State* (State::* handler_function)
 //===================================================== public functions =====================================================
 
 void OrthState::entry() {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    //PRINT_STATE;
     for(auto& current_substate : substates) {
         current_substate->entry();
     }
 }
 
 void OrthState::exit() {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    //PRINT_STATE;
     for(auto& current_substate : substates) {
         current_substate->exit();
     }

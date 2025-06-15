@@ -12,12 +12,12 @@ StartCDS::~StartCDS() {}
 
 //===================================================== public functions =====================================================
 void StartCDS::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 	data->stopwatch.start();
 }
 
 void StartCDS::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 State* StartCDS::laser_back_blocked(){

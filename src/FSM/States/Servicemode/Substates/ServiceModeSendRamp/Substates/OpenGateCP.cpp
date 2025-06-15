@@ -12,13 +12,13 @@ OpenGateCP::~OpenGateCP() {}
 
 //===================================================== public functions =====================================================
 void OpenGateCP::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
     data->timer->start_timer(250, TIMER_ID::OPEN_GATE_CP);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
 }
 
 void OpenGateCP::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 

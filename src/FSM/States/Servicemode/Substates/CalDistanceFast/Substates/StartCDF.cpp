@@ -12,12 +12,12 @@ StartCDF::~StartCDF() {}
 
 //===================================================== public functions =====================================================
 void StartCDF::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
     data->stopwatch.start();
 }
 
 void StartCDF::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 State* StartCDF::laser_back_blocked(){

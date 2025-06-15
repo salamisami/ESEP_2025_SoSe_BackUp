@@ -12,14 +12,14 @@ OpenGateCDF::~OpenGateCDF() {}
 
 //===================================================== public functions =====================================================
 void OpenGateCDF::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
     data->timer->start_timer(600, TIMER_ID::OPEN_GATE_CDF);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
     
 }
 
 void OpenGateCDF::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 
