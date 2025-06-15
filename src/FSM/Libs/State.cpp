@@ -42,7 +42,7 @@ State* State::clone() {
     return new State(data);
 }
 
-std::string State::show_state() {
+std::string State::get_current_state() {
     const char* state_name = typeid(*this).name();
     return demangle(state_name);
 }

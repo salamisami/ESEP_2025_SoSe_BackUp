@@ -11,6 +11,11 @@
 class HState : public State {
     //============================================ constructors & destructors ============================================
 public:
+    /**
+     * @brief HState is a hierarchial state. It contains one substate as a pointer. This HState also contains entry and exit functions.
+     * @param data a global context data. The data will be forwarded to parent class (State)
+     * @param initial_substate the initial of the substate inside this hierarchial state
+     */
     HState(ContextData* data, State* initial_substate);
 
     //Disable copy constructor, because we're going to use clone() instead
@@ -23,7 +28,7 @@ public:
     virtual void exit() override;
 
     virtual HState* clone() override;
-    virtual std::string show_state() override;
+    virtual std::string get_current_state() override;
 
     virtual State* laser_front_blocked() override;
     virtual State* laser_front_unblocked() override;

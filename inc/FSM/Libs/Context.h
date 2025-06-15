@@ -175,7 +175,7 @@ State* Context<T>::handleInterrupt(int event_value) {
 //===================================================== public functions =====================================================
 template <typename T>
 std::string Context<T>::show_state(){
-    return state->show_state();
+    return state->get_current_state();
 }
 
 

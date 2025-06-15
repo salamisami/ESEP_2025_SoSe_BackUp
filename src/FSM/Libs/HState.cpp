@@ -106,8 +106,8 @@ HState* HState::clone(){
     return cloned_state;
 }
 
-std::string HState::show_state() {
-    std::string substate_name = substate->show_state();
+std::string HState::get_current_state() {
+    std::string substate_name = substate->get_current_state();
     return substate_name;
 }
 

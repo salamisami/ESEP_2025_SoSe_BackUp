@@ -10,17 +10,35 @@
 
 class State {
 public: //============================================ constructors & destructors ============================================
+    /**
+     * @brief State is a very basic state, containing only entry and exit. It does not contain any substates or orthogonal states.
+     * @param data a global context data, which should be visible across the states
+     */
     State(ContextData* data);
+    //Disable copy constructor, because we're going to use clone() instead
+    State(const State& other) = delete;
     virtual ~State() = default;
 
 
 public: //================================================ public functions ================================================
+    /**
+     * @brief Enters the state. This function must be overidden by the child state.
+     */
     virtual void entry();
+    /**
+     * @brief Exits the state. This function must be overidden by the child state.
+     */
     virtual void exit();
-
+    /**
+     * @brief Clones the current state.
+     * @return Cloned state, which is already allocated to heap
+     */
     virtual State* clone();
-
-    virtual std::string show_state();
+    /**
+     * @brief Returns the name of the current state.
+     * @return The name of current state as string
+     */
+    virtual std::string get_current_state();
 
     virtual State* laser_front_blocked();
     virtual State* laser_front_unblocked();
@@ -69,7 +87,6 @@ protected: //================================================ private variables 
 
 
 private: //================================================ private functions ================================================
-    //void privateFunction();
     std::string demangle(const char* mangled);
 
 };
