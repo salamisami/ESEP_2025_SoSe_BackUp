@@ -24,6 +24,7 @@ public:
 
     virtual OrthState* clone() override;
     void spawn_orthogonal_state(State* input_state);
+    //virtual std::string show_state() override;
 
     virtual State* laser_front_blocked() override;
     virtual State* laser_front_unblocked() override;

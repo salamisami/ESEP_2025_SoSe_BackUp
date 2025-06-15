@@ -106,6 +106,11 @@ HState* HState::clone(){
     return cloned_state;
 }
 
+std::string HState::show_state() {
+    std::string substate_name = substate->show_state();
+    return substate_name;
+}
+
 State* HState::timer(TIMER_ID id) {
     if(substate == nullptr) {
         return nullptr;

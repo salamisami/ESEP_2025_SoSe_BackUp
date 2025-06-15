@@ -5,6 +5,9 @@
 #include "ContextData.h"
 #include "Event.h"
 
+#include <typeinfo>
+#include <cxxabi.h>
+
 class State {
 public: //============================================ constructors & destructors ============================================
     State(ContextData* data);
@@ -16,6 +19,8 @@ public: //================================================ public functions ====
     virtual void exit();
 
     virtual State* clone();
+
+    virtual std::string show_state();
 
     virtual State* laser_front_blocked();
     virtual State* laser_front_unblocked();
@@ -65,6 +70,7 @@ protected: //================================================ private variables 
 
 private: //================================================ private functions ================================================
     //void privateFunction();
+    std::string demangle(const char* mangled);
 
 };
 

@@ -26,11 +26,25 @@ void State::exit() {
     PRINT_STATE;
 }
 
+std::string State::demangle(const char* mangled) {
+    int status;
+    char* demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
+    std::string result = (status == 0) ? demangled : mangled;
+    free(demangled);
+    return result;
+}
+
+
 
 //===================================================== public functions =====================================================
 
 State* State::clone() {
     return new State(data);
+}
+
+std::string State::show_state() {
+    const char* state_name = typeid(*this).name();
+    return demangle(state_name);
 }
 
 State* State::timer(TIMER_ID id) {

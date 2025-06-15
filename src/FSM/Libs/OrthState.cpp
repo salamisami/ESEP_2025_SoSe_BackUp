@@ -78,6 +78,15 @@ void OrthState::spawn_orthogonal_state(State* input_state){
     input_state->entry();
 }
 
+//TODO how should it behave?
+// std::string OrthState::show_state() {
+//     for(auto& current_substate : substates) {
+        
+//     }
+//     const char* 
+//     return typeid(*this).name();
+// }
+
 State* OrthState::timer(TIMER_ID id) {
     for(auto& current_substate : substates) {
         State* newSubstate = current_substate->timer(id);
