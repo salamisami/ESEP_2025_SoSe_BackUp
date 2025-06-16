@@ -37,7 +37,6 @@ private: //================================================ private variables ==
 	//pointers
 	I_Sender* sender;
 	//primitive types
-	int coid;
 	//bool and char
 
 
