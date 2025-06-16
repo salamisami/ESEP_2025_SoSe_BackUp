@@ -11,7 +11,7 @@ Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_se
         this->to_self_sender = local_sender;
     }
    
-    data = new ContextData(local_sender, to_self_sender);
+    data = new ContextData(local_sender, local_sender);
     fsm = new Context<Boot>(data);
     logicRunning = true;
     logicThread = std::thread(&Logic::threadFunction, this);
