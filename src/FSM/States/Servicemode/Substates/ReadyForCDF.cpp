@@ -12,14 +12,14 @@ ReadyForCDF::~ReadyForCDF() {}
 
 //===================================================== public functions =====================================================
 void ReadyForCDF::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
     std::cout << "Please put a piece to calibrate distance timer (fast mode)" << std::endl;
 }
 
 void ReadyForCDF::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
-I_State* ReadyForCDF::laser_front_blocked(){
+State* ReadyForCDF::laser_front_blocked(){
     return new CalDistanceFast(data);
 }

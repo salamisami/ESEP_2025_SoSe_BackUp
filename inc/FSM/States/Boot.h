@@ -15,8 +15,8 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* is_switch() override;
-	I_State* is_pusher() override;
+	State* is_switch() override;
+	State* is_pusher() override;
     
 
 

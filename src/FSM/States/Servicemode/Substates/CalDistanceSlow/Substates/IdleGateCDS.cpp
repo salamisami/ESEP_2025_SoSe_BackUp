@@ -12,14 +12,14 @@ IdleGateCDS::~IdleGateCDS() {}
 
 //===================================================== public functions =====================================================
 void IdleGateCDS::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 }
 
 void IdleGateCDS::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
-I_State* IdleGateCDS::laser_sorting_gate_blocked(){
+State* IdleGateCDS::laser_sorting_gate_blocked(){
 	if(data->is_switch){
 		return new OpenGateCDS(data);
 	}

@@ -29,7 +29,7 @@ public: //============================================ constructors & destructor
 
 
 public: //================================================ public functions ================================================
-	//void publicFunction();
+	std::string show_state();
 
 
 
@@ -40,6 +40,8 @@ private: //================================================ private variables ==
 	I_Receiver* local_receiver;
 	I_Sender* local_sender;
 	I_Sender* to_self_sender;
+	ContextData* data;
+	Context<Boot>* fsm;
 	//primitive types
 	//bool and char
 	bool logicRunning;

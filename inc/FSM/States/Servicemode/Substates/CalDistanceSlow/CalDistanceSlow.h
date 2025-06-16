@@ -2,11 +2,11 @@
 #define CALDISTANCESLOW_H
 #pragma once
 
-#include "OrthogonalState.h"
+#include "OrthState.h"
 #include "IdleCDS.h"
 #include "IdleGateCDS.h"
 
-class CalDistanceSlow : public OrthogonalState{
+class CalDistanceSlow : public OrthState{
 public: //============================================ constructors & destructors ============================================
     CalDistanceSlow(ContextData* data) ;
     virtual ~CalDistanceSlow();

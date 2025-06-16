@@ -12,19 +12,19 @@ Boot::~Boot() {}
 //===================================================== public functions =====================================================
 
 void Boot::entry(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 void Boot::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
-I_State* Boot::is_pusher(){
+State* Boot::is_pusher(){
     data->is_switch = false;
     return new ModeHandler(data);
 }
 
-I_State* Boot::is_switch(){
+State* Boot::is_switch(){
     data->is_switch = true;
     return new ModeHandler(data);
 }

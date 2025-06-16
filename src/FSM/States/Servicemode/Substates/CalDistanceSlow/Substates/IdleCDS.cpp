@@ -12,13 +12,13 @@ IdleCDS::~IdleCDS() {}
 
 //===================================================== public functions =====================================================
 void IdleCDS::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 }
 
 void IdleCDS::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
-I_State* IdleCDS::laser_front_unblocked(){
+State* IdleCDS::laser_front_unblocked(){
 	return new StartCDS(data);
 }

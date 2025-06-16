@@ -12,14 +12,14 @@ IdleGateCP::~IdleGateCP() {}
 
 //===================================================== public functions =====================================================
 void IdleGateCP::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 }
 
 void IdleGateCP::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
-I_State* IdleGateCP::laser_sorting_gate_blocked(){
+State* IdleGateCP::laser_sorting_gate_blocked(){
     if(!data->is_switch){
         return new OpenGateCP(data);
     }

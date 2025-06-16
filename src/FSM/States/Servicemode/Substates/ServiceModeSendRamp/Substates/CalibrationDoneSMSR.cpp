@@ -12,14 +12,14 @@ CalibrationDoneSMSR::~CalibrationDoneSMSR() {}
 
 //===================================================== public functions =====================================================
 void CalibrationDoneSMSR::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 }
 
 void CalibrationDoneSMSR::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 //explicit exit 
-I_State* CalibrationDoneSMSR::laser_ramp_blocked(){
+State* CalibrationDoneSMSR::laser_ramp_blocked(){
     return new ReadyForCDF(data);
 }

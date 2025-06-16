@@ -17,9 +17,9 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* button_estop_pressed() override;
-	I_State* com_button_estop_pressed() override;
-	I_State* button_reset_released() override;
+	State* button_estop_pressed() override;
+	State* com_button_estop_pressed() override;
+	State* button_reset_released() override;
     
 
 

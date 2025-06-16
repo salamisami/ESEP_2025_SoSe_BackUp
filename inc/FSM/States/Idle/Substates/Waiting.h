@@ -18,8 +18,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* button_start_released() override;
-	I_State* timer(TIMER_ID id) override;
+	State* button_start_released() override;
+	State* timer(TIMER_ID id) override;
     
 
 

@@ -7,7 +7,7 @@
 
 template<typename T>
 class Context {
-    static_assert(std::is_base_of<State, T>::value, "Template parameter must inherit from State");
+    static_assert(std::is_base_of<State, T>::value, "Template parameter must inherit from HState");
     //============================================ constructors & destructors ============================================
 public:
     Context();
@@ -17,18 +17,19 @@ public:
     //================================================ public functions ================================================
 public:
     virtual void handleEvent(_pulse event);
+    std::string show_state();
 
 
     //================================================ private variables ================================================
 protected:
     ContextData* data;
-    I_State* state;
+    State* state;
 
     //================================================ private functions ================================================
 private:
-    I_State* handleInterrupt(int event_value);
-    I_State* handleCOM(int event_value);
-    I_State* handleADC(int event_value);
+    State* handleInterrupt(int event_value);
+    State* handleCOM(int event_value);
+    State* handleADC(int event_value);
 };
 
 //================================================= constructors & destructors =================================================
@@ -47,9 +48,9 @@ Context<T>::~Context() {
 
 //===================================================== private functions =====================================================
 template<typename T>
-I_State* Context<T>::handleADC(int event_value) {
+State* Context<T>::handleADC(int event_value) {
     //TODO put newState = state->function() here
-    I_State* newState = nullptr;
+    State* newState = nullptr;
     switch((ADC_Enum) event_value) {
         case ADC_Enum::ADC_NEW_PIECE:
             newState = state->adc_new_piece();
@@ -73,8 +74,8 @@ I_State* Context<T>::handleADC(int event_value) {
 }
 
 template <typename T>
-I_State* Context<T>::handleCOM(int event_value) {
-    I_State* newState = nullptr;
+State* Context<T>::handleCOM(int event_value) {
+    State* newState = nullptr;
     switch((COM_Enum) event_value) {
         //TODO is this true?
         case COM_Enum::BUTTON_ESTOP_PRESSED:
@@ -90,8 +91,8 @@ I_State* Context<T>::handleCOM(int event_value) {
 }
 
 template <typename T>
-I_State* Context<T>::handleInterrupt(int event_value) {
-    I_State* newState = nullptr;
+State* Context<T>::handleInterrupt(int event_value) {
+    State* newState = nullptr;
     switch((InterruptEnum) event_value) {
         case InterruptEnum::LASER_FRONT_BLOCKED:
             newState = state->laser_front_blocked();
@@ -173,8 +174,14 @@ I_State* Context<T>::handleInterrupt(int event_value) {
 
 //===================================================== public functions =====================================================
 template <typename T>
+std::string Context<T>::show_state(){
+    return state->get_current_state();
+}
+
+
+template <typename T>
 void Context<T>::handleEvent(_pulse event) {
-    I_State* newState = nullptr;
+    State* newState = nullptr;
     Topic event_code = (Topic) event.code;
     int event_value = event.value.sival_int;
     switch(event_code) {

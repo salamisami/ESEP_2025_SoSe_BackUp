@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(Project VERSION 0.1.0 LANGUAGES CXX)
 
+enable_testing()
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -DMOCK")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -DMOCK -DVERBOSE_STATES -fsanitize=address -fno-omit-frame-pointer -fno-inline")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -lpthread")
 
 file(GLOB_RECURSE MAIN_SRC CONFIGURE_DEPENDS "src/*.cpp")
 file(GLOB_RECURSE MAIN_INC CONFIGURE_DEPENDS "inc/*.h")
@@ -15,8 +18,13 @@ foreach (_headerFile ${MAIN_INC})
 endforeach()
 
 list (REMOVE_DUPLICATES GLOB_INC_DIRS)
-
-
 include_directories(${GLOB_INC_DIRS})
-
 add_executable(Project main.cpp ${MAIN_SRC})
+
+# Find GTest
+find_package(GTest REQUIRED)
+include(GoogleTest)
+include_directories(${GLOB_INC_DIRS})
+add_executable(tests tests.cpp ${MAIN_SRC})
+target_link_libraries(tests PRIVATE GTest::GTest GTest::Main)
+gtest_discover_tests(tests)

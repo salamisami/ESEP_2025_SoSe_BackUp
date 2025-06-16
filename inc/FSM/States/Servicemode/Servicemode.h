@@ -2,12 +2,12 @@
 #define SERVICEMODE_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "Idle.h"
 #include "IdleServiceMode.h"
 
 
-class Servicemode : public State{
+class Servicemode : public HState{
 public: //============================================ constructors & destructors ============================================
     Servicemode(ContextData* data);
     virtual ~Servicemode();
@@ -17,7 +17,7 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	State* button_stop_pressed() override;
+	HState* button_stop_pressed() override;
     
 
 

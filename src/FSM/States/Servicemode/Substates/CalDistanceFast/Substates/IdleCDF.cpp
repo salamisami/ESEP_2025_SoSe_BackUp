@@ -12,13 +12,13 @@ IdleCDF::~IdleCDF() {}
 
 //===================================================== public functions =====================================================
 void IdleCDF::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE;
 }
 
 void IdleCDF::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
-I_State* IdleCDF::laser_front_unblocked(){
+State* IdleCDF::laser_front_unblocked(){
     return new StartCDF(data);
 }
