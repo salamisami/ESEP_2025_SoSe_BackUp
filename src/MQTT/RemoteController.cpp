@@ -45,7 +45,7 @@ Remote_Controller::~Remote_Controller() {
 
 void Remote_Controller::init() {
 
-	int rc = MQTT_Utilities::mqtt_festo_init("tcp://192.168.101.3:1883", "QNX_node_1");
+	int rc = MQTT_Utilities::mqtt_festo_init("tcp://192.168.101.10:1883", "QNX_node_1");
 		if (rc != 0) {
 		    printf("MQTT init failed! Fehlercode: %d\n", rc);
 		}
@@ -141,3 +141,68 @@ static void on_command(const char* payload) {
     	Last_Command = -1;
     }
 }
+
+//void Remote_Controller::test_ins() {
+//    std::cout << "Testing Inputs... Please put Piece on the front laser" << std::endl;
+//    bool running = true;
+//    int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
+//    bool allowGo = true;
+//    bool allowSorting = true;
+//    while(running) {
+//        _pulse msg;
+//        mock_dispatcher_receiver->receive_event(&msg);
+//        InterruptEnum event = (InterruptEnum) msg.value.sival_int;
+//        switch(event) {
+//            case InterruptEnum::LASER_FRONT_BLOCKED:
+//                std::cout << "Thanks!" << std::endl;
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
+//                if(allowGo) {
+//                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_RIGHT_START);
+//                }
+//                break;
+//            case InterruptEnum::LASER_BACK_BLOCKED:
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_ON);
+//                allowGo = false;
+//                break;
+//            case InterruptEnum::LASER_BACK_UNBLOCKED:
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_RED_OFF);
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+//                allowGo = true;
+//                break;
+//            case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
+//                if(!allowSorting) {
+//                    break;
+//                }
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
+//                WAIT(1000);
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
+//                break;
+//            case InterruptEnum::BUTTON_ESTOP_PRESSED:
+//                //running = false;
+//                break;
+//            case InterruptEnum::BUTTON_STOP_PRESSED:
+//                running = false;
+//                break;
+//            case InterruptEnum::ADC_TOP_AREA_BLOCKED:
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
+//                break;
+//            case InterruptEnum::ADC_TOP_AREA_UNBLOCKED:
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+//                mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+//                break;
+//            case InterruptEnum::LASER_RAMP_BLOCKED:
+//                allowSorting = false;
+//                break;
+//            case InterruptEnum::LASER_RAMP_UNBLOCKED:
+//                allowSorting = true;
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+//    std::cout << "Testing Input done." << std::endl;
+//}

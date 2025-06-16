@@ -63,6 +63,7 @@ class Remote_Controller {
 
 		void init();
 		void threadFunction();
+		//void test_ins();
 
 	};
 
