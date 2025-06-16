@@ -17,14 +17,9 @@ public: //============================================ constructors & destructor
 	/**
 	 * @brief This constructor is used, if the dispatcher is smart, so that the logic will use 2 different senders to send events out and send event to itself.
 	 * @param local sender to send events out
-	 * @param to_self_sender to send events to self
+	 * @param to_self_sender to send events to self. If this parameter is not specified, The context will use the same sender to send events out and to self. Use this if the dispatcher is broadcast type
 	 */
-	Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender);
-	/**
-	* @brief This constructor is used, if the dispatcher is broadcast type. The context will use the same sender to send events out and to self
-	* @param sender to send events out AND to self
-	*/
-	Logic(I_Receiver* local_receiver, I_Sender* local_sender);
+	Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender = nullptr);
 	virtual ~Logic();
 
 

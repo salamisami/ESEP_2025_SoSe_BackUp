@@ -5,18 +5,14 @@
 Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender) {
     this->local_receiver = local_receiver;
     this->local_sender = local_sender;
-    this->to_self_sender = to_self_sender;
-    logicRunning = true;
+    if(to_self_sender != nullptr){
+        this->to_self_sender = to_self_sender;
+    } else {
+        this->to_self_sender = local_sender;
+    }
+   
     data = new ContextData(local_sender, to_self_sender);
     fsm = new Context<Boot>(data);
-    logicThread = std::thread(&Logic::threadFunction, this);
-}
-
-Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender) {
-    this->local_receiver = local_receiver;
-    this->local_sender = local_sender;
-    this->to_self_sender = local_sender;
-    //this->timer_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
     logicRunning = true;
     logicThread = std::thread(&Logic::threadFunction, this);
 }
