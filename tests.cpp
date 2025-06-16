@@ -145,6 +145,19 @@ TEST_F(LogicStateTest, Test2) {
     expect_state("Traffic_Green_On_Slow");
 }
 
+/**
+ * @brief enter adc calibration mode, by long pressing start button
+ */
+TEST_F(LogicStateTest, Test3) {
+    //go to service mode
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    expect_state("Waiting");
+    WAIT(5000);
+    expect_state("Timer_Received");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    expect_state("IdleServiceMode");
+}
+
 
 
 int main(int argc, char** argv) {
