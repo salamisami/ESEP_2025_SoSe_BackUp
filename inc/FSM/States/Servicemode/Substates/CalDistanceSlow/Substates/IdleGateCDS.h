@@ -6,7 +6,7 @@
 #include "OpenGateCDS.h"
 
 class IdleGateCDS : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     IdleGateCDS(ContextData* data) ;
     virtual ~IdleGateCDS();
 	
@@ -14,7 +14,7 @@ public: //============================================ contructors & destructors
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-	I_State* laser_sorting_gate_blocked() override;
+	State* laser_sorting_gate_blocked() override;
     
 
 

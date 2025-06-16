@@ -6,7 +6,7 @@
 #include "IdleGateCP.h"
 
 class OpenGateCP : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     OpenGateCP(ContextData* data) ;
     virtual ~OpenGateCP();
 	
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* timer(TIMER_ID id) override;
+	State* timer(TIMER_ID id) override;
     
 
 

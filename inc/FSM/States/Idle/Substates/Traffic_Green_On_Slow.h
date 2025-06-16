@@ -6,7 +6,7 @@
 #include "Waiting.h"
 
 class Traffic_Green_On_Slow : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
 	Traffic_Green_On_Slow(ContextData* data);
 	virtual ~Traffic_Green_On_Slow();
 
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* button_start_pressed() override;
+	State* button_start_pressed() override;
 
 
 

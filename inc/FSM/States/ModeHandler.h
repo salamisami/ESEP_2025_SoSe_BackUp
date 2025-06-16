@@ -2,14 +2,14 @@
 #define MODEHANDLER_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "Idle.h"
 #include "EStopViaLocal.h"
-#include "EStopViaNeigbor.h"
+#include "EStopViaNeighbor.h"
 
-class ModeHandler : public State{
-public: //============================================ contructors & destructors ============================================
-    ModeHandler(ContextData* data, State* initial_substate = nullptr);
+class ModeHandler : public HState{
+public: //============================================ constructors & destructors ============================================
+    ModeHandler(ContextData* data);
     virtual ~ModeHandler();
 	
 
@@ -18,8 +18,8 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* button_estop_pressed() override;
-	I_State* com_button_estop_pressed() override;
+	State* button_estop_pressed() override;
+	State* com_button_estop_pressed() override;
 
 
 private: //================================================ private variables ================================================

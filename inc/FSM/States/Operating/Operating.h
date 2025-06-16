@@ -2,13 +2,13 @@
 #define OPERATING_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
 #include "Idle.h"
 
 class Operating : public State {
-//============================================ contructors & destructors ============================================
+//============================================ constructors & destructors ============================================
 public:
-    Operating(ContextData* data, State* initial_substate = nullptr);
+    Operating(ContextData* data);
     virtual ~Operating();
 	
 //================================================ public functions ================================================
@@ -16,7 +16,7 @@ public:
     void entry() override;
     void exit() override;
     
-    I_State* button_stop_pressed() override;
+    State* button_stop_pressed() override;
     
 
 //================================================ private variables ================================================

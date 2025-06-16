@@ -6,7 +6,7 @@
 #include "StartCDS.h"
 
 class IdleCDS : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     IdleCDS(ContextData* data) ;
     virtual ~IdleCDS();
 	
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_front_unblocked() override;
+	State* laser_front_unblocked() override;
     
 
 

@@ -1,21 +1,24 @@
-#ifndef CALIBRATEPIECESSTOP_H
-#define CALIBRATEPIECESSTOP_H
+#ifndef ESTOPVIANEIGHBOR_H
+#define ESTOPVIANEIGHBOR_H
 #pragma once
 
 #include "State.h"
-#include "CalDistanceFast.h"
+#include "BothEstopPressed.h"
+#include "EStopReleased.h"
 
-class CalibratePiecesStop : public State {
-public: //============================================ contructors & destructors ============================================
-    CalibratePiecesStop(ContextData* data) ;
-    virtual ~CalibratePiecesStop();
+class EStopViaNeighbor : public State{
+public: //============================================ constructors & destructors ============================================
+    EStopViaNeighbor(ContextData* data);
+    virtual ~EStopViaNeighbor();
 	
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
+	void entry() override;
+	void exit() override;
+
+	State* button_estop_pressed() override;
+	State* com_button_estop_released() override;
     
-	I_State* laser_front_blocked() override;
 
 
 private: //================================================ private variables ================================================

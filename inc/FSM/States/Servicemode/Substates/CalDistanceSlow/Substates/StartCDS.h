@@ -6,7 +6,7 @@
 #include "StopCDS.h"
 
 class StartCDS : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     StartCDS(ContextData* data) ;
     virtual ~StartCDS();
 	
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_back_blocked() override;
+	State* laser_back_blocked() override;
     
 
 

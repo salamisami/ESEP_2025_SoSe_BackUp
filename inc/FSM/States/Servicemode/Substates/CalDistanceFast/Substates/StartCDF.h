@@ -6,7 +6,7 @@
 #include "StopCDF.h"
 
 class StartCDF : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     StartCDF(ContextData* data) ;
     virtual ~StartCDF();
 	
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_back_blocked() override;
+	State* laser_back_blocked() override;
     
 
 

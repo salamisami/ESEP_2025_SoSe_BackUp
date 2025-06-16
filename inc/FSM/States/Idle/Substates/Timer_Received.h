@@ -7,7 +7,7 @@
 #include "Servicemode.h"
 
 class Timer_Received: public State{
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     Timer_Received(ContextData* data);
     virtual ~Timer_Received();
 	
@@ -17,7 +17,7 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* button_start_released() override;
+	State* button_start_released() override;
     
 
 

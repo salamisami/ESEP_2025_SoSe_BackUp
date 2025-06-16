@@ -6,7 +6,7 @@
 #include "IdleGateCDS.h"
 
 class OpenGateCDS : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     OpenGateCDS(ContextData* data) ;
     virtual ~OpenGateCDS();
 	
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* timer(TIMER_ID id) override;
+	State* timer(TIMER_ID id) override;
     
 
 

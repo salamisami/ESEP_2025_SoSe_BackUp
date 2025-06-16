@@ -10,7 +10,7 @@
 
 
 class Stopwatch {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
 	Stopwatch() = default;
 	virtual ~Stopwatch() = default;
 

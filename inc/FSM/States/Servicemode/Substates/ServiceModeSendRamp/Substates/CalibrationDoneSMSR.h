@@ -3,9 +3,10 @@
 #pragma once
 
 #include "State.h"
+#include "ReadyForCDF.h"
 
 class CalibrationDoneSMSR : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     CalibrationDoneSMSR(ContextData* data) ;
     virtual ~CalibrationDoneSMSR();
 	
@@ -13,6 +14,8 @@ public: //============================================ contructors & destructors
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* laser_ramp_blocked() override;
     
 
 

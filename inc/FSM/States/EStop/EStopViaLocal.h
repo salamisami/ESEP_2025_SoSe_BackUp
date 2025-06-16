@@ -7,7 +7,7 @@
 #include "EStopReleased.h"
 
 class EStopViaLocal: public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     EStopViaLocal(ContextData* data);
     virtual ~EStopViaLocal();
 	
@@ -16,8 +16,8 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	I_State* com_button_estop_pressed() override;
-	I_State* button_estop_released() override;
+	State* com_button_estop_pressed() override;
+	State* button_estop_released() override;
     
 
 

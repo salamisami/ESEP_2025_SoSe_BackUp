@@ -6,7 +6,7 @@
 #include "CalibrationDoneSMSR.h"
 
 class IdleSMSR : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     IdleSMSR(ContextData* data) ;
     virtual ~IdleSMSR();
 	
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* adc_calibration_done() override;
+	State* adc_calibration_done() override;
     
 
 

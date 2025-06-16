@@ -1,6 +1,6 @@
 #include "Boot.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 Boot::Boot(ContextData* data): State(data) {}
 
 Boot::~Boot() {}
@@ -12,19 +12,21 @@ Boot::~Boot() {}
 //===================================================== public functions =====================================================
 
 void Boot::entry(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
 void Boot::exit(){
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
 }
 
-I_State* Boot::is_pusher(){
+State* Boot::is_pusher(){
     data->is_switch = false;
+    DEBUG("Machine is Pusher Type");
     return new ModeHandler(data);
 }
 
-I_State* Boot::is_switch(){
+State* Boot::is_switch(){
     data->is_switch = true;
+    DEBUG("Machine is Switch Type");
     return new ModeHandler(data);
 }

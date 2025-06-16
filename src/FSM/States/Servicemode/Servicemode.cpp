@@ -1,9 +1,8 @@
 #include "Servicemode.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 Servicemode::Servicemode(ContextData* data)
-    : State(data) {
-    substate = new IdleServiceMode(data);
+    : HState(data, new IdleServiceMode(data)) {
 }
 
 Servicemode::~Servicemode() {}
@@ -15,20 +14,20 @@ Servicemode::~Servicemode() {}
 //===================================================== public functions =====================================================
 
 void Servicemode::entry() {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON_FAST);
-    State::entry();
+    HState::entry();
 }
 
 void Servicemode::exit() {
-    State::exit();
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    HState::exit();
+    PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
 }
 
-State* Servicemode::button_stop_pressed() {
+HState* Servicemode::button_stop_pressed() {
     return new Idle(data);
 }

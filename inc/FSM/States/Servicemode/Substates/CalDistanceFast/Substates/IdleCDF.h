@@ -6,7 +6,7 @@
 #include "StartCDF.h"
 
 class IdleCDF : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     IdleCDF(ContextData* data) ;
     virtual ~IdleCDF();
 	
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_front_unblocked() override;
+	State* laser_front_unblocked() override;
     
 
 

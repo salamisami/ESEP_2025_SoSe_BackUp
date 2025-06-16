@@ -6,7 +6,7 @@
 #include "CalDistanceFast.h"
 
 class ReadyForCDF : public State {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
     ReadyForCDF(ContextData* data) ;
     virtual ~ReadyForCDF();
 	
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	I_State* laser_front_blocked() override;
+	State* laser_front_blocked() override;
     
 
 
