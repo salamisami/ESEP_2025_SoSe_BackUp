@@ -34,14 +34,17 @@
 
 class Interrupt {
 public: //============================================ contructors & destructors ============================================
-    Interrupt(I_Sender* sender);
-    Interrupt(I_Sender* sender, Actuator* actuator);
+    /**
+     * @brief creates an interrupt instance. During the initial, if the estop is already pressed, the interrupt will block all moving parts, and send estop signal via @param sender
+     */
+    Interrupt(I_Sender* sender, Actuator* actuator = nullptr);
     //Interrupt();
     virtual ~Interrupt();
 
 
 public: //================================================ public functions ================================================
-
+    bool button_estop_pressed();
+    bool is_switch();
 
 
 private: //================================================ private variables ================================================
@@ -73,6 +76,7 @@ private: //================================================ private functions ==
     void isr(void);
     int registerToBit(uint32_t inputRegister);
     void sendEvent(int causing_pin, int pin_status);
+
 
 
 };

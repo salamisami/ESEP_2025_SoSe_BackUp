@@ -1,5 +1,6 @@
 #include "ADC_Utilities.h"
 
+
 //================================================= contructors & destructors =================================================
 
 
@@ -17,6 +18,7 @@ void ADC_Utilities::saveProfile(const Profil& p) {
     }
 
     file << p.name << ","
+        << static_cast<int32_t>(p.eventValue) << ","
         << p.hatLoch << ","
         << p.avg << ","
         << p.lochMin << ","
@@ -27,18 +29,40 @@ void ADC_Utilities::saveProfile(const Profil& p) {
     std::cout << "Profil erfolgreich gespeichert: " << p.name << "\n";
 }
 
+void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
+    std::vector<float> werte;
+    struct timespec delay = { 0, SAMPLE_DELAY_NS };
+    bool erkannt = false;
+    while(!*adcStopped) {
+        adc.sample();
+        //TODO Magic number
+        usleep(1000);
+        uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
+        float voltage = (raw / 4095.0f) * REF_VOLTAGE;
+        float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
+
+        if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
+            erkannt = true;
+            return;
+        }
+        nanosleep(&delay, NULL);
+    }
+}
+
+
 void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage) {
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
 
     // Liste der Bauteile und ob sie ein Loch besitzen
-    std::vector<std::pair<std::string, bool>> bauteile = {
-        { "WH", false },
-        { "WF", false },
-        { "W_B", true },
-        { "W_BB", true },
-        { "W_BM", true },
-        { "W_BC", true },
-        { "WH_Harz", false }
+    std::vector<Bauteil> bauteile = {
+        //TODO don't forget that this is commented out
+        //{ "WH", ADC_Enum::ADC_WH_DETECT, false },
+        { "WF", ADC_Enum::ADC_WF_DETECT, false },
+        { "W_B", ADC_Enum::ADC_W_B_DETECT, true },
+        { "W_BB", ADC_Enum::ADC_W_B_DETECT, true } //,
+        // { "W_BM", ADC_Enum::ADC_W_NOT_DETECT, true },
+        // { "W_BC", ADC_Enum::ADC_W_NOT_DETECT, true },
+        // { "WH_Harz", ADC_Enum::ADC_W_NOT_DETECT, false }
     };
 
     // Alte Datei löschen
@@ -46,8 +70,9 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
     clear.close();
 
     for(const auto& bauteil : bauteile) {
-        std::string name = bauteil.first;
-        bool hatLoch = bauteil.second;
+        std::string name = bauteil.name;
+        bool hatLoch = bauteil.hatLoch;
+        ADC_Enum eventValue = bauteil.eventValue;
 
         std::cout << "\nBitte platziere das Bauteil: " << name << "\n";
         std::vector<float> werte;
@@ -108,6 +133,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         Profil p;
         p.name = name;
         p.hatLoch = hatLoch;
+        p.eventValue = eventValue;
         p.avg = avg;
 
         if(hatLoch) {
@@ -138,6 +164,11 @@ std::vector<Profil> ADC_Utilities::loadProfile() {
         std::istringstream ss(line);
         Profil p;
         std::getline(ss, p.name, ',');
+
+        int codeInt;
+        ss >> codeInt; ss.ignore();
+        p.eventValue = static_cast<ADC_Enum>(codeInt);
+
         ss >> p.hatLoch; ss.ignore();
         ss >> p.avg; ss.ignore();
         ss >> p.lochMin; ss.ignore();
@@ -148,8 +179,8 @@ std::vector<Profil> ADC_Utilities::loadProfile() {
     return result;
 }
 
-std::string ADC_Utilities::classify(const std::vector<float>& value, const std::vector<Profil>& profile) {
-    if(value.empty()) return "Fehler: keine Messwerte";
+ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vector<Profil>& profile) {
+    if(value.empty()) return ADC_Enum::ADC_W_NOT_DETECT; //TODO Fehler hinzufügen
 
     float sum = 0;
     float minV = value[0];
@@ -177,12 +208,13 @@ std::string ADC_Utilities::classify(const std::vector<float>& value, const std::
 
         if(std::fabs(avg - p.avg) > MESS_TOLERANZ) {
             std::cout << "  → ❌ Mittelwert außerhalb Toleranz\n";
+            std::cout << "Aktuell:" << avg << "gespeichert:" << p.avg << "\n";
             continue;
         }
 
         if(!p.hatLoch) {
             std::cout << "  → ✅ Kein Loch erforderlich – passt\n";
-            return p.name;
+            return p.eventValue;
         }
 
         std::cout << "  Loch-Soll: " << p.lochMin << " ±" << MESS_TOLERANZ
@@ -193,24 +225,22 @@ std::string ADC_Utilities::classify(const std::vector<float>& value, const std::
             minIndex <= p.lochEndIndex) {
             std::cout << "  → ✅ Loch passt\n";
             //TODO Spezifizieren!!!
-            return p.name;
+            return p.eventValue;
         } else {
             std::cout << "  → ❌ Lochbedingung nicht erfüllt\n";
             break;
-            //SIgnal Aussenden !
+            //SIgnal Aussenden Error  !
         }
     }
 
     std::cout << "\n→ ❌ Kein passendes Profil gefunden\n";
-    return "unbekannt";
+    return ADC_Enum::ADC_W_NOT_DETECT;
 }
 
 
-std::string ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage) {
+ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage) {
     std::vector<float> werte;
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
-    bool erkannt = false;
-
     while(true) {
         adc.sample();
         usleep(1000);
@@ -218,21 +248,17 @@ std::string ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float ba
         float voltage = (raw / 4095.0f) * REF_VOLTAGE;
         float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
 
-        if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
-            erkannt = true;
-            std::cout << "Bauteil erkannt – Messung startet\n";
+       
+
+        werte.push_back(sensorVoltage);
+        if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT) {
+            break;
         }
-        if(erkannt) {
-            werte.push_back(sensorVoltage);
-            if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT) {
-                break;
-            }
-            if(werte.size() >= MAX_WERT) {
-                //Error Event Ergänzen
-                std::cout << "Ungültige Messanzahl, Bitte Laufband Kontrollieren\n";
-                break;
-            }
+        if(werte.size() >= MAX_WERT) {
+            //Error Event Ergänzen
+            return ADC_Enum::ADC_INVALID_MESURE;
         }
+        
         nanosleep(&delay, NULL);
     }
 

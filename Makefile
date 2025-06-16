@@ -14,7 +14,7 @@ TARGET = $(OUTPUT_DIR)/$(ARTIFACT)
 #Compiler definitions
 
 CC = qcc -Vgcc_nto$(PLATFORM)
-CXX = qcc -lang-c++ -Vgcc_nto$(PLATFORM)
+CXX = q++ -lang-c++ -Vgcc_nto$(PLATFORM)
 LD = $(CXX)
 
 #User defined include/preprocessor flags and libraries

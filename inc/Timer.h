@@ -10,7 +10,7 @@
 
 
 class Timer {
-public: //============================================ contructors & destructors ============================================
+public: //============================================ constructors & destructors ============================================
 	/**
 	 * @brief Creates a timer linked to a connection ID, on which the timer events are sent
 	 * @param sender the timer will use this sender interface to send the timer events
@@ -27,7 +27,7 @@ public: //================================================ public functions ====
 	 * @param miliseconds how long should the timer be set
 	 * @param id timer ID, which will be saved to the event.value
 	 */
-	void setTimer(int miliseconds, int id);
+	void start_timer(int miliseconds, TIMER_ID id);
 
 
 
@@ -43,7 +43,7 @@ private: //================================================ private variables ==
 
 
 private: //================================================ private functions ================================================
-	void threadFunction(int miliseconds, int id);
+	void threadFunction(int miliseconds, TIMER_ID id);
 
 };
 

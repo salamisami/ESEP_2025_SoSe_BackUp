@@ -27,7 +27,9 @@ enum class InterruptEnum : int {
     ADC_TOP_AREA_BLOCKED,
     ADC_TOP_AREA_UNBLOCKED,
     ADC_SIDE_AREA_BLOCKED,
-    ADC_SIDE_AREA_UNBLOCKED
+    ADC_SIDE_AREA_UNBLOCKED,
+    IS_SWITCH,
+    IS_PUSHER
 };
 enum class ActuatorEnum : int {
     MOTOR_RIGHT_START = 1,
@@ -39,6 +41,10 @@ enum class ActuatorEnum : int {
     SORTING_OFF,
     TRAFFIC_GREEN_ON_SLOW,
     TRAFFIC_GREEN_ON_FAST,
+    TRAFFIC_YELLOW_ON_SLOW,
+    TRAFFIC_YELLOW_ON_FAST,
+    TRAFFIC_RED_ON_SLOW,
+    TRAFFIC_RED_ON_FAST,
     TRAFFIC_GREEN_ON,
     TRAFFIC_GREEN_OFF,
     TRAFFIC_RED_ON,
@@ -54,16 +60,12 @@ enum class ActuatorEnum : int {
     LED_Q2_ON,
     LED_Q2_OFF
 };
-enum class Dispatcher : int {
-    HAL_READY = 1
-};
 
 
 enum class Topic : int8_t {
     INTERRUPT = 1,
     ACTUATOR,
-    QNET,
-    DISPATCHER,
+    COM,
     ADC,
     STOP_THREAD,
     TIMER
@@ -77,6 +79,23 @@ enum class ADC_Enum : int {
     ADC_CALIBRATE,
     ADC_MESURE,
     ADC_INVALID_MESURE,
+    ADC_CALIBRATION_DONE,
+    ADC_PREPARE,
+    ADC_NEW_PIECE,
+    ADC_STOP,
+	ADC_RESET
+};
+
+enum class COM_Enum: int{
+    BUTTON_ESTOP_PRESSED = 1,
+    BUTTON_ESTOP_RELEASED
+};
+
+enum class TIMER_ID: int {
+    WAITING_BUTTON_START = 1,
+    OPEN_GATE_CDS,
+    OPEN_GATE_CDF,
+    OPEN_GATE_CP
 };
 
 

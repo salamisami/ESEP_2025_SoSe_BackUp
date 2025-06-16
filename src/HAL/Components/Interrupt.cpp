@@ -44,16 +44,6 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Interrupt::Interrupt(I_Sender* sender)
-    : gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
-    , sender(sender)
-    , inputPins(0)
-    , last_causing_pin(0)
-    , test_mode(false)
-    , last_pin_status(0)
-    , interruptRunning(false) {
-    setup_interrupts();
-}
 
 Interrupt::Interrupt(I_Sender* sender, Actuator* actuator)
     : gpio_bank_0(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0)))
@@ -82,11 +72,6 @@ Interrupt::Interrupt(I_Sender* sender, Actuator* actuator)
 Interrupt::~Interrupt() {
     MsgSendPulse(internalConnectionID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
     interruptThread.join();
-    if(test_mode) {
-
-    } else {
-
-    }
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
     out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig ^ inputPins));//Write new config back.
@@ -244,13 +229,26 @@ void Interrupt::isr(void) {
     if(last_causing_pin != causing_pin || last_pin_status != pin_status) {
         last_causing_pin = causing_pin;
         last_pin_status = pin_status;
-
-        //TODO e-stopp is still trigerred 2x during e-stop pull. 
         sendEvent(causing_pin, pin_status);
     }
-
 }
 
+bool Interrupt::button_estop_pressed(){
+    //gpio_bank_0 = mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0));
+    uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
+    //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
+    uint32_t status_pin = (1 << BUTTON_ESTOP_BIT);
+    bool status = (status_register & status_pin);
+    return !status;
+}
+
+bool Interrupt::is_switch(){
+    uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
+    //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
+    uint32_t status_pin = (1 << SORTING_STATUS_BIT);
+    bool status = (status_register & status_pin);
+    return !status;
+}
 
 void Interrupt::sendEvent(int causing_pin, int pin_status) {
     InterruptEnum event;
@@ -278,9 +276,9 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         case BUTTON_ESTOP_BIT:
             event = pin_status ? InterruptEnum::BUTTON_ESTOP_RELEASED : InterruptEnum::BUTTON_ESTOP_PRESSED;
             if(event == InterruptEnum::BUTTON_ESTOP_PRESSED){
-                actuator->stop_moving_parts();
+                actuator->local_estop_activate();
             } else {
-                actuator->reset();
+                actuator->local_estop_deactivate();
             }
             sender->send_event((int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
             return;
@@ -294,12 +292,12 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         case LASER_METAL_BIT:
             event = pin_status ? InterruptEnum::METAL_DETECTED : InterruptEnum::METAL_NOT_DETECTED;
             break;
-        case ADC_SIDE_AREA_BIT:
-            event = pin_status ? InterruptEnum::ADC_SIDE_AREA_UNBLOCKED : InterruptEnum::ADC_SIDE_AREA_BLOCKED;
-            break;
-        case ADC_TOP_AREA_BIT:
-            event = pin_status ? InterruptEnum::ADC_TOP_AREA_BLOCKED : InterruptEnum::ADC_TOP_AREA_UNBLOCKED;
-            break;
+        // case ADC_SIDE_AREA_BIT:
+        //     event = pin_status ? InterruptEnum::ADC_SIDE_AREA_UNBLOCKED : InterruptEnum::ADC_SIDE_AREA_BLOCKED;
+        //     break;
+        // case ADC_TOP_AREA_BIT:
+        //     event = pin_status ? InterruptEnum::ADC_TOP_AREA_BLOCKED : InterruptEnum::ADC_TOP_AREA_UNBLOCKED;
+        //     break;
         default:
             break;
     }

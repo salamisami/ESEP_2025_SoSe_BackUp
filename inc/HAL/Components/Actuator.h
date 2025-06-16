@@ -5,6 +5,13 @@
 #include "Macros.h"
 #include "Event.h"
 #include "Mailbox.h"
+#include "ADC_Class.h"
+
+#include <thread>
+#include <mutex>
+#include <atomic>
+#include <condition_variable>
+#include <functional>
 
 #include <stdio.h>
 #include <errno.h>
@@ -29,36 +36,60 @@
 
 #define GNS_NAME "Actuator"
 
+// Thread control structure
+typedef struct {
+    std::thread worker;
+    std::mutex mutex;
+    std::condition_variable cv;
+    std::atomic<bool> stopFlag{ false };
+    std::atomic<bool> running{ false };
+    std::atomic<double> frequency{ 0 };
+}TrafficLight;
+
 
 
 class Actuator {
 public: //============================================ contructors & destructors ============================================
-    Actuator(Mailbox<_pulse>* mailbox);
+    Actuator(Mailbox<_pulse>* mailbox, ADC_Class* adc = nullptr);
     virtual ~Actuator();
 
 
 public: //================================================ public functions ================================================
-    bool isGate();
     void test_outs();
-    void global_shutdown();
-    void stop_moving_parts();
-    void reset();
+
+    void local_estop_activate();
+    void local_estop_deactivate();
 
 
 
 private: //================================================ private variables ================================================
     //classes, STL containers, and structs
     std::thread actuatorThread;
+    std::thread trafficThread;
     std::mutex mtx;
+    std::mutex green_mtx;
+    std::mutex yellow_mtx;
+    std::mutex red_mtx;
+
+    TrafficLight green_;
+    TrafficLight yellow_;
+    TrafficLight red_;
+
     //pointers
     Mailbox<_pulse>* mailbox;
+    ADC_Class* adc;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
 
     //primitive types
     //bool and char
     volatile bool actuatorRunning;
-    bool global_estop;
+    bool is_local_estop;
+    bool is_neighbor_estop;
+    bool prohibit_operate;
+
+
+
 
 
 
@@ -66,10 +97,34 @@ private: //================================================ private functions ==
     void set_data(uintptr_t gpio_bank, uint32_t bit);
     void clear_data(uintptr_t gpio_bank, uint32_t bit);
 
+    // Traffic light control functions
+    void trafficGreen(double frequency);
+    void trafficYellow(double frequency);
+    void trafficRed(double frequency);
+
+    // Stop all traffic lights
+    void stopAll();
+    void stopGreen();
+    void stopYellow();
+    void stopRed();
+
+    // Check status
+    bool isGreenRunning() const;
+    bool isYellowRunning() const;
+    bool isRedRunning() const;
+
+    // Worker functions
+    void greenWorker();
+    void yellowWorker();
+    void redWorker();
+
     void threadFunction();
+    void global_shutdown();
+    void check_estop();
+    void stop_moving_parts();
 
     void handleActuatorEvent(int event_value);
-    void handleEStop(int event_value);
+    //void handleEStop(int event_value);
 
     void motor_right();
     void motor_left();
@@ -83,6 +138,15 @@ private: //================================================ private functions ==
     void traffic_yellow_off();
     void traffic_green_on();
     void traffic_green_off();
+
+    void traffic_red_slow();
+    void traffic_red_fast();
+    void traffic_yellow_slow();
+    void traffic_yellow_fast();
+    void traffic_green_slow();
+    void traffic_green_fast();
+
+
 
     void sorting_on();
     void sorting_off();
