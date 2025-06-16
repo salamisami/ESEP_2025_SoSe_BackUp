@@ -151,10 +151,6 @@ State* State::adc_calibration_done() {
     return nullptr;
 }
 
-State* State::adc_new_piece() {
-    return nullptr;
-}
-
 State* State::is_pusher() {
     return nullptr;
 }
