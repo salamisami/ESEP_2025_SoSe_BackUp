@@ -11,6 +11,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/dispatch.h>
+#include <mutex>
 
 class ADC_Class {
 public: //============================================ contructors & destructors ============================================
@@ -38,6 +39,8 @@ private: //================================================ private variables ==
     //classes, STL containers, and structs
     TSCADC tscadc;
     ADC adc;
+    std::mutex calibrate_mtx;
+    std::mutex measure_mtx;
 
     //pointers
     std::thread adc_thread;
@@ -54,7 +57,6 @@ private: //================================================ private functions ==
 	//void privateFunction();
     void calibrate();
     void measureClassifySend();
-    void adc_prepare();
 	
 };
 

@@ -80,8 +80,6 @@ enum class ADC_Enum : int {
     ADC_MESURE,
     ADC_INVALID_MESURE,
     ADC_CALIBRATION_DONE,
-    ADC_PREPARE,
-    ADC_NEW_PIECE,
     ADC_STOP,
 	ADC_RESET
 };

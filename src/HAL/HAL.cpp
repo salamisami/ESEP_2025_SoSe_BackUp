@@ -131,7 +131,7 @@ void HAL::test_ins_ADC() {
                             }
                             break;
                         case InterruptEnum::LASER_FRONT_UNBLOCKED:
-                            mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_PREPARE);
+                            mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
                             break;
                         case InterruptEnum::LASER_BACK_BLOCKED:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
@@ -182,11 +182,6 @@ void HAL::test_ins_ADC() {
             case Topic::ADC: {
                     ADC_Enum AdcEvent = (ADC_Enum) msg.value.sival_int;
                     switch(AdcEvent) {
-                        case ADC_Enum::ADC_NEW_PIECE:
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
-                            mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
-                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
-                            break;
                         case ADC_Enum::ADC_CALIBRATION_DONE:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);

@@ -25,9 +25,12 @@ void ADC_Class::calibrate() {
         std::cout << "E-Stopp gedrückt, Calibrierung nicht möglich " << "\n";
         return;
     }
-
+    calibrate_mtx.lock();
+    DEBUG("Calibrating Pieces 🛠️");
     ADC_Utilities::calibrateComponents(adc, tscadc, bandVoltage);
+    DEBUG("Calibrating Pieces done ✅");
     sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATION_DONE);
+    calibrate_mtx.unlock();
 }
 
 void ADC_Class::measureClassifySend() {
@@ -36,22 +39,13 @@ void ADC_Class::measureClassifySend() {
         std::cout << "E-Stopp gedrückt, Messung nicht möglich " << "\n";
         return;
     }
-
+    measure_mtx.lock();
     ADC_Enum name = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage);
     sender->send_event((int8_t) Topic::ADC, (int) name);
-    std::cout << "Erkanntes Event " << (int) name << "\n";
+    measure_mtx.unlock();
+    //std::cout << "Erkanntes Event " << (int) name << "\n";
 }
 
-void ADC_Class::adc_prepare() {
-    if(adcStopped) {
-        //TODO mögliches Event Hinzufügen
-        std::cout << "E-Stopp gedrückt, Vorbereitung nicht mögllich" << "\n";
-        return;
-    }
-
-    ADC_Utilities::expect_piece(adc, tscadc, bandVoltage, &adcStopped);
-    sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
-}
 
 //===================================================== public functions ===============================================
 
@@ -69,21 +63,16 @@ void ADC_Class::adc_reset() {
 void ADC_Class::handle_event(_pulse event) {
     ADC_Enum value = static_cast<ADC_Enum>(event.value.sival_int);
     switch(value) {
-        //TODO async
-        case ADC_Enum::ADC_CALIBRATE:
-            DEBUG("Calibrating Pieces 🛠️");
-            calibrate();
-            DEBUG("Calibrating Pieces done ✅");
-            break;
-            //TODO async
-        case ADC_Enum::ADC_MESURE:
-            measureClassifySend();
-            break;
-            //TODO async
-        case ADC_Enum::ADC_PREPARE:
-            adc_prepare();
-            break;
-            //async
+        case ADC_Enum::ADC_CALIBRATE: {
+                std::thread calibrateThread(&ADC_Class::calibrate, this);
+                calibrateThread.detach();
+                break;
+            }
+        case ADC_Enum::ADC_MESURE: {
+                std::thread measureThread(&ADC_Class::measureClassifySend, this);
+                measureThread.detach();
+                break;
+            }
         case ADC_Enum::ADC_STOP:
             adc_estop();
             break;

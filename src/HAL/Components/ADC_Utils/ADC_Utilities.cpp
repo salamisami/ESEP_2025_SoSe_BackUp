@@ -29,26 +29,6 @@ void ADC_Utilities::saveProfile(const Profil& p) {
     std::cout << "Profil erfolgreich gespeichert: " << p.name << "\n";
 }
 
-void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
-    std::vector<float> werte;
-    struct timespec delay = { 0, SAMPLE_DELAY_NS };
-    bool erkannt = false;
-    while(!*adcStopped) {
-        adc.sample();
-        //TODO Magic number
-        usleep(1000);
-        uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
-        float voltage = (raw / 4095.0f) * REF_VOLTAGE;
-        float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
-
-        if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
-            erkannt = true;
-            return;
-        }
-        nanosleep(&delay, NULL);
-    }
-}
-
 
 void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage) {
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
@@ -56,7 +36,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
     // Liste der Bauteile und ob sie ein Loch besitzen
     std::vector<Bauteil> bauteile = {
         //TODO don't forget that this is commented out
-        //{ "WH", ADC_Enum::ADC_WH_DETECT, false },
+        { "WH", ADC_Enum::ADC_WH_DETECT, false },
         { "WF", ADC_Enum::ADC_WF_DETECT, false },
         { "W_B", ADC_Enum::ADC_W_B_DETECT, true },
         { "W_BB", ADC_Enum::ADC_W_B_DETECT, true } //,

@@ -60,13 +60,6 @@ public: //================================================ public functions ====
 	static float define_band_voltage(ADC& adc, TSCADC& tscadc);
 	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage);
 
-	/**
-	 * @brief blocks the thread running this function, until a piece is detected
-	 */
-	static void expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool*);
-
-
-
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
