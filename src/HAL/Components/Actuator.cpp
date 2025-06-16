@@ -42,9 +42,8 @@
 using namespace std;
 
 //================================================= contructors & destructors =================================================
-Actuator::Actuator(Mailbox<_pulse>* mailbox, ADC_Class* adc)
-    : mailbox(mailbox)
-    , gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
+Actuator::Actuator(ADC_Class* adc)
+    : gpio_bank_1(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_1)))
     , gpio_bank_2(mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_2)))
     , actuatorRunning(false)
     , is_local_estop(false) {
@@ -55,12 +54,11 @@ Actuator::Actuator(Mailbox<_pulse>* mailbox, ADC_Class* adc)
     is_local_estop = false;
     is_local_estop = false;
     this->adc = adc;
-    actuatorThread = std::thread(&Actuator::threadFunction, this);
+    //actuatorThread = std::thread(&Actuator::threadFunction, this);
 }
 
 Actuator::~Actuator() {
     actuatorRunning = false;
-    actuatorThread.join();
     global_shutdown();
     if(gpio_bank_1) {
         munmap_device_io(gpio_bank_1, GPIO_MMAP_SIZE);
@@ -87,7 +85,7 @@ void Actuator::clear_data(uintptr_t gpio_bank, uint32_t bit) {
     mtx.unlock();
 }
 
-void Actuator::handleActuatorEvent(int event_value) {
+void Actuator::handle_actuator_event(int event_value) {
     switch((ActuatorEnum) event_value) {
         case ActuatorEnum::MOTOR_SLOW_ON:
             motor_slow_on();
@@ -382,40 +380,33 @@ void Actuator::redWorker() {
 // }
 
 
-void Actuator::threadFunction() {
-    actuatorRunning = true;
-    while(actuatorRunning) {
-        _pulse pulse = mailbox->take();
-        Topic event_code = (Topic) pulse.code;
-        int event_value = pulse.value.sival_int;
-        switch(event_code) {
-            // case Topic::INTERRUPT:
-            //     handleEStop(event_value);
-            //     break;
-            case Topic::ACTUATOR:
-                handleActuatorEvent(event_value);
-                break;
-            case Topic::STOP_THREAD:
-                actuatorRunning = false;
-                break;
-            case Topic::COM:
-                if(event_value == (int) COM_Enum::BUTTON_ESTOP_PRESSED) {
-                    is_neighbor_estop = true;
-                } else if(event_value == (int) COM_Enum::BUTTON_ESTOP_RELEASED) {
-                    is_neighbor_estop = false;
-                }
-                check_estop();
-                break;
-            default:
-                break;
-        }
+void Actuator::handle_event(_pulse event) {
+    Topic event_code = (Topic) event.code;
+    int event_value = event.value.sival_int;
+    switch(event_code) {
+        // case Topic::INTERRUPT:
+        //     handleEStop(event_value);
+        //     break;
+        case Topic::ACTUATOR:
+            handle_actuator_event(event_value);
+            break;
+        case Topic::COM:
+            if(event_value == (int) COM_Enum::BUTTON_ESTOP_PRESSED) {
+                is_neighbor_estop = true;
+            } else if(event_value == (int) COM_Enum::BUTTON_ESTOP_RELEASED) {
+                is_neighbor_estop = false;
+            }
+            check_estop();
+            break;
+        default:
+            break;
     }
 }
 
 
 
 //GPIO_1
-void Actuator::motor_right() { 
+void Actuator::motor_right() {
     if(prohibit_operate) {
         return;
     }
@@ -550,6 +541,9 @@ void Actuator::led_q2_off() {
 
 
 //===================================================== public functions =====================================================
+
+
+
 void Actuator::global_shutdown() {
     sorting_off();
     motor_stop();

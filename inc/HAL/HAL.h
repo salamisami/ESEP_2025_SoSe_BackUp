@@ -8,7 +8,6 @@
 #include "ADC_Class.h"
 #include "PulseMsg.h"
 #include "QNet.h"
-#include "Mailbox.h"
 
 
 
@@ -57,8 +56,6 @@ private: //================================================ private variables ==
 	Actuator* actuator;
 	ADC_Class* adc;
 	
-	Mailbox<_pulse>* actuator_mailbox;
-	Mailbox<_pulse>* adc_mailbox;
 	//primitive types
 	int hal_rcvid;
 	int dispatcher_mock_rcvid;
