@@ -71,7 +71,6 @@ public: //================================================ public functions ====
 
 
     virtual State* adc_calibration_done();
-    virtual State* adc_new_piece();
 
     virtual State* timer(TIMER_ID id);
 

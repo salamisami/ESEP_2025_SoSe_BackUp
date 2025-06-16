@@ -4,7 +4,6 @@
 
 #include <queue>
 #include <mutex>
-#include <semaphore.h>
 #include <stdexcept>
 
 //#define MAX_QUEUE 100
@@ -15,36 +14,28 @@ private:
     std::queue<T> queue;
     std::mutex mtx;
     //sem_t vacant;
-    sem_t occupied;
+    std::condition_variable cv_occupied;
 
 public:
-    ThreadSafeQueue() {
-        //int initVacant = sem_init(&vacant,0, MAX_QUEUE);
-        int initOccupied = sem_init(&occupied, 0, 0);
-
-        if(initOccupied == -1) {
-            throw std::runtime_error("Failed to initialize Semaphores in ThreadSafeQueue");
-        }
-    }
+    ThreadSafeQueue() = default;
     ~ThreadSafeQueue() {
         std::lock_guard<std::mutex> lock(mtx);
-        //sem_destroy(&vacant);
-        sem_destroy(&occupied);
     }
 
     void push(const T& item) {
         //sem_wait(&vacant);
         std::lock_guard<std::mutex> lock(mtx);
         queue.push(item);
-        sem_post(&occupied);
+        cv_occupied.notify_one();
     }
 
     T pop() {
-        sem_wait(&occupied);
-        std::lock_guard<std::mutex> lock(mtx);
+        std::unique_lock<std::mutex> lock(mtx);
+        // Wait until queue is not empty
+        cv_occupied.wait(lock, [this]() { return !queue.empty(); });
+
         T item = queue.front();
         queue.pop();
-        //sem_post(&vacant);
         return item;
     }
 

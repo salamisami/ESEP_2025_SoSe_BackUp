@@ -2,16 +2,22 @@
 
 //================================================= constructors & destructors =================================================
 
-Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender) {
-    this->local_receiver = local_receiver;
-    this->local_sender = local_sender;
-    if(to_self_sender != nullptr){
-        this->to_self_sender = to_self_sender;
-    } else {
-        this->to_self_sender = local_sender;
-    }
-   
-    data = new ContextData(local_sender, local_sender);
+Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender)
+    : local_receiver(local_receiver)
+    , local_sender(local_sender)
+    , to_self_sender(to_self_sender) {
+    init();
+}
+
+Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender)
+    : local_receiver(local_receiver)
+    , local_sender(local_sender)
+    , to_self_sender(local_sender) {
+    init();
+}
+
+void Logic::init() {
+    data = new ContextData(local_sender, to_self_sender);
     fsm = new Context<Boot>(data);
     logicRunning = true;
     logicThread = std::thread(&Logic::threadFunction, this);

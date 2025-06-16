@@ -227,10 +227,6 @@ State* HState::adc_calibration_done() {
     return handle_event_using_function(&State::adc_calibration_done);
 }
 
-State* HState::adc_new_piece() {
-    return handle_event_using_function(&State::adc_new_piece);
-}
-
 State* HState::is_pusher(){
     return handle_event_using_function(&State::is_pusher);
 }

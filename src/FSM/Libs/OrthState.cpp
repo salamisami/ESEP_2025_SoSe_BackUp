@@ -194,9 +194,6 @@ State* OrthState::adc_calibration_done() {
     return handle_event_using_function(&State::adc_calibration_done);
 }
 
-State* OrthState::adc_new_piece() {
-    return handle_event_using_function(&State::adc_new_piece);
-}
 
 State* OrthState::com_button_estop_pressed() {
     return handle_event_using_function(&State::com_button_estop_pressed);

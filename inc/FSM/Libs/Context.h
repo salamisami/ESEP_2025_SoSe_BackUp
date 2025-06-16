@@ -52,9 +52,6 @@ State* Context<T>::handleADC(int event_value) {
     //TODO put newState = state->function() here
     State* newState = nullptr;
     switch((ADC_Enum) event_value) {
-        case ADC_Enum::ADC_NEW_PIECE:
-            newState = state->adc_new_piece();
-            break;
         case ADC_Enum::ADC_CALIBRATION_DONE:
             newState = state->adc_calibration_done();
             break;
