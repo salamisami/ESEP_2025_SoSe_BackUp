@@ -295,9 +295,9 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         // case ADC_SIDE_AREA_BIT:
         //     event = pin_status ? InterruptEnum::ADC_SIDE_AREA_UNBLOCKED : InterruptEnum::ADC_SIDE_AREA_BLOCKED;
         //     break;
-        // case ADC_TOP_AREA_BIT:
-        //     event = pin_status ? InterruptEnum::ADC_TOP_AREA_BLOCKED : InterruptEnum::ADC_TOP_AREA_UNBLOCKED;
-        //     break;
+        case ADC_TOP_AREA_BIT:
+            event = pin_status ? InterruptEnum::ADC_TOP_AREA_BLOCKED : InterruptEnum::ADC_TOP_AREA_UNBLOCKED;
+            break;
         default:
             break;
     }
