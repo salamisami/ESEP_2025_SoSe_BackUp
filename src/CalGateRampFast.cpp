@@ -6,7 +6,7 @@
 CalGateRampFast::CalGateRampFast(ContextData* data) : OrthState(data, std::vector<State*>(
     {
         new PieceGoingGate(data),
-        new LetPieceThrough(data,OPEN_GATE_FAST)
+        new SendToRamp(data)
     }
 )) {
     //substate = new SubState(data);
@@ -20,9 +20,11 @@ CalGateRampFast::~CalGateRampFast() {}
 //===================================================== public functions =====================================================
 void CalGateRampFast::entry() {
     PRINT_STATE
+    OrthState::entry();
 }
 
 void CalGateRampFast::exit() {
+    OrthState::exit();
     PRINT_STATE
 }
 

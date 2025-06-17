@@ -12,11 +12,11 @@ SendToRamp::~SendToRamp() {}
 
 //===================================================== public functions =====================================================
 void SendToRamp::entry(){
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	PRINT_STATE
     HState::entry();
 }
 
 void SendToRamp::exit(){
     HState::exit();
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    PRINT_STATE
 }

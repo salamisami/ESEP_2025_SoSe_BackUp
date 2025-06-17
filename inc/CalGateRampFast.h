@@ -3,7 +3,7 @@
 #pragma once
 
 #include "OrthState.h"
-#include "LetPieceThrough.h"
+#include "SendToRamp.h"
 #include "PieceGoingGate.h"
 
 class CalGateRampFast : public OrthState {

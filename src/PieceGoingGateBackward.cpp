@@ -13,7 +13,10 @@ PieceGoingGateBackward::~PieceGoingGateBackward() {}
 //===================================================== public functions =====================================================
 void PieceGoingGateBackward::entry(){
 	PRINT_STATE
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
+	if(data->is_switch){
+		data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
+	}
+	
 	//TODO magic number
 	data->timer->start_timer(600, TIMER_ID::CalGateRamp2);
 }
@@ -28,4 +31,8 @@ State* PieceGoingGateBackward::timer(TIMER_ID id){
 		return new PieceGoingToADCBackward(data);
 	}
 	return nullptr;
+}
+
+State* PieceGoingGateBackward::laser_sorting_gate_blocked(){
+	return new PieceGoingToADCBackward(data);
 }

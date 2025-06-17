@@ -58,7 +58,7 @@ protected:
 /**
  * @brief enter service mode
  */
-TEST_F(LogicStateTest, Test1) {
+TEST_F(LogicStateTest, ServiceModeFullTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     WAIT(2100);
@@ -88,35 +88,41 @@ TEST_F(LogicStateTest, Test1) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
     expect_state("CalDistanceFast");
-
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+    WAIT(1000);
     //pieces are let through the gate
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(1000);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(3000);
     // //piece is now at the end of the machine
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
-    //remove the piece
+    expect_state("CalGateRampFast");
+
+    //the piece goes back
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
-    expect_state("ReadyForCDS");
-
-
-    //calibrate slow mode
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
-    expect_state("CalDistanceSlow");
-    //pieces are let through the gate
+    WAIT(3000);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(1000);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-    //piece is now at the end of the machine
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
-    //remove the piece
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
-    expect_state("CalDistanceSlow");
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(250);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(750);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_UNBLOCKED);
+    expect_state("ReadyForCDS");
 }
 
 /**
  * @brief enter adc calibration mode, then estop
  */
-TEST_F(LogicStateTest, Test2) {
+TEST_F(LogicStateTest, AdcCalibrationThenEstop) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     WAIT(2100);
@@ -146,9 +152,21 @@ TEST_F(LogicStateTest, Test2) {
 }
 
 /**
+ * @brief enter operating mode, by pressing start button shortly
+ */
+TEST_F(LogicStateTest, ShortTimerTest) {
+    //go to service mode
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    expect_state("Waiting");
+    WAIT(500);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    expect_state("Operating");
+}
+
+/**
  * @brief enter adc calibration mode, by long pressing start button
  */
-TEST_F(LogicStateTest, Test3) {
+TEST_F(LogicStateTest, LongTimerTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     expect_state("Waiting");
