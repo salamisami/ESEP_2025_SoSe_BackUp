@@ -1,14 +1,14 @@
-#ifndef PIECEATADC_H
-#define PIECEATADC_H
+#ifndef PIECEATADCCDF_H
+#define PIECEATADCCDF_H
 #pragma once
 
 #include "State.h"
-#include "PieceGoingToSG.h"
+#include "ADCToGateCDF.h"
 
-class PieceAtADC : public State {
+class PieceAtADCCDF : public State {
 public: //============================================ constructors & destructors ============================================
-    PieceAtADC(ContextData* data) ;
-    virtual ~PieceAtADC();
+    PieceAtADCCDF(ContextData* data) ;
+    virtual ~PieceAtADCCDF();
 	
 
 public: //================================================ public functions ================================================

@@ -1,21 +1,21 @@
-#ifndef PIECEGOINGTOEND_H
-#define PIECEGOINGTOEND_H
+#ifndef GATETORAMPCRF_H
+#define GATETORAMPCRF_H
 #pragma once
 
 #include "State.h"
-#include "CalRampFast.h"
+#include "ReadyForCDS.h"
 
-class PieceGoingToEnd : public State {
+class GateToRampCRF : public State {
 public: //============================================ constructors & destructors ============================================
-    PieceGoingToEnd(ContextData* data) ;
-    virtual ~PieceGoingToEnd();
+    GateToRampCRF(ContextData* data) ;
+    virtual ~GateToRampCRF();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* laser_back_blocked() override;
+	State* laser_ramp_blocked() override;
     
 
 

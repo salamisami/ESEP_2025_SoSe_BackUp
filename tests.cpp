@@ -63,7 +63,7 @@ TEST_F(LogicStateTest, ServiceModeFullTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     WAIT(2100);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-    expect_state("IdleServiceMode");
+    expect_state("IdleSM");
 
     //put a piece to calibrate the pieces
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
@@ -127,7 +127,7 @@ TEST_F(LogicStateTest, AdcCalibrationThenEstop) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     WAIT(2100);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-    expect_state("IdleServiceMode");
+    expect_state("IdleSM");
 
     //put a piece to calibrate the pieces
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
@@ -173,7 +173,7 @@ TEST_F(LogicStateTest, LongTimerTest) {
     WAIT(5000);
     expect_state("TimerReceivedIM");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-    expect_state("IdleServiceMode");
+    expect_state("IdleSM");
 }
 
 

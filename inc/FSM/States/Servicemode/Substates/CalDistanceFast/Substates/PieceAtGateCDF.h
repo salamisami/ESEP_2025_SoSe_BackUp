@@ -1,21 +1,22 @@
-#ifndef IDLESERVICEMODE_H
-#define IDLESERVICEMODE_H
+#ifndef PIECEATGATECDF
+#define PIECEATGATECDF
 #pragma once
 
 #include "State.h"
-#include "ServiceModeSendRamp.h"
+#include "GateToEndCDF.h"
 
-class IdleServiceMode : public State {
+class PieceAtGateCDF : public State {
 public: //============================================ constructors & destructors ============================================
-    IdleServiceMode(ContextData* data) ;
-    virtual ~IdleServiceMode();
+    PieceAtGateCDF(ContextData* data) ;
+    virtual ~PieceAtGateCDF();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+    
+	State* laser_sorting_gate_unblocked() override;
 
-	State* laser_front_blocked() override;
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

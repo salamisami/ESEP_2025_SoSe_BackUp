@@ -3,7 +3,7 @@
 #pragma once
 
 #include "State.h"
-#include "PieceGoingToADC.h"
+#include "PieceAtGateCRF.h"
 
 class OpenGateCRF : public State {
 public: //============================================ constructors & destructors ============================================

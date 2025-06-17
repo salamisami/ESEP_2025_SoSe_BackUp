@@ -1,22 +1,21 @@
-#ifndef PIECEATADCCRF_H
-#define PIECEATADCCRF_H
+#ifndef IDLESM_H
+#define IDLESM_H
 #pragma once
 
 #include "State.h"
-#include "GateToRamp.h"
+#include "ServiceModeSendRamp.h"
 
-class PieceAtADCCRF : public State {
+class IdleSM : public State {
 public: //============================================ constructors & destructors ============================================
-    PieceAtADCCRF(ContextData* data) ;
-    virtual ~PieceAtADCCRF();
+    IdleSM(ContextData* data) ;
+    virtual ~IdleSM();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-	State* laser_sorting_gate_blocked() override;
-    
 
+	State* laser_front_blocked() override;
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

@@ -1,22 +1,21 @@
-#ifndef GATETORAMMP_H
-#define GATETORAMMP_H
+#ifndef ADCTOGATECDF_H
+#define ADCTOGATECDF_H
 #pragma once
 
 #include "State.h"
-#include "ReadyForCDS.h"
+#include "PieceAtGateCDF.h"
 
-class GateToRamp : public State {
+class ADCToGateCDF : public State {
 public: //============================================ constructors & destructors ============================================
-    GateToRamp(ContextData* data) ;
-    virtual ~GateToRamp();
+    ADCToGateCDF(ContextData* data) ;
+    virtual ~ADCToGateCDF();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	State* laser_ramp_blocked() override;
     
+	State* laser_sorting_gate_blocked() override;
 
 
 private: //================================================ private variables ================================================

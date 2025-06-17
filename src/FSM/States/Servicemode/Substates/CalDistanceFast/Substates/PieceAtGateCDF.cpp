@@ -1,26 +1,26 @@
-#include "PieceAtSortingGate.h"
+#include "PieceAtGateCDF.h"
 
 //================================================= constructors & destructors =================================================
-PieceAtSortingGate::PieceAtSortingGate(ContextData* data) : State(data) {
+PieceAtGateCDF::PieceAtGateCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceAtSortingGate::~PieceAtSortingGate() {}
+PieceAtGateCDF::~PieceAtGateCDF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceAtSortingGate::entry(){
+void PieceAtGateCDF::entry(){
 	PRINT_STATE;
 	data->timeprofile.timestamp[(int)Timestamp::LASER_GATE_BLOCKED] = data->stopwatch.peek_time();
 
 }
 
-void PieceAtSortingGate::exit(){
+void PieceAtGateCDF::exit(){
 	PRINT_STATE;
 }
 
-State* PieceAtSortingGate::laser_sorting_gate_unblocked(){
-	return new PieceGoingToEnd(data);
+State* PieceAtGateCDF::laser_sorting_gate_unblocked(){
+	return new GateToEndCDF(data);
 }

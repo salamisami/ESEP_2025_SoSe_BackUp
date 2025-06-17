@@ -1,25 +1,24 @@
-#include "IdleServiceMode.h"
+#include "PieceAtGateCRF.h"
 
 //================================================= constructors & destructors =================================================
-IdleServiceMode::IdleServiceMode(ContextData* data) : State(data) {
-	//substate = new SubState(data);
+PieceAtGateCRF::PieceAtGateCRF(ContextData* data) : State(data) {
+    //substate = new SubState(data);
 }
 
-IdleServiceMode::~IdleServiceMode() {}
+PieceAtGateCRF::~PieceAtGateCRF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void IdleServiceMode::entry() {
-	PRINT_STATE;
-	DEBUG("Please put W_H");
-}
-
-void IdleServiceMode::exit() {
+void PieceAtGateCRF::entry(){
 	PRINT_STATE;
 }
 
-State* IdleServiceMode::laser_front_blocked() {
-	return new ServiceModeSendRamp(data);
+void PieceAtGateCRF::exit(){
+	PRINT_STATE;
 }
+
+State* PieceAtGateCRF::adc_top_area_blocked(){
+	return new PieceAtADCCRF(data)
+;}

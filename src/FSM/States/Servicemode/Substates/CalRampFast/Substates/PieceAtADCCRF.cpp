@@ -21,5 +21,5 @@ void PieceAtADCCRF::exit(){
 }
 
 State* PieceAtADCCRF::laser_sorting_gate_blocked(){
-	return new GateToRamp(data);
+	return new GateToRampCRF(data);
 }

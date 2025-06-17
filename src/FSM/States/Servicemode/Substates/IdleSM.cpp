@@ -1,26 +1,25 @@
-#include "GateToRamp.h"
+#include "IdleSM.h"
 
 //================================================= constructors & destructors =================================================
-GateToRamp::GateToRamp(ContextData* data) : State(data) {
-    //substate = new SubState(data);
+IdleSM::IdleSM(ContextData* data) : State(data) {
+	//substate = new SubState(data);
 }
 
-GateToRamp::~GateToRamp() {}
+IdleSM::~IdleSM() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void GateToRamp::entry(){
+void IdleSM::entry() {
 	PRINT_STATE;
-	
+	DEBUG("Please put W_H");
 }
 
-void GateToRamp::exit(){
+void IdleSM::exit() {
 	PRINT_STATE;
-	data->timeprofile.timestamp[(int)Timestamp::LASER_RAMP_BLOCKED] = data->stopwatch.peek_time();
 }
 
-State* GateToRamp::laser_ramp_blocked(){
-	return new ReadyForCDS(data);
+State* IdleSM::laser_front_blocked() {
+	return new ServiceModeSendRamp(data);
 }

@@ -2,7 +2,7 @@
 
 //================================================= constructors & destructors =================================================
 Servicemode::Servicemode(ContextData* data)
-    : HState(data, new IdleServiceMode(data)) {
+    : HState(data, new IdleSM(data)) {
 }
 
 Servicemode::~Servicemode() {}

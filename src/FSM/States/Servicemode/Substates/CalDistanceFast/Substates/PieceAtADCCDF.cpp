@@ -1,24 +1,25 @@
-#include "PieceGoingToADC.h"
+#include "PieceAtADCCDF.h"
 
 //================================================= constructors & destructors =================================================
-PieceAtGateCRF::PieceAtGateCRF(ContextData* data) : State(data) {
+PieceAtADCCDF::PieceAtADCCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceAtGateCRF::~PieceAtGateCRF() {}
+PieceAtADCCDF::~PieceAtADCCDF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceAtGateCRF::entry(){
+void PieceAtADCCDF::entry(){
+	PRINT_STATE;
+	data->timeprofile.timestamp[(int)Timestamp::ADC_BLOCKED] = data->stopwatch.peek_time();
+}
+
+void PieceAtADCCDF::exit(){
 	PRINT_STATE;
 }
 
-void PieceAtGateCRF::exit(){
-	PRINT_STATE;
+State* PieceAtADCCDF::adc_top_area_unblocked(){
+	return new ADCToGateCDF(data);
 }
-
-State* PieceAtGateCRF::adc_top_area_blocked(){
-	return new PieceAtADCCRF(data)
-;}

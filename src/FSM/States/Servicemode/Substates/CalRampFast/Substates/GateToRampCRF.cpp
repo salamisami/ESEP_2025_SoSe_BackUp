@@ -1,25 +1,26 @@
-#include "PieceAtADC.h"
+#include "GateToRampCRF.h"
 
 //================================================= constructors & destructors =================================================
-PieceAtADC::PieceAtADC(ContextData* data) : State(data) {
+GateToRampCRF::GateToRampCRF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceAtADC::~PieceAtADC() {}
+GateToRampCRF::~GateToRampCRF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceAtADC::entry(){
+void GateToRampCRF::entry(){
 	PRINT_STATE;
-	data->timeprofile.timestamp[(int)Timestamp::ADC_BLOCKED] = data->stopwatch.peek_time();
+	
 }
 
-void PieceAtADC::exit(){
+void GateToRampCRF::exit(){
 	PRINT_STATE;
+	data->timeprofile.timestamp[(int)Timestamp::LASER_RAMP_BLOCKED] = data->stopwatch.peek_time();
 }
 
-State* PieceAtADC::adc_top_area_unblocked(){
-	return new PieceGoingToSG(data);
+State* GateToRampCRF::laser_ramp_blocked(){
+	return new ReadyForCDS(data);
 }

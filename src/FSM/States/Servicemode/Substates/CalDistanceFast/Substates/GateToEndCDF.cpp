@@ -1,26 +1,26 @@
-#include "PieceGoingToEnd.h"
+#include "GateToEndCDF.h"
 
 //================================================= constructors & destructors =================================================
-PieceGoingToEnd::PieceGoingToEnd(ContextData* data) : State(data) {
+GateToEndCDF::GateToEndCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceGoingToEnd::~PieceGoingToEnd() {}
+GateToEndCDF::~GateToEndCDF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceGoingToEnd::entry(){
+void GateToEndCDF::entry(){
 	PRINT_STATE;
     data->timeprofile.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] = data->stopwatch.peek_time();
 }
 
-void PieceGoingToEnd::exit(){
+void GateToEndCDF::exit(){
     PRINT_STATE;
     data->timeprofile.timestamp[(int) Timestamp::END] = data->stopwatch.peek_time();
 }
 
-State* PieceGoingToEnd::laser_back_blocked(){
+State* GateToEndCDF::laser_back_blocked(){
     return new CalRampFast(data);
 }
