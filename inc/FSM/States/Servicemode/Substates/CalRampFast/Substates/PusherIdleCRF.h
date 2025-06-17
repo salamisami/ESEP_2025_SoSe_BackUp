@@ -1,22 +1,21 @@
-#ifndef CALRAMPFAST_H
-#define CALRAMPFAST_H
+#ifndef PUSHERIDLECRF_H
+#define PUSHERIDLECRF_H
 #pragma once
 
-#include "OrthState.h"
-#include "EndToGateCRF.h"
-#include "PusherIdleCRF.h"
+#include "State.h"
+#include "SendToRamp.h"
 
-class CalRampFast : public OrthState {
+class PusherIdleCRF : public State {
 public: //============================================ constructors & destructors ============================================
-    CalRampFast(ContextData* data) ;
-    virtual ~CalRampFast();
+    PusherIdleCRF(ContextData* data) ;
+    virtual ~PusherIdleCRF();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* laser_ramp_blocked() override;
+	State* adc_top_area_blocked() override;
     
 
 

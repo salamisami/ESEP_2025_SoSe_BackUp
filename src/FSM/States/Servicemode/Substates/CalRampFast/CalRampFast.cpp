@@ -6,7 +6,7 @@
 CalRampFast::CalRampFast(ContextData* data) : OrthState(data, std::vector<State*>(
     {
         new EndToGateCRF(data),
-        new SendToRamp(data)
+        new PusherIdleCRF(data)
     }
 )) {
     //substate = new SubState(data);
