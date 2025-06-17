@@ -1,23 +1,21 @@
-#ifndef CALDISTANCEFAST_H
-#define CALDISTANCEFAST_H
+#ifndef GATETORAMMP_H
+#define GATETORAMMP_H
 #pragma once
 
-#include "OrthState.h"
-#include "IdleCDF.h"
-#include "LetPieceThrough.h"
-#include "CalRampFast.h"
+#include "State.h"
+#include "ReadyForCDS.h"
 
-class CalDistanceFast : public OrthState{
+class GateToRamp : public State {
 public: //============================================ constructors & destructors ============================================
-    CalDistanceFast(ContextData* data) ;
-    virtual ~CalDistanceFast();
+    GateToRamp(ContextData* data) ;
+    virtual ~GateToRamp();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* laser_back_blocked() override;
+	State* laser_ramp_blocked() override;
     
 
 

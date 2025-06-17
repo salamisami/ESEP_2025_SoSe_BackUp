@@ -12,13 +12,13 @@ PieceGoingToSG::~PieceGoingToSG() {}
 
 //===================================================== public functions =====================================================
 void PieceGoingToSG::entry(){
-	PRINT_STATE
+	PRINT_STATE;
 	data->timeprofile.timestamp[(int)Timestamp::ADC_UNBLOCKED] = data->stopwatch.peek_time();
 
 }
 
 void PieceGoingToSG::exit(){
-	PRINT_STATE
+	PRINT_STATE;
 }
 
 State* PieceGoingToSG::laser_sorting_gate_blocked(){

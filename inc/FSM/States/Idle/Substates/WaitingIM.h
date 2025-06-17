@@ -1,23 +1,25 @@
-#ifndef CALDISTANCEFAST_H
-#define CALDISTANCEFAST_H
+#ifndef WAITINGIM_H
+#define WAITINGIM_H
 #pragma once
 
-#include "OrthState.h"
-#include "IdleCDF.h"
-#include "LetPieceThrough.h"
-#include "CalRampFast.h"
+#include "State.h"
+#include "Timer.h"
+#include "TimerReceivedIM.h"
+#include "Operating.h"
 
-class CalDistanceFast : public OrthState{
+
+class WaitingIM : public State {
 public: //============================================ constructors & destructors ============================================
-    CalDistanceFast(ContextData* data) ;
-    virtual ~CalDistanceFast();
+    WaitingIM(ContextData* data);
+    virtual ~WaitingIM();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* laser_back_blocked() override;
+	State* button_start_released() override;
+	State* timer(TIMER_ID id) override;
     
 
 

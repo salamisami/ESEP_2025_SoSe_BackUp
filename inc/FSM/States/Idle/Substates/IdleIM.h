@@ -1,24 +1,22 @@
-#ifndef CALDISTANCEFAST_H
-#define CALDISTANCEFAST_H
+#ifndef IDLEIM_H
+#define IDLEIM_H
 #pragma once
 
-#include "OrthState.h"
-#include "IdleCDF.h"
-#include "LetPieceThrough.h"
-#include "CalRampFast.h"
+#include "State.h"
+#include "WaitingIM.h"
 
-class CalDistanceFast : public OrthState{
+class IdleIM : public State {
 public: //============================================ constructors & destructors ============================================
-    CalDistanceFast(ContextData* data) ;
-    virtual ~CalDistanceFast();
-	
+	IdleIM(ContextData* data);
+	virtual ~IdleIM();
+
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
+	void entry() override;
+	void exit() override;
 
-	State* laser_back_blocked() override;
-    
+	State* button_start_pressed() override;
+
 
 
 private: //================================================ private variables ================================================
@@ -26,12 +24,12 @@ private: //================================================ private variables ==
 	//pointers
 	//primitive types
 	//bool and char
-   
-	
+
+
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
-	
+
 };
 
 #endif

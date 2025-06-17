@@ -1,7 +1,7 @@
 #include "ModeHandler.h"
 
 //================================================= constructors & destructors =================================================
-ModeHandler::ModeHandler(ContextData* data) : HState(data, new Idle(data)){
+ModeHandler::ModeHandler(ContextData* data) : HState(data, new IdleMode(data)){
     
 }
 

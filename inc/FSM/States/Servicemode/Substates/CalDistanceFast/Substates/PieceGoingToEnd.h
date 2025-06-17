@@ -3,7 +3,7 @@
 #pragma once
 
 #include "State.h"
-#include "CalGateRampFast.h"
+#include "CalRampFast.h"
 
 class PieceGoingToEnd : public State {
 public: //============================================ constructors & destructors ============================================

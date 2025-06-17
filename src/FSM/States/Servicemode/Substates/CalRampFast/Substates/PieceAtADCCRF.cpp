@@ -1,26 +1,25 @@
-#include "PieceAtSortingGate.h"
+#include "PieceAtADCCRF.h"
 
 //================================================= constructors & destructors =================================================
-PieceAtSortingGate::PieceAtSortingGate(ContextData* data) : State(data) {
+PieceAtADCCRF::PieceAtADCCRF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceAtSortingGate::~PieceAtSortingGate() {}
+PieceAtADCCRF::~PieceAtADCCRF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceAtSortingGate::entry(){
+void PieceAtADCCRF::entry(){
 	PRINT_STATE;
-	data->timeprofile.timestamp[(int)Timestamp::LASER_GATE_BLOCKED] = data->stopwatch.peek_time();
-
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
 }
 
-void PieceAtSortingGate::exit(){
+void PieceAtADCCRF::exit(){
 	PRINT_STATE;
 }
 
-State* PieceAtSortingGate::laser_sorting_gate_unblocked(){
-	return new PieceGoingToEnd(data);
+State* PieceAtADCCRF::laser_sorting_gate_blocked(){
+	return new GateToRamp(data);
 }

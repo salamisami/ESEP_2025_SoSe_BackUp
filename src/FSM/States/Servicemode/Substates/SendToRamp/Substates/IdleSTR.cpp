@@ -1,26 +1,27 @@
-#include "PieceAtSortingGate.h"
+#include "IdleSTR.h"
 
 //================================================= constructors & destructors =================================================
-PieceAtSortingGate::PieceAtSortingGate(ContextData* data) : State(data) {
+IdleSTR::IdleSTR(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceAtSortingGate::~PieceAtSortingGate() {}
+IdleSTR::~IdleSTR() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceAtSortingGate::entry(){
-	PRINT_STATE;
-	data->timeprofile.timestamp[(int)Timestamp::LASER_GATE_BLOCKED] = data->stopwatch.peek_time();
-
-}
-
-void PieceAtSortingGate::exit(){
+void IdleSTR::entry(){
 	PRINT_STATE;
 }
 
-State* PieceAtSortingGate::laser_sorting_gate_unblocked(){
-	return new PieceGoingToEnd(data);
+void IdleSTR::exit(){
+    PRINT_STATE;
+}
+
+State* IdleSTR::laser_sorting_gate_blocked(){
+    if(!data->is_switch){
+        return new PushRampSTR(data);
+    }
+    return nullptr;
 }

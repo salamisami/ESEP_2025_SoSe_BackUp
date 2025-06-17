@@ -1,23 +1,35 @@
-#include "LetPieceThrough.h"
+#include "IdleMode.h"
 
 //================================================= constructors & destructors =================================================
-LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
-: HState(data, new IdleLPT(data, duration)){
-    //substate = new SubState(data);
+IdleMode::IdleMode(ContextData* data) : HState(data, new IdleIM(data)) {
+    
 }
 
-LetPieceThrough::~LetPieceThrough() {}
+IdleMode::~IdleMode() {
+}
 
 //===================================================== private functions =====================================================
 
 
+
+
 //===================================================== public functions =====================================================
-void LetPieceThrough::entry(){
-	PRINT_STATE;
+
+void IdleMode::entry() {
+    PRINT_STATE;
     HState::entry();
 }
 
-void LetPieceThrough::exit(){
+void IdleMode::exit() {
     HState::exit();
     PRINT_STATE;
+}
+
+State* IdleMode::button_start_released(){
+    State* newSubstate = substate->button_start_released();
+    if(newSubstate != nullptr){
+        //there is a super_substate change, explicit exit
+        return newSubstate;
+    }
+    return nullptr;
 }

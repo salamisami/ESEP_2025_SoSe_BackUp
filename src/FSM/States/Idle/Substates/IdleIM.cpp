@@ -1,23 +1,25 @@
-#include "LetPieceThrough.h"
+#include "IdleIM.h"
 
 //================================================= constructors & destructors =================================================
-LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
-: HState(data, new IdleLPT(data, duration)){
-    //substate = new SubState(data);
+IdleIM::IdleIM(ContextData* data) :State(data) {
+
 }
 
-LetPieceThrough::~LetPieceThrough() {}
+IdleIM::~IdleIM() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void LetPieceThrough::entry(){
-	PRINT_STATE;
-    HState::entry();
+void IdleIM::entry() {
+    PRINT_STATE;
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
 }
 
-void LetPieceThrough::exit(){
-    HState::exit();
+void IdleIM::exit() {
     PRINT_STATE;
+}
+
+State* IdleIM::button_start_pressed(){
+    return new WaitingIM(data);
 }

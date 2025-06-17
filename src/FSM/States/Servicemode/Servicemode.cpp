@@ -29,5 +29,5 @@ void Servicemode::exit() {
 }
 
 HState* Servicemode::button_stop_pressed() {
-    return new Idle(data);
+    return new IdleMode(data);
 }

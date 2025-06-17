@@ -1,6 +1,6 @@
 #include "Timer.h"
 #include "Context.h"
-#include "Idle.h"
+#include "IdleMode.h"
 #include "Mock_PM.h"
 #include "Event.h"
 #include "ModeHandler.h"
@@ -100,7 +100,7 @@ TEST_F(LogicStateTest, ServiceModeFullTest) {
     WAIT(3000);
     // //piece is now at the end of the machine
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
-    expect_state("CalGateRampFast");
+    expect_state("CalRampFast");
 
     //the piece goes back
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
@@ -148,7 +148,7 @@ TEST_F(LogicStateTest, AdcCalibrationThenEstop) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
     expect_state("EStopQuit");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
-    expect_state("Traffic_Green_On_Slow");
+    expect_state("IdleIM");
 }
 
 /**
@@ -157,7 +157,7 @@ TEST_F(LogicStateTest, AdcCalibrationThenEstop) {
 TEST_F(LogicStateTest, ShortTimerTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-    expect_state("Waiting");
+    expect_state("WaitingIM");
     WAIT(500);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
     expect_state("Operating");
@@ -169,9 +169,9 @@ TEST_F(LogicStateTest, ShortTimerTest) {
 TEST_F(LogicStateTest, LongTimerTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-    expect_state("Waiting");
+    expect_state("WaitingIM");
     WAIT(5000);
-    expect_state("Timer_Received");
+    expect_state("TimerReceivedIM");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
     expect_state("IdleServiceMode");
 }

@@ -12,15 +12,15 @@ PieceGoingToEnd::~PieceGoingToEnd() {}
 
 //===================================================== public functions =====================================================
 void PieceGoingToEnd::entry(){
-	PRINT_STATE
+	PRINT_STATE;
     data->timeprofile.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] = data->stopwatch.peek_time();
 }
 
 void PieceGoingToEnd::exit(){
-    PRINT_STATE
+    PRINT_STATE;
     data->timeprofile.timestamp[(int) Timestamp::END] = data->stopwatch.peek_time();
 }
 
 State* PieceGoingToEnd::laser_back_blocked(){
-    return new CalGateRampFast(data);
+    return new CalRampFast(data);
 }

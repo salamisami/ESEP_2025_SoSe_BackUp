@@ -1,7 +1,7 @@
 #include "SendToRamp.h"
 
 //================================================= constructors & destructors =================================================
-SendToRamp::SendToRamp(ContextData* data) : HState(data, new IdleGateCP(data)) {
+SendToRamp::SendToRamp(ContextData* data) : HState(data, new IdleSTR(data)) {
     //substate = new SubState(data);
 }
 
@@ -12,11 +12,11 @@ SendToRamp::~SendToRamp() {}
 
 //===================================================== public functions =====================================================
 void SendToRamp::entry(){
-	PRINT_STATE
+	PRINT_STATE;
     HState::entry();
 }
 
 void SendToRamp::exit(){
     HState::exit();
-    PRINT_STATE
+    PRINT_STATE;
 }

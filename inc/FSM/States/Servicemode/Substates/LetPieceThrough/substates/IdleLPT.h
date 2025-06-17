@@ -1,23 +1,21 @@
-#ifndef CALDISTANCEFAST_H
-#define CALDISTANCEFAST_H
+#ifndef IDLELPT_H
+#define IDLELPT_H
 #pragma once
 
-#include "OrthState.h"
-#include "IdleCDF.h"
-#include "LetPieceThrough.h"
-#include "CalRampFast.h"
+#include "State.h"
+#include "OpenGateLPT.h"
 
-class CalDistanceFast : public OrthState{
+class IdleLPT : public State {
 public: //============================================ constructors & destructors ============================================
-    CalDistanceFast(ContextData* data) ;
-    virtual ~CalDistanceFast();
+    IdleLPT(ContextData* data, int duration) ;
+    virtual ~IdleLPT();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* laser_back_blocked() override;
+	State* laser_sorting_gate_blocked() override;
     
 
 
@@ -25,6 +23,7 @@ private: //================================================ private variables ==
 	//classes, STL containers, and structs
 	//pointers
 	//primitive types
+	int duration;
 	//bool and char
    
 	
