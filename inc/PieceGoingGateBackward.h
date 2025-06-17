@@ -1,21 +1,21 @@
-#ifndef READYFORCDS_H
-#define READYFORCDS_H
+#ifndef PIECEGOINGGATEBACKWARD_H
+#define PIECEGOINGGATEBACKWARD_H
 #pragma once
 
 #include "State.h"
-#include "CalDistanceSlow.h"
+#include "PieceGoingToADC.h"
 
-class ReadyForCDS : public State {
+class PieceGoingGateBackward : public State {
 public: //============================================ constructors & destructors ============================================
-    ReadyForCDS(ContextData* data) ;
-    virtual ~ReadyForCDS();
+    PieceGoingGateBackward(ContextData* data) ;
+    virtual ~PieceGoingGateBackward();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	//State* laser_front_blocked() override;
+	State* timer(TIMER_ID id) override;
     
 
 

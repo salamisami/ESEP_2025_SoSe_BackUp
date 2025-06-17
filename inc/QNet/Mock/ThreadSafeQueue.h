@@ -5,6 +5,7 @@
 #include <queue>
 #include <mutex>
 #include <stdexcept>
+#include <condition_variable>
 
 //#define MAX_QUEUE 100
 

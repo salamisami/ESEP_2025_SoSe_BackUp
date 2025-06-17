@@ -16,11 +16,23 @@ void Stopwatch::start() {
     mtx.unlock();
 }
 
+long Stopwatch::peek_time(){
+    mtx.lock();
+    if(!is_running) {
+        mtx.unlock();
+        return 0;
+    }
+    auto end_time = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    mtx.unlock();
+    return duration.count();
+}
+
 long Stopwatch::stop() {
     mtx.lock();
     if(!is_running) {
         mtx.unlock();
-        THROW("Stopwatch was never started!");
+        return 0;
     }
     auto end_time = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);

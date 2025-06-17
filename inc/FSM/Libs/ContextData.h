@@ -7,6 +7,7 @@
 #include "QNet.h"
 //#include "State.h"
 #include "Stopwatch.h"
+#include "Piece.h"
 #include <vector>
 #include <stack>
 #include <queue>
@@ -34,6 +35,7 @@ public:
 //================================================ private variables ================================================
 public:
     Stopwatch stopwatch;
+    TimeProfile timeprofile;
     //TODO implement a safe stack here, that returns nullptr if no elements left in the stack
     std::stack<State*>* stateStack;
     I_Sender* timer_sender;

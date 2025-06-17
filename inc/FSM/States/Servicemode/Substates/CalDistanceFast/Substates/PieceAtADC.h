@@ -1,21 +1,21 @@
-#ifndef READYFORCDS_H
-#define READYFORCDS_H
+#ifndef PIECEATADC_H
+#define PIECEATADC_H
 #pragma once
 
 #include "State.h"
-#include "CalDistanceSlow.h"
+#include "PieceGoingToSG.h"
 
-class ReadyForCDS : public State {
+class PieceAtADC : public State {
 public: //============================================ constructors & destructors ============================================
-    ReadyForCDS(ContextData* data) ;
-    virtual ~ReadyForCDS();
+    PieceAtADC(ContextData* data) ;
+    virtual ~PieceAtADC();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	//State* laser_front_blocked() override;
+	State* adc_top_area_unblocked() override;
     
 
 

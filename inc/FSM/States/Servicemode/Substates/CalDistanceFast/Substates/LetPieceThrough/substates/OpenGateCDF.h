@@ -1,21 +1,21 @@
-#ifndef READYFORCDS_H
-#define READYFORCDS_H
+#ifndef OPENGATECDF_H
+#define OPENGATECDF_H
 #pragma once
 
 #include "State.h"
-#include "CalDistanceSlow.h"
+#include "IdleGateCDF.h"
 
-class ReadyForCDS : public State {
+class OpenGateCDF : public State {
 public: //============================================ constructors & destructors ============================================
-    ReadyForCDS(ContextData* data) ;
-    virtual ~ReadyForCDS();
+    OpenGateCDF(ContextData* data, int duration);
+    virtual ~OpenGateCDF();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	//State* laser_front_blocked() override;
+	State* timer(TIMER_ID id) override;
     
 
 
@@ -23,6 +23,7 @@ private: //================================================ private variables ==
 	//classes, STL containers, and structs
 	//pointers
 	//primitive types
+	int duration;
 	//bool and char
    
 	

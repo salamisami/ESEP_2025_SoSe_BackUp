@@ -1,25 +1,13 @@
-#include "StartCDF.h"
+#include "Piece.h"
 
 //================================================= constructors & destructors =================================================
-StartCDF::StartCDF(ContextData* data) : State(data) {
-    //substate = new SubState(data);
+Piece::Piece(TimeProfile input_profile){
+
 }
 
-StartCDF::~StartCDF() {}
+Piece::~Piece() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void StartCDF::entry(){
-	PRINT_STATE;
-    data->stopwatch.start();
-}
-
-void StartCDF::exit(){
-    PRINT_STATE;
-}
-
-State* StartCDF::adc_top_area_blocked(){
-    return new PieceAtADC(data);
-}

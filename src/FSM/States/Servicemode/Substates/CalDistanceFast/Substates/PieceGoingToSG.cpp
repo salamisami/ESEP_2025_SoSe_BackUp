@@ -1,25 +1,26 @@
-#include "ReadyForCDS.h"
+#include "PieceGoingToSG.h"
 
 //================================================= constructors & destructors =================================================
-ReadyForCDS::ReadyForCDS(ContextData* data) : State(data) {
+PieceGoingToSG::PieceGoingToSG(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-ReadyForCDS::~ReadyForCDS() {}
+PieceGoingToSG::~PieceGoingToSG() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void ReadyForCDS::entry(){
-	PRINT_STATE;
-    std::cout << "Please put a piece to calibrate distance timer (slow mode)" << std::endl;
+void PieceGoingToSG::entry(){
+	PRINT_STATE
+	data->timeprofile.timestamp[(int)Timestamp::ADC_UNBLOCKED] = data->stopwatch.peek_time();
+
 }
 
-void ReadyForCDS::exit(){
-    PRINT_STATE;
+void PieceGoingToSG::exit(){
+	PRINT_STATE
 }
 
-// State* ReadyForCDS::laser_front_blocked(){
-//     return new CalDistanceSlow(data);
-// }
+State* PieceGoingToSG::laser_sorting_gate_blocked(){
+	return new PieceAtSortingGate(data);
+}

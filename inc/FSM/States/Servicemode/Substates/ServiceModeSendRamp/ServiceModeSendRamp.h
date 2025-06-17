@@ -4,7 +4,7 @@
 
 #include "OrthState.h"
 #include "IdleSMSR.h"
-#include "IdleGateCP.h"
+#include "SendToRamp.h"
 
 
 class ServiceModeSendRamp : public OrthState {

@@ -1,21 +1,19 @@
-#ifndef OPENGATECDF_H
-#define OPENGATECDF_H
+#ifndef SENDTORAMP_H
+#define SENDTORAMP_H
 #pragma once
 
-#include "State.h"
-#include "IdleGateCDF.h"
+#include "HState.h"
+#include "IdleGateCP.h"
 
-class OpenGateCDF : public State {
+class SendToRamp : public HState {
 public: //============================================ constructors & destructors ============================================
-    OpenGateCDF(ContextData* data) ;
-    virtual ~OpenGateCDF();
+    SendToRamp(ContextData* data) ;
+    virtual ~SendToRamp();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	State* timer(TIMER_ID id) override;
     
 
 

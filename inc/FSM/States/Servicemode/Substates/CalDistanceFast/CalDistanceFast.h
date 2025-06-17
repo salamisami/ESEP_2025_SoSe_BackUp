@@ -4,8 +4,8 @@
 
 #include "OrthState.h"
 #include "IdleCDF.h"
-#include "IdleGateCDF.h"
-#include "ReadyForCDS.h"
+#include "LetPieceThrough.h"
+#include "CalGateRampFast.h"
 
 class CalDistanceFast : public OrthState{
 public: //============================================ constructors & destructors ============================================
@@ -17,7 +17,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	State* laser_back_unblocked() override;
+	State* laser_back_blocked() override;
     
 
 
