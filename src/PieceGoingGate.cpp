@@ -14,7 +14,8 @@ PieceGoingGate::~PieceGoingGate() {}
 void PieceGoingGate::entry(){
 	PRINT_STATE
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_LEFT_START);
-	data->timer->start_timer(1500, TIMER_ID::CalGateRamp1);
+	int time_required = data->timeprofile.timestamp[(int) Timestamp::END] - data->timeprofile.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
+	data->timer->start_timer(time_required + 1000, TIMER_ID::CalGateRamp1);
 }
 
 void PieceGoingGate::exit(){

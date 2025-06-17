@@ -18,6 +18,7 @@ void PieceGoingToEnd::entry(){
 
 void PieceGoingToEnd::exit(){
     PRINT_STATE
+    data->timeprofile.timestamp[(int) Timestamp::END] = data->stopwatch.peek_time();
 }
 
 State* PieceGoingToEnd::laser_back_blocked(){
