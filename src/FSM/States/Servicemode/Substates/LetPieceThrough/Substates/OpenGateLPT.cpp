@@ -13,7 +13,7 @@ OpenGateLPT::~OpenGateLPT() {}
 //===================================================== public functions =====================================================
 void OpenGateLPT::entry(){
 	PRINT_STATE;
-    data->timer->start_timer(600, TIMER_ID::OPENGATELPT);
+    data->timer->start_timer(600, TIMER_ID::OPENGATE_LPT);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
     
 }
@@ -24,7 +24,7 @@ void OpenGateLPT::exit(){
 }
 
 State* OpenGateLPT::timer(TIMER_ID id){
-    if(id == TIMER_ID::OPENGATELPT){
+    if(id == TIMER_ID::OPENGATE_LPT){
         return new IdleLPT(data, duration);    
     }
     return nullptr;

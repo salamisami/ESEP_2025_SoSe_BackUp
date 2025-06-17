@@ -13,7 +13,7 @@ WaitingIM::~WaitingIM() {}
 //===================================================== public functions =====================================================
 void WaitingIM::entry(){
 	PRINT_STATE;
-    data->timer->start_timer(2000, TIMER_ID::WAITINGIM);
+    data->timer->start_timer(2000, TIMER_ID::WAITING_IM);
 }
 
 void WaitingIM::exit(){
@@ -25,7 +25,7 @@ State* WaitingIM::button_start_released(){
 }
 
 State* WaitingIM::timer(TIMER_ID id){
-    if(id == TIMER_ID::WAITINGIM){
+    if(id == TIMER_ID::WAITING_IM){
         return new TimerReceivedIM(data);
     }
     return nullptr;

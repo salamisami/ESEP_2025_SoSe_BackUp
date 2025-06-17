@@ -13,7 +13,7 @@ OpenGateCDS::~OpenGateCDS() {}
 //===================================================== public functions =====================================================
 void OpenGateCDS::entry(){
 	PRINT_STATE;
-	data->timer->start_timer(2000, TIMER_ID::OPEN_GATE_CDS);
+	data->timer->start_timer(2000, TIMER_ID::OPENGATE_CDS);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
 }
 
@@ -23,7 +23,7 @@ void OpenGateCDS::exit(){
 }
 
 State* OpenGateCDS::timer(TIMER_ID id){
-    if(id == TIMER_ID::OPEN_GATE_CDS){
+    if(id == TIMER_ID::OPENGATE_CDS){
         return new IdleGateCDS(data);
     }
     return nullptr;

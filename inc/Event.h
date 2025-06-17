@@ -91,12 +91,12 @@ enum class COM_Enum: int{
 };
 
 enum class TIMER_ID: int {
-    WAITINGIM = 1,
-    OPEN_GATE_CDS,
-    OPENGATELPT,
-    PUSHRAMPSTR,
-    CalGateRamp2,
-    CalGateRamp1
+    WAITING_IM = 1,
+    OPENGATE_CDS,
+    OPENGATE_LPT,
+    PUSHRAMP_STR,
+    CAL_GATE_RAMP2,
+    CAL_GATE_RAMP1
 };
 
 

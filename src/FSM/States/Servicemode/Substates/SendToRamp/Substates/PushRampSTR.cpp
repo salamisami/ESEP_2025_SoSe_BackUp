@@ -13,7 +13,7 @@ PushRampSTR::~PushRampSTR() {}
 //===================================================== public functions =====================================================
 void PushRampSTR::entry(){
 	PRINT_STATE;
-    data->timer->start_timer(250, TIMER_ID::PUSHRAMPSTR);
+    data->timer->start_timer(250, TIMER_ID::PUSHRAMP_STR);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
 }
 
@@ -23,7 +23,7 @@ void PushRampSTR::exit(){
 }
 
 State* PushRampSTR::timer(TIMER_ID id){
-    if(id == TIMER_ID::PUSHRAMPSTR){
+    if(id == TIMER_ID::PUSHRAMP_STR){
         return new IdleSTR(data);
     }
     return nullptr;

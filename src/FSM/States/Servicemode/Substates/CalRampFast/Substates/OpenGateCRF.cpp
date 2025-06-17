@@ -18,7 +18,7 @@ void OpenGateCRF::entry(){
 	}
 	
 	//TODO magic number
-	data->timer->start_timer(600, TIMER_ID::CalGateRamp2);
+	data->timer->start_timer(600, TIMER_ID::CAL_GATE_RAMP2);
 }
 
 void OpenGateCRF::exit(){
@@ -27,7 +27,7 @@ void OpenGateCRF::exit(){
 }
 
 State* OpenGateCRF::timer(TIMER_ID id){
-	if(id == TIMER_ID::CalGateRamp2){
+	if(id == TIMER_ID::CAL_GATE_RAMP2){
 		return new PieceAtGateCRF(data);
 	}
 	return nullptr;
