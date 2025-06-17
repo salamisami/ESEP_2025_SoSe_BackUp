@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
     
-	State* laser_sorting_gate_unblocked();
+	State* laser_sorting_gate_unblocked() override;
 
 
 private: //================================================ private variables ================================================

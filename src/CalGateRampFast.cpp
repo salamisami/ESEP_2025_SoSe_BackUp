@@ -3,7 +3,7 @@
 #define OPEN_GATE_FAST 600
 
 //================================================= constructors & destructors =================================================
-CalGateRampFast::CalGateRampFast(ContextData* data) : OrthState(data, new std::vector<State*>(
+CalGateRampFast::CalGateRampFast(ContextData* data) : OrthState(data, std::vector<State*>(
     {
         new PieceGoingGate(data),
         new LetPieceThrough(data,OPEN_GATE_FAST)

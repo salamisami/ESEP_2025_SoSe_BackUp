@@ -1,8 +1,8 @@
 #include "Piece.h"
 
 //================================================= constructors & destructors =================================================
-Piece::Piece(){
-    //substate = new SubState(data);
+Piece::Piece(TimeProfile input_profile){
+
 }
 
 Piece::~Piece() {}
