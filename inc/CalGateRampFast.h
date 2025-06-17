@@ -1,21 +1,22 @@
-#ifndef IDLEGATECDF_H
-#define IDLEGATECDF_H
+#ifndef CALGATERAMPFAST_H
+#define CALGATERAMPFAST_H
 #pragma once
 
-#include "State.h"
-#include "OpenGateCDF.h"
+#include "OrthState.h"
+#include "LetPieceThrough.h"
+#include "PieceGoingGate.h"
 
-class IdleGateCDF : public State {
+class CalGateRampFast : public OrthState {
 public: //============================================ constructors & destructors ============================================
-    IdleGateCDF(ContextData* data) ;
-    virtual ~IdleGateCDF();
+    CalGateRampFast(ContextData* data) ;
+    virtual ~CalGateRampFast();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* laser_sorting_gate_blocked() override;
+	State* laser_ramp_blocked() override;
     
 
 

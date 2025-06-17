@@ -4,7 +4,7 @@
 ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data) : OrthState(data,
 	std::vector<State*>({
 		new IdleSMSR(data),
-		new IdleGateCP(data)
+		new SendToRamp(data)
 		})
 ) {
 	//substate = new SubState(data);

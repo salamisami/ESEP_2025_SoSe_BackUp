@@ -1,25 +1,22 @@
-#include "ReadyForCDS.h"
+#include "SendToRamp.h"
 
 //================================================= constructors & destructors =================================================
-ReadyForCDS::ReadyForCDS(ContextData* data) : State(data) {
+SendToRamp::SendToRamp(ContextData* data) : HState(data, new IdleGateCP(data)) {
     //substate = new SubState(data);
 }
 
-ReadyForCDS::~ReadyForCDS() {}
+SendToRamp::~SendToRamp() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void ReadyForCDS::entry(){
-	PRINT_STATE;
-    std::cout << "Please put a piece to calibrate distance timer (slow mode)" << std::endl;
+void SendToRamp::entry(){
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
+    HState::entry();
 }
 
-void ReadyForCDS::exit(){
-    PRINT_STATE;
+void SendToRamp::exit(){
+    HState::exit();
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
-
-// State* ReadyForCDS::laser_front_blocked(){
-//     return new CalDistanceSlow(data);
-// }

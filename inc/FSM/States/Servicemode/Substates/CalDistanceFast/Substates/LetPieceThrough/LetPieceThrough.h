@@ -1,21 +1,19 @@
-#ifndef READYFORCDS_H
-#define READYFORCDS_H
+#ifndef LETPIECETHROUGH_H
+#define LETPIECETHROUGH_H
 #pragma once
 
-#include "State.h"
-#include "CalDistanceSlow.h"
+#include "HState.h"
+#include "IdleGateCDF.h"
 
-class ReadyForCDS : public State {
+class LetPieceThrough : public HState {
 public: //============================================ constructors & destructors ============================================
-    ReadyForCDS(ContextData* data) ;
-    virtual ~ReadyForCDS();
+    LetPieceThrough(ContextData* data, int duration) ;
+    virtual ~LetPieceThrough();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	//State* laser_front_blocked() override;
     
 
 
@@ -23,6 +21,7 @@ private: //================================================ private variables ==
 	//classes, STL containers, and structs
 	//pointers
 	//primitive types
+	int duration;
 	//bool and char
    
 	

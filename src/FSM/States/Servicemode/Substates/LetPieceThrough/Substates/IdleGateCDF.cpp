@@ -1,24 +1,27 @@
-#include "StopCDF.h"
+#include "IdleGateCDF.h"
 
 //================================================= constructors & destructors =================================================
-StopCDF::StopCDF(ContextData* data) : State(data) {
+IdleGateCDF::IdleGateCDF(ContextData* data, int duration) : State(data), duration(duration) {
     //substate = new SubState(data);
 }
 
-StopCDF::~StopCDF() {}
+IdleGateCDF::~IdleGateCDF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void StopCDF::entry(){
+void IdleGateCDF::entry(){
 	PRINT_STATE;
-    long total_fast_travel_time = data->stopwatch.stop();
-	std::cout << "Total Fast Travel Time: " << (float) total_fast_travel_time/1000 << std::endl;
-	//TODO save the time to a file
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 }
 
-void StopCDF::exit(){
+void IdleGateCDF::exit(){
     PRINT_STATE;
+}
+
+State* IdleGateCDF::laser_sorting_gate_blocked(){
+    if(data->is_switch){
+        return new OpenGateCDF(data, duration);
+    }
+    return nullptr;
 }

@@ -1,25 +1,13 @@
-#include "ReadyForCDS.h"
+#include "Piece.h"
 
 //================================================= constructors & destructors =================================================
-ReadyForCDS::ReadyForCDS(ContextData* data) : State(data) {
+Piece::Piece(){
     //substate = new SubState(data);
 }
 
-ReadyForCDS::~ReadyForCDS() {}
+Piece::~Piece() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void ReadyForCDS::entry(){
-	PRINT_STATE;
-    std::cout << "Please put a piece to calibrate distance timer (slow mode)" << std::endl;
-}
-
-void ReadyForCDS::exit(){
-    PRINT_STATE;
-}
-
-// State* ReadyForCDS::laser_front_blocked(){
-//     return new CalDistanceSlow(data);
-// }
