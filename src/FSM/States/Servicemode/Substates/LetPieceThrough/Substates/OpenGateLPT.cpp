@@ -1,30 +1,31 @@
-#include "OpenGateCDS.h"
+#include "OpenGateLPT.h"
 
 //================================================= constructors & destructors =================================================
-OpenGateCDS::OpenGateCDS(ContextData* data) : State(data) {
+OpenGateLPT::OpenGateLPT(ContextData* data, int duration) : State(data), duration(duration) {
     //substate = new SubState(data);
 }
 
-OpenGateCDS::~OpenGateCDS() {}
+OpenGateLPT::~OpenGateLPT() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void OpenGateCDS::entry(){
+void OpenGateLPT::entry(){
 	PRINT_STATE;
-	data->timer->start_timer(2000, TIMER_ID::OPENGATE_CDS);
+    data->timer->start_timer(600, TIMER_ID::OPENGATE_LPT);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
+    
 }
 
-void OpenGateCDS::exit(){
+void OpenGateLPT::exit(){
     PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 
-State* OpenGateCDS::timer(TIMER_ID id){
-    if(id == TIMER_ID::OPENGATE_CDS){
-        return new IdleGateCDS(data);
+State* OpenGateLPT::timer(TIMER_ID id){
+    if(id == TIMER_ID::OPENGATE_LPT){
+        return new IdleLPT(data, duration);    
     }
     return nullptr;
 }

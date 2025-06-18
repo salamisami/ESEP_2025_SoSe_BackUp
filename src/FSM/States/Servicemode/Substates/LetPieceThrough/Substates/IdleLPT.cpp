@@ -1,23 +1,27 @@
-#include "LetPieceThrough.h"
+#include "IdleLPT.h"
 
 //================================================= constructors & destructors =================================================
-LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
-: HState(data, new IdleLPT(data, duration)){
+IdleLPT::IdleLPT(ContextData* data, int duration) : State(data), duration(duration) {
     //substate = new SubState(data);
 }
 
-LetPieceThrough::~LetPieceThrough() {}
+IdleLPT::~IdleLPT() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void LetPieceThrough::entry(){
+void IdleLPT::entry(){
 	PRINT_STATE;
-    HState::entry();
 }
 
-void LetPieceThrough::exit(){
-    HState::exit();
+void IdleLPT::exit(){
     PRINT_STATE;
+}
+
+State* IdleLPT::laser_sorting_gate_blocked(){
+    if(data->is_switch){
+        return new OpenGateLPT(data, duration);
+    }
+    return nullptr;
 }

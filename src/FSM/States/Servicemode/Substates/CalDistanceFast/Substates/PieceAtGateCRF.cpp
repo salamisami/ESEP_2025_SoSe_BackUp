@@ -1,23 +1,24 @@
-#include "LetPieceThrough.h"
+#include "PieceAtGateCRF.h"
 
 //================================================= constructors & destructors =================================================
-LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
-: HState(data, new IdleLPT(data, duration)){
+PieceAtGateCRF::PieceAtGateCRF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-LetPieceThrough::~LetPieceThrough() {}
+PieceAtGateCRF::~PieceAtGateCRF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void LetPieceThrough::entry(){
+void PieceAtGateCRF::entry(){
 	PRINT_STATE;
-    HState::entry();
 }
 
-void LetPieceThrough::exit(){
-    HState::exit();
-    PRINT_STATE;
+void PieceAtGateCRF::exit(){
+	PRINT_STATE;
 }
+
+State* PieceAtGateCRF::adc_top_area_blocked(){
+	return new PieceAtADCCRF(data)
+;}

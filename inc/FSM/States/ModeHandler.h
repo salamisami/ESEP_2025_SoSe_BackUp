@@ -3,7 +3,7 @@
 #pragma once
 
 #include "HState.h"
-#include "Idle.h"
+#include "IdleMode.h"
 #include "EStopViaLocal.h"
 #include "EStopViaNeighbor.h"
 

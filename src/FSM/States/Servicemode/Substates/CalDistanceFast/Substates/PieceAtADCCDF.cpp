@@ -1,23 +1,25 @@
-#include "LetPieceThrough.h"
+#include "PieceAtADCCDF.h"
 
 //================================================= constructors & destructors =================================================
-LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
-: HState(data, new IdleLPT(data, duration)){
+PieceAtADCCDF::PieceAtADCCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-LetPieceThrough::~LetPieceThrough() {}
+PieceAtADCCDF::~PieceAtADCCDF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void LetPieceThrough::entry(){
+void PieceAtADCCDF::entry(){
 	PRINT_STATE;
-    HState::entry();
+	data->timeprofile.timestamp[(int)Timestamp::ADC_BLOCKED] = data->stopwatch.peek_time();
 }
 
-void LetPieceThrough::exit(){
-    HState::exit();
-    PRINT_STATE;
+void PieceAtADCCDF::exit(){
+	PRINT_STATE;
+}
+
+State* PieceAtADCCDF::adc_top_area_unblocked(){
+	return new ADCToGateCDF(data);
 }

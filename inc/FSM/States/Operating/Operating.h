@@ -3,7 +3,7 @@
 #pragma once
 
 #include "HState.h"
-#include "Idle.h"
+#include "IdleMode.h"
 
 class Operating : public State {
 //============================================ constructors & destructors ============================================

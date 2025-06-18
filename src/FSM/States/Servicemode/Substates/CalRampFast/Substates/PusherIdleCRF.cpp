@@ -1,23 +1,24 @@
-#include "LetPieceThrough.h"
+#include "PusherIdleCRF.h"
 
 //================================================= constructors & destructors =================================================
-LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
-: HState(data, new IdleLPT(data, duration)){
+PusherIdleCRF::PusherIdleCRF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-LetPieceThrough::~LetPieceThrough() {}
+PusherIdleCRF::~PusherIdleCRF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void LetPieceThrough::entry(){
+void PusherIdleCRF::entry(){
 	PRINT_STATE;
-    HState::entry();
 }
 
-void LetPieceThrough::exit(){
-    HState::exit();
-    PRINT_STATE;
+void PusherIdleCRF::exit(){
+	PRINT_STATE;
+}
+
+State* PusherIdleCRF::adc_top_area_blocked(){
+	return new SendToRamp(data);
 }

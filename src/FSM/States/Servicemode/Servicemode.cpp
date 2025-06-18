@@ -2,7 +2,7 @@
 
 //================================================= constructors & destructors =================================================
 Servicemode::Servicemode(ContextData* data)
-    : HState(data, new IdleServiceMode(data)) {
+    : HState(data, new IdleSM(data)) {
 }
 
 Servicemode::~Servicemode() {}
@@ -29,5 +29,5 @@ void Servicemode::exit() {
 }
 
 HState* Servicemode::button_stop_pressed() {
-    return new Idle(data);
+    return new IdleMode(data);
 }

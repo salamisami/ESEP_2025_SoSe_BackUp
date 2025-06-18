@@ -25,5 +25,5 @@ void Operating::exit() {
 }
 
 State* Operating::button_stop_pressed() {
-    return new Idle(data);
+    return new IdleMode(data);
 }

@@ -1,23 +1,26 @@
-#include "LetPieceThrough.h"
+#include "GateToEndCDF.h"
 
 //================================================= constructors & destructors =================================================
-LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
-: HState(data, new IdleLPT(data, duration)){
+GateToEndCDF::GateToEndCDF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-LetPieceThrough::~LetPieceThrough() {}
+GateToEndCDF::~GateToEndCDF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void LetPieceThrough::entry(){
+void GateToEndCDF::entry(){
 	PRINT_STATE;
-    HState::entry();
+    data->timeprofile.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] = data->stopwatch.peek_time();
 }
 
-void LetPieceThrough::exit(){
-    HState::exit();
+void GateToEndCDF::exit(){
     PRINT_STATE;
+    data->timeprofile.timestamp[(int) Timestamp::END] = data->stopwatch.peek_time();
+}
+
+State* GateToEndCDF::laser_back_blocked(){
+    return new CalRampFast(data);
 }

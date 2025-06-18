@@ -1,23 +1,21 @@
-#ifndef CALDISTANCEFAST_H
-#define CALDISTANCEFAST_H
+#ifndef PUSHRAMPSTR_H
+#define PUSHRAMPSTR_H
 #pragma once
 
-#include "OrthState.h"
-#include "IdleCDF.h"
-#include "LetPieceThrough.h"
-#include "CalRampFast.h"
+#include "State.h"
+#include "IdleSTR.h"
 
-class CalDistanceFast : public OrthState{
+class PushRampSTR : public State {
 public: //============================================ constructors & destructors ============================================
-    CalDistanceFast(ContextData* data) ;
-    virtual ~CalDistanceFast();
+    PushRampSTR(ContextData* data) ;
+    virtual ~PushRampSTR();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* laser_back_blocked() override;
+	State* timer(TIMER_ID id) override;
     
 
 

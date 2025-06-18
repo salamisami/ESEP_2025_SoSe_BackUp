@@ -1,23 +1,25 @@
-#include "LetPieceThrough.h"
+#include "PieceAtADCCRF.h"
 
 //================================================= constructors & destructors =================================================
-LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
-: HState(data, new IdleLPT(data, duration)){
+PieceAtADCCRF::PieceAtADCCRF(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-LetPieceThrough::~LetPieceThrough() {}
+PieceAtADCCRF::~PieceAtADCCRF() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void LetPieceThrough::entry(){
+void PieceAtADCCRF::entry(){
 	PRINT_STATE;
-    HState::entry();
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
 }
 
-void LetPieceThrough::exit(){
-    HState::exit();
-    PRINT_STATE;
+void PieceAtADCCRF::exit(){
+	PRINT_STATE;
+}
+
+State* PieceAtADCCRF::laser_sorting_gate_blocked(){
+	return new GateToRampCRF(data);
 }

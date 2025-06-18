@@ -1,23 +1,21 @@
-#ifndef CALDISTANCEFAST_H
-#define CALDISTANCEFAST_H
+#ifndef PUSHERIDLECRF_H
+#define PUSHERIDLECRF_H
 #pragma once
 
-#include "OrthState.h"
-#include "IdleCDF.h"
-#include "LetPieceThrough.h"
-#include "CalRampFast.h"
+#include "State.h"
+#include "SendToRamp.h"
 
-class CalDistanceFast : public OrthState{
+class PusherIdleCRF : public State {
 public: //============================================ constructors & destructors ============================================
-    CalDistanceFast(ContextData* data) ;
-    virtual ~CalDistanceFast();
+    PusherIdleCRF(ContextData* data) ;
+    virtual ~PusherIdleCRF();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* laser_back_blocked() override;
+	State* adc_top_area_blocked() override;
     
 
 

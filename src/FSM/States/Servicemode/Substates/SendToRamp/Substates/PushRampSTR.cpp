@@ -1,30 +1,30 @@
-#include "OpenGateCDS.h"
+#include "PushRampSTR.h"
 
 //================================================= constructors & destructors =================================================
-OpenGateCDS::OpenGateCDS(ContextData* data) : State(data) {
+PushRampSTR::PushRampSTR(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-OpenGateCDS::~OpenGateCDS() {}
+PushRampSTR::~PushRampSTR() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void OpenGateCDS::entry(){
+void PushRampSTR::entry(){
 	PRINT_STATE;
-	data->timer->start_timer(2000, TIMER_ID::OPENGATE_CDS);
+    data->timer->start_timer(250, TIMER_ID::PUSHRAMP_STR);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
 }
 
-void OpenGateCDS::exit(){
+void PushRampSTR::exit(){
     PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 
-State* OpenGateCDS::timer(TIMER_ID id){
-    if(id == TIMER_ID::OPENGATE_CDS){
-        return new IdleGateCDS(data);
+State* PushRampSTR::timer(TIMER_ID id){
+    if(id == TIMER_ID::PUSHRAMP_STR){
+        return new IdleSTR(data);
     }
     return nullptr;
 }

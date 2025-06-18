@@ -1,16 +1,14 @@
-#ifndef CALDISTANCEFAST_H
-#define CALDISTANCEFAST_H
+#ifndef GATETOEND_H
+#define GATETOEND_H
 #pragma once
 
-#include "OrthState.h"
-#include "IdleCDF.h"
-#include "LetPieceThrough.h"
+#include "State.h"
 #include "CalRampFast.h"
 
-class CalDistanceFast : public OrthState{
+class GateToEndCDF : public State {
 public: //============================================ constructors & destructors ============================================
-    CalDistanceFast(ContextData* data) ;
-    virtual ~CalDistanceFast();
+    GateToEndCDF(ContextData* data) ;
+    virtual ~GateToEndCDF();
 	
 
 public: //================================================ public functions ================================================

@@ -1,23 +1,25 @@
-#include "LetPieceThrough.h"
+#include "IdleSM.h"
 
 //================================================= constructors & destructors =================================================
-LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
-: HState(data, new IdleLPT(data, duration)){
-    //substate = new SubState(data);
+IdleSM::IdleSM(ContextData* data) : State(data) {
+	//substate = new SubState(data);
 }
 
-LetPieceThrough::~LetPieceThrough() {}
+IdleSM::~IdleSM() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void LetPieceThrough::entry(){
+void IdleSM::entry() {
 	PRINT_STATE;
-    HState::entry();
+	DEBUG("Please put W_H");
 }
 
-void LetPieceThrough::exit(){
-    HState::exit();
-    PRINT_STATE;
+void IdleSM::exit() {
+	PRINT_STATE;
+}
+
+State* IdleSM::laser_front_blocked() {
+	return new ServiceModeSendRamp(data);
 }

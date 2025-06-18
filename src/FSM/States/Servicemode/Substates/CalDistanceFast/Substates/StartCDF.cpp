@@ -21,5 +21,5 @@ void StartCDF::exit(){
 }
 
 State* StartCDF::adc_top_area_blocked(){
-    return new PieceAtADC(data);
+    return new PieceAtADCCDF(data);
 }
