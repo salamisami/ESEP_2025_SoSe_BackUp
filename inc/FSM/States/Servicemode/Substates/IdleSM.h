@@ -4,6 +4,7 @@
 
 #include "State.h"
 #include "ServiceModeSendRamp.h"
+#include "CalDistanceFast.h"
 
 class IdleSM : public State {
 public: //============================================ constructors & destructors ============================================

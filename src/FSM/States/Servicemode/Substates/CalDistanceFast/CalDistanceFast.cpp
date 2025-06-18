@@ -1,12 +1,11 @@
 #include "CalDistanceFast.h"
 
-#define OPEN_GATE_FAST 600
 
 //================================================= constructors & destructors =================================================
 CalDistanceFast::CalDistanceFast(ContextData* data) : OrthState(data,
 	std::vector<State*>({
 		new IdleCDF(data),
-		new LetPieceThrough(data, OPEN_GATE_FAST)
+		new LetPieceThrough(data, OPEN_GATE_FAST_DURATION)
 		})
 ) {
 	//substate = new SubState(data);
