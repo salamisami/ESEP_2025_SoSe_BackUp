@@ -217,6 +217,25 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     return ADC_Enum::ADC_W_NOT_DETECT;
 }
 
+void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
+    std::vector<float> werte;
+    struct timespec delay = { 0, SAMPLE_DELAY_NS };
+    bool erkannt = false;
+    while(!*adcStopped) {
+        adc.sample();
+        //TODO Magic number
+        usleep(1000);
+        uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
+        float voltage = (raw / 4095.0f) * REF_VOLTAGE;
+        float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
+
+        if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
+            erkannt = true;
+            return;
+        }
+        nanosleep(&delay, NULL);
+    }
+}
 
 ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage) {
     std::vector<float> werte;
@@ -227,8 +246,6 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
         uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
         float voltage = (raw / 4095.0f) * REF_VOLTAGE;
         float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
-
-       
 
         werte.push_back(sensorVoltage);
         if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT) {
@@ -245,6 +262,40 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
     auto profile = loadProfile();
     return classify(werte, profile);
 }
+
+
+// ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage) {
+//     std::vector<float> werte;
+//     struct timespec delay = { 0, SAMPLE_DELAY_NS };
+//     bool erkannt = false;
+
+//     while(true) {
+//         adc.sample();
+//         usleep(1000);
+//         uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
+//         float voltage = (raw / 4095.0f) * REF_VOLTAGE;
+//         float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
+
+//         if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
+//             erkannt = true;
+//             //TODO adc should send adc new piece event to logic here below
+//             //sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
+//             std::cout << "Bauteil erkannt – Messung startet\n";
+//         }
+//         if(erkannt) {
+//             werte.push_back(sensorVoltage);
+//             if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT) {
+//                 break;
+//             }
+//             if(werte.size() >= MAX_WERT) {
+//                 //Error Event Ergänzen
+//                 std::cout << "Ungültige Messanzahl, Bitte Laufband Kontrollieren\n";
+//                 break;
+//             }
+//         }
+//         nanosleep(&delay, NULL);
+//     }
+// }
 
 float ADC_Utilities::define_band_voltage(ADC& adc, TSCADC& tscadc) {
     float sum = 0;
