@@ -35,7 +35,8 @@ public:
 //================================================ private variables ================================================
 public:
     Stopwatch stopwatch;
-    TimeProfile timeprofile;
+    TimeProfile timeprofile_fast;
+    TimeProfile timeprofile_slow;
     //TODO implement a safe stack here, that returns nullptr if no elements left in the stack
     std::stack<State*>* stateStack;
     I_Sender* timer_sender;

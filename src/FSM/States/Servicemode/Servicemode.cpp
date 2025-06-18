@@ -31,3 +31,4 @@ void Servicemode::exit() {
 HState* Servicemode::button_stop_pressed() {
     return new IdleMode(data);
 }
+

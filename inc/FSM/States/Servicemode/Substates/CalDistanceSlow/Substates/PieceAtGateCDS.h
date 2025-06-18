@@ -1,14 +1,14 @@
-#ifndef PIECEATGATECDF_H
-#define PIECEATGATECDF_H
+#ifndef PIECEATGATECDS_H
+#define PIECEATGATECDS_H
 #pragma once
 
 #include "State.h"
-#include "GateToEndCDF.h"
+#include "GateToEndCDS.h"
 
-class PieceAtGateCDF : public State {
+class PieceAtGateCDS : public State {
 public: //============================================ constructors & destructors ============================================
-    PieceAtGateCDF(ContextData* data) ;
-    virtual ~PieceAtGateCDF();
+    PieceAtGateCDS(ContextData* data) ;
+    virtual ~PieceAtGateCDS();
 	
 
 public: //================================================ public functions ================================================

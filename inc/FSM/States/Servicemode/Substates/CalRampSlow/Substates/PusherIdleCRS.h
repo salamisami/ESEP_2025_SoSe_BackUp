@@ -1,21 +1,21 @@
-#ifndef OPENGATECDS_H
-#define OPENGATECDS_H
+#ifndef PUSHERIDLECRS_H
+#define PUSHERIDLECRS_H
 #pragma once
 
 #include "State.h"
-#include "IdleGateCDS.h"
+#include "SendToRamp.h"
 
-class OpenGateCDS : public State {
+class PusherIdleCRS : public State {
 public: //============================================ constructors & destructors ============================================
-    OpenGateCDS(ContextData* data) ;
-    virtual ~OpenGateCDS();
+    PusherIdleCRS(ContextData* data) ;
+    virtual ~PusherIdleCRS();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* timer(TIMER_ID id) override;
+	State* adc_top_area_blocked() override;
     
 
 

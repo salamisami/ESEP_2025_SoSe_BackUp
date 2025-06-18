@@ -1,24 +1,24 @@
-#include "IdleCDS.h"
+#include "PusherIdleCRS.h"
 
 //================================================= constructors & destructors =================================================
-IdleCDS::IdleCDS(ContextData* data) : State(data) {
+PusherIdleCRS::PusherIdleCRS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-IdleCDS::~IdleCDS() {}
+PusherIdleCRS::~PusherIdleCRS() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void IdleCDS::entry(){
+void PusherIdleCRS::entry(){
 	PRINT_STATE;
 }
 
-void IdleCDS::exit(){
-    PRINT_STATE;
+void PusherIdleCRS::exit(){
+	PRINT_STATE;
 }
 
-State* IdleCDS::laser_front_unblocked(){
-    return new StartCDS(data);
+State* PusherIdleCRS::adc_top_area_blocked(){
+	return new SendToRamp(data);
 }

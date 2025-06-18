@@ -1,24 +1,24 @@
-#include "IdleCDS.h"
+#include "PieceAtGateCRS.h"
 
 //================================================= constructors & destructors =================================================
-IdleCDS::IdleCDS(ContextData* data) : State(data) {
+PieceAtGateCRS::PieceAtGateCRS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-IdleCDS::~IdleCDS() {}
+PieceAtGateCRS::~PieceAtGateCRS() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void IdleCDS::entry(){
+void PieceAtGateCRS::entry(){
 	PRINT_STATE;
 }
 
-void IdleCDS::exit(){
-    PRINT_STATE;
+void PieceAtGateCRS::exit(){
+	PRINT_STATE;
 }
 
-State* IdleCDS::laser_front_unblocked(){
-    return new StartCDS(data);
-}
+State* PieceAtGateCRS::adc_top_area_blocked(){
+	return new PieceAtADCCRS(data)
+;}

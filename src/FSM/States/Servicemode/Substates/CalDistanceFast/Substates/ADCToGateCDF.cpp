@@ -13,7 +13,7 @@ ADCToGateCDF::~ADCToGateCDF() {}
 //===================================================== public functions =====================================================
 void ADCToGateCDF::entry(){
 	PRINT_STATE;
-	data->timeprofile.timestamp[(int)Timestamp::ADC_UNBLOCKED] = data->stopwatch.peek_time();
+	data->timeprofile_fast.timestamp[(int)Timestamp::ADC_UNBLOCKED] = data->stopwatch.peek_time();
 
 }
 

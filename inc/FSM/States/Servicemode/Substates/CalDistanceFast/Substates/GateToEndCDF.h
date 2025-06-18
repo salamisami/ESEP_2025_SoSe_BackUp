@@ -1,5 +1,5 @@
-#ifndef GATETOEND_H
-#define GATETOEND_H
+#ifndef GATETOENDCDF_H
+#define GATETOENDCDF_H
 #pragma once
 
 #include "State.h"

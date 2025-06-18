@@ -1,18 +1,23 @@
-#ifndef STOPCDS_H
-#define STOPCDS_H
+#ifndef ENDTOGATECRS_H
+#define ENDTOGATECRS_H
 #pragma once
 
 #include "State.h"
+#include "OpenGateCRS.h"
 
-class StopCDS : public State {
+class EndToGateCRS : public State {
 public: //============================================ constructors & destructors ============================================
-    StopCDS(ContextData* data) ;
-    virtual ~StopCDS();
+    EndToGateCRS(ContextData* data) ;
+    virtual ~EndToGateCRS();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* timer(TIMER_ID id) override;
+
+
     
 
 

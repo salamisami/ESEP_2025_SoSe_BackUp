@@ -1,20 +1,18 @@
-#ifndef IDLEGATECDS_H
-#define IDLEGATECDS_H
+#ifndef CALIBRATIONFINISHED_H
+#define CALIBRATIONFINISHED_H
 #pragma once
 
 #include "State.h"
-#include "OpenGateCDS.h"
 
-class IdleGateCDS : public State {
+class CalibrationFinished : public State {
 public: //============================================ constructors & destructors ============================================
-    IdleGateCDS(ContextData* data) ;
-    virtual ~IdleGateCDS();
+    CalibrationFinished(ContextData* data) ;
+    virtual ~CalibrationFinished();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-	State* laser_sorting_gate_blocked() override;
     
 
 

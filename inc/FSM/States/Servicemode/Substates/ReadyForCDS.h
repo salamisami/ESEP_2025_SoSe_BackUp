@@ -5,6 +5,7 @@
 #include "State.h"
 #include "CalDistanceSlow.h"
 
+
 class ReadyForCDS : public State {
 public: //============================================ constructors & destructors ============================================
     ReadyForCDS(ContextData* data) ;
@@ -15,7 +16,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	//State* laser_front_blocked() override;
+	State* laser_front_blocked() override;
     
 
 

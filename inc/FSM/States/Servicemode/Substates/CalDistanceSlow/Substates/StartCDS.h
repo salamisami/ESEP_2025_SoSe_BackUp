@@ -3,7 +3,7 @@
 #pragma once
 
 #include "State.h"
-#include "StopCDS.h"
+#include "PieceAtADCCDS.h"
 
 class StartCDS : public State {
 public: //============================================ constructors & destructors ============================================
@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	State* laser_back_blocked() override;
+	State* adc_top_area_blocked() override;
     
 
 
