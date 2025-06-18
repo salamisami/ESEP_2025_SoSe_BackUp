@@ -13,6 +13,7 @@ EndToGateCRS::~EndToGateCRS() {}
 //===================================================== public functions =====================================================
 void EndToGateCRS::entry(){
 	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_LEFT_START);
 	int time_required = data->timeprofile_slow.timestamp[(int) Timestamp::END] - data->timeprofile_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
 	data->timer->start_timer(time_required - 400, TIMER_ID::CAL_GATE_RAMP1);

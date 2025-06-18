@@ -28,7 +28,7 @@ void Servicemode::exit() {
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
 }
 
-HState* Servicemode::button_stop_pressed() {
+State* Servicemode::button_stop_pressed() {
     return new IdleMode(data);
 }
 
