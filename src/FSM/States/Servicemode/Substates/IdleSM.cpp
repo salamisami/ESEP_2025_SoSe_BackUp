@@ -20,6 +20,7 @@ void IdleSM::exit() {
 	PRINT_STATE;
 }
 
+
 State* IdleSM::laser_front_blocked() {
 	return new ServiceModeSendRamp(data);
 }

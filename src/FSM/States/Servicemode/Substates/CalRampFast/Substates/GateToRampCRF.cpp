@@ -22,6 +22,7 @@ void GateToRampCRF::exit(){
 	long ramp_duration = data->stopwatch.stop();
 	long ramp_timestamp = data->timeprofile.timestamp[(int)Timestamp::LASER_GATE_BLOCKED] + ramp_duration;
 	data->timeprofile.timestamp[(int)Timestamp::LASER_RAMP_BLOCKED] = ramp_timestamp;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 }
 
 State* GateToRampCRF::laser_ramp_blocked(){

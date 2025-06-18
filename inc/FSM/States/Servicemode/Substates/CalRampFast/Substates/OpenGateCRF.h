@@ -16,7 +16,6 @@ public: //================================================ public functions ====
     void exit() override;
 
 	State* timer(TIMER_ID id) override;
-	State* laser_sorting_gate_blocked() override;
     
 
 

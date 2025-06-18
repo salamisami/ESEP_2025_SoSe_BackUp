@@ -18,7 +18,7 @@ void OpenGateCRF::entry(){
 	}
 	
 	//TODO magic number
-	data->timer->start_timer(600, TIMER_ID::CAL_GATE_RAMP2);
+	data->timer->start_timer(OPEN_GATE_FAST_DURATION, TIMER_ID::CAL_GATE_RAMP2);
 }
 
 void OpenGateCRF::exit(){
@@ -31,8 +31,4 @@ State* OpenGateCRF::timer(TIMER_ID id){
 		return new PieceAtGateCRF(data);
 	}
 	return nullptr;
-}
-
-State* OpenGateCRF::laser_sorting_gate_blocked(){
-	return new PieceAtGateCRF(data);
 }

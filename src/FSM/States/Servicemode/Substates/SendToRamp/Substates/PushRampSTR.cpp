@@ -13,7 +13,7 @@ PushRampSTR::~PushRampSTR() {}
 //===================================================== public functions =====================================================
 void PushRampSTR::entry(){
 	PRINT_STATE;
-    data->timer->start_timer(250, TIMER_ID::PUSHRAMP_STR);
+    data->timer->start_timer(PUSH_DURATION, TIMER_ID::PUSHRAMP_STR);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
 }
 

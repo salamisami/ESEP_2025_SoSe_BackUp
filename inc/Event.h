@@ -2,6 +2,10 @@
 #define EVENT_H
 #pragma once
 
+#define OPEN_GATE_SLOW_DURATION 1500
+#define OPEN_GATE_FAST_DURATION 1000
+#define PUSH_DURATION 500
+
 #include <cstdint>
 
 

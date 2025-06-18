@@ -1,6 +1,5 @@
 #include "CalRampFast.h"
 
-#define OPEN_GATE_FAST 600
 
 //================================================= constructors & destructors =================================================
 CalRampFast::CalRampFast(ContextData* data) : OrthState(data, std::vector<State*>(

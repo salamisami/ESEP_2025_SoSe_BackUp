@@ -13,7 +13,7 @@ OpenGateLPT::~OpenGateLPT() {}
 //===================================================== public functions =====================================================
 void OpenGateLPT::entry(){
 	PRINT_STATE;
-    data->timer->start_timer(600, TIMER_ID::OPENGATE_LPT);
+    data->timer->start_timer(duration, TIMER_ID::OPENGATE_LPT);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
     
 }
