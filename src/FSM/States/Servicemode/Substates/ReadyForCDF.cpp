@@ -13,7 +13,7 @@ ReadyForCDF::~ReadyForCDF() {}
 //===================================================== public functions =====================================================
 void ReadyForCDF::entry(){
 	PRINT_STATE;
-    std::cout << "Please put a piece to calibrate distance timer (fast mode)" << std::endl;
+    std::cout << "Please clear the ramp, then put a piece to calibrate distance timer (fast mode)." << std::endl;
 }
 
 void ReadyForCDF::exit(){
