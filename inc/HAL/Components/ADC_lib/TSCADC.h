@@ -6,7 +6,7 @@
  * @date 		17.02.2016
  * @author: 	T Jaehnichen
  *				HAW-Hamburg
- *          	Labor für technische Informatik
+ *          	Labor fï¿½r technische Informatik
  *          	Berliner Tor  7
  *          	D-20099 Hamburg
  * @version 	
@@ -22,7 +22,7 @@
 
 
 
-enum IdleMode : unsigned int{
+enum ADC_Idle_Enum : unsigned int{
 	FORCE_IDLE          = 0,
 	NO_IDLE             = 1,
 	SMART_IDLE          = 2,
@@ -143,7 +143,7 @@ public:
 	void stepConfigProtectionEnable();
 	void stepConfigProtectionDisable();
 	void tsModeConfig(TSMode tsMode);
-	void idleModeSet(IdleMode idleMode);
+	void idleModeSet(ADC_Idle_Enum idleMode);
 	void tsStepModeConfig( unsigned int stepSel, StepMode mode);
 	void intStatusClear(unsigned int intFlag);
 	void eventInterruptEnable(IntFlag event);
