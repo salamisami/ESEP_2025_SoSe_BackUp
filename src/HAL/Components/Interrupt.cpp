@@ -99,14 +99,14 @@ void Interrupt::setup_interrupts() {
     pinsList.push_back(LASER_SORTING_BIT);
     pinsList.push_back(LASER_METAL_BIT);
     pinsList.push_back(ADC_TOP_AREA_BIT);
-    pinsList.push_back(SORTING_STATUS_BIT);
+    //pinsList.push_back(SORTING_STATUS_BIT);
     pinsList.push_back(LASER_RAMP_BIT);
     pinsList.push_back(LASER_BACK_BIT);
     pinsList.push_back(BUTTON_START_BIT);
     pinsList.push_back(BUTTON_STOP_BIT);
     pinsList.push_back(BUTTON_RESET_BIT);
     pinsList.push_back(BUTTON_ESTOP_BIT);
-    pinsList.push_back(ADC_SIDE_AREA_BIT);
+    //pinsList.push_back(ADC_SIDE_AREA_BIT);
 
     for(auto pin : pinsList) {
         inputPins |= (1 << pin);
