@@ -118,7 +118,7 @@ void TSCADC::tsModeConfig(TSMode tsMode) {
  * @return  None
  *
  **/
-void TSCADC::idleModeSet(IdleMode idleMode) {
+void TSCADC::idleModeSet(ADC_Idle_Enum idleMode) {
 	 clearBitsInReg(baseAdd + SYSCONFIG, SYSCONFIG_IDLEMODE);
 	 setBitsInReg(baseAdd + SYSCONFIG, idleMode << SYSCONFIG_IDLEMODE_SHIFT);
 }
