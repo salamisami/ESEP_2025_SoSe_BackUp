@@ -85,7 +85,8 @@ enum class ADC_Enum : int {
     ADC_INVALID_MESURE,
     ADC_CALIBRATION_DONE,
     ADC_STOP,
-	ADC_RESET
+	ADC_RESET,
+    ADC_NEW_PIECE
 };
 
 enum class COM_Enum: int{

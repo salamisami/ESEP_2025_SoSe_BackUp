@@ -40,6 +40,8 @@ void ADC_Class::measureClassifySend() {
         return;
     }
     measure_mtx.lock();
+    ADC_Utilities::expect_piece(adc,tscadc,bandVoltage, &adcStopped);
+    sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
     ADC_Enum name = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage);
     sender->send_event((int8_t) Topic::ADC, (int) name);
     measure_mtx.unlock();

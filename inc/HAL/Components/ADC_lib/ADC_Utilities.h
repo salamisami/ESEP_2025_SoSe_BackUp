@@ -59,6 +59,7 @@ public: //================================================ public functions ====
 	static ADC_Enum executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage);
 	static float define_band_voltage(ADC& adc, TSCADC& tscadc);
 	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage);
+	static void expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped);
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
@@ -66,12 +67,12 @@ private: //================================================ private variables ==
 	//primitive types
 	//bool and char
 
-
-
 private: //================================================ private functions ================================================
 	static ADC_Enum classify(const std::vector<float>& value, const std::vector<Profil>& profile);
+	
 	static void saveProfile(const Profil& p);
 	static std::vector<Profil> loadProfile();
+
 
 
 };
