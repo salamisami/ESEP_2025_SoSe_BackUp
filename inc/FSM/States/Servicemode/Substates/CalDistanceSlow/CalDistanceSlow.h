@@ -1,21 +1,24 @@
-#ifndef PIECEATGATECDF_H
-#define PIECEATGATECDF_H
+#ifndef CALDISTANCESLOW_H
+#define CALDISTANCESLOW_H
 #pragma once
 
-#include "State.h"
-#include "GateToEndCDF.h"
+#include "OrthState.h"
+#include "IdleCDS.h"
+#include "LetPieceThrough.h"
+#include "CalRampSlow.h"
 
-class PieceAtGateCDF : public State {
+class CalDistanceSlow : public OrthState{
 public: //============================================ constructors & destructors ============================================
-    PieceAtGateCDF(ContextData* data) ;
-    virtual ~PieceAtGateCDF();
+    CalDistanceSlow(ContextData* data) ;
+    virtual ~CalDistanceSlow();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* laser_back_blocked() override;
     
-	State* laser_sorting_gate_unblocked() override;
 
 
 private: //================================================ private variables ================================================

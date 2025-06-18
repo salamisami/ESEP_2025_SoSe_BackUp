@@ -1,26 +1,25 @@
-#include "GateToEndCDF.h"
+#include "StartCDS.h"
 
 //================================================= constructors & destructors =================================================
-GateToEndCDF::GateToEndCDF(ContextData* data) : State(data) {
+StartCDS::StartCDS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-GateToEndCDF::~GateToEndCDF() {}
+StartCDS::~StartCDS() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void GateToEndCDF::entry(){
+void StartCDS::entry(){
 	PRINT_STATE;
-    data->timeprofile_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] = data->stopwatch.peek_time();
+    data->stopwatch.start();
 }
 
-void GateToEndCDF::exit(){
+void StartCDS::exit(){
     PRINT_STATE;
-    data->timeprofile_fast.timestamp[(int) Timestamp::END] = data->stopwatch.peek_time();
 }
 
-State* GateToEndCDF::laser_back_blocked(){
-    return new CalRampFast(data);
+State* StartCDS::adc_top_area_blocked(){
+    return new PieceAtADCCDS(data);
 }

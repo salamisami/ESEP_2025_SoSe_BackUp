@@ -1,21 +1,22 @@
-#ifndef PIECEATGATECDF_H
-#define PIECEATGATECDF_H
+#ifndef GATETOENDCDS_H
+#define GATETOENDCDS_H
 #pragma once
 
 #include "State.h"
-#include "GateToEndCDF.h"
+#include "CalRampSlow.h"
 
-class PieceAtGateCDF : public State {
+class GateToEndCDS : public State {
 public: //============================================ constructors & destructors ============================================
-    PieceAtGateCDF(ContextData* data) ;
-    virtual ~PieceAtGateCDF();
+    GateToEndCDS(ContextData* data) ;
+    virtual ~GateToEndCDS();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* laser_back_blocked() override;
     
-	State* laser_sorting_gate_unblocked() override;
 
 
 private: //================================================ private variables ================================================

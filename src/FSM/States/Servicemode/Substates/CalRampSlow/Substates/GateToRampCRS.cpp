@@ -1,30 +1,30 @@
-#include "GateToRampCRF.h"
+#include "GateToRampCRS.h"
 
 //================================================= constructors & destructors =================================================
-GateToRampCRF::GateToRampCRF(ContextData* data) : State(data) {
+GateToRampCRS::GateToRampCRS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-GateToRampCRF::~GateToRampCRF() {}
+GateToRampCRS::~GateToRampCRS() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void GateToRampCRF::entry(){
+void GateToRampCRS::entry(){
 	PRINT_STATE;
 	data->stopwatch.start();
 	
 }
 
-void GateToRampCRF::exit(){
+void GateToRampCRS::exit(){
 	PRINT_STATE;
 	long ramp_duration = data->stopwatch.stop();
-	long ramp_timestamp = data->timeprofile_fast.timestamp[(int)Timestamp::LASER_GATE_BLOCKED] + ramp_duration;
-	data->timeprofile_fast.timestamp[(int)Timestamp::LASER_RAMP_BLOCKED] = ramp_timestamp;
+	long ramp_timestamp = data->timeprofile_slow.timestamp[(int)Timestamp::LASER_GATE_BLOCKED] + ramp_duration;
+	data->timeprofile_slow.timestamp[(int)Timestamp::LASER_RAMP_BLOCKED] = ramp_timestamp;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 }
 
-State* GateToRampCRF::laser_ramp_blocked(){
-	return new ReadyForCDS(data);
+State* GateToRampCRS::laser_ramp_blocked(){
+	return new CalibrationFinished(data);
 }

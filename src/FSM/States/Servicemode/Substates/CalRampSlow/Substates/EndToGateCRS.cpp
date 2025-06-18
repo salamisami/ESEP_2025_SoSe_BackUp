@@ -1,30 +1,30 @@
-#include "EndToGateCRF.h"
+#include "EndToGateCRS.h"
 
 //================================================= constructors & destructors =================================================
-EndToGateCRF::EndToGateCRF(ContextData* data) : State(data) {
+EndToGateCRS::EndToGateCRS(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-EndToGateCRF::~EndToGateCRF() {}
+EndToGateCRS::~EndToGateCRS() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void EndToGateCRF::entry(){
+void EndToGateCRS::entry(){
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_LEFT_START);
-	int time_required = data->timeprofile_fast.timestamp[(int) Timestamp::END] - data->timeprofile_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
+	int time_required = data->timeprofile_slow.timestamp[(int) Timestamp::END] - data->timeprofile_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
 	data->timer->start_timer(time_required - 400, TIMER_ID::CAL_GATE_RAMP1);
 }
 
-void EndToGateCRF::exit(){
+void EndToGateCRS::exit(){
 	PRINT_STATE;
 }
 
-State* EndToGateCRF::timer(TIMER_ID id){
+State* EndToGateCRS::timer(TIMER_ID id){
 	if(id == TIMER_ID::CAL_GATE_RAMP1){
-		return new OpenGateCRF(data);
+		return new OpenGateCRS(data);
 	}
 	return nullptr;
 }

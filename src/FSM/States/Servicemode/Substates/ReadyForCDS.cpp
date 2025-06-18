@@ -20,6 +20,6 @@ void ReadyForCDS::exit(){
     PRINT_STATE;
 }
 
-// State* ReadyForCDS::laser_front_blocked(){
-//     return new CalDistanceSlow(data);
-// }
+State* ReadyForCDS::laser_front_blocked(){
+    return new CalDistanceSlow(data);
+}

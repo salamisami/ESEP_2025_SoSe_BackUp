@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "CalDistanceSlow.h"
 
 
 class ReadyForCDS : public State {
@@ -15,7 +16,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	//State* laser_front_blocked() override;
+	State* laser_front_blocked() override;
     
 
 

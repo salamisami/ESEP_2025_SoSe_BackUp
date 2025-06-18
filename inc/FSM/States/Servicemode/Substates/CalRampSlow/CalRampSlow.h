@@ -1,21 +1,23 @@
-#ifndef PIECEATGATECDF_H
-#define PIECEATGATECDF_H
+#ifndef CALRAMPSLOW_H
+#define CALRAMPSLOW_H
 #pragma once
 
-#include "State.h"
-#include "GateToEndCDF.h"
+#include "OrthState.h"
+#include "EndToGateCRS.h"
+#include "PusherIdleCRS.h"
 
-class PieceAtGateCDF : public State {
+class CalRampSlow : public OrthState {
 public: //============================================ constructors & destructors ============================================
-    PieceAtGateCDF(ContextData* data) ;
-    virtual ~PieceAtGateCDF();
+    CalRampSlow(ContextData* data) ;
+    virtual ~CalRampSlow();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* laser_ramp_blocked() override;
     
-	State* laser_sorting_gate_unblocked() override;
 
 
 private: //================================================ private variables ================================================
