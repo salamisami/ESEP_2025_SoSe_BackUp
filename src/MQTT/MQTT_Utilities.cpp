@@ -44,7 +44,7 @@ int MQTT_Utilities::mqtt_festo_publish(const char* topic, const char* payload) {
 //}
 
 static int internal_msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
-    if (strcmp(topicName, "festo/anlage1-2/command") == 0 && g_command_callback) {
+    if (strcmp(topicName, "festo/anlage1/command") == 0 && g_command_callback) {
         char payload[message->payloadlen+1];
         memcpy(payload, message->payload, message->payloadlen);
         payload[message->payloadlen] = '\0';
@@ -58,7 +58,7 @@ static int internal_msgarrvd(void *context, char *topicName, int topicLen, MQTTC
 
 int MQTT_Utilities::mqtt_festo_subscribe_command(void (*command_callback)(const char* payload)) {
     g_command_callback = command_callback;
-    return MQTTClient_subscribe(client, "festo/anlage1-2/command", QOS);
+    return MQTTClient_subscribe(client, "festo/anlage1/command", QOS);
 }
 
 int MQTT_Utilities::mqtt_festo_subscribe(const char* topic, void (*cb)(const char* payload)) {
@@ -78,7 +78,7 @@ int MQTT_Utilities::mqtt_festo_init(const char* broker, const char* client_id) {
     MQTTClient_willOptions will_opts = MQTTClient_willOptions_initializer;
     int rc;
 
-    will_opts.topicName = "festo/anlage1-2/status/online";
+    will_opts.topicName = "festo/anlage1/status/online";
     will_opts.message   = "offline";
     will_opts.qos       = 1;
     will_opts.retained  = 1;
@@ -137,13 +137,14 @@ void MQTT_Utilities::mqtt_festo_heartbeat(void) {
 int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
     printf("Message arrived on topic: %s\n", topicName);
     // Annahme: Command-Topic
-    if(strcmp(topicName, "festo/anlage1-2/command") == 0) {
+    if(strcmp(topicName, "festo/anlage1/command") == 0) {
         // Payload als String verarbeiten
         char cmd[32] = {0};
         strncpy(cmd, (char*)message->payload, message->payloadlen);
         cmd[message->payloadlen] = '\0';
         if(strcmp(cmd, "start") == 0) {
             // Starte Anlage
+        	//std::cout << "start in msgarrvd" << std::endl;
         } else if(strcmp(cmd, "stop") == 0) {
             // Stoppe Anlage
         } else if(strcmp(cmd, "notaus") == 0) {

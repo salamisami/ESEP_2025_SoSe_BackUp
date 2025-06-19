@@ -52,18 +52,25 @@ int main() {
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
     
     Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+
+    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE);
     Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+
     Thread_COM::Sender* com_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
     Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_1_HAL);
     Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
 
+
+
     
     Logic* logic = new Logic(fsm_receiver, fsm_sender);
     //start recorder here
-    //start remote control here
+    Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, rc_sender);
+
     HAL* hal = new HAL(hal_receiver, hal_sender);
+
 
     // WAIT(3000);
 

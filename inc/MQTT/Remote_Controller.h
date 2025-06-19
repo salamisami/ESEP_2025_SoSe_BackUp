@@ -19,6 +19,10 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/dispatch.h>
+//#include <atomic>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
 
 
 
@@ -42,7 +46,8 @@ class Remote_Controller {
 
 	private: //================================================ private variables ================================================
 		//classes, STL containers, and structs
-		std::thread RemConThread;
+		std::thread RemConThreadRecive;
+		std::thread RemConThreadSend;
 		//mock here
 		PulseMsg::Receiver* mock_dispatcher_receiver;
 		PulseMsg::Sender* mock_dispatcher_sender;
@@ -54,7 +59,9 @@ class Remote_Controller {
 		int RemCon_rcvid;
 		int dispatcher_mock_rcvid;
 		//bool and char
-		volatile bool RemCon_running;
+		volatile bool RemCon_recive_running;
+		volatile bool RemCon_send_running;
+
 		bool detached;
 
 
@@ -62,7 +69,8 @@ class Remote_Controller {
 	private: //================================================ private functions ================================================
 
 		void init();
-		void threadFunction();
+		void threadFunctionRecive();
+		void threadFunctionSend();
 		//void test_ins();
 
 	};
