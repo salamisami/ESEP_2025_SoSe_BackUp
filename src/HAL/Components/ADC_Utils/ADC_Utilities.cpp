@@ -30,7 +30,7 @@ void ADC_Utilities::saveProfile(const Profil& p) {
 }
 
 
-void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage) {
+void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage,bool* adcStopped) {
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
 
     // Liste der Bauteile und ob sie ein Loch besitzen
@@ -58,7 +58,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         std::vector<float> werte;
         bool bauteilErkannt = false;
 
-        while(true) {
+        while(!*adcStopped) {
             adc.sample();
             usleep(1000);
             uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
@@ -228,7 +228,7 @@ void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bo
         uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
         float voltage = (raw / 4095.0f) * REF_VOLTAGE;
         float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
-
+        //TODO tick for ADC_TIMEOUT
         if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
             erkannt = true;
             return;
@@ -237,10 +237,10 @@ void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bo
     }
 }
 
-ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage) {
+ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
     std::vector<float> werte;
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
-    while(true) {
+    while(!*adcStopped) {
         adc.sample();
         usleep(1000);
         uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);

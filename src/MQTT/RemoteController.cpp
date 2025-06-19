@@ -47,7 +47,7 @@ Remote_Controller::~Remote_Controller() {
 
 void Remote_Controller::init() {
 	//TODO automatische IP Zuweisung
-	int rc = MQTT_Utilities::mqtt_festo_init("tcp://192.168.101.10:1883", "QNX_node_1");
+	int rc = MQTT_Utilities::mqtt_festo_init("tcp://192.168.101.10:1883", ClientID);
 		if (rc != 0) {
 		    printf("MQTT init failed! Fehlercode: %d\n", rc);
 		}
@@ -58,6 +58,8 @@ void Remote_Controller::init() {
 		    // Beispiel: Initialstatus publishen
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q1", "0");
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q2", "0");
+			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/start", "0");
+			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/reset", "0");
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/rutsche", "0");
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/rutsche", "0");
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red", "off");
@@ -66,7 +68,8 @@ void Remote_Controller::init() {
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/yellow", "off");
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green", "off");
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/green", "off");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", "BeagleBone bereit");
+			std::string msg = std::string(ClientID) + " is connected";
+			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
 		    RemConThreadRecive = std::thread(&Remote_Controller::threadFunctionRecive, this);
 		    RemConThreadSend = std::thread(&Remote_Controller::threadFunctionSend, this);
 }
@@ -74,76 +77,112 @@ void Remote_Controller::init() {
 void Remote_Controller::threadFunctionRecive(){
 	DEBUG("Remote Control Recive Thread started.");
 	RemCon_recive_running = true;
+	_pulse event;
 	while (RemCon_recive_running) {
 		//TODO Heartbeat
 		MQTT_Utilities::mqtt_festo_heartbeat();
-		_pulse msg;
-		local_receiver->receive_event(&msg);
-		ActuatorEnum event = (ActuatorEnum) msg.value.sival_int;
-		printf("[MQTT-DEBUG] Event empfangen: '%d'\n", event);
-		switch(event) {
-			case ActuatorEnum::LED_Q1_OFF:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q1", "0");
-				break;
-			case ActuatorEnum::LED_Q1_ON:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q1", "1");
-				break;
-			case ActuatorEnum::LED_Q2_OFF:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q2", "0");
-				break;
-			case ActuatorEnum::LED_Q2_ON:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q2", "1");
-				break;
-			case ActuatorEnum::TRAFFIC_GREEN_ON:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green", "on");
-				break;
-			case ActuatorEnum::TRAFFIC_GREEN_OFF:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green", "off");
-				break;
-			case ActuatorEnum::TRAFFIC_GREEN_ON_FAST:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green/1", "on");
-				break;
-			case ActuatorEnum::TRAFFIC_GREEN_ON_SLOW:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green/0.5", "on");
-				break;
-			case ActuatorEnum::TRAFFIC_YELLOW_ON:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow", "on");
-				break;
-			case ActuatorEnum::TRAFFIC_YELLOW_OFF:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow", "off");
-				break;
-			case ActuatorEnum::TRAFFIC_YELLOW_ON_FAST:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow/1", "on");
-				break;
-			case ActuatorEnum::TRAFFIC_YELLOW_ON_SLOW:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow/0.5", "on");
-				break;
-			case ActuatorEnum::TRAFFIC_RED_ON:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red", "on");
-				break;
-			case ActuatorEnum::TRAFFIC_RED_OFF:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red", "off");
-				break;
-			case ActuatorEnum::TRAFFIC_RED_ON_FAST:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red/1", "on");
-				break;
-			case ActuatorEnum::TRAFFIC_RED_ON_SLOW:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red/0.5", "on");
-				break;
-			case ActuatorEnum::LED_START_ON:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/start", "1");
-				break;
-			case ActuatorEnum::LED_START_OFF:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/start", "0");
-				break;
-			case ActuatorEnum::LED_RESET_ON:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/reset", "1");
-				break;
-			case ActuatorEnum::LED_RESET_OFF:
-				MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/reset", "0");
-				break;
-		}
+		int status = local_receiver->receive_event(&event);
 
+		if(status == 0) {
+			ActuatorEnum actuator_event_value = (ActuatorEnum) event.value.sival_int;
+			InterruptEnum interrupt_event_value = (InterruptEnum) event.value.sival_int;
+			//printf("[MQTT-DEBUG] Event empfangen: '%d'\n", event_value);
+			Topic event_code = (Topic) event.code;
+			if(event_code == Topic::ACTUATOR){
+				switch(actuator_event_value) {
+					case ActuatorEnum::LED_Q1_OFF:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q1", "0");
+						break;
+					case ActuatorEnum::LED_Q1_ON:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q1", "1");
+						break;
+					case ActuatorEnum::LED_Q2_OFF:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q2", "0");
+						break;
+					case ActuatorEnum::LED_Q2_ON:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q2", "1");
+						break;
+					case ActuatorEnum::TRAFFIC_GREEN_ON:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green", "on");
+						break;
+					case ActuatorEnum::TRAFFIC_GREEN_OFF:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green", "off");
+						break;
+					case ActuatorEnum::TRAFFIC_GREEN_ON_FAST:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green/1", "on");
+						break;
+					case ActuatorEnum::TRAFFIC_GREEN_ON_SLOW:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green/0.5", "on");
+						break;
+					case ActuatorEnum::TRAFFIC_YELLOW_ON:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow", "on");
+						break;
+					case ActuatorEnum::TRAFFIC_YELLOW_OFF:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow", "off");
+						break;
+					case ActuatorEnum::TRAFFIC_YELLOW_ON_FAST:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow/1", "on");
+						break;
+					case ActuatorEnum::TRAFFIC_YELLOW_ON_SLOW:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow/0.5", "on");
+						break;
+					case ActuatorEnum::TRAFFIC_RED_ON:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red", "on");
+						break;
+					case ActuatorEnum::TRAFFIC_RED_OFF:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red", "off");
+						break;
+					case ActuatorEnum::TRAFFIC_RED_ON_FAST:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red/1", "on");
+						break;
+					case ActuatorEnum::TRAFFIC_RED_ON_SLOW:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red/0.5", "on");
+						break;
+					case ActuatorEnum::LED_START_ON:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/start", "1");
+						break;
+					case ActuatorEnum::LED_START_OFF:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/start", "0");
+						break;
+					case ActuatorEnum::LED_RESET_ON:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/reset", "1");
+						break;
+					case ActuatorEnum::LED_RESET_OFF:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/reset", "0");
+						break;
+					case ActuatorEnum::MOTOR_LEFT_START:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor startet in Linkslauf");
+						break;
+					case ActuatorEnum::MOTOR_RIGHT_START:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor startet in Rechtslauf");
+						break;
+					case ActuatorEnum::MOTOR_SLOW_OFF:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor langsam start");
+						break;
+					case ActuatorEnum::MOTOR_SLOW_ON:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor langsam stopp");
+						break;
+					case ActuatorEnum::MOTOR_STOP:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor stopp");
+						break;
+					case ActuatorEnum::SORTING_OFF:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Werkstück aussortieren");
+						break;
+					case ActuatorEnum::SORTING_ON:
+						MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Werkstück einsortieren");
+						break;
+
+				}
+			}
+			if(event_code == Topic::INTERRUPT){
+				if(interrupt_event_value == InterruptEnum::BUTTON_ESTOP_PRESSED){
+					MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/notaus","true");
+				}
+				if(interrupt_event_value == InterruptEnum::BUTTON_ESTOP_RELEASED){
+					MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/notaus","false");
+				}
+			}
+		}
 	}
 }
 
@@ -173,7 +212,7 @@ void Remote_Controller::threadFunctionSend(){
 					break;
 			case 7:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
 					break;
-			case 8:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED);
+			case 8:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED);//TODO Eigener Remote E-Stop released
 					break;
 		}
 	}

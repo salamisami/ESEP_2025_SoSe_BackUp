@@ -123,7 +123,7 @@ void MQTT_Utilities::mqtt_festo_heartbeat(void) {
 //	        MQTTClient_destroy(&client);
 //	        return rc;
 //	}
-//
+//cd
 //	conn_opts.keepAliveInterval = 20;
 //	conn_opts.cleansession = 1;
 //	if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS) {
