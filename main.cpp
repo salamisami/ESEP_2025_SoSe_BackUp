@@ -22,7 +22,6 @@ int main() {
     std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
 
     Thread_COM::Receiver* com_receiver = new Thread_COM::Receiver(FBM_1_COM);
-    Thread_COM::Sender* com_sender = new Thread_COM::Sender(FBM_2_COM);
     Thread_COM::Receiver* com_dispatcher_receiver = new Thread_COM::Receiver(FBM_1_COM_RECEIVER);
     Thread_COM::Sender* com_dispatcher_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
@@ -31,15 +30,11 @@ int main() {
     Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
-    //Thread_COM::Sender* fsm_loopback = new Thread_COM::Sender(FBM_1_DISPATCHER);
-    Thread_COM::Sender* abc = new Thread_COM::Sender(FBM_1_DISPATCHER);
-    Thread_COM::Sender* def = new Thread_COM::Sender(FBM_1_DISPATCHER);
-
 
     HAL* hal = new HAL(hal_receiver, hal_sender);
     Logic* logic = new Logic(fsm_receiver, fsm_sender);
 
-    COM*  externCommunication = new COM(com_receiver, com_sender, com_dispatcher_receiver, com_dispatcher_sender);
+    COM*  externCommunication = new COM(com_receiver, FBM_1_COM, com_dispatcher_receiver, com_dispatcher_sender);
     externCommunication->start();
 
     // WAIT(3000);

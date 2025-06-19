@@ -3,9 +3,11 @@
 #include <chrono>
 #include <iostream>
 
-COM::COM(I_Receiver* server, I_Sender* client, 
+
+
+COM::COM(I_Receiver* server, const char* clientSendName,
          I_Receiver* dispatcherRec, I_Sender* dispatcherSen)
-    : _server(server), _client(client),
+    : _server(server), _clientSendName(clientSendName),
       _dispatcherRec(dispatcherRec), _dispatcherSen(dispatcherSen),
       lastHeartbeat(std::chrono::steady_clock::now()),
       running(false) {}
@@ -15,6 +17,7 @@ COM::~COM() {
 }
 
 void COM::start() {
+	COUT("COM started.");
     if (running) return;
     
     running = true;
@@ -47,6 +50,8 @@ void COM::addMessage(const _pulse& msg) {
 
 // Client side implementation
 void COM::runClient() {
+	COUT("COM Client started.");
+	_client = new Thread_COM::Sender(_clientSendName);
     while (running) {
         checkQueues();
         
@@ -85,6 +90,7 @@ void COM::checkQueues() {
 }
 
 void COM::sendHeartbeat() {
+	//COUT("Sending Heartbeat");
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
         now - lastHeartbeat);
@@ -102,6 +108,7 @@ void COM::sendToServer(const _pulse& msg, int priority) {
 
 // Server side implementation
 void COM::runServer() {
+	COUT("COM server started.");
     _pulse event;
     
     while (running) {
@@ -119,6 +126,7 @@ void COM::runServer() {
                 _pulse timeoutEvent;
                 timeoutEvent.code = TIMEOUT_CODE;
                 timeoutEvent.value.sival_int = 0;
+                COUT("Sending Timeout");
                 sendToDispatcher(timeoutEvent);
             }
             // Handle other errors if needed
@@ -146,5 +154,6 @@ void COM::sendToDispatcher(const _pulse& msg, int priority) {
 }
 
 void COM::updateHeartbeat() {
+	COUT("Updating Heartbeat");
     lastHeartbeat = std::chrono::steady_clock::now();
 }
