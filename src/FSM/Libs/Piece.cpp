@@ -7,6 +7,7 @@ Piece::Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast, uin
     this->tick_duration = tick_duration;
     this->speed = convert_deadlines_to_speed(this->deadlines);
     piece_thread = std::thread(&Piece::thread_function, this);
+    piece_thread.detach();
 }
 
 Piece::~Piece() {
@@ -55,9 +56,9 @@ Speed Piece::convert_deadlines_to_speed(const Deadlines input_deadline) {
 }
 
 Area Piece::step(Area initial_area) {
-    if(initial_area == Area::GATE_END) {
-        return Area::GATE_END;
-    }
+    // if(initial_area == Area::GATE_END) {
+    //     return Area::GATE_END;
+    // }
     uint8_t next_area = (uint8_t) initial_area + 1;
     return (Area) next_area;
 }
