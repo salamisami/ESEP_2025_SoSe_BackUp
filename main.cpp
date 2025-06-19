@@ -42,25 +42,26 @@ using namespace std;
 
 int main() {
     cout << "Starting Program..." << endl; // prints Hello World!!!
-    system("gns -s ");
+    system("gns -c ");
 
     Dispatcher* dispatcher = new Dispatcher();
     std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
 
-    Thread_COM::Receiver* com_receiver = new Thread_COM::Receiver(FBM_1_COM);
+    Thread_COM::Receiver* com_receiver = new Thread_COM::Receiver(FBM_2_COM);
     Thread_COM::Receiver* com_dispatcher_receiver = new Thread_COM::Receiver(FBM_1_COM_RECEIVER);
+
     Thread_COM::Sender* com_dispatcher_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
 
     Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
+    COM*  externCommunication = new COM(com_receiver, FBM_1_COM, com_dispatcher_receiver, com_dispatcher_sender);
+    externCommunication->start();
 
     HAL* hal = new HAL(hal_receiver, hal_sender);
     Logic* logic = new Logic(fsm_receiver, fsm_sender);
 
-    COM*  externCommunication = new COM(com_receiver, FBM_1_COM, com_dispatcher_receiver, com_dispatcher_sender);
-    externCommunication->start();
 
     // WAIT(3000);
 
