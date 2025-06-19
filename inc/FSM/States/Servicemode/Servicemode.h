@@ -5,6 +5,7 @@
 #include "HState.h"
 #include "IdleMode.h"
 #include "IdleSM.h"
+#include "ReadyForCDS.h"
 
 
 class Servicemode : public HState{
@@ -17,7 +18,7 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
-	HState* button_stop_pressed() override;
+	State* button_stop_pressed() override;
     
 
 
