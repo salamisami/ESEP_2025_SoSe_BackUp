@@ -13,6 +13,7 @@ class Stopwatch {
 public: //============================================ constructors & destructors ============================================
 	Stopwatch() = default;
 	virtual ~Stopwatch() = default;
+	//TODO convert stopwatch to threadpool and make it thread safe
 
 
 public: //================================================ public functions ================================================

@@ -2,12 +2,18 @@
 #define PIECE_H
 #pragma once
 
+#include "Semaphore.h"
+#include "AdvancedTimer.h"
+#include "Macros.h"
+
 #include <cstdint>
-#include <chrono>
+#include <thread>
+
+#define TIMESTAMP_LENGTH 6
 
 enum class Area : uint8_t {
 	START = 0,
-	START_ADC,
+	START_ADC = 1,
 	ADC,
 	ADC_GATE,
 	GATE,
@@ -17,7 +23,7 @@ enum class Area : uint8_t {
 	RAMP
 };
 
-enum class Timestamp: uint8_t {
+enum class Timestamp : uint8_t {
 	ADC_BLOCKED = 0,
 	ADC_UNBLOCKED,
 	LASER_GATE_BLOCKED,
@@ -25,6 +31,25 @@ enum class Timestamp: uint8_t {
 	END,
 	LASER_RAMP_BLOCKED
 };
+
+typedef struct {
+	double slow_tick[6];
+	double fast_tick[6];
+} Ticks;
+
+typedef struct {
+	long fast;
+	long slow;
+} TimeTuple;
+
+typedef struct {
+	TimeTuple start_adc;
+	TimeTuple adc;
+	TimeTuple adc_gate;
+	TimeTuple gate;
+	TimeTuple gate_end;
+	TimeTuple gate_ramp;
+} Deadlines;
 
 /**
  * 0: ADC_BLOCKED
@@ -35,7 +60,7 @@ enum class Timestamp: uint8_t {
  * 5: LASER_RAMP_BLOCKED
  */
 typedef struct {
-	long timestamp[6];
+	long timestamp[TIMESTAMP_LENGTH];
 } TimeProfile;
 
 class Piece {
@@ -44,7 +69,7 @@ public: //============================================ constructors & destructor
 	 * @brief Creates a piece, by inserting time profile.
 	 * @param input_profile the calibration profile of time stamps, which we got from the calibration in Servicemode
 	 */
-	Piece(TimeProfile input_profile);
+	Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast, uint8_t tick_duration = 100);
 	virtual ~Piece();
 
 
@@ -77,18 +102,30 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
-	TimeProfile profile;
+	Deadlines deadlines;
+	std::condition_variable cv_occupied;
+	std::thread piece_thread;
+	AdvancedTimer timer;
+	//Timer timer;
 	//pointers
 	//primitive types
+	Ticks ticks;
 	//bool and char
-	Area area;
-	double position = 0;
+	bool running = false;
+	Area current_area = Area::START;
+	double current_position = 0;
+	uint8_t mode = 0;
+	uint8_t tick_duration;
 
 
 
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
+	Deadlines convert_to_deadlines(TimeProfile input_timetable_slow, TimeProfile input_timetable_fast);
+	Ticks convert_deadlines_to_ticks(const Deadlines deadline);
+	void thread_function();
+	void next_area();
 
 };
 
