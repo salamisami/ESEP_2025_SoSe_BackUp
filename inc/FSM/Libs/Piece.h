@@ -2,22 +2,25 @@
 #define PIECE_H
 #pragma once
 
+#include "Semaphore.h"
+#include "AdvancedTimer.h"
+#include "Macros.h"
+
 #include <cstdint>
-#include <chrono>
+#include <thread>
+
+#define TIMESTAMP_LENGTH 6
 
 enum class Area : uint8_t {
-	START = 0,
-	START_ADC,
+	START_ADC = 0,
 	ADC,
 	ADC_GATE,
 	GATE,
 	GATE_END,
-	END,
-	GATE_RAMP,
-	RAMP
+	GATE_RAMP
 };
 
-enum class Timestamp: uint8_t {
+enum class Timestamp : uint8_t {
 	ADC_BLOCKED = 0,
 	ADC_UNBLOCKED,
 	LASER_GATE_BLOCKED,
@@ -25,6 +28,25 @@ enum class Timestamp: uint8_t {
 	END,
 	LASER_RAMP_BLOCKED
 };
+
+
+// 	START_ADC = 0
+// 	ADC 1,
+// 	ADC_GATE 2,
+// 	GATE 3,
+// 	GATE_END 4,
+// 	GATE_RAMP 5,
+
+typedef struct {
+	double slow_speed[6];
+	double fast_speed[6];
+} Speed;
+
+
+typedef struct {
+	long slow[6];
+	long fast[6];
+} Deadlines;
 
 /**
  * 0: ADC_BLOCKED
@@ -35,7 +57,7 @@ enum class Timestamp: uint8_t {
  * 5: LASER_RAMP_BLOCKED
  */
 typedef struct {
-	long timestamp[6];
+	long timestamp[TIMESTAMP_LENGTH];
 } TimeProfile;
 
 class Piece {
@@ -44,7 +66,7 @@ public: //============================================ constructors & destructor
 	 * @brief Creates a piece, by inserting time profile.
 	 * @param input_profile the calibration profile of time stamps, which we got from the calibration in Servicemode
 	 */
-	Piece(TimeProfile input_profile);
+	Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast, uint8_t tick_duration = 100);
 	virtual ~Piece();
 
 
@@ -63,6 +85,12 @@ public: //================================================ public functions ====
 	void stop();
 
 	/**
+	 * @brief attempts to send the piece to the ramp
+	 * @retval true if the send is valid
+	 * @retval false if the send is not valid
+	 */
+	bool send_to_ramp();
+	/**
 	 * @brief returns current area of this piece
 	 * @return the area, in which the piece is currently located
 	 */
@@ -77,18 +105,30 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
-	TimeProfile profile;
+	Deadlines deadlines;
+	std::condition_variable cv_occupied;
+	std::thread piece_thread;
+	AdvancedTimer timer;
+	//Timer timer;
 	//pointers
 	//primitive types
+	Speed speed;
 	//bool and char
-	Area area;
-	double position = 0;
+	bool running = false;
+	volatile Area current_area = Area::START_ADC;
+	volatile double current_position = 0;
+	uint8_t mode = 0;
+	uint8_t tick_duration;
 
 
 
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
+	Deadlines convert_to_deadlines(TimeProfile input_timetable_slow, TimeProfile input_timetable_fast);
+	Speed convert_deadlines_to_speed(const Deadlines deadline);
+	void thread_function();
+	Area step(Area initial_area);
 
 };
 
