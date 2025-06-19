@@ -1,7 +1,7 @@
 #include "HAL.h"
 #include "Dispatcher.h"
 #include "Thread_COM.h"
-
+#include "COM.h"
 #include "Timer.h"
 #include "Logic.h"
 #include "Remote_Controller.h"
@@ -47,6 +47,11 @@ int main() {
     Dispatcher* dispatcher = new Dispatcher();
     std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
 
+    Thread_COM::Receiver* com_receiver = new Thread_COM::Receiver(FBM_1_COM);
+    Thread_COM::Sender* com_sender = new Thread_COM::Sender(FBM_2_COM);
+    Thread_COM::Receiver* com_dispatcher_receiver = new Thread_COM::Receiver(FBM_1_COM_RECEIVER);
+    Thread_COM::Sender* com_dispatcher_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+
 
     Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
@@ -81,11 +86,9 @@ int main() {
 
     
     Logic* logic = new Logic(fsm_receiver, fsm_sender);
-    //start recorder here
-    Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, rc_sender); //comment this to test without RC
 
-    HAL* hal = new HAL(hal_receiver, hal_sender);
-
+    COM*  externCommunication = new COM(com_receiver, com_sender, com_dispatcher_receiver, com_dispatcher_sender);
+    externCommunication->start();
 
     // WAIT(3000);
 
