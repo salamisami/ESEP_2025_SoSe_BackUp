@@ -7,7 +7,7 @@
 
 COM::COM(I_Receiver* server, const char* clientSendName,
          I_Receiver* dispatcherRec, I_Sender* dispatcherSen)
-    : _server(server), _clientSendName(clientSendName),
+    : _server(server), _clientSendName(clientSendName), _client(nullptr),
       _dispatcherRec(dispatcherRec), _dispatcherSen(dispatcherSen),
       lastHeartbeat(std::chrono::steady_clock::now()),
       running(false) {}
@@ -51,7 +51,33 @@ void COM::addMessage(const _pulse& msg) {
 // Client side implementation
 void COM::runClient() {
 	COUT("COM Client started.");
-	_client = new Thread_COM::Sender(_clientSendName);
+	const int MAX_RETRIES = 5;
+	const int RETRY_DELAY_MS = 1000; // 1 second delay between retries
+
+	int retry_count = 0;
+
+	while (retry_count < MAX_RETRIES) {
+	    try {
+	    	_client = make_unique<Thread_COM::Sender>(_clientSendName);
+	        // Check if connection succeeded (depends on Sender implementation)
+	        if (_client->getcoid() >= 0) {
+	            break; // Success, exit retry loop
+	        } else {
+	            // Connection failed, retry
+	            retry_count++;
+
+	            std::cerr << "Connection attempt " << retry_count
+	                      << " failed. Retrying in "
+	                      << (RETRY_DELAY_MS / 1000) << "s..." << std::endl;
+
+	            usleep(RETRY_DELAY_MS * 1000); // Wait before retry
+	        }
+	    } catch (...) {
+	        // Handle unexpected exceptions (optional)
+	        std::cerr << "Unexpected error creating Sender" << std::endl;
+	        retry_count++;
+	        usleep(RETRY_DELAY_MS * 1000);
+	    }
     while (running) {
         checkQueues();
         
@@ -59,7 +85,7 @@ void COM::runClient() {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
-
+}
 void COM::checkQueues() {
     std::unique_lock<std::mutex> lock(queueMutex);
     

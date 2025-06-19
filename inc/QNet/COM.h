@@ -9,6 +9,8 @@
 #include <mutex>
 #include <condition_variable>
 #include <thread>
+#include <memory>
+
 
 #define COUT(msg) std::cout << msg << std::endl
 
@@ -38,7 +40,7 @@ private:
     // Shared state
     I_Receiver* _server;
     const char* _clientSendName;
-    I_Sender* _client;
+    std::unique_ptr<I_Sender> _client;  // Automatically nullptr by default
 
     I_Receiver* _dispatcherRec;
     I_Sender* _dispatcherSen;
@@ -60,6 +62,11 @@ private:
     static constexpr int HEARTBEAT_CODE = 0xFF;
     static constexpr int ESTOP_CODE = 0x01;
     static constexpr int TIMEOUT_CODE = 0xFE;
+
+    template<typename T, typename... Args>
+    std::unique_ptr<T> make_unique(Args&&... args) {
+        return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+    }
 };
 
 
