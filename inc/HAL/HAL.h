@@ -66,7 +66,7 @@ private: //================================================ private variables ==
 
 
 private: //================================================ private functions ================================================
-void init();
+	void init();
 	void threadFunction();
 
 };
