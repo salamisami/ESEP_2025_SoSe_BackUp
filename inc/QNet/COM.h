@@ -3,15 +3,18 @@
 
 #include "QNet.h"
 #include "Event.h"
+#include "Thread_COM.h"
 #include <chrono>
 #include <deque>
 #include <mutex>
 #include <condition_variable>
 #include <thread>
 
+#define COUT(msg) std::cout << msg << std::endl
+
 class COM {
 public:
-    COM(I_Receiver* server, I_Sender* client, 
+    COM(I_Receiver* server, const char* clientSendName,
         I_Receiver* dispatcherRec, I_Sender* dispatcherSen);
     ~COM();
     
@@ -34,6 +37,7 @@ private:
     
     // Shared state
     I_Receiver* _server;
+    const char* _clientSendName;
     I_Sender* _client;
 
     I_Receiver* _dispatcherRec;
@@ -57,5 +61,6 @@ private:
     static constexpr int ESTOP_CODE = 0x01;
     static constexpr int TIMEOUT_CODE = 0xFE;
 };
+
 
 #endif // COM_H

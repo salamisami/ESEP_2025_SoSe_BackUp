@@ -14,10 +14,13 @@
 
 #define FBM 1
 
+#define DEBUG(msg) std::cout << msg << std::endl
+
 //FBM_1
 #define FBM_1_HAL "Hal_1"
 #define FBM_1_FSM "Fsm_1"
 #define FBM_1_COM "Com_1"
+#define FBM_1_COM_RECEIVER "Com_receiver_1"
 #define FBM_1_RECORDER "Rec_1"
 #define FBM_1_REMOTE "Rem_1"
 #define FBM_1_DISPATCHER "Dis_1"

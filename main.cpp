@@ -48,46 +48,18 @@ int main() {
     std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
 
     Thread_COM::Receiver* com_receiver = new Thread_COM::Receiver(FBM_1_COM);
-    Thread_COM::Sender* com_sender = new Thread_COM::Sender(FBM_2_COM);
     Thread_COM::Receiver* com_dispatcher_receiver = new Thread_COM::Receiver(FBM_1_COM_RECEIVER);
     Thread_COM::Sender* com_dispatcher_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
 
     Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-    
-    Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-
-    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE); //comment this to test without RC
-    Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-
-    Thread_COM::Sender* com_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-
-    Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_1_HAL);
-    Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-
-    // Timestamp slow: 6707
-    // Timestamp slow: 7987
-    // Timestamp slow: 11583
-    // Timestamp slow: 13239
-    // Timestamp slow: 19122
-    // Timestamp slow: 11847
-    // TimeProfile fast_profile = { {2165, 2560, 3651, 4150, 5908, 4050} };
-    // TimeProfile slow_profile = { {6707, 7987, 11583, 13239, 19122, 11847} };
-
-    // int tick_duration = 10;
-    // Piece* piece = new Piece(slow_profile, fast_profile, tick_duration);
-    // piece->slow();
-    // while(true){
-    //     std::cout << "Area: " << (int) piece->getArea() << ", " << "Position: " << (double) piece->getPosition() << std::endl;
-    //     WAIT(500);
-    // }
 
 
-    
+    HAL* hal = new HAL(hal_receiver, hal_sender);
     Logic* logic = new Logic(fsm_receiver, fsm_sender);
 
-    COM*  externCommunication = new COM(com_receiver, com_sender, com_dispatcher_receiver, com_dispatcher_sender);
+    COM*  externCommunication = new COM(com_receiver, FBM_1_COM, com_dispatcher_receiver, com_dispatcher_sender);
     externCommunication->start();
 
     // WAIT(3000);
