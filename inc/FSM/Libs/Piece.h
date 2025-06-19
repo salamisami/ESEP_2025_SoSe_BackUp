@@ -12,15 +12,12 @@
 #define TIMESTAMP_LENGTH 6
 
 enum class Area : uint8_t {
-	START = 0,
-	START_ADC = 1,
+	START_ADC = 0,
 	ADC,
 	ADC_GATE,
 	GATE,
 	GATE_END,
-	END,
-	GATE_RAMP,
-	RAMP
+	GATE_RAMP
 };
 
 enum class Timestamp : uint8_t {
@@ -32,23 +29,23 @@ enum class Timestamp : uint8_t {
 	LASER_RAMP_BLOCKED
 };
 
-typedef struct {
-	double slow_tick[6];
-	double fast_tick[6];
-} Ticks;
+
+// 	START_ADC = 0
+// 	ADC 1,
+// 	ADC_GATE 2,
+// 	GATE 3,
+// 	GATE_END 4,
+// 	GATE_RAMP 5,
 
 typedef struct {
-	long fast;
-	long slow;
-} TimeTuple;
+	double slow_speed[6];
+	double fast_speed[6];
+} Speed;
+
 
 typedef struct {
-	TimeTuple start_adc;
-	TimeTuple adc;
-	TimeTuple adc_gate;
-	TimeTuple gate;
-	TimeTuple gate_end;
-	TimeTuple gate_ramp;
+	long slow[6];
+	long fast[6];
 } Deadlines;
 
 /**
@@ -88,6 +85,12 @@ public: //================================================ public functions ====
 	void stop();
 
 	/**
+	 * @brief attempts to send the piece to the ramp
+	 * @retval true if the send is valid
+	 * @retval false if the send is not valid
+	 */
+	bool send_to_ramp();
+	/**
 	 * @brief returns current area of this piece
 	 * @return the area, in which the piece is currently located
 	 */
@@ -109,11 +112,11 @@ private: //================================================ private variables ==
 	//Timer timer;
 	//pointers
 	//primitive types
-	Ticks ticks;
+	Speed speed;
 	//bool and char
 	bool running = false;
-	Area current_area = Area::START;
-	double current_position = 0;
+	volatile Area current_area = Area::START_ADC;
+	volatile double current_position = 0;
 	uint8_t mode = 0;
 	uint8_t tick_duration;
 
@@ -123,9 +126,9 @@ private: //================================================ private variables ==
 private: //================================================ private functions ================================================
 	//void privateFunction();
 	Deadlines convert_to_deadlines(TimeProfile input_timetable_slow, TimeProfile input_timetable_fast);
-	Ticks convert_deadlines_to_ticks(const Deadlines deadline);
+	Speed convert_deadlines_to_speed(const Deadlines deadline);
 	void thread_function();
-	void next_area();
+	Area step(Area initial_area);
 
 };
 
