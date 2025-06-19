@@ -51,6 +51,7 @@ Speed Piece::convert_deadlines_to_speed(const Deadlines input_deadline) {
         output_speed.slow_speed[i] = (double) 100 * tick_duration / input_deadline.slow[i];
         output_speed.fast_speed[i] = (double) 100 * tick_duration / input_deadline.fast[i];
     }
+    return output_speed;
 }
 
 Area Piece::step(Area initial_area) {
@@ -64,7 +65,7 @@ Area Piece::step(Area initial_area) {
 void Piece::thread_function() {
     //TODO check if the piece should go to the ramp
     while(running) {
-        if(current_position >= 100 && (current_area == Area::ADC_GATE || current_area == Area::GATE_RAMP)) {
+        if(current_position >= 100 && (current_area == Area::GATE_END || current_area == Area::GATE_RAMP)) {
             return;
         } else if(current_position >= 100) {
             current_area = step(current_area);
