@@ -59,8 +59,6 @@ int main() {
     COM*  externCommunication = new COM(com_receiver, FBM_1_COM, com_dispatcher_receiver, com_dispatcher_sender);
     externCommunication->start();
 
-    HAL* hal = new HAL(hal_receiver, hal_sender);
-    Logic* logic = new Logic(fsm_receiver, fsm_sender);
 
 
     // WAIT(3000);
