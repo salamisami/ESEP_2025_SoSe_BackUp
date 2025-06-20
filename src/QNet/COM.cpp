@@ -48,43 +48,76 @@ void COM::addMessage(const _pulse& msg) {
     queueCV.notify_one();
 }
 
-// Client side implementation
 void COM::runClient() {
-	COUT("COM Client started.");
-	const int MAX_RETRIES = 5;
-	const int RETRY_DELAY_MS = 1000; // 1 second delay between retries
+    COUT("COM Client started.");
+    const int MAX_RETRIES = 5;
+    const int RETRY_DELAY_MS = 1000;
+    const int HEARTBEAT_INTERVAL_MS = 5000;
+    const int DISPATCHER_POLL_INTERVAL_MS = 10; // Check dispatcher every 100ms
 
-	int retry_count = 0;
+    auto lastHeartbeatTime = std::chrono::steady_clock::now();
+    auto lastDispatcherCheckTime = std::chrono::steady_clock::now();
+    int retry_count = 0;
 
-	while (retry_count < MAX_RETRIES) {
-	    try {
-	    	_client = make_unique<Thread_COM::Sender>(_clientSendName);
-	        // Check if connection succeeded (depends on Sender implementation)
-	        if (_client->getcoid() >= 0) {
-	            break; // Success, exit retry loop
-	        } else {
-	            // Connection failed, retry
-	            retry_count++;
-
-	            std::cerr << "Connection attempt " << retry_count
-	                      << " failed. Retrying in "
-	                      << (RETRY_DELAY_MS / 1000) << "s..." << std::endl;
-
-	            usleep(RETRY_DELAY_MS * 1000); // Wait before retry
-	        }
-	    } catch (...) {
-	        // Handle unexpected exceptions (optional)
-	        std::cerr << "Unexpected error creating Sender" << std::endl;
-	        retry_count++;
-	        usleep(RETRY_DELAY_MS * 1000);
-	    }
     while (running) {
+        // 1. Check connection status and establish if needed
+        if (!_client || _client->getcoid() == -1) {
+            if (retry_count < MAX_RETRIES) {
+                try {
+                    _client = make_unique<Thread_COM::Sender>(_clientSendName);
+                    if (_client->getcoid() >= 0) {
+                        retry_count = 0; // Reset on success
+                        COUT("Connection established successfully");
+                    } else {
+                        retry_count++;
+                        std::cerr << "Connection attempt " << retry_count << " failed." << std::endl;
+                    }
+                } catch (...) {
+                    retry_count++;
+                    std::cerr << "Error creating Sender" << std::endl;
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
+                continue;
+            } else {
+                // Max retries reached, wait before trying again
+                std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS * 2));
+                continue;
+            }
+        }
+
+        // 2. Check for dispatcher messages periodically
+        auto now = std::chrono::steady_clock::now();
+        auto elapsedDispatcherCheck = std::chrono::duration_cast<std::chrono::milliseconds>(
+            now - lastDispatcherCheckTime);
+
+        if (elapsedDispatcherCheck.count() >= DISPATCHER_POLL_INTERVAL_MS) {
+            _pulse dispatcherMsg;
+            if (_dispatcherRec->receive_event(&dispatcherMsg) == 1) { // Non-blocking check
+                if (dispatcherMsg.code == static_cast<int8_t>(Topic::COM)) {
+                    // Handle COM topic message from dispatcher
+                    COUT("Received COM message from dispatcher");
+                    addMessage(dispatcherMsg);
+                }
+                // Other dispatcher messages can be handled here if needed
+            }
+            lastDispatcherCheckTime = now;
+        }
+
+        // 3. Process outgoing queues
         checkQueues();
         
-        // Small delay to prevent busy-waiting
+        // 4. Send heartbeat if needed
+        auto elapsedHeartbeat = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastHeartbeatTime);
+        if (elapsedHeartbeat.count() >= HEARTBEAT_INTERVAL_MS) {
+            if (_client->getcoid() != -1) {
+                _client->send_event(static_cast<int8_t>(Topic::COM), static_cast<int>(COM_Enum::HEARTBEAT));
+                lastHeartbeatTime = now;
+                COUT("Sent heartbeat");
+            }
+        }
+
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-}
 }
 void COM::checkQueues() {
     std::unique_lock<std::mutex> lock(queueMutex);
@@ -116,7 +149,6 @@ void COM::checkQueues() {
 }
 
 void COM::sendHeartbeat() {
-	//COUT("Sending Heartbeat");
 
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
@@ -181,7 +213,7 @@ void COM::runServer() {
 void COM::processMessage(const _pulse& msg) {
     // Process ES messages immediately
     if (msg.code == ESTOP_CODE) {
-        sendToDispatcher(msg);
+        sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
     } 
     // Process other messages
     else {
