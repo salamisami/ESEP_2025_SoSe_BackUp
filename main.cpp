@@ -58,8 +58,10 @@ int main() {
 
     COM*  externCommunication = new COM(com_receiver, FBM_1_COM, com_dispatcher_receiver, com_dispatcher_sender);
     externCommunication->start();
-
-
+    Thread_COM::Sender* senderDispatcher = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    int8_t comCode = (int8_t) Topic::COM;
+    int value = (int) COM_Enum::BUTTON_ESTOP_PRESSED;
+    senderDispatcher-> send_event(comCode, value);
 
     // WAIT(3000);
 
