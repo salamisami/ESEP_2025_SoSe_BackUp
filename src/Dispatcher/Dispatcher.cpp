@@ -6,7 +6,7 @@
  */
 
 #include "Dispatcher.h"
-
+#include <iostream>
 
 
 
@@ -45,6 +45,10 @@ void Dispatcher::run_dispatcher() {
 			continue;
 		}
 		if(event_info == 1){
+            std::cout << "Received Event - Code: " << (int)event.code
+                      << ", Value: " << event.value.sival_int
+                      << ", SCOID: " << event.scoid
+                      << std::endl;
 			if(event.code == 12){
 				num_comp++;
 			}
@@ -83,6 +87,9 @@ void Dispatcher::run_dispatcher() {
 			continue;
 		}
 		if(event_info == 0){
+            std::cout << "Received Event - Code: " << (int)event.code
+                      << ", Value: " << event.value.sival_int
+                      << std::endl;
 			for(int i = 0;i < MAX_NUM_COMP;i++){
 				switch(event.value.sival_int){
 				default:

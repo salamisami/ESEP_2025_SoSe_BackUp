@@ -15,14 +15,14 @@ COM::COM(I_Receiver* server, const char* clientSendName,
 COM::~COM() {
     stop();
 }
-
 void COM::start() {
-	COUT("COM started.");
+    COUT("COM started.");
     if (running) return;
     
     running = true;
     clientThread = std::thread(&COM::runClient, this);
     serverThread = std::thread(&COM::runServer, this);
+    dispatcherThread = std::thread(&COM::runDispatcher, this); // New dispatcher thread
 }
 
 void COM::stop() {
@@ -33,40 +33,49 @@ void COM::stop() {
     
     if (clientThread.joinable()) clientThread.join();
     if (serverThread.joinable()) serverThread.join();
+    if (dispatcherThread.joinable()) dispatcherThread.join(); // Clean up dispatcher thread
 }
 
-void COM::addMessage(const _pulse& msg) {
-    {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        
-        if (msg.code == ESTOP_CODE) {
-            highPriorityQueue.push_back(msg);
-        } else {
-            lowPriorityQueue.push_back(msg);
+// New dispatcher message handling thread
+void COM::runDispatcher() {
+    COUT("Dispatcher handler started.");
+    while (running) {
+        _pulse dispatcherMsg;
+        if (_dispatcherRec->receive_event(&dispatcherMsg) == 1) {
+            {
+                std::lock_guard<std::mutex> lock(queueMutex);
+                if (dispatcherMsg.code == ESTOP_CODE) {
+                    highPriorityQueue.push_back(dispatcherMsg);
+                    COUT("Received EStop from dispatcher (high priority)");
+                } else {
+                    lowPriorityQueue.push_back(dispatcherMsg);
+                    COUT("Received message from dispatcher");
+                }
+            }
+            queueCV.notify_one(); // Wake up client thread if it's waiting
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Small yield
     }
-    queueCV.notify_one();
 }
 
+// Simplified runClient (removed dispatcher checking)
 void COM::runClient() {
     COUT("COM Client started.");
     const int MAX_RETRIES = 5;
     const int RETRY_DELAY_MS = 1000;
     const int HEARTBEAT_INTERVAL_MS = 5000;
-    const int DISPATCHER_POLL_INTERVAL_MS = 10; // Check dispatcher every 100ms
 
     auto lastHeartbeatTime = std::chrono::steady_clock::now();
-    auto lastDispatcherCheckTime = std::chrono::steady_clock::now();
     int retry_count = 0;
 
     while (running) {
-        // 1. Check connection status and establish if needed
+        // Connection management (unchanged)
         if (!_client || _client->getcoid() == -1) {
             if (retry_count < MAX_RETRIES) {
                 try {
                     _client = make_unique<Thread_COM::Sender>(_clientSendName);
                     if (_client->getcoid() >= 0) {
-                        retry_count = 0; // Reset on success
+                        retry_count = 0;
                         COUT("Connection established successfully");
                     } else {
                         retry_count++;
@@ -79,34 +88,16 @@ void COM::runClient() {
                 std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
                 continue;
             } else {
-                // Max retries reached, wait before trying again
                 std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS * 2));
                 continue;
             }
         }
 
-        // 2. Check for dispatcher messages periodically
-        auto now = std::chrono::steady_clock::now();
-        auto elapsedDispatcherCheck = std::chrono::duration_cast<std::chrono::milliseconds>(
-            now - lastDispatcherCheckTime);
-
-        if (elapsedDispatcherCheck.count() >= DISPATCHER_POLL_INTERVAL_MS) {
-            _pulse dispatcherMsg;
-            if (_dispatcherRec->receive_event(&dispatcherMsg) == 1) { // Non-blocking check
-                if (dispatcherMsg.code == static_cast<int8_t>(Topic::COM)) {
-                    // Handle COM topic message from dispatcher
-                    COUT("Received COM message from dispatcher");
-                    addMessage(dispatcherMsg);
-                }
-                // Other dispatcher messages can be handled here if needed
-            }
-            lastDispatcherCheckTime = now;
-        }
-
-        // 3. Process outgoing queues
+        // Process queues (unchanged)
         checkQueues();
         
-        // 4. Send heartbeat if needed
+        // Heartbeat logic (unchanged)
+        auto now = std::chrono::steady_clock::now();
         auto elapsedHeartbeat = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastHeartbeatTime);
         if (elapsedHeartbeat.count() >= HEARTBEAT_INTERVAL_MS) {
             if (_client->getcoid() != -1) {
@@ -124,6 +115,7 @@ void COM::checkQueues() {
     
     // Process ALL high priority messages first
     while (!highPriorityQueue.empty()) {
+    	COUT("Something in high prio received");
         auto msg = highPriorityQueue.front();
         highPriorityQueue.pop_front();
         lock.unlock();
@@ -133,6 +125,7 @@ void COM::checkQueues() {
 
     // Process low priority only when higher queues are empty
     while (!lowPriorityQueue.empty()) {
+    	COUT("Something in low prio");
         auto msg = lowPriorityQueue.front();
         lowPriorityQueue.pop_front();
         lock.unlock();
