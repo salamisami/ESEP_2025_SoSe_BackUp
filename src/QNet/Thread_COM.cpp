@@ -41,8 +41,10 @@ Sender::Sender(const char* name) {
                 break;
         }
 	}
+    else {
                 std::cout << "Success: Name '" << name << "' connected" << std::endl;
                 // Verify the name exists or handle missing resource
+    }
 }
 Sender::~Sender(){
     name_close(receiver_coid);

@@ -26,16 +26,11 @@ int main() {
 
     Thread_COM::Sender* com_dispatcher_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
-    Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_1_HAL);
-    Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-    Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
-    Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+
 
     COM*  externCommunication = new COM(com_receiver, FBM_1_COM, com_dispatcher_receiver, com_dispatcher_sender);
     externCommunication->start();
 
-    HAL* hal = new HAL(hal_receiver, hal_sender);
-    Logic* logic = new Logic(fsm_receiver, fsm_sender);
 
 
     // WAIT(3000);

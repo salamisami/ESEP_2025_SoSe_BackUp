@@ -117,12 +117,30 @@ void COM::checkQueues() {
 
 void COM::sendHeartbeat() {
 	//COUT("Sending Heartbeat");
+
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
         now - lastHeartbeat);
     
     if (elapsed.count() >= HEARTBEAT_INTERVAL) {
-        _client->send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
+    	const int MAX_RETRIES = 3;
+    	int attempts = 0;
+
+    	while (attempts < MAX_RETRIES) {
+    	    if (_client->getcoid() == -1) {
+    	        _client = make_unique<Thread_COM::Sender>(_clientSendName);
+    	        attempts++;
+    	        delay(10 * attempts);  // Exponential backoff
+    	    } else {
+    	        break;
+    	    }
+    	}
+
+    	if (_client->getcoid() != -1) {
+    	    _client->send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
+    	} else {
+    	    // sendDispatcher disconnect
+    	}
         updateHeartbeat();
     }
 }
