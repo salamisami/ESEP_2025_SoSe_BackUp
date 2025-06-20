@@ -31,6 +31,8 @@ private:
     void sendHeartbeat();
     void sendToServer(const _pulse& msg, int priority = (int) EventPriority::DEFAULT);
     
+    void runDispatcher();
+
     // Server side
     void runServer();
     void processMessage(const _pulse& msg);
@@ -55,6 +57,7 @@ private:
     
     std::thread clientThread;
     std::thread serverThread;
+    std::thread dispatcherThread;
     
     // Constants
     static constexpr int HEARTBEAT_INTERVAL = 5;
