@@ -181,38 +181,63 @@ void COM::runServer() {
     _pulse event;
     
     while (running) {
-        int result = _server->receive_event(&event);
+		struct _pulse event;
+		struct _msg_info info;  // Message info structure
+		struct sigevent sigev;
+		uint64_t timeout_nsec = 5 * 1000000000ULL; // 5 seconds in nanoseconds
+
+		// Setup timeout structure
+		sigev.sigev_notify = SIGEV_UNBLOCK;
+
+		// Arm the receive timeout
+		TimerTimeout(CLOCK_MONOTONIC,
+					_NTO_TIMEOUT_RECEIVE,
+					&sigev,
+					&timeout_nsec,
+					NULL);
+
+		// Perform the receive operation
+		int rcvid = MsgReceive(_server->getchid(),
+							  &event,
+							  sizeof(event),
+							  &info);
         
-        if (result == 0) {  //  pulse received
+        if (rcvid > 0) {
+            // Successfully received a pulse
+            COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
             updateHeartbeat();
             processMessage(event);
         }
-        else if (result == -1) {
+        else if (rcvid == -1) {
             if (errno == ETIMEDOUT) {
+                // Timeout occurred
                 updateHeartbeat();
                 
-                // Send timeout notification to dispatcher
                 _pulse timeoutEvent;
-                timeoutEvent.code = TIMEOUT_CODE;
-                timeoutEvent.value.sival_int = 0;
-                COUT("Sending Timeout");
+                int8_t comCode = (int8_t) Topic::COM;
+                int value = (int) COM_Enum::TIMEOUT;
+
+                timeoutEvent.code = comCode;
+                timeoutEvent.value.sival_int = value;
+                COUT("Sending Timeout Notification");
                 sendToDispatcher(timeoutEvent);
+            }
+            else {
+                // Other error occurred
+                COUT("Error receiving pulse: " << strerror(errno));
             }
         }
     }
 }
 
 void COM::processMessage(const _pulse& msg) {
-    // Process ES messages immediately
+    // Process ES messages immediately Same priority goes to connection lost
     if (msg.code == ((int) COM_Enum::BUTTON_ESTOP_PRESSED)) {
         sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
+        COUT("SENDING ESTOP TO DISPATCHER");
     } 
-    // Process other messages
     else {
         // Add your message processing logic here
-        // ...
-        
-        // Forward to dispatcher if needed
         sendToDispatcher(msg);
     }
 }
