@@ -1,26 +1,21 @@
-#ifndef WAITINGIM_H
-#define WAITINGIM_H
+#ifndef RED_H
+#define RED_H
 #pragma once
 
 #include "State.h"
-#include "Timer.h"
-#include "TimerReceivedIM.h"
-#include "Operating.h"
-#include "OperatingMock.h"
+#include "Green.h"
 
-
-class WaitingIM : public State {
+class Red : public State {
 public: //============================================ constructors & destructors ============================================
-    WaitingIM(ContextData* data);
-    virtual ~WaitingIM();
+    Red(ContextData* data) ;
+    virtual ~Red();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* button_start_released() override;
-	State* timer(TIMER_ID id) override;
+	State* button_start_pressed() override;
     
 
 

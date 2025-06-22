@@ -35,7 +35,8 @@ public:
      * @param input_state substate to add
      */
     void spawn_orthogonal_state(State* input_state);
-    //virtual std::string show_state() override;
+    
+    virtual std::string get_current_state() override;
 
     virtual State* laser_front_blocked() override;
     virtual State* laser_front_unblocked() override;
