@@ -36,7 +36,6 @@ void COM::stop() {
     if (dispatcherThread.joinable()) dispatcherThread.join(); // Clean up dispatcher thread
 }
 
-// New dispatcher message handling thread
 void COM::runDispatcher() {
     COUT("Dispatcher handler started.");
     while (running) {
@@ -58,7 +57,6 @@ void COM::runDispatcher() {
     }
 }
 
-// Simplified runClient (removed dispatcher checking)
 void COM::runClient() {
     COUT("COM Client started.");
     const int MAX_RETRIES = 5;
@@ -79,41 +77,44 @@ void COM::runClient() {
                         COUT("Connection established successfully");
                     } else {
                         retry_count++;
-                        std::cerr << "Connection attempt " << retry_count << " failed." << std::endl;
                     }
                 } catch (...) {
                     retry_count++;
-                    std::cerr << "Error creating Sender" << std::endl;
+                    std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
                 continue;
             } else {
                 std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS * 2));
-                continue;
             }
         }
-
-        // Process queues (unchanged)
-        checkQueues();
-        
-        // Heartbeat logic (unchanged)
-        auto now = std::chrono::steady_clock::now();
-        auto elapsedHeartbeat = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastHeartbeatTime);
-        if (elapsedHeartbeat.count() >= HEARTBEAT_INTERVAL_MS) {
-            if (_client->getcoid() != -1) {
-                _client->send_event(static_cast<int8_t>(Topic::COM), static_cast<int>(COM_Enum::HEARTBEAT));
-                lastHeartbeatTime = now;
-                COUT("Sent heartbeat");
-            }
+        if (_client->getcoid()==-1){
+        	_pulse timeoutEvent;
+        	int8_t comCode = (int8_t) Topic::COM;
+        	int value = (int) COM_Enum::TIMEOUT;
+        	timeoutEvent.code = comCode;
+        	timeoutEvent.value.sival_int = value;
+        	COUT("Sending Timeout Notification to dispatcher");
+        	sendToDispatcher(timeoutEvent);
         }
-
+        else {
+            checkQueues();
+        }
+        retry_count=0;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 void COM::checkQueues() {
     std::unique_lock<std::mutex> lock(queueMutex);
     
-    // Process ALL high priority messages first
+    // Send heartbeat if queues are empty
+    if (highPriorityQueue.empty() &&
+        lowPriorityQueue.empty()) {
+        lock.unlock();
+        sendHeartbeat();
+        return;
+    }
+
     while (!highPriorityQueue.empty()) {
     	COUT("Something in high prio received");
         auto msg = highPriorityQueue.front();
@@ -132,13 +133,6 @@ void COM::checkQueues() {
         sendToServer(msg);
         lock.lock();
     }
-
-    // Send heartbeat if queues are empty
-    if (highPriorityQueue.empty() &&
-        lowPriorityQueue.empty()) {
-        lock.unlock();
-        sendHeartbeat();
-    }
 }
 
 void COM::sendHeartbeat() {
@@ -148,23 +142,8 @@ void COM::sendHeartbeat() {
         now - lastHeartbeat);
     
     if (elapsed.count() >= HEARTBEAT_INTERVAL) {
-    	const int MAX_RETRIES = 3;
-    	int attempts = 0;
-
-    	while (attempts < MAX_RETRIES) {
-    	    if (_client->getcoid() == -1) {
-    	        _client = make_unique<Thread_COM::Sender>(_clientSendName);
-    	        attempts++;
-    	        delay(10 * attempts);  // Exponential backoff
-    	    } else {
-    	        break;
-    	    }
-    	}
-
     	if (_client->getcoid() != -1) {
     	    _client->send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
-    	} else {
-    	    // sendDispatcher disconnect
     	}
         updateHeartbeat();
     }
@@ -247,6 +226,5 @@ void COM::sendToDispatcher(const _pulse& msg, int priority) {
 }
 
 void COM::updateHeartbeat() {
-	COUT("Updating Heartbeat");
     lastHeartbeat = std::chrono::steady_clock::now();
 }
