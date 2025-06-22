@@ -7,11 +7,22 @@ Piece::Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast, uin
     this->tick_duration = tick_duration;
     this->speed = convert_deadlines_to_speed(this->deadlines);
     piece_thread = std::thread(&Piece::thread_function, this);
-    piece_thread.detach();
+    //set_thread_priority(piece_thread.native_handle(), 255);  // Higher priority for main thread
+    //piece_thread.detach();
+    //debug_thread = std::thread(&Piece::debug_function, this);
+    //debug_thread.detach();
 }
 
 Piece::~Piece() {
-    running = false;
+    running = false;  // Signal threads to stop
+    
+    // Wake up threads if they're waiting
+    if (piece_thread.joinable()) {
+        piece_thread.join();
+    }
+    if (debug_thread.joinable()) {
+        debug_thread.join();
+    }
 }
 
 //===================================================== private functions =====================================================
@@ -23,6 +34,22 @@ Piece::~Piece() {
 // Timestamp: 3874
 // Timestamp: 5612
 // Timestamp: 4857
+
+// void Piece::set_thread_priority(pthread_t thread, int priority) {
+//     struct sched_param param;
+//     param.sched_priority = priority;
+    
+//     // Set FIFO scheduling policy with specified priority
+//     if (pthread_setschedparam(thread, SCHED_FIFO, &param) != 0) {
+//         std::cerr << "Failed to set thread priority: " << strerror(errno) << std::endl;
+//     }
+    
+//     // Optional: Set thread CPU affinity
+//     // cpu_set_t cpuset;
+//     // CPU_ZERO(&cpuset);
+//     // CPU_SET(0, &cpuset);  // Pin to CPU 0
+//     // pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+// }
 
 
 Deadlines Piece::convert_to_deadlines(TimeProfile input_timetable_slow, TimeProfile input_timetable_fast) {
@@ -78,7 +105,7 @@ void Piece::thread_function() {
                 break;
             case 1:
                 //slow
-                 current_position += speed.slow_speed[(int) current_area];
+                current_position += speed.slow_speed[(int) current_area];
                 break;
             case 2:
                 //fast
@@ -91,6 +118,12 @@ void Piece::thread_function() {
     }
 }
 
+void Piece::debug_function() {
+    while(running) {
+        std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << std::endl;
+        WAIT(100);
+    }
+}
 //===================================================== public functions =====================================================
 void Piece::stop() {
     mode = 0;
@@ -102,16 +135,26 @@ void Piece::fast() {
     mode = 2;
 }
 
-Area Piece::getArea(){
+void Piece::reset(){
+    mode = 0;
+    current_area = Area::START_ADC;
+    current_position = 0;
+}
+
+void Piece::debug_mode(bool debug) {
+    this->debug = debug;
+}
+
+Area Piece::getArea() {
     return current_area;
 }
 
-double Piece::getPosition(){
+double Piece::getPosition() {
     return current_position;
 }
 
-bool Piece::send_to_ramp(){
-    if(current_area == Area::GATE){
+bool Piece::send_to_ramp() {
+    if(current_area == Area::GATE) {
         current_area = Area::GATE_RAMP;
         current_position = 0;
         return true;

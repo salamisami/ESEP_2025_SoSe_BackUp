@@ -2,12 +2,14 @@
 #define PIECE_H
 #pragma once
 
-#include "Semaphore.h"
-#include "AdvancedTimer.h"
+
 #include "Macros.h"
 
 #include <cstdint>
 #include <thread>
+//#include <sys/neutrino.h>
+//#include <sys/syspage.h>
+#include <sched.h>
 
 #define TIMESTAMP_LENGTH 6
 
@@ -84,6 +86,10 @@ public: //================================================ public functions ====
 	 */
 	void stop();
 
+	void reset();
+
+	void debug_mode(bool debug);
+
 	/**
 	 * @brief attempts to send the piece to the ramp
 	 * @retval true if the send is valid
@@ -108,7 +114,7 @@ private: //================================================ private variables ==
 	Deadlines deadlines;
 	std::condition_variable cv_occupied;
 	std::thread piece_thread;
-	AdvancedTimer timer;
+	std::thread debug_thread;
 	//Timer timer;
 	//pointers
 	//primitive types
@@ -119,6 +125,7 @@ private: //================================================ private variables ==
 	volatile double current_position = 0;
 	uint8_t mode = 0;
 	uint8_t tick_duration;
+	bool debug = false;
 
 
 
@@ -128,7 +135,9 @@ private: //================================================ private functions ==
 	Deadlines convert_to_deadlines(TimeProfile input_timetable_slow, TimeProfile input_timetable_fast);
 	Speed convert_deadlines_to_speed(const Deadlines deadline);
 	void thread_function();
+	void debug_function();
 	Area step(Area initial_area);
+	//void set_thread_priority(pthread_t thread, int priority);
 
 };
 

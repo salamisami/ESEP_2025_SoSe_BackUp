@@ -42,6 +42,7 @@ public:
     I_Sender* timer_sender;
     Timer* timer;
     I_Sender* sender;
+    Piece* piece;
     bool is_switch = false;
 
 };
