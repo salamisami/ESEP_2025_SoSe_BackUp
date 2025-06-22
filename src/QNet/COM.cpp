@@ -61,7 +61,7 @@ void COM::runDispatcher() {
 // Simplified runClient (removed dispatcher checking)
 void COM::runClient() {
     COUT("COM Client started.");
-    const int MAX_RETRIES = 5;
+    const int MAX_RETRIES = 50;
     const int RETRY_DELAY_MS = 1000;
     const int HEARTBEAT_INTERVAL_MS = 5000;
 
@@ -113,6 +113,10 @@ void COM::runClient() {
 void COM::checkQueues() {
     std::unique_lock<std::mutex> lock(queueMutex);
     
+    int8_t comCode = (int8_t) Topic::COM;
+    int value = (int) COM_Enum::BUTTON_ESTOP_PRESSED;
+    //_client-> send_event(comCode, value);
+
     // Process ALL high priority messages first
     while (!highPriorityQueue.empty()) {
     	COUT("Something in high prio received");
@@ -183,7 +187,8 @@ void COM::runServer() {
     while (running) {
         int result = _server->receive_event(&event);
         
-        if (result == 0) {  //  pulse received
+        if (result == 0) {  // QNX pulse received
+        	COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
             updateHeartbeat();
             processMessage(event);
         }
