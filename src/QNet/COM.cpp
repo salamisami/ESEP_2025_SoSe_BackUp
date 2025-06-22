@@ -41,10 +41,10 @@ void COM::runDispatcher() {
     COUT("Dispatcher handler started.");
     while (running) {
         _pulse dispatcherMsg;
-        if (_dispatcherRec->receive_event(&dispatcherMsg) == 1) {
+        if (_dispatcherRec->receive_event(&dispatcherMsg) == 0) {
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
-                if (dispatcherMsg.code == ESTOP_CODE) {
+                if (dispatcherMsg.code == ((int) COM_Enum::BUTTON_ESTOP_PRESSED)) {
                     highPriorityQueue.push_back(dispatcherMsg);
                     COUT("Received EStop from dispatcher (high priority)");
                 } else {
@@ -183,7 +183,7 @@ void COM::runServer() {
     while (running) {
         int result = _server->receive_event(&event);
         
-        if (result == 1) {  // QNX pulse received
+        if (result == 0) {  //  pulse received
             updateHeartbeat();
             processMessage(event);
         }
@@ -198,14 +198,13 @@ void COM::runServer() {
                 COUT("Sending Timeout");
                 sendToDispatcher(timeoutEvent);
             }
-            // Handle other errors if needed
         }
     }
 }
 
 void COM::processMessage(const _pulse& msg) {
     // Process ES messages immediately
-    if (msg.code == ESTOP_CODE) {
+    if (msg.code == ((int) COM_Enum::BUTTON_ESTOP_PRESSED)) {
         sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
     } 
     // Process other messages
