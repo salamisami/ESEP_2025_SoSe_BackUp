@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <string>
 
-#define FBM 1
+#define FBM 2
 
 #define DEBUG(msg) std::cout << msg << std::endl
 
@@ -31,6 +31,7 @@
 #define FBM_2_RECORDER "Rec_2"
 #define FBM_2_REMOTE "Rem_2"
 #define FBM_2_DISPATCHER "Dis_2"
+#define FBM_2_COM_RECEIVER "Com_receiver_2"
 
 namespace Thread_COM {
 	class Receiver : public I_Receiver {

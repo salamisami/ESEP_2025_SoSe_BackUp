@@ -45,15 +45,14 @@ void Dispatcher::run_dispatcher() {
 			continue;
 		}
 		if(event_info == 1){
-            std::cout << "Received Event - Code: " << (int)event.code
-                      << ", Value: " << event.value.sival_int
-                      << ", SCOID: " << event.scoid
+            std::cout << "Received Eventinfo 1"
                       << std::endl;
 			if(event.code == 12){
 				num_comp++;
 			}
 		}
 	}while(num_comp < MAX_NUM_COMP);
+	 std::cout << "exiting while num_comp<max_nom_comp loop"<< std::endl;
 
 //connecting to all Components
 	switch(FBM){
@@ -64,18 +63,16 @@ void Dispatcher::run_dispatcher() {
 		coid_arr[3] = name_open(FBM_1_COM, NAME_FLAG_ATTACH_GLOBAL);
 		coid_arr[4] = name_open(FBM_1_REMOTE, NAME_FLAG_ATTACH_GLOBAL);
 		break;
-	case 2:
-		coid_arr[0] = name_open(FBM_2_HAL, NAME_FLAG_ATTACH_GLOBAL);
-		coid_arr[1] = name_open(FBM_2_FSM, NAME_FLAG_ATTACH_GLOBAL);
-		coid_arr[2] = name_open(FBM_2_RECORDER, NAME_FLAG_ATTACH_GLOBAL);
-		coid_arr[3] = name_open(FBM_2_COM, NAME_FLAG_ATTACH_GLOBAL);
-		coid_arr[4] = name_open(FBM_2_REMOTE, NAME_FLAG_ATTACH_GLOBAL);
+	case 2: // wir sind FBM 2 1 Komponente zum weiterleiten: COM
+		coid_arr[0] = name_open(FBM_2_COM_RECEIVER, NAME_FLAG_ATTACH_GLOBAL);
 		break;
 	default:
 		perror("Foerderbandmodul not defined");
 		exit(-1);
 	}
-
+	 std::cout << "name open for all FBM2 com done"<< std::endl;
+	    // Print the single element
+	 std::cout << "coid_arr[0] = " << coid_arr[0] <<std::endl;
 //dispatching Messages
 	while (1) {
 		event_info = threadcom->receive_event(&event);

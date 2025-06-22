@@ -63,7 +63,6 @@ private:
     static constexpr int HEARTBEAT_INTERVAL = 5;
     static constexpr int HEARTBEAT_TIMEOUT = 15;
     static constexpr int HEARTBEAT_CODE = 0xFF;
-    static constexpr int ESTOP_CODE = 0x01;
     static constexpr int TIMEOUT_CODE = 0xFE;
 
     template<typename T, typename... Args>

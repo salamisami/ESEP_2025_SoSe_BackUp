@@ -32,7 +32,7 @@ public:
 private:
 	Thread_COM::Receiver *threadcom;
 
-	int coid_arr[MAX_NUM_COMP] = {0,0};
+	int coid_arr[MAX_NUM_COMP] = {0};
 
 };
 
