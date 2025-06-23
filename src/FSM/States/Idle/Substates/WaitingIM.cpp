@@ -18,6 +18,8 @@ void WaitingIM::entry() {
 
 void WaitingIM::exit() {
     PRINT_STATE;
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+    
 }
 
 //load history
@@ -36,31 +38,3 @@ State* WaitingIM::timer(TIMER_ID id) {
     }
     return nullptr;
 }
-
-/**
-HState* Operating::estop() {
-    data->stateStack->push(substate);
-    return new EmergencyStop(data);
-}
-
-HState* Operating::forward() {
-    HState* newSubstate = substate->forward();
-    if(newSubstate != nullptr) {
-        HState::exit();
-        delete substate;
-        substate = newSubstate;
-        HState::entry();
-    }
-    return nullptr;
-}
-
-
-HState* Operating::service() {
-    HState* newSubstate = substate->service();
-    if(newSubstate != nullptr) {
-        return newSubstate;
-    }
-    return nullptr;
-}
-
-*/

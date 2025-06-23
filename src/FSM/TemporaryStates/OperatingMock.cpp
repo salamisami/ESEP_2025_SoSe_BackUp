@@ -30,8 +30,6 @@ void OperatingMock::entry() {
 }
 
 void OperatingMock::exit() {
-	//save history
-	data->stateStack->push(clone());
 	OrthState::exit();
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
@@ -39,5 +37,7 @@ void OperatingMock::exit() {
 
 
 State* OperatingMock::button_stop_pressed() {
+	//save history
+	data->stateStack->push(clone());
 	return new IdleIM(data);
 }
