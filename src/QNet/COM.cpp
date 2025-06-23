@@ -91,7 +91,7 @@ void COM::runClient() {
         if (_client->getcoid()==-1){
         	_pulse timeoutEvent;
         	int8_t comCode = (int8_t) Topic::COM;
-        	int value = (int) COM_Enum::TIMEOUT;
+        	int value = (int) COM_Enum::TIMEOUT_COM;
         	timeoutEvent.code = comCode;
         	timeoutEvent.value.sival_int = value;
         	COUT("Sending Timeout Notification to dispatcher");
@@ -181,9 +181,8 @@ void COM::runServer() {
 							  sizeof(event),
 							  &info);
         
-        if (rcvid > 0) {
-            // Successfully received a pulse
-            COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
+        if (rcvid == 0) {  // QNX pulse received
+        	COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
             updateHeartbeat();
             processMessage(event);
         }
@@ -194,7 +193,7 @@ void COM::runServer() {
                 
                 _pulse timeoutEvent;
                 int8_t comCode = (int8_t) Topic::COM;
-                int value = (int) COM_Enum::TIMEOUT;
+                int value = (int) COM_Enum::TIMEOUT_COM;
 
                 timeoutEvent.code = comCode;
                 timeoutEvent.value.sival_int = value;
