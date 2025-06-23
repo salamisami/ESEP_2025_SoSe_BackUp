@@ -2,8 +2,6 @@
 #define PIECE_H
 #pragma once
 
-#include "Semaphore.h"
-#include "AdvancedTimer.h"
 #include "Macros.h"
 
 #include <cstdint>
@@ -108,7 +106,6 @@ private: //================================================ private variables ==
 	Deadlines deadlines;
 	std::condition_variable cv_occupied;
 	std::thread piece_thread;
-	AdvancedTimer timer;
 	//Timer timer;
 	//pointers
 	//primitive types
