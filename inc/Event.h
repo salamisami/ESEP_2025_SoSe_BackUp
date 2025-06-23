@@ -95,7 +95,7 @@ enum class COM_Enum: int{
 	BUTTON_ESTOP_PRESSED,
 	BUTTON_ESTOP_RELEASED,
 	HEARTBEAT,
-	TIMEOUT
+	TIMEOUT_COM
 };
 
 enum class TIMER_ID: int {
