@@ -38,6 +38,10 @@ private:
     void processMessage(const _pulse& msg);
     void sendToDispatcher(const _pulse& msg, int priority = (int) EventPriority::DEFAULT);
     void updateHeartbeat();
+    void handle_QNX_pulse(_pulse* msg, int rcvid);
+    void handle_QNX_IO_msg(_pulse* msg, int rcvid);
+
+
     
     // Shared state
     I_Receiver* _server;

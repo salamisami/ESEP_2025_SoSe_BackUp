@@ -52,20 +52,20 @@ int main() {
   Dispatcher* dispatcher = new Dispatcher();
   std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
 
-  Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
-  Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+  Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_2_FSM);
+  Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_2_DISPATCHER);
 
-  Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+  Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_2_DISPATCHER);
 
   //Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE); //comment this to test without RC
-  Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+  Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_2_DISPATCHER);
 
-  Thread_COM::Sender* com_sender_local = new Thread_COM::Sender(FBM_1_DISPATCHER);
-  Thread_COM::Receiver* com_external_receiver = new Thread_COM::Receiver(FBM_1_COM);
-  Thread_COM::Receiver* com_receiver_local = new Thread_COM::Receiver(FBM_1_COM_RECEIVER);
+  Thread_COM::Sender* com_sender_local = new Thread_COM::Sender(FBM_2_DISPATCHER);
+  Thread_COM::Receiver* com_external_receiver = new Thread_COM::Receiver(FBM_2_COM);
+  Thread_COM::Receiver* com_receiver_local = new Thread_COM::Receiver(FBM_2_COM_RECEIVER);
 
-  Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_1_HAL);
-  Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+  Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_2_HAL);
+  Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_2_DISPATCHER);
 
   // Timestamp slow: 6707
   // Timestamp slow: 7987
@@ -91,7 +91,7 @@ int main() {
   //Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, rc_sender); //comment this to test without RC
 
 
-  COM* externCommunication = new COM(com_external_receiver, FBM_2_COM, com_receiver_local, com_sender_local);
+  COM* externCommunication = new COM(com_external_receiver, FBM_1_COM, com_receiver_local, com_sender_local);
   externCommunication->start();
 
   // Thread_COM::Sender* senderDispatcher = new Thread_COM::Sender(FBM_2_DISPATCHER);
