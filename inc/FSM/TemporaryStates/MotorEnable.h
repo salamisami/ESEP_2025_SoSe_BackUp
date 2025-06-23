@@ -1,27 +1,23 @@
-#ifndef WAITINGIM_H
-#define WAITINGIM_H
+#ifndef MOTORENABLE_H
+#define MOTORENABLE_H
 #pragma once
 
 #include "State.h"
-#include "Timer.h"
-#include "TimerReceivedIM.h"
-#include "Operating.h"
-#include "OperatingMock.h"
+#include "MotorDisable.h"
 
-
-class WaitingIM : public State {
+class MotorEnable : public State {
 public: //============================================ constructors & destructors ============================================
-    WaitingIM(ContextData* data);
-    virtual ~WaitingIM();
+    MotorEnable(ContextData* data) ;
+    virtual ~MotorEnable();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	State* button_start_released() override;
-	State* timer(TIMER_ID id) override;
     
+	State* button_reset_pressed() override;
+
+	State* clone() override;
 
 
 private: //================================================ private variables ================================================

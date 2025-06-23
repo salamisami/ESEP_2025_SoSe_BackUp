@@ -73,19 +73,24 @@ OrthState* OrthState::clone() {
     return cloned_ortho;
 }
 
-void OrthState::spawn_orthogonal_state(State* input_state){
+void OrthState::spawn_orthogonal_state(State* input_state) {
     substates.push_back(input_state);
     input_state->entry();
 }
 
 //TODO how should it behave?
-// std::string OrthState::show_state() {
-//     for(auto& current_substate : substates) {
-        
-//     }
-//     const char* 
-//     return typeid(*this).name();
-// }
+std::string OrthState::get_current_state() {
+    std::string appended_string;
+    bool first = true; // To avoid leading space
+    for(auto& current_substate : substates) {
+        if(!first) {
+            appended_string += " "; // Add space between substates
+        }
+        appended_string += current_substate->get_current_state();
+        first = false;
+    }
+    return appended_string;
+}
 
 State* OrthState::timer(TIMER_ID id) {
     for(auto& current_substate : substates) {
