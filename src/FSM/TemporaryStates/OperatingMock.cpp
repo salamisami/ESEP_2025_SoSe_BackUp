@@ -25,6 +25,7 @@ void OperatingMock::entry(){
 void OperatingMock::exit(){
 	OrthState::exit();
 	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 }
 
 //save history

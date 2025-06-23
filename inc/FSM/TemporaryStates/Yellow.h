@@ -16,6 +16,8 @@ public: //================================================ public functions ====
     void exit() override;
 
 	State* button_start_pressed() override;
+
+	State* clone() override;
     
 
 

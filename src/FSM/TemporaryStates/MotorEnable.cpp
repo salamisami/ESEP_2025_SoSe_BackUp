@@ -13,6 +13,7 @@ MotorEnable::~MotorEnable() {}
 //===================================================== public functions =====================================================
 void MotorEnable::entry(){
 	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
 }
 
 void MotorEnable::exit(){
@@ -21,4 +22,8 @@ void MotorEnable::exit(){
 
 State* MotorEnable::button_reset_pressed(){
 	return new MotorDisable(data);
+}
+
+State* MotorEnable::clone(){
+	return new MotorEnable(data);
 }

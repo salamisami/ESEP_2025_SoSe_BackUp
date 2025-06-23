@@ -17,6 +17,7 @@ public: //================================================ public functions ====
 
 	State* button_reset_pressed() override;
     
+	State* clone() override;
 
 
 private: //================================================ private variables ================================================

@@ -13,6 +13,7 @@ MotorDisable::~MotorDisable() {}
 //===================================================== public functions =====================================================
 void MotorDisable::entry(){
 	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 }
 
 void MotorDisable::exit(){
@@ -21,4 +22,8 @@ void MotorDisable::exit(){
 
 State* MotorDisable::button_reset_pressed(){
 	return new MotorEnable(data);
+}
+
+State* MotorDisable::clone(){
+	return new MotorDisable(data);
 }
