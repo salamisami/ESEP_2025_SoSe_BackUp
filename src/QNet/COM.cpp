@@ -43,6 +43,7 @@ void COM::runDispatcher() {
         if (_dispatcherRec->receive_event(&dispatcherMsg) == 0) {
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
+                // TODO: MESSAGES TO BE PASSED TO OTHER MACHINE
                 // Check if the message is of type Topic::INTERRUPT
                 if (dispatcherMsg.code == static_cast<int>(Topic::INTERRUPT)) {
                     dispatcherMsg.code = static_cast<int>(Topic::COM);
