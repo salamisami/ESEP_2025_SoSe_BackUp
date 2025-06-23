@@ -6,14 +6,14 @@
 #include <cstdint>
 
 #ifdef MOCK
-union sigval {
+union sigval_mock {
 	int   sival_int;
 	void* sival_ptr;
 };
 
 typedef struct {
 	int8_t code;
-	union sigval value;
+	union sigval_mock value;
 } _pulse;
 #endif
 

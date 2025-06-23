@@ -4,7 +4,6 @@
 
 #include "Macros.h"
 #include "Event.h"
-#include "Mailbox.h"
 #include "ADC_Class.h"
 
 #include <thread>
@@ -50,13 +49,13 @@ typedef struct {
 
 class Actuator {
 public: //============================================ contructors & destructors ============================================
-    Actuator(Mailbox<_pulse>* mailbox, ADC_Class* adc = nullptr);
+    Actuator(ADC_Class* adc = nullptr);
     virtual ~Actuator();
 
 
 public: //================================================ public functions ================================================
-    bool isGate();
     void test_outs();
+    void handle_event(_pulse event);
 
     void local_estop_activate();
     void local_estop_deactivate();
@@ -65,7 +64,6 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
     //classes, STL containers, and structs
-    std::thread actuatorThread;
     std::thread trafficThread;
     std::mutex mtx;
     std::mutex green_mtx;
@@ -77,7 +75,6 @@ private: //================================================ private variables ==
     TrafficLight red_;
 
     //pointers
-    Mailbox<_pulse>* mailbox;
     ADC_Class* adc;
     uintptr_t gpio_bank_1;
     uintptr_t gpio_bank_2;
@@ -124,7 +121,7 @@ private: //================================================ private functions ==
     void check_estop();
     void stop_moving_parts();
 
-    void handleActuatorEvent(int event_value);
+    void handle_actuator_event(int event_value);
     //void handleEStop(int event_value);
 
     void motor_right();

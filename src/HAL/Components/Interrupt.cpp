@@ -72,11 +72,6 @@ Interrupt::Interrupt(I_Sender* sender, Actuator* actuator)
 Interrupt::~Interrupt() {
     MsgSendPulse(internalConnectionID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
     interruptThread.join();
-    if(test_mode) {
-
-    } else {
-
-    }
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
     out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig ^ inputPins));//Write new config back.
@@ -104,14 +99,14 @@ void Interrupt::setup_interrupts() {
     pinsList.push_back(LASER_SORTING_BIT);
     pinsList.push_back(LASER_METAL_BIT);
     pinsList.push_back(ADC_TOP_AREA_BIT);
-    pinsList.push_back(SORTING_STATUS_BIT);
+    //pinsList.push_back(SORTING_STATUS_BIT);
     pinsList.push_back(LASER_RAMP_BIT);
     pinsList.push_back(LASER_BACK_BIT);
     pinsList.push_back(BUTTON_START_BIT);
     pinsList.push_back(BUTTON_STOP_BIT);
     pinsList.push_back(BUTTON_RESET_BIT);
     pinsList.push_back(BUTTON_ESTOP_BIT);
-    pinsList.push_back(ADC_SIDE_AREA_BIT);
+    //pinsList.push_back(ADC_SIDE_AREA_BIT);
 
     for(auto pin : pinsList) {
         inputPins |= (1 << pin);
@@ -238,6 +233,22 @@ void Interrupt::isr(void) {
     }
 }
 
+bool Interrupt::button_estop_pressed(){
+    //gpio_bank_0 = mmap_device_io(GPIO_MMAP_SIZE, (uint64_t) (GPIO_0));
+    uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
+    //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
+    uint32_t status_pin = (1 << BUTTON_ESTOP_BIT);
+    bool status = (status_register & status_pin);
+    return !status;
+}
+
+bool Interrupt::is_switch(){
+    uint32_t status_register = in32((uintptr_t) gpio_bank_0 + GPIO_DATAIN);
+    //std::cout << "Status Register of in32: 0x" << std::hex << status_register << std::endl;
+    uint32_t status_pin = (1 << SORTING_STATUS_BIT);
+    bool status = (status_register & status_pin);
+    return !status;
+}
 
 void Interrupt::sendEvent(int causing_pin, int pin_status) {
     InterruptEnum event;
@@ -281,9 +292,9 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
         case LASER_METAL_BIT:
             event = pin_status ? InterruptEnum::METAL_DETECTED : InterruptEnum::METAL_NOT_DETECTED;
             break;
-        case ADC_SIDE_AREA_BIT:
-            event = pin_status ? InterruptEnum::ADC_SIDE_AREA_UNBLOCKED : InterruptEnum::ADC_SIDE_AREA_BLOCKED;
-            break;
+        // case ADC_SIDE_AREA_BIT:
+        //     event = pin_status ? InterruptEnum::ADC_SIDE_AREA_UNBLOCKED : InterruptEnum::ADC_SIDE_AREA_BLOCKED;
+        //     break;
         case ADC_TOP_AREA_BIT:
             event = pin_status ? InterruptEnum::ADC_TOP_AREA_BLOCKED : InterruptEnum::ADC_TOP_AREA_UNBLOCKED;
             break;

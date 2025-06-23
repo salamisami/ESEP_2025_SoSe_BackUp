@@ -2,7 +2,7 @@
 
 using namespace Mock_PM;
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 Receiver::Receiver() {
 }
 
@@ -47,7 +47,7 @@ ThreadSafeQueue<_pulse>* Receiver::getQueue(){
 
 
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 Mock_PM::Sender::Sender(Receiver* receiver) {
     queue = receiver->getQueue();
 }

@@ -1,6 +1,6 @@
 #include "Timer.h"
 
-//================================================= contructors & destructors =================================================
+//================================================= constructors & destructors =================================================
 Timer::Timer(I_Sender* sender) {
     this->sender = sender;
 }
@@ -17,18 +17,13 @@ Timer::~Timer() {
 
 //===================================================== public functions =====================================================
 
-void Timer::setTimer(int miliseconds, int id) {
-    if(timerThread.joinable()){
-        timerThread.join();
-    }
+void Timer::start_timer(int miliseconds, TIMER_ID id) {
     //TODO @Lucas please edit here
     timerThread = std::thread(&Timer::threadFunction, this, miliseconds, id);
+    timerThread.detach();
 }
 
-void Timer::threadFunction(int miliseconds, int id) {
-    DEBUG("Timer Started...");
-    WAIT(1000);
-    DEBUG("Sending event....");
-    sender->send_event((int) Topic::TIMER, id, (int) EventPriority::SECOND_PRIO);
-    std::cout << "Timer for " << miliseconds << " ist abgelaufen" << std::endl;
+void Timer::threadFunction(int miliseconds, TIMER_ID id) {
+    WAIT(miliseconds);
+    sender->send_event((int) Topic::TIMER, (int) id, (int) EventPriority::SECOND_PRIO);
 }

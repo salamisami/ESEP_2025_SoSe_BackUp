@@ -2,6 +2,10 @@
 #define EVENT_H
 #pragma once
 
+#define OPEN_GATE_SLOW_DURATION 1750
+#define OPEN_GATE_FAST_DURATION 1000
+#define PUSH_DURATION 500
+
 #include <cstdint>
 
 
@@ -80,9 +84,9 @@ enum class ADC_Enum : int {
     ADC_MESURE,
     ADC_INVALID_MESURE,
     ADC_CALIBRATION_DONE,
-    ADC_PREPARE,
-    ADC_NEW_PIECE,
-    ADC_STOP
+    ADC_STOP,
+	ADC_RESET,
+    ADC_NEW_PIECE
 };
 
 enum class COM_Enum: int{
@@ -93,6 +97,18 @@ enum class COM_Enum: int{
 	HEARTBEAT,
 	TIMEOUT
 };
+
+enum class TIMER_ID: int {
+    WAITING_IM = 1,
+    OPENGATE_CDS,
+    OPENGATE_LPT,
+    PUSHRAMP_STR,
+    CAL_GATE_RAMP2,
+    CAL_GATE_RAMP1
+};
+
+
+
 
 
 #endif

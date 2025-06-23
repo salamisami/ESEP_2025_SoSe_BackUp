@@ -1,6 +1,5 @@
 #include "HAL.h"
 
-#define MAILBOX_SIZE 1
 
 //================================================= contructors & destructors =================================================
 HAL::HAL(I_Receiver* local_receiver, I_Sender* local_sender) {
@@ -28,9 +27,6 @@ HAL::~HAL() {
     delete actuator;
     //DEBUG("Actuator and Interrupts are deleted");
 
-    delete adc_mailbox;
-    delete actuator_mailbox;
-
     if(detached) {
         delete mock_dispatcher_sender;
         delete local_sender;
@@ -43,51 +39,55 @@ HAL::~HAL() {
 
 //===================================================== private functions =====================================================
 void HAL::init() {
-    actuator_mailbox = new Mailbox<_pulse>();
-    adc_mailbox = new Mailbox<_pulse>();
-    DEBUG("Mailboxes are created");
-    adc = new ADC_Class(adc_mailbox, local_sender);
+    adc = new ADC_Class(local_sender);
     //TODO rethink SoC regarding the ESTOP
-    actuator = new Actuator(actuator_mailbox, adc);
+    actuator = new Actuator(adc);
     interrupt = new Interrupt(local_sender, actuator);
 
 
-    //TODO check that no sensors are blocked during init
-    bool isGate = actuator->isGate();
-    if(isGate) {
-        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
-    } else {
-        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_PUSHER);
-    }
+
+
     halThread = std::thread(&HAL::threadFunction, this);
 }
 void HAL::threadFunction() {
     DEBUG("HAL Thread started.");
+    //TODO check that no sensors are blocked during init
+
+    if(interrupt->is_switch()) {
+        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
+    } else {
+        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_PUSHER);
+    }
+
+    if(interrupt->button_estop_pressed()) {
+        actuator->local_estop_activate();
+        local_sender->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
+    }
+
     hal_running = true;
     _pulse event;
     while(hal_running) {
-        local_receiver->receive_event(&event);
-        Topic event_code = (Topic) event.code;
-        //int event_value = event.value.sival_int;
-        switch(event_code) {
-            case Topic::ACTUATOR:
-                actuator_mailbox->put(event);
-                break;
-            case Topic::COM:
-                actuator_mailbox->put(event);
-                break;
-            case Topic::ADC:
-                adc_mailbox->put(event);
-                break;
-            case Topic::STOP_THREAD:
-                hal_running = false;
-                break;
-            default:
-                break;
+        int status = local_receiver->receive_event(&event);
+        if(status == 0) {
+            Topic event_code = (Topic) event.code;
+            switch(event_code) {
+                case Topic::ACTUATOR:
+                    actuator->handle_event(event);
+                    break;
+                case Topic::COM:
+                    actuator->handle_event(event);
+                    break;
+                case Topic::ADC:
+                    adc->handle_event(event);
+                    break;
+                case Topic::STOP_THREAD:
+                    hal_running = false;
+                    break;
+                default:
+                    break;
+            }
         }
     }
-    actuator_mailbox->put(event);
-    adc_mailbox->put(event);
 }
 
 //===================================================== public functions =====================================================
@@ -97,7 +97,7 @@ void HAL::test_ins_ADC() {
     std::cout << "Testing ADC... Please put Piece on the front laser" << std::endl;
     bool running = true;
     int8_t actuatorCode = (int8_t) Topic::ACTUATOR;
-    bool calibrated = true;
+    bool calibrated = false;
     bool is_weiche = false;
     bool allowGo = true;
     if(!calibrated) {
@@ -129,12 +129,15 @@ void HAL::test_ins_ADC() {
                                 if(!calibrated) {
                                     mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
                                 } else {
-                                    mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+                                    //mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
                                 }
                             }
                             break;
                         case InterruptEnum::LASER_FRONT_UNBLOCKED:
-                            mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_PREPARE);
+                            if(calibrated){
+                                 mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
+                            }
+                           
                             break;
                         case InterruptEnum::LASER_BACK_BLOCKED:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
@@ -149,12 +152,12 @@ void HAL::test_ins_ADC() {
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
                             break;
                         case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
-                            if(calibrated) {
+                            if(!calibrated) {
                                 //let through
                                 if(is_weiche) {
                                     //open the gate to go through
                                     mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_ON);
-                                    WAIT(500);
+                                    WAIT(1500);
                                     mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::SORTING_OFF);
                                 } else {
                                     //do not push to the ramp
@@ -187,11 +190,11 @@ void HAL::test_ins_ADC() {
                     switch(AdcEvent) {
                         case ADC_Enum::ADC_NEW_PIECE:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_ON);
-                            mock_dispatcher_sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
                             break;
                         case ADC_Enum::ADC_CALIBRATION_DONE:
                             mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_STOP);
+                            mock_dispatcher_sender->send_event(actuatorCode, (int) ActuatorEnum::MOTOR_SLOW_OFF);
                             calibrated = true;
                             DEBUG("Calibration Done!");
                             break;
