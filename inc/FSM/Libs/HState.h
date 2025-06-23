@@ -27,7 +27,8 @@ public:
     virtual void entry() override;
     virtual void exit() override;
 
-    virtual HState* clone() override;
+    //TODO make virtual
+    virtual State* clone() override;
     virtual std::string get_current_state() override;
 
     virtual State* laser_front_blocked() override;
