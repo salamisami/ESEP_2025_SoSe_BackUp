@@ -1,26 +1,28 @@
 #include "Piece.h"
 
 //================================================= constructors & destructors =================================================
-Piece::Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast, uint8_t tick_duration) {
-    deadlines = convert_to_deadlines(input_profile_slow, input_profile_fast);
+Piece::Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast) {
+    convert_to_deadlines(input_profile_slow, input_profile_fast);
     running = true;
-    this->tick_duration = tick_duration;
-    this->speed = convert_deadlines_to_speed(this->deadlines);
-    piece_thread = std::thread(&Piece::thread_function, this);
+    std::copy(std::begin(input_profile_fast.timestamp), std::end(input_profile_fast.timestamp), std::begin(fast_timestamps));
+    std::copy(std::begin(input_profile_slow.timestamp), std::end(input_profile_slow.timestamp), std::begin(slow_timestamps));
+    stopwatch.start();
+    //piece_thread = std::thread(&Piece::thread_function, this);
     //set_thread_priority(piece_thread.native_handle(), 255);  // Higher priority for main thread
     //piece_thread.detach();
-    //debug_thread = std::thread(&Piece::debug_function, this);
+    debug_thread = std::thread(&Piece::debug_function, this);
     //debug_thread.detach();
 }
 
 Piece::~Piece() {
+    stopwatch.stop();
     running = false;  // Signal threads to stop
-    
+
     // Wake up threads if they're waiting
-    if (piece_thread.joinable()) {
+    if(piece_thread.joinable()) {
         piece_thread.join();
     }
-    if (debug_thread.joinable()) {
+    if(debug_thread.joinable()) {
         debug_thread.join();
     }
 }
@@ -38,12 +40,12 @@ Piece::~Piece() {
 // void Piece::set_thread_priority(pthread_t thread, int priority) {
 //     struct sched_param param;
 //     param.sched_priority = priority;
-    
+
 //     // Set FIFO scheduling policy with specified priority
 //     if (pthread_setschedparam(thread, SCHED_FIFO, &param) != 0) {
 //         std::cerr << "Failed to set thread priority: " << strerror(errno) << std::endl;
 //     }
-    
+
 //     // Optional: Set thread CPU affinity
 //     // cpu_set_t cpuset;
 //     // CPU_ZERO(&cpuset);
@@ -52,91 +54,99 @@ Piece::~Piece() {
 // }
 
 
-Deadlines Piece::convert_to_deadlines(TimeProfile input_timetable_slow, TimeProfile input_timetable_fast) {
-    Deadlines deadline;
+void Piece::convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast) {
+    slow_deadlines[0] = input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
+    slow_deadlines[1] = input_timetable_slow.timestamp[(int) Timestamp::ADC_UNBLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
+    slow_deadlines[2] = input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::ADC_UNBLOCKED];
+    slow_deadlines[3] = input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
+    slow_deadlines[4] = input_timetable_slow.timestamp[(int) Timestamp::END] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
+    slow_deadlines[5] = input_timetable_slow.timestamp[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
 
-    deadline.slow[0] = input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
-    deadline.slow[1] = input_timetable_slow.timestamp[(int) Timestamp::ADC_UNBLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
-    deadline.slow[2] = input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::ADC_UNBLOCKED];
-    deadline.slow[3] = input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-    deadline.slow[4] = input_timetable_slow.timestamp[(int) Timestamp::END] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
-    deadline.slow[5] = input_timetable_slow.timestamp[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-
-    deadline.fast[0] = input_timetable_fast.timestamp[(int) Timestamp::ADC_BLOCKED];
-    deadline.fast[1] = input_timetable_fast.timestamp[(int) Timestamp::ADC_UNBLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::ADC_BLOCKED];
-    deadline.fast[2] = input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::ADC_UNBLOCKED];
-    deadline.fast[3] = input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-    deadline.fast[4] = input_timetable_fast.timestamp[(int) Timestamp::END] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
-    deadline.fast[5] = input_timetable_fast.timestamp[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-
-
-    return deadline;
+    fast_deadlines[0] = input_timetable_fast.timestamp[(int) Timestamp::ADC_BLOCKED];
+    fast_deadlines[1] = input_timetable_fast.timestamp[(int) Timestamp::ADC_UNBLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::ADC_BLOCKED];
+    fast_deadlines[2] = input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::ADC_UNBLOCKED];
+    fast_deadlines[3] = input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
+    fast_deadlines[4] = input_timetable_fast.timestamp[(int) Timestamp::END] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
+    fast_deadlines[5] = input_timetable_fast.timestamp[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
 }
 
-Speed Piece::convert_deadlines_to_speed(const Deadlines input_deadline) {
-    Speed output_speed;
-    for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
-        output_speed.slow_speed[i] = (double) 100 * tick_duration / input_deadline.slow[i];
-        output_speed.fast_speed[i] = (double) 100 * tick_duration / input_deadline.fast[i];
-    }
-    return output_speed;
-}
-
-Area Piece::step(Area initial_area) {
-    // if(initial_area == Area::GATE_END) {
-    //     return Area::GATE_END;
-    // }
-    uint8_t next_area = (uint8_t) initial_area + 1;
-    return (Area) next_area;
-}
-
-void Piece::thread_function() {
-    //TODO check if the piece should go to the ramp
-    while(running) {
-        if(current_position >= 100 && (current_area == Area::GATE_END || current_area == Area::GATE_RAMP)) {
-            return;
-        } else if(current_position >= 100) {
-            current_area = step(current_area);
-            current_position = 0;
-        }
-        switch(mode) {
-            case 0:
-                //stop
-                break;
-            case 1:
-                //slow
-                current_position += speed.slow_speed[(int) current_area];
-                break;
-            case 2:
-                //fast
-                current_position += speed.fast_speed[(int) current_area];
-                break;
-            default:
-                break;
-        }
-        WAIT(tick_duration);
-    }
-}
 
 void Piece::debug_function() {
     while(running) {
-        std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << std::endl;
+        auto result = update_area_pos(current_area, current_position, current_mode);
+        current_area = result.first;
+        current_position = result.second;
+        std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
         WAIT(100);
     }
 }
 //===================================================== public functions =====================================================
-void Piece::stop() {
-    mode = 0;
-}
-void Piece::slow() {
-    mode = 1;
-}
-void Piece::fast() {
-    mode = 2;
+
+//TODO send piece to ramps
+
+//updates area and pos
+std::pair<Area, double> Piece::update_area_pos(const Area& input_area, const double& input_pos, const uint8_t& mode) {
+    const long current_time = stopwatch.peek_time();
+    Area area;
+    double position;
+    long* selected_timestamps;
+    switch(mode) {
+        case 0:
+            //stop
+            //do nothing
+            return std::make_pair(input_area, input_pos);
+        case 1:
+            //slow
+            selected_timestamps = slow_timestamps;
+            break;
+        case 2:
+            //fast
+            selected_timestamps = fast_timestamps;
+            break;
+        default:
+            break;
+    }
+    for(int i = (int) input_area; i < TIMESTAMP_LENGTH - 1; i++) {
+        if(current_time < selected_timestamps[i]) {
+            area = (Area) i;
+            position = (double) current_time / selected_timestamps[i] * 100;
+            return std::make_pair(area, position);
+        }
+    }
+    area = Area::GATE_END;
+    position = 100;
+    return std::make_pair(area, position);
 }
 
-void Piece::reset(){
-    mode = 0;
+
+void Piece::fast() {
+    auto result = update_area_pos(current_area, current_position, current_mode);
+    stopwatch.start();
+    current_area = result.first;
+    current_position = result.second;
+    current_mode = 2;
+}
+
+void Piece::slow() {
+    auto result = update_area_pos(current_area, current_position, current_mode);
+    stopwatch.start();
+    current_area = result.first;
+    current_position = result.second;
+    current_mode = 1;
+}
+
+void Piece::stop() {
+    auto result = update_area_pos(current_area, current_position, current_mode);
+    stopwatch.stop();
+    current_area = result.first;
+    current_position = result.second;
+    current_mode = 0;
+}
+
+
+void Piece::reset() {
+    stopwatch.reset();
+    current_mode = 0;
     current_area = Area::START_ADC;
     current_position = 0;
 }

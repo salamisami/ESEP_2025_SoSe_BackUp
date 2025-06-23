@@ -37,8 +37,7 @@ int main() {
     TimeProfile fast_profile = { {2165, 2560, 3651, 4150, 5908, 4050} };
     TimeProfile slow_profile = { {6707, 7987, 11583, 13239, 19122, 11847} };
 
-    int tick_duration = 10;
-    Piece* piece = new Piece(slow_profile, fast_profile, tick_duration);
+    Piece* piece = new Piece(slow_profile, fast_profile);
     piece->slow();
     while(true){
         std::cout << "Area: " << (int) piece->getArea() << ", " << "Position: " << (double) piece->getPosition() << std::endl;

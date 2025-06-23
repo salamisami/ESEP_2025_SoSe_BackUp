@@ -23,7 +23,7 @@ void SimulatePiece::entry(){
 
 	TimeProfile fast_profile = { { 2000, 2100, 3600, 4000, 6000, 3800 } };
 	TimeProfile slow_profile = { { 6060, 7183, 10309, 11780, 17207, 10552 } };
-	data->piece = new Piece(slow_profile, fast_profile, 100);
+	data->piece = new Piece(slow_profile, fast_profile);
 	data->piece->fast();
 	OrthState::entry();
 }

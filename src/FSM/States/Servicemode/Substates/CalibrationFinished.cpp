@@ -21,7 +21,7 @@ void CalibrationFinished::entry(){
 		std::cout << "Timestamp slow: " << current << std::endl;
 	}
 
-	data->piece = new Piece(data->timeprofile_slow, data->timeprofile_fast, 50);
+	data->piece = new Piece(data->timeprofile_slow, data->timeprofile_fast);
 }
 
 void CalibrationFinished::exit(){
