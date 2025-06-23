@@ -53,7 +53,7 @@ int main() {
     
     Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
-    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE);
+    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE) //comment this to test without RC
     Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
     Thread_COM::Sender* com_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
@@ -82,7 +82,7 @@ int main() {
     
     Logic* logic = new Logic(fsm_receiver, fsm_sender);
     //start recorder here
-    Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, rc_sender);
+    Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, rc_sender); //comment this to test without RC
 
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
