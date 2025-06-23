@@ -40,7 +40,7 @@ std::string State::demangle(const char* mangled) {
 
 //TODO this is the problem of the deep history
 State* State::clone() {
-    DEBUG("Warning, function of abstract class clone() is called.");
+    DEBUG("Warning, function of abstract class State::clone() is called.");
     return nullptr;
 }
 

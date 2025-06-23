@@ -6,9 +6,9 @@ OperatingMock::OperatingMock(ContextData* data) : OrthState(
 	std::vector<State*>({
 		new Green(data),
 		new MotorDisable(data)
-	})
+		})
 ) {
-    //substate = new SubState(data);
+	//substate = new SubState(data);
 }
 
 OperatingMock::~OperatingMock() {}
@@ -17,20 +17,27 @@ OperatingMock::~OperatingMock() {}
 
 
 //===================================================== public functions =====================================================
-void OperatingMock::entry(){
+
+State* OperatingMock::clone(){
+	OperatingMock* cloned_state = new OperatingMock(data);
+	cloned_state->substates = OrthState::clone_substates();
+	return cloned_state;
+}
+
+void OperatingMock::entry() {
 	PRINT_STATE;
 	OrthState::entry();
 }
 
-void OperatingMock::exit(){
+void OperatingMock::exit() {
+	//save history
+	data->stateStack->push(clone());
 	OrthState::exit();
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 }
 
-//save history
-State* OperatingMock::button_stop_pressed(){
-	OrthState* cloned_state = OrthState::clone();
-	data->stateStack->push(cloned_state);
+
+State* OperatingMock::button_stop_pressed() {
 	return new IdleIM(data);
 }

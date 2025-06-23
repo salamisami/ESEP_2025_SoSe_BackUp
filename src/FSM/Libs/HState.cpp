@@ -100,10 +100,9 @@ void HState::exit() {
     substate->exit();
 }
 
-
-HState* HState::clone(){
-    HState* cloned_state = new HState(data, substate->clone());
-    return cloned_state;
+State* HState::clone(){
+    DEBUG("Warning, function of abstract class HState::clone() is called.");
+    return nullptr;
 }
 
 std::string HState::get_current_state() {
