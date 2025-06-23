@@ -211,6 +211,7 @@ void COM::processMessage(const _pulse& msg) {
     // Process ES messages immediately
     if (msg.code == ((int) COM_Enum::BUTTON_ESTOP_PRESSED)) {
         sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
+        COUT("SENDING ESTOP TO DISPATCHER");
     } 
     // Process other messages
     else {
