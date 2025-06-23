@@ -53,7 +53,7 @@ int main() {
     
     Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
-    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE) //comment this to test without RC
+    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE); //comment this to test without RC
     Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
     Thread_COM::Sender* com_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
