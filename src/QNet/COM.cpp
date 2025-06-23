@@ -43,10 +43,20 @@ void COM::runDispatcher() {
         if (_dispatcherRec->receive_event(&dispatcherMsg) == 0) {
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
-                if (dispatcherMsg.code == ((int) COM_Enum::BUTTON_ESTOP_PRESSED)) {
-                    highPriorityQueue.push_back(dispatcherMsg);
-                    COUT("Received EStop from dispatcher (high priority)");
+                // Check if the message is of type Topic::INTERRUPT
+                if (dispatcherMsg.code == static_cast<int>(Topic::INTERRUPT)) {
+                    dispatcherMsg.code = static_cast<int>(Topic::COM);
+                    // Check if the interrupt is either BUTTON_ESTOP_PRESSED or BUTTON_ESTOP_RELEASED
+                    if (dispatcherMsg.value.sival_int == static_cast<int>(InterruptEnum::BUTTON_ESTOP_PRESSED) ||
+                        dispatcherMsg.value.sival_int == static_cast<int>(InterruptEnum::BUTTON_ESTOP_RELEASED)) {
+                        highPriorityQueue.push_back(dispatcherMsg);
+                        COUT("Received EStop from dispatcher (high priority)");
+                    } else {
+                        lowPriorityQueue.push_back(dispatcherMsg);
+
+                    }
                 } else {
+                    // For non-interrupt messages, add to low priority queue
                     lowPriorityQueue.push_back(dispatcherMsg);
                     COUT("Received message from dispatcher");
                 }
@@ -157,8 +167,6 @@ void COM::sendToServer(const _pulse& msg, int priority) {
 // Server side implementation
 void COM::runServer() {
 	COUT("COM server started.");
-    _pulse event;
-    
     while (running) {
 		struct _pulse event;
 		struct _msg_info info;  // Message info structure
