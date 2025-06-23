@@ -18,6 +18,8 @@ void WaitingIM::entry() {
 
 void WaitingIM::exit() {
     PRINT_STATE;
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+    
 }
 
 //load history
