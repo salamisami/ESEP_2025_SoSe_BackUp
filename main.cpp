@@ -1,7 +1,7 @@
 #include "HAL.h"
 #include "Dispatcher.h"
 #include "Thread_COM.h"
-
+#include "Recorder.h"
 #include "Timer.h"
 #include "Logic.h"
 #include "Remote_Controller.h"
@@ -51,6 +51,7 @@ int main() {
     Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
     
+    Thread_COM::Receiver* recorder_receiver = new Thread_COM::Receiver(FBM_1_RECORDER);
     Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
     Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE);
@@ -69,8 +70,16 @@ int main() {
     //start recorder here
     Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, rc_sender);
 
+    Recorder* recorder = new Recorder(recorder_receiver, recorder_sender);
+    recorder->stop_record();
+
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
+
+	  // Threads starten
+	//WAIT(3000);
+
+	//recorder->stop();   // Alles beenden
 
     // WAIT(3000);
 
