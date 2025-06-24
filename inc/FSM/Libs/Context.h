@@ -7,7 +7,7 @@
 
 template<typename T>
 class Context {
-    static_assert(std::is_base_of<State, T>::value, "Template parameter must inherit from HState");
+    static_assert(std::is_base_of<State, T>::value, "Template parameter must inherit from State");
     //============================================ constructors & destructors ============================================
 public:
     Context();
