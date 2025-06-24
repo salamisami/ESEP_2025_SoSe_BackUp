@@ -73,9 +73,7 @@ void Piece::convert_to_deadlines(const TimeProfile& input_timetable_slow, const 
 
 void Piece::debug_function() {
     while(running) {
-        auto result = update_area_pos(current_area, current_position, current_mode);
-        current_area = result.first;
-        current_position = result.second;
+        update();
         std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
         WAIT(100);
     }
@@ -85,10 +83,7 @@ void Piece::debug_function() {
 //TODO send piece to ramps
 
 //updates area and pos
-std::pair<Area, double> Piece::update_area_pos(const Area& input_area, const double& input_pos, const uint8_t& mode) {
-    const long current_time = stopwatch.peek_time();
-    Area area;
-    double position;
+std::pair<Area, double> Piece::calculate_area_pos(const Area& input_area, const double& input_pos, const uint8_t& mode) {
     long* selected_timestamps;
     switch(mode) {
         case 0:
@@ -106,6 +101,10 @@ std::pair<Area, double> Piece::update_area_pos(const Area& input_area, const dou
         default:
             break;
     }
+    Area area;
+    double position;
+    const long current_time = stopwatch.peek_time();
+
     for(int i = (int) input_area; i < TIMESTAMP_LENGTH - 1; i++) {
         if(current_time < selected_timestamps[i]) {
             area = (Area) i;
@@ -118,28 +117,27 @@ std::pair<Area, double> Piece::update_area_pos(const Area& input_area, const dou
     return std::make_pair(area, position);
 }
 
-
-void Piece::fast() {
-    auto result = update_area_pos(current_area, current_position, current_mode);
+void Piece::update() {
+    auto result = calculate_area_pos(current_area, current_position, current_mode);
+    //TODO on speed change, stopwatch must be re-calculated
     stopwatch.start();
     current_area = result.first;
     current_position = result.second;
+}
+
+
+void Piece::fast() {
+    update();
     current_mode = 2;
 }
 
 void Piece::slow() {
-    auto result = update_area_pos(current_area, current_position, current_mode);
-    stopwatch.start();
-    current_area = result.first;
-    current_position = result.second;
+    update();
     current_mode = 1;
 }
 
 void Piece::stop() {
-    auto result = update_area_pos(current_area, current_position, current_mode);
-    stopwatch.stop();
-    current_area = result.first;
-    current_position = result.second;
+    update();
     current_mode = 0;
 }
 
@@ -156,10 +154,12 @@ void Piece::debug_mode(bool debug) {
 }
 
 Area Piece::getArea() {
+    update();
     return current_area;
 }
 
 double Piece::getPosition() {
+    update();
     return current_position;
 }
 
