@@ -72,7 +72,8 @@ enum class Topic : int8_t {
     COM,
     ADC,
     STOP_THREAD,
-    TIMER
+    TIMER,
+	REC_REPLAY
 };
 
 enum class ADC_Enum : int {
@@ -103,7 +104,12 @@ enum class TIMER_ID: int {
     CAL_GATE_RAMP1
 };
 
-
+enum class RecReplayEnum: int {
+    START_REC = 1,
+    STOP_REC,
+    START_REPLAY,
+	STOP_REPLAY
+};
 
 
 

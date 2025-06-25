@@ -190,6 +190,7 @@ void Remote_Controller::threadFunctionSend(){
 	DEBUG("Remote Control Send Thread started.");
 	RemCon_send_running = true;
 	int8_t InterruptCode = (int8_t) Topic::INTERRUPT;
+	int8_t RecReplayCode = (int8_t) Topic::REC_REPLAY;
 	//_pulse event;
 	while (RemCon_send_running) {
 		int command = 0;
@@ -198,11 +199,11 @@ void Remote_Controller::threadFunctionSend(){
 		command = commandQueue.front();
 		commandQueue.pop();
 		switch(command){
-			case 1:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_START_PRESSED);
+			case 1:	local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REC);//InterruptEnum::BUTTON_START_PRESSED);
 					break;
 			case 2:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_START_RELEASED);
 					break;
-			case 3:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_STOP_PRESSED);
+			case 3:	local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REPLAY);//InterruptEnum::BUTTON_STOP_PRESSED);
 					break;
 			case 4:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_STOP_RELEASED);
 					break;
