@@ -1,26 +1,24 @@
-#ifndef WAITINGIM_H
-#define WAITINGIM_H
+#ifndef OPERATINGMOCK_H
+#define OPERATINGMOCK_H
 #pragma once
 
-#include "State.h"
-#include "Timer.h"
-#include "TimerReceivedIM.h"
-#include "Operating.h"
-#include "OperatingMock.h"
+#include "OrthState.h"
+#include "Green.h"
+#include "MotorDisable.h"
+#include "IdleIM.h"
 
-
-class WaitingIM : public State {
+class OperatingMock : public OrthState {
 public: //============================================ constructors & destructors ============================================
-    WaitingIM(ContextData* data);
-    virtual ~WaitingIM();
+    OperatingMock(ContextData* data) ;
+    virtual ~OperatingMock();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* button_start_released() override;
-	State* timer(TIMER_ID id) override;
+	State* clone() override;
+	State* button_stop_pressed() override;
     
 
 
