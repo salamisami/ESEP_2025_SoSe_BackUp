@@ -81,6 +81,12 @@ State* Context<T>::handleCOM(int event_value) {
         case COM_Enum::BUTTON_ESTOP_RELEASED:
             newState = state->com_button_estop_released();
             break;
+        case COM_Enum::ESTOP:
+        	newState = state->estop();
+        	break;
+        case COM_Enum::BUTTON_RESET_PRESSED:
+        	newState = state->button_reset_pressed();
+        	break;
         default:
             break;
     }

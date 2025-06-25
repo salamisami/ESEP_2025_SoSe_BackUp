@@ -6,6 +6,7 @@
 #include "IdleMode.h"
 #include "EStopViaLocal.h"
 #include "EStopViaNeighbor.h"
+#include "EStopReleased.h"
 
 class ModeHandler : public HState{
 public: //============================================ constructors & destructors ============================================
@@ -20,6 +21,7 @@ public: //================================================ public functions ====
 
 	State* button_estop_pressed() override;
 	State* com_button_estop_pressed() override;
+	State* estop() override;
 
 
 private: //================================================ private variables ================================================

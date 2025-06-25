@@ -3,7 +3,8 @@
 #pragma once
 
 #include "State.h"
-#include "EStopQuit.h"
+#include "WaitingForComReset.h"
+#include "WaitingForLocalReset.h"
 #include "EStopViaLocal.h"
 #include "EStopViaNeighbor.h"
 
@@ -18,6 +19,7 @@ public: //================================================ public functions ====
 	void exit() override;
 
 	State* button_reset_pressed() override;
+	State* com_button_reset_pressed() override;
 	State* button_estop_pressed() override;
 	State* com_button_estop_pressed() override;
     

@@ -11,6 +11,9 @@
 #include <vector>
 #include <stack>
 #include <queue>
+#include <string>
+#include <unistd.h>
+#include <fstream>
 
 //forward declaration
 class State;
@@ -30,10 +33,11 @@ public:
     //================================================ public functions ================================================
 public:
 
-
+    bool check_config();
 
 //================================================ private variables ================================================
 public:
+    const std::string& config_path = "ESEP-Team-1-1_25/profile_calibration.csv";
     Stopwatch stopwatch;
     TimeProfile timeprofile_fast;
     TimeProfile timeprofile_slow;
@@ -42,6 +46,8 @@ public:
     I_Sender* timer_sender;
     Timer* timer;
     I_Sender* sender;
+    bool no_err_or_war = true;
+    bool history = false;
     bool is_switch = false;
 
 };

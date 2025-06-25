@@ -1,5 +1,6 @@
 #include "EStopReleased.h"
 
+
 //================================================= constructors & destructors =================================================
 EStopReleased::EStopReleased(ContextData* data) : State(data) {}
 
@@ -21,7 +22,7 @@ void EStopReleased::exit(){
 }
 
 State* EStopReleased::button_reset_pressed(){
-    return new EStopQuit(data);
+    return new WaitingForComReset(data);
 }
 
 State* EStopReleased::button_estop_pressed(){
@@ -30,4 +31,8 @@ State* EStopReleased::button_estop_pressed(){
 
 State* EStopReleased::com_button_estop_pressed(){
     return new EStopViaNeighbor(data);
+}
+
+State* EStopReleased::com_button_reset_pressed(){
+	return new WaitingForLocalReset(data);
 }

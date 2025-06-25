@@ -60,11 +60,13 @@ public: //================================================ public functions ====
     virtual State* laser_ramp_unblocked();
     virtual State* adc_top_area_blocked();
     virtual State* adc_top_area_unblocked();
+    virtual State* estop();
     virtual State* adc_side_area_blocked();     //unused
     virtual State* adc_side_area_unblocked();   //unused
 
     virtual State* com_button_estop_pressed();
     virtual State* com_button_estop_released();
+    virtual State* com_button_reset_pressed();
 
     virtual State* is_pusher();
     virtual State* is_switch();

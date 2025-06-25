@@ -17,9 +17,19 @@ Operating::~Operating() {
 void Operating::entry() {
     PRINT_STATE;
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
+    if(data->check_config()){
+    	return;
+    }
+    if(data->history){
+    	//TODO enter with History
+    }
+    //TODO enter without History
 }
 
 void Operating::exit() {
+	if(!data->no_err_or_war){
+		return;
+	}
     PRINT_STATE;
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
 }

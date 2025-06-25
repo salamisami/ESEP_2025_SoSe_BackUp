@@ -153,6 +153,14 @@ State* State::adc_calibration_done() {
     return nullptr;
 }
 
+State* State::estop() {
+    return nullptr;
+}
+
+State* State::com_button_reset_pressed(){
+	return nullptr;
+}
+
 State* State::is_pusher() {
     return nullptr;
 }

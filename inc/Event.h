@@ -91,7 +91,9 @@ enum class ADC_Enum : int {
 
 enum class COM_Enum: int{
     BUTTON_ESTOP_PRESSED = 1,
-    BUTTON_ESTOP_RELEASED
+    BUTTON_ESTOP_RELEASED,
+	BUTTON_RESET_PRESSED,
+	ESTOP
 };
 
 enum class TIMER_ID: int {
