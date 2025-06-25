@@ -2,7 +2,7 @@
 #define TIMEPROFILEMANAGER_H
 #pragma once
 
-#include "Piece.h"
+#include "PieceTracker.h"
 
 #include <iostream>
 #include <fstream>

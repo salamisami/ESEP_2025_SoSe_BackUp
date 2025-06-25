@@ -1,5 +1,5 @@
-#ifndef PIECE_H
-#define PIECE_H
+#ifndef PIECETRACKER_H
+#define PIECETRACKER_H
 #pragma once
 
 
@@ -53,14 +53,14 @@ typedef struct {
 	long timestamp[TIMESTAMP_LENGTH];
 } TimeProfile;
 
-class Piece {
+class PieceTracker {
 public: //============================================ constructors & destructors ============================================
 	/**
 	 * @brief Creates a piece, by inserting time profile.
 	 * @param input_profile the calibration profile of time stamps, which we got from the calibration in Servicemode
 	 */
-	Piece(TimeProfile input_profile_fast, TimeProfile input_profile_slow);
-	virtual ~Piece();
+	PieceTracker(TimeProfile input_profile_fast, TimeProfile input_profile_slow);
+	virtual ~PieceTracker();
 
 
 public: //================================================ public functions ================================================
@@ -104,27 +104,23 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
+	std::thread debug_thread;
+	Stopwatch stopwatch;
+	//Timer timer;
+	//pointers
+	//primitive types
 	long fast_deadlines[6];
 	long slow_deadlines[6];
 
 	long fast_timestamps[6];
 	long slow_timestamps[6];
 
-	std::condition_variable cv_occupied;
-	std::thread piece_thread;
-	std::thread debug_thread;
-	//Timer timer;
-	//pointers
-	//primitive types
-	Stopwatch stopwatch;
+	double current_position = 0;
 	//bool and char
 	bool running = false;
 	Area current_area = Area::START_ADC;
-	double current_position = 0;
 	uint8_t current_mode = 0;
 	bool debug = true;
-
-
 
 
 private: //================================================ private functions ================================================
