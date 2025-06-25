@@ -199,11 +199,11 @@ void Remote_Controller::threadFunctionSend(){
 		command = commandQueue.front();
 		commandQueue.pop();
 		switch(command){
-			case 1:	local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REC);//InterruptEnum::BUTTON_START_PRESSED);
+			case 1:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_START_PRESSED);
 					break;
 			case 2:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_START_RELEASED);
 					break;
-			case 3:	local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REPLAY);//InterruptEnum::BUTTON_STOP_PRESSED);
+			case 3:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_STOP_PRESSED);
 					break;
 			case 4:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_STOP_RELEASED);
 					break;
@@ -214,6 +214,14 @@ void Remote_Controller::threadFunctionSend(){
 			case 7:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
 					break;
 			case 8:	local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED);//TODO Eigener Remote E-Stop released
+					break;
+			case 9:	local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REC);
+					break;
+			case 10:local_sender->send_event(RecReplayCode, (int) RecReplayEnum::STOP_REC);
+					break;
+			case 11:local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REPLAY);
+					break;
+			case 12:local_sender->send_event(RecReplayCode, (int) RecReplayEnum::STOP_REPLAY);
 					break;
 		}
 	}
@@ -238,6 +246,14 @@ static void on_command(const char* payload) {
         Last_Command = 7;
     } else if (strcmp(payload, "false") == 0) {
         Last_Command = 8;
+    } else if (strcmp(payload, "RecStart") == 0) {
+    	Last_Command = 9;
+    } else if (strcmp(payload, "RecStop") == 0) {
+    	Last_Command = 10;
+    } else if (strcmp(payload, "RepStart") == 0) {
+    	Last_Command = 11;
+    } else if (strcmp(payload, "RepStop") == 0) {
+    	Last_Command = 12;
     } else {
     	Last_Command = 0;
     	DEBUG("-1 erhalten");

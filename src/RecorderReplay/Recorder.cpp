@@ -17,7 +17,7 @@
     }
     Recorder::~Recorder() {
     	stop_record();
-    	//stop_replay();
+    	stop_replay();
     }
 
     void Recorder::init() {
@@ -49,11 +49,11 @@
 					DEBUG("Record Replay Event erhalten ");
 						case RecReplayEnum::START_REC:start_record();
 						break;
-						case RecReplayEnum::STOP_REC:
+						case RecReplayEnum::STOP_REC:stop_record();
 						break;
 						case RecReplayEnum::START_REPLAY:start_replay();
 						break;
-						case RecReplayEnum::STOP_REPLAY:
+						case RecReplayEnum::STOP_REPLAY:stop_replay();
 						break;
 					}
 				}
@@ -116,12 +116,10 @@
     }
 
     void Recorder::start_replay() {
-    	stop_record();
-    	int coid = local_sender->getcoid();
+        int coid = local_sender->getcoid();
         replay_events.clear();
         replay_running = true;
 
-        // 1. CSV einlesen
         std::ifstream replay_file(RECORDER_CSV);
         if (!replay_file.is_open()) {
             std::cerr << "Replay: Datei konnte nicht geöffnet werden!\n";
@@ -138,10 +136,10 @@
             std::getline(iss, token, ','); evt.value = std::stoi(token);
             evt.timerid = 0;
             replay_events.push_back(evt);
+            printf("Replay: Event gelesen ms=%lld code=%d value=%d\n", evt.ms, evt.code, evt.value);
         }
         replay_file.close();
 
-        // 2. Für jeden Event einen QNX-Timer setzen
         for (auto& evt : replay_events) {
             struct sigevent sev{};
             memset(&sev, 0, sizeof(sev));
@@ -168,8 +166,10 @@
                 evt.timerid = 0;
                 continue;
             }
+            printf("Replay: Timer gesetzt für ms=%lld code=%d value=%d\n", evt.ms, evt.code, evt.value);
         }
     }
+
 
     void Recorder::stop_replay() {
         // Alle Timer aufräumen, falls nötig
