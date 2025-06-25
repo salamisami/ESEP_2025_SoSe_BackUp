@@ -54,6 +54,85 @@ Piece::~Piece() {
 // }
 
 
+std::pair<Area, double> Piece::timestamp_to_area_pos(const long& timestamp, const uint8_t& mode) {
+    //TODO handle ramp?
+    long* selected_timestamps;
+    switch(mode) {
+        case 0:
+            //stop
+            //do nothing
+            return std::make_pair(Area::START_ADC, 0);
+        case 1:
+            //slow
+            selected_timestamps = slow_timestamps;
+            break;
+        case 2:
+            //fast
+            selected_timestamps = fast_timestamps;
+            break;
+        default:
+            THROW("Wrong mode");
+            return std::make_pair(Area::START_ADC, 0);
+    }
+    Area area;
+    double position = 0;
+    if(timestamp < selected_timestamps[0]) {
+        area = (Area) 0;
+        position = (double) timestamp / selected_timestamps[0] * 100;
+       //printf("position: %d, timestamp: %d, selected_timestamp: %d\n", (int) position, (int) timestamp, (int) selected_timestamps[0]);
+        return std::make_pair(area, position);
+    }
+    for(int i = 1; i < TIMESTAMP_LENGTH - 1; i++) {
+        if(timestamp < selected_timestamps[i]) {
+            area = (Area) i;
+            position = (double) (timestamp - selected_timestamps[i - 1]) / (selected_timestamps[i] - selected_timestamps[i - 1]) * 100;
+            //printf("position: %d, timestamp: %d, selected_timestamp: %d\n", (int) position, (int) timestamp, (int) selected_timestamps[0]);
+            return std::make_pair(area, position);
+        }
+    }
+    area = Area::GATE_END;
+    position = 100;
+    return std::make_pair(area, position);
+}
+
+long Piece::area_pos_to_timestamp(const Area& input_area, const double& input_pos, const uint8_t mode) {
+    long* selected_timestamps;
+    long* selected_deadlines;
+    switch(mode) {
+        case 0:
+            //stop
+            //do nothing
+            return 0;
+        case 1:
+            //slow
+            selected_timestamps = slow_timestamps;
+            selected_deadlines = slow_deadlines;
+            break;
+        case 2:
+            //fast
+            selected_timestamps = fast_timestamps;
+            selected_deadlines = fast_deadlines;
+            break;
+        default:
+            THROW("Wrong mode");
+            return 0;
+    }
+    if(input_area == Area::GATE_RAMP) {
+        //TODO
+        return 0;
+    }
+    if(input_area == Area::START_ADC) {
+        return (long) selected_timestamps[0] * input_pos / 100;
+    }
+    long accumulated_timestamp = selected_timestamps[(int) input_area - 1];
+    long position_in_ms_local = selected_deadlines[(int) input_area] * input_pos / 100;
+    return accumulated_timestamp + position_in_ms_local;
+
+    // long start = selected_timestamps[(int) input_area - 1];
+    // long end = selected_timestamps[(int) input_area];
+    // return (long) current_position / 100 * (end - start) + start;
+}
+
 void Piece::convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast) {
     slow_deadlines[0] = input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
     slow_deadlines[1] = input_timetable_slow.timestamp[(int) Timestamp::ADC_UNBLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
@@ -82,56 +161,33 @@ void Piece::debug_function() {
 
 //TODO send piece to ramps
 
-//updates area and pos
-std::pair<Area, double> Piece::calculate_area_pos(const Area& input_area, const double& input_pos, const uint8_t& mode) {
-    long* selected_timestamps;
-    switch(mode) {
-        case 0:
-            //stop
-            //do nothing
-            return std::make_pair(input_area, input_pos);
-        case 1:
-            //slow
-            selected_timestamps = slow_timestamps;
-            break;
-        case 2:
-            //fast
-            selected_timestamps = fast_timestamps;
-            break;
-        default:
-            break;
-    }
-    Area area;
-    double position;
-    const long current_time = stopwatch.peek_time();
-
-    for(int i = (int) input_area; i < TIMESTAMP_LENGTH - 1; i++) {
-        if(current_time < selected_timestamps[i]) {
-            area = (Area) i;
-            position = (double) current_time / selected_timestamps[i] * 100;
-            return std::make_pair(area, position);
-        }
-    }
-    area = Area::GATE_END;
-    position = 100;
-    return std::make_pair(area, position);
+//updates area and pos from the last time.
+std::pair<Area, double> Piece::calculate_area_pos(const Area& last_area, const double& last_pos, const uint8_t& mode) {
+    //TODO continue here
+    long last_position_in_ms = (long) area_pos_to_timestamp(last_area, last_pos, mode);
+    long current_position_in_ms = stopwatch.peek_time() + last_position_in_ms;
+    stopwatch.reset();
+    stopwatch.start();
+    return timestamp_to_area_pos(current_position_in_ms,mode);
 }
 
 void Piece::update() {
     auto result = calculate_area_pos(current_area, current_position, current_mode);
     //TODO on speed change, stopwatch must be re-calculated
-    stopwatch.start();
+    //stopwatch.start();
     current_area = result.first;
     current_position = result.second;
 }
 
 
 void Piece::fast() {
+    DEBUG("Piece_Fast_called!");
     update();
     current_mode = 2;
 }
 
 void Piece::slow() {
+    DEBUG("Piece_slow_called!");
     update();
     current_mode = 1;
 }

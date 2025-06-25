@@ -33,7 +33,7 @@ enum class Timestamp : uint8_t {
 	LASER_RAMP_BLOCKED
 };
 
-
+//  AREA:
 // 	START_ADC = 0
 // 	ADC 1,
 // 	ADC_GATE 2,
@@ -128,7 +128,8 @@ private: //================================================ private variables ==
 
 
 private: //================================================ private functions ================================================
-	//void privateFunction();
+	std::pair<Area, double> timestamp_to_area_pos(const long& timestamp, const uint8_t& mode);
+	long area_pos_to_timestamp(const Area& input_area, const double& position, const uint8_t mode);
 	void convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast);
 	void debug_function();
 	//void set_thread_priority(pthread_t thread, int priority);
