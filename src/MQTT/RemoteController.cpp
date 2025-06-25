@@ -47,7 +47,7 @@ Remote_Controller::~Remote_Controller() {
 
 void Remote_Controller::init() {
 	//TODO automatische IP Zuweisung
-	int rc = MQTT_Utilities::mqtt_festo_init("tcp://192.168.101.10:1883", ClientID);
+	int rc = MQTT_Utilities::mqtt_festo_init("tcp://192.168.101.5:1883", ClientID);
 		if (rc != 0) {
 		    printf("MQTT init failed! Fehlercode: %d\n", rc);
 		}
