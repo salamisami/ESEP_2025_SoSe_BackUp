@@ -8,87 +8,70 @@
 #include <fstream>
 #include <string>
 #include <stdexcept> // For std::runtime_error
+#include <sstream>
 
-#define SAVE_LOCATION "time_profiles.txt"
+#define SAVE_LOCATION_TIMEPROFILE "time_profiles.csv"
 
 
 class TimeProfileManager {
 public:
-	// Saves time profiles to a text file (overwrites if exists)
-	static void save_profile(
-		const TimeProfile& timeprofile_fast,
-		const TimeProfile& timeprofile_slow,
-		const std::string& save_location
-	) {
-		std::ofstream out_file(save_location);
-		if(!out_file) {
-			throw std::runtime_error("Failed to open file for writing: " + save_location);
+	// Saves time profiles to a file (overwrites if file exists)
+	static void save_profile(const TimeProfile& timeprofile_fast, const TimeProfile& timeprofile_slow, const std::string& save_location) {
+		std::ofstream file;
+		file.open(save_location, std::ios::out);
+		if(!file.is_open()) {
+			THROW("Recorder: Datei konnte nicht geöffnet werden!");
 		}
-
-		// Write fast profile timestamps (comma-separated)
-		for(int i = 0; i < 6; ++i) {
-			out_file << timeprofile_fast.timestamp[i];
-			if(i < 5) out_file << ",";
+		file << "Fast, Slow\n";  // CSV-Header
+		for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
+			file << timeprofile_fast.timestamp[i] << "," << timeprofile_slow.timestamp[i] << "\n";
 		}
-		out_file << "\n";
-
-		// Write slow profile timestamps (comma-separated)
-		for(int i = 0; i < 6; ++i) {
-			out_file << timeprofile_slow.timestamp[i];
-			if(i < 5) out_file << ",";
-		}
-		out_file << "\n";
-
-		out_file.close();
+		file.flush();
+		file.close();
 	}
 
-	// Loads time profiles from a text file (throws if file doesn't exist)
-	static void load_profile(
-		TimeProfile* timeprofile_fast_out,
-		TimeProfile* timeprofile_slow_out,
-		const std::string& load_location
-	) {
-		if(!check_time_profile(load_location)) {
-			throw std::runtime_error("File does not exist: " + load_location);
-		}
-
+	// Loads time profiles from a file (throws if file doesn't exist)
+	static void load_profile(TimeProfile* timeprofile_fast_out, TimeProfile* timeprofile_slow_out, const std::string& load_location) {
 		std::ifstream in_file(load_location);
-		if(!in_file) {
-			throw std::runtime_error("Failed to open file for reading: " + load_location);
+		if(!in_file.is_open()) {
+			std::cerr << "TimeProfile: Datei konnte nicht geöffnet werden!\n";
+			return;
 		}
 
+		// Skip header (same as your save format)
 		std::string line;
-
-		// Read fast profile
-		if(std::getline(in_file, line)) {
-			std::stringstream ss(line);
-			std::string token;
-			for(int i = 0; i < 6 && std::getline(ss, token, ','); ++i) {
-				timeprofile_fast_out->timestamp[i] = std::stol(token);
-			}
-		} else {
-			throw std::runtime_error("Invalid file format (missing fast profile)");
+		if(!std::getline(in_file, line)) {
+			std::cerr << "Error: Empty file\n";
+			return;
 		}
 
-		// Read slow profile
-		if(std::getline(in_file, line)) {
-			std::stringstream ss(line);
-			std::string token;
-			for(int i = 0; i < 6 && std::getline(ss, token, ','); ++i) {
-				timeprofile_slow_out->timestamp[i] = std::stol(token);
+		for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
+			if(!std::getline(in_file, line)) {
+				std::cerr << "Error: File has fewer lines than TIMESTAMP_LENGTH\n";
+				break;
 			}
-		} else {
-			throw std::runtime_error("Invalid file format (missing slow profile)");
-		}
 
+			std::istringstream iss(line);
+			std::string fast_str, slow_str;
+
+			// Read exactly two comma-separated values per line
+			if(!std::getline(iss, fast_str, ',') || !std::getline(iss, slow_str)) {
+				std::cerr << "Error: Invalid line format at line " << i + 2 << "\n";
+				break;
+			}
+
+			try {
+				timeprofile_fast_out->timestamp[i] = std::stol(fast_str);
+				timeprofile_slow_out->timestamp[i] = std::stol(slow_str);
+			} catch(const std::invalid_argument& e) {
+				std::cerr << "Error: Invalid number format at line " << i + 2 << "\n";
+				break;
+			}
+		}
 		in_file.close();
 	}
+private:
 
-	// Checks if a time profile file exists
-	static bool check_time_profile(const std::string& location) {
-		std::ifstream file(location);
-		return file.good();
-	}
 };
 
 #endif

@@ -6,6 +6,7 @@
 #include "Fast.h"
 #include "LetPieceThrough.h"
 #include "IdleTest.h"
+#include "TimeProfileManager.h"
 
 class SimulatePiece : public OrthState {
 public: //============================================ constructors & destructors ============================================

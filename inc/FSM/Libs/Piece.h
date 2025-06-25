@@ -59,7 +59,7 @@ public: //============================================ constructors & destructor
 	 * @brief Creates a piece, by inserting time profile.
 	 * @param input_profile the calibration profile of time stamps, which we got from the calibration in Servicemode
 	 */
-	Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast);
+	Piece(TimeProfile input_profile_fast, TimeProfile input_profile_slow);
 	virtual ~Piece();
 
 
@@ -79,7 +79,7 @@ public: //================================================ public functions ====
 
 	void reset();
 
-	void update();
+
 
 	void debug_mode(bool debug);
 
@@ -133,8 +133,8 @@ private: //================================================ private functions ==
 	void convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast);
 	void debug_function();
 	//void set_thread_priority(pthread_t thread, int priority);
-	std::pair<Area,double> calculate_area_pos(const Area& input_area, const double& position, const uint8_t& mode);
-
+	std::pair<Area, double> calculate_area_pos(const Area& input_area, const double& position, const uint8_t& mode);
+	void update();
 };
 
 #endif

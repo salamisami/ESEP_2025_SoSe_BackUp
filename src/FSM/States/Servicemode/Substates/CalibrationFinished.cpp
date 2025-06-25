@@ -22,7 +22,7 @@ void CalibrationFinished::entry(){
 	for(auto& current : data->timeprofile_slow.timestamp){
 		std::cout << "Timestamp slow: " << current << std::endl;
 	}
-	TimeProfileManager::save_profile(data->timeprofile_fast, data->timeprofile_slow, SAVE_LOCATION);
+	TimeProfileManager::save_profile(data->timeprofile_fast, data->timeprofile_slow, SAVE_LOCATION_TIMEPROFILE);
 }
 
 void CalibrationFinished::exit(){

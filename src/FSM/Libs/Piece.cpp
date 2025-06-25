@@ -1,7 +1,7 @@
 #include "Piece.h"
 
 //================================================= constructors & destructors =================================================
-Piece::Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast) {
+Piece::Piece(TimeProfile input_profile_fast, TimeProfile input_profile_slow) {
     convert_to_deadlines(input_profile_slow, input_profile_fast);
     running = true;
     std::copy(std::begin(input_profile_fast.timestamp), std::end(input_profile_fast.timestamp), std::begin(fast_timestamps));

@@ -16,14 +16,16 @@ SimulatePiece::~SimulatePiece() {}
 //===================================================== public functions =====================================================
 void SimulatePiece::entry(){
 	PRINT_STATE;
+	TimeProfileManager::load_profile(&data->timeprofile_fast, &data->timeprofile_slow, SAVE_LOCATION_TIMEPROFILE);
+	data->piece = new Piece(data->timeprofile_fast, data->timeprofile_slow);
 
 	//Anlage 11
 	// TimeProfile fast_profile = { { 2084, 2459, 3473, 3955, 5741, 3699 } };
 	// TimeProfile slow_profile = { { 6060, 7183, 10309, 11780, 17207, 10552 } };
 
-	TimeProfile fast_profile = { { 2000, 2100, 3600, 4000, 6000, 3800 } };
-	TimeProfile slow_profile = { { 6060, 7183, 10309, 11780, 17207, 10552 } };
-	data->piece = new Piece(slow_profile, fast_profile);
+	// TimeProfile fast_profile = { { 2000, 2100, 3600, 4000, 6000, 3800 } };
+	// TimeProfile slow_profile = { { 6060, 7183, 10309, 11780, 17207, 10552 } };
+//	data->piece = new Piece(data->timeprofile_slow, da);
 	OrthState::entry();
 }
 
