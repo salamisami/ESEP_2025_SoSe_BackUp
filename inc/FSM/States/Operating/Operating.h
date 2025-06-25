@@ -4,9 +4,8 @@
 
 #include "HState.h"
 #include "IdleMode.h"
-#include "IdleTest.h"
 
-class Operating : public HState {
+class Operating : public State {
 //============================================ constructors & destructors ============================================
 public:
     Operating(ContextData* data);

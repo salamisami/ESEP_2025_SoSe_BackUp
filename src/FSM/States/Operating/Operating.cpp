@@ -2,7 +2,7 @@
 
 //================================================= constructors & destructors =================================================
 
-Operating::Operating(ContextData* data): HState(data, new IdleTest(data)) {
+Operating::Operating(ContextData* data): State(data) {
 }
 
 Operating::~Operating() {
@@ -17,11 +17,9 @@ Operating::~Operating() {
 void Operating::entry() {
     PRINT_STATE;
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
-    HState::entry();
 }
 
 void Operating::exit() {
-    HState::exit();
     PRINT_STATE;
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
 }
