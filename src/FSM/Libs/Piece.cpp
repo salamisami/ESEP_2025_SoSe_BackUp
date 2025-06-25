@@ -6,10 +6,10 @@ Piece::Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast) {
     running = true;
     std::copy(std::begin(input_profile_fast.timestamp), std::end(input_profile_fast.timestamp), std::begin(fast_timestamps));
     std::copy(std::begin(input_profile_slow.timestamp), std::end(input_profile_slow.timestamp), std::begin(slow_timestamps));
-    stopwatch.start();
     //piece_thread = std::thread(&Piece::thread_function, this);
     //set_thread_priority(piece_thread.native_handle(), 255);  // Higher priority for main thread
     //piece_thread.detach();
+    stop();
     debug_thread = std::thread(&Piece::debug_function, this);
     //debug_thread.detach();
 }
@@ -130,7 +130,7 @@ long Piece::area_pos_to_timestamp(const Area& input_area, const double& input_po
 
     // long start = selected_timestamps[(int) input_area - 1];
     // long end = selected_timestamps[(int) input_area];
-    // return (long) current_position / 100 * (end - start) + start;
+    // return (long) (current_position * (end - start) + start ) / 100;
 }
 
 void Piece::convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast) {
@@ -163,6 +163,9 @@ void Piece::debug_function() {
 
 //updates area and pos from the last time.
 std::pair<Area, double> Piece::calculate_area_pos(const Area& last_area, const double& last_pos, const uint8_t& mode) {
+    if(mode == (int) 0){
+        return std::make_pair(last_area, last_pos);
+    }
     //TODO continue here
     long last_position_in_ms = (long) area_pos_to_timestamp(last_area, last_pos, mode);
     long current_position_in_ms = stopwatch.peek_time() + last_position_in_ms;
