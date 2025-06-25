@@ -5,6 +5,8 @@
 #include "State.h"
 #include "ModeHandler.h"
 
+#include "IdleTest.h"
+
 class Boot : public State {
 public: //============================================ constructors & destructors ============================================
     Boot(ContextData* data);
