@@ -79,9 +79,7 @@ void Remote_Controller::threadFunctionRecive(){
 	RemCon_recive_running = true;
 	_pulse event;
 	while (RemCon_recive_running) {
-		//TODO Heartbeat
 		MQTT_Utilities::mqtt_festo_heartbeat();
-		int status = local_receiver->receive_event(&event);
 
 		if(status == 0) {
 			ActuatorEnum actuator_event_value = (ActuatorEnum) event.value.sival_int;
