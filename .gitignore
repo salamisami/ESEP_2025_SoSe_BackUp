@@ -1,4 +1,5 @@
 # === Kompilierte Binaries ===
+
 *.out
 *.o
 *.obj
