@@ -2,9 +2,10 @@
 #define EVENT_H
 #pragma once
 
-#define OPEN_GATE_SLOW_DURATION 2000
+#define OPEN_GATE_SLOW_DURATION 2200
 #define OPEN_GATE_FAST_DURATION 1000
 #define PUSH_DURATION 500
+#define ENDTOGATE_MULTIPLIER 0.8
 
 #include <cstdint>
 
