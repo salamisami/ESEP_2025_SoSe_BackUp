@@ -1,26 +1,28 @@
-#ifndef CALIBRATIONFINISHED_H
-#define CALIBRATIONFINISHED_H
+#ifndef RUNMOTOR_H
+#define RUNMOTOR_H
 #pragma once
 
 #include "State.h"
-#include "TimeProfileManager.h"
+#include "SimulatePiece.h"
 
-
-class CalibrationFinished : public State {
+class RunMotor : public State {
 public: //============================================ constructors & destructors ============================================
-    CalibrationFinished(ContextData* data) ;
-    virtual ~CalibrationFinished();
+    RunMotor(ContextData* data) ;
+    virtual ~RunMotor();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* laser_front_unblocked() override;
     
 
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
+
 	//primitive types
 	//bool and char
    

@@ -1,20 +1,21 @@
-#ifndef CALIBRATIONFINISHED_H
-#define CALIBRATIONFINISHED_H
+#ifndef FAST_H
+#define FAST_H
 #pragma once
 
 #include "State.h"
-#include "TimeProfileManager.h"
+#include "Slow.h"
 
-
-class CalibrationFinished : public State {
+class Fast : public State {
 public: //============================================ constructors & destructors ============================================
-    CalibrationFinished(ContextData* data) ;
-    virtual ~CalibrationFinished();
+    Fast(ContextData* data) ;
+    virtual ~Fast();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* button_reset_pressed() override;
     
 
 
