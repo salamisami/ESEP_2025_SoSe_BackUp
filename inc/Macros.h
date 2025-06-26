@@ -22,6 +22,8 @@
 #define WAIT(x) usleep(x * 1000)
 #endif
 
+#define FILE_EXISTS(fname) (std::ifstream(fname).good())
+
 #define DEBUG(msg) std::cout << msg << std::endl
 #endif
 

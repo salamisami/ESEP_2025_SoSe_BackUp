@@ -68,6 +68,7 @@ void Remote_Controller::init() {
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/yellow", "off");
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green", "off");
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/green", "off");
+			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/notaus","false");
 			std::string msg = std::string(ClientID) + " is connected";
 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
 		    RemConThreadRecive = std::thread(&Remote_Controller::threadFunctionRecive, this);

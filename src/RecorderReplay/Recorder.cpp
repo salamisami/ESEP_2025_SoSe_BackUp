@@ -1,183 +1,173 @@
-/*
- * Recorder.cpp
- *
- *  Created on: 24.06.2025
- *      Author: robin
- */
-
 #include "Recorder.h"
 
-    Recorder::Recorder(I_Receiver* local_receiver, I_Sender* local_sender){
-		this->local_receiver = local_receiver;
-		this->local_sender = local_sender;
-		running = true;
-		record_running = false;
-		replay_running = false;
-		init();
-    }
-    Recorder::~Recorder() {
-    	stop_record();
-    	stop_replay();
-    }
 
-    void Recorder::init() {
-    	start_time = std::chrono::system_clock::now();
-        // Datei anlegen (ggf. vorhandene Datei überschreiben)
-    	//mkdir("tmp/ESEP-Team-1-1_25", 0777);
-        file.open(RECORDER_CSV, std::ios::out);
-        if (!file.is_open()) {
-        	THROW("Recorder: Datei konnte nicht geöffnet werden!");
-        }
-        file << "timestamp,code,value\n";  // CSV-Header
-        file.flush();
-        RecReplay_thread = std::thread(&Recorder::threadFunction, this);
+Recorder::Recorder(I_Receiver* local_receiver, I_Sender* local_sender)
+    : local_receiver(local_receiver), local_sender(local_sender),
+      running(true), record_running(false), replay_running(false)
+{
+    RecReplay_thread = std::thread(&Recorder::threadFunction, this);
+    std::cout << "Recorder: Main-Thread gestartet" << std::endl;
+}
 
-    }
+Recorder::~Recorder() {
+    running = false;
+    stop_record();
+    stop_replay();
+    if (RecReplay_thread.joinable()) RecReplay_thread.join();
+}
 
-    void Recorder::threadFunction(){
-    	DEBUG("Record thread started");
-    	record_running = true;
-    	_pulse event;
-    	while (record_running) {
-    		int status = local_receiver->receive_event(&event);
+void Recorder::threadFunction() {
+    DEBUG("Record thread started");
+    _pulse event;
+    while (running) {
+        int status = local_receiver->receive_event(&event);
 
-    		if(status == 0) {
-    			RecReplayEnum event_value = (RecReplayEnum) event.value.sival_int;
-    			Topic event_code = (Topic) event.code;
-    			if(event_code == Topic::REC_REPLAY){
-					switch(event_value) {
-					DEBUG("Record Replay Event erhalten ");
-						case RecReplayEnum::START_REC:start_record();
-						break;
-						case RecReplayEnum::STOP_REC:stop_record();
-						break;
-						case RecReplayEnum::START_REPLAY:start_replay();
-						break;
-						case RecReplayEnum::STOP_REPLAY:stop_replay();
-						break;
-					}
-				}
-    		}
-    	}
-    }
+        if (status == 0) {
+            RecReplayEnum event_value = (RecReplayEnum)event.value.sival_int;
+            Topic event_code = (Topic)event.code;
+            if (event_code == Topic::REC_REPLAY) {
+            	DEBUG("[MAIN RecReplay event erhalten]");
+                switch (event_value) {
+                    case RecReplayEnum::START_REC: start_record(); break;
+                    case RecReplayEnum::STOP_REC: stop_record(); break;
+                    case RecReplayEnum::START_REPLAY: start_replay(); break;
+                    case RecReplayEnum::STOP_REPLAY: stop_replay(); break;
+                }
+            }
+            if (event_code == Topic::INTERRUPT && record_running){
 
-
-    void Recorder::start_record() {
-        // ... Datei öffnen, Header schreiben, start_time setzen ...
-
-        receiver_thread = std::thread(&Recorder::receiver_loop, this);
-        writer_thread = std::thread(&Recorder::writer_loop, this);
-    }
-
-    void Recorder::stop_record() {
-    	record_running = false;
-        queue_cv.notify_all();
-        if (receiver_thread.joinable()) receiver_thread.join();
-        if (writer_thread.joinable()) writer_thread.join();
-        if (file.is_open()) file.close();
-    }
-
-    void Recorder::receiver_loop() {
-    	DEBUG("Recorder recieve Thread started.");
-        _pulse event;
-        while (record_running) {
-            if (local_receiver->receive_event(&event) == 0) {
-            	Topic event_code = (Topic) event.code;
-            	if(event_code == Topic::INTERRUPT){
-            		DEBUG("Recorder interruped erhalten");
+				Topic Inter_event_code = (Topic)event.code;
+				if (Inter_event_code == Topic::INTERRUPT) {
+					DEBUG("Recorder interruped erhalten");
 					auto now = std::chrono::system_clock::now();
 					auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
-					// In Queue packen:
 					{
 						std::lock_guard<std::mutex> lock(queue_mutex);
 						event_queue.push({ms, event.code, event.value.sival_int});
 					}
 					queue_cv.notify_one();
-            	}
+				}
             }
         }
     }
+}
 
-    void Recorder::writer_loop() {
-    	DEBUG("Recorder write Thread started.");
-        while (record_running) {
-            std::unique_lock<std::mutex> lock(queue_mutex);
-            queue_cv.wait(lock, [&]{ return !event_queue.empty() || !record_running; });
-
-            // Schreibe möglichst viele Events auf einmal:
-            while (!event_queue.empty()) {
-            	DEBUG("Recorder write event");
-                const auto& e = event_queue.front();
-                file << e.ms << "," << e.code << "," << e.value << "\n";
-                event_queue.pop();
-            }
-            file.flush();
-        }
+void Recorder::start_record() {
+    std::lock_guard<std::mutex> lock(rec_mutex);
+    if (record_running) {
+        DEBUG("Record already running!");
+        return;
     }
+    stop_replay();
+    record_running = true; // **jetzt erst true**
 
-    void Recorder::start_replay() {
-        int coid = local_sender->getcoid();
-        replay_events.clear();
-        replay_running = true;
+    writer_thread = std::thread(&Recorder::writer_loop, this);
+    // kurz warten, bis writer_ready ist
+    while (!writer_ready) std::this_thread::yield();
+}
 
-        std::ifstream replay_file(RECORDER_CSV);
-        if (!replay_file.is_open()) {
-            std::cerr << "Replay: Datei konnte nicht geöffnet werden!\n";
-            return;
-        }
-        std::string line;
-        std::getline(replay_file, line); // Header überspringen
-        while (std::getline(replay_file, line)) {
-            std::istringstream iss(line);
-            std::string token;
-            ReplayEvent evt;
-            std::getline(iss, token, ','); evt.ms = std::stoull(token);
-            std::getline(iss, token, ','); evt.code = std::stoi(token);
-            std::getline(iss, token, ','); evt.value = std::stoi(token);
-            evt.timerid = 0;
-            replay_events.push_back(evt);
-            printf("Replay: Event gelesen ms=%lld code=%d value=%d\n", evt.ms, evt.code, evt.value);
-        }
-        replay_file.close();
+void Recorder::stop_record() {
+    std::lock_guard<std::mutex> lock(rec_mutex);
+    if (!record_running) return;
+    record_running = false;
 
-        for (auto& evt : replay_events) {
-            struct sigevent sev{};
-            memset(&sev, 0, sizeof(sev));
-            sev.sigev_notify = SIGEV_PULSE;
-            sev.sigev_coid = coid;
-            sev.sigev_code = evt.code;
-            sev.sigev_value.sival_int = evt.value;
+    queue_cv.notify_all();
+    if (writer_thread.joinable()) writer_thread.join();
+    if (file.is_open()) file.close();
+    DEBUG("Recorder: Recording gestoppt");
+}
 
-            if (timer_create(CLOCK_MONOTONIC, &sev, &evt.timerid) == -1) {
-                perror("Replay: timer_create");
-                evt.timerid = 0;
-                continue;
-            }
+void Recorder::writer_loop() {
+    DEBUG("Recorder write Thread started.");
+    file.open(RECORDER_CSV, std::ios::out);
 
-            struct itimerspec its{};
-            its.it_value.tv_sec = evt.ms / 1000;
-            its.it_value.tv_nsec = (evt.ms % 1000) * 1000000;
-            its.it_interval.tv_sec = 0;
-            its.it_interval.tv_nsec = 0;
-
-            if (timer_settime(evt.timerid, 0, &its, nullptr) == -1) {
-                perror("Replay: timer_settime");
-                timer_delete(evt.timerid);
-                evt.timerid = 0;
-                continue;
-            }
-            printf("Replay: Timer gesetzt für ms=%lld code=%d value=%d\n", evt.ms, evt.code, evt.value);
-        }
+    if (!file.is_open() || file.fail()) {
+        std::cerr << "Recorder: Datei konnte nicht geöffnet werden!" << std::endl;
+        writer_ready = true; // Damit Main nicht ewig wartet
+        return;
     }
+    file << "timestamp,code,value\n";
+    file.flush();
+    start_time = std::chrono::system_clock::now();
+    writer_ready = true; // <<<<<< Jetzt signalisiere "bereit"
 
+    while (record_running) {
+        std::unique_lock<std::mutex> lock(queue_mutex);
+        queue_cv.wait(lock, [&] { return !event_queue.empty() || !record_running; });
 
-    void Recorder::stop_replay() {
-        // Alle Timer aufräumen, falls nötig
-        for (auto& evt : replay_events) {
-            if (evt.timerid != 0) {
-                timer_delete(evt.timerid);
-                evt.timerid = 0;
-            }
+        while (!event_queue.empty()) {
+            const auto& e = event_queue.front();
+            file << e.ms << "," << e.code << "," << e.value << "\n";
+            event_queue.pop();
         }
+        file.flush();
+    }
+    file.close();
+    DEBUG("Recorder write Thread stopped.");
+}
+
+void Recorder::start_replay() {
+    std::lock_guard<std::mutex> lock(rep_mutex);
+    if (replay_running) {
+        DEBUG("Replay already running!");
+        return;
+    }
+    stop_record(); // Parallelbetrieb vermeiden!
+    replay_events.clear();
+    replay_running = true;
+
+    if (!FILE_EXISTS(RECORDER_CSV)) {
+        std::cerr << "Replay: Datei existiert nicht!\n";
         replay_running = false;
+        return;
     }
+    std::ifstream replay_file(RECORDER_CSV);
+    if (!replay_file.is_open() || replay_file.fail()) {
+        std::cerr << "Replay: Datei konnte nicht geöffnet werden!\n";
+        replay_running = false;
+        return;
+    }
+    std::string line;
+    std::getline(replay_file, line); // Header überspringen
+    while (std::getline(replay_file, line)) {
+        std::istringstream iss(line);
+        std::string token;
+        ReplayEvent evt;
+        std::getline(iss, token, ','); evt.ms = std::stoull(token);
+        std::getline(iss, token, ','); evt.code = std::stoi(token);
+        std::getline(iss, token, ','); evt.value = std::stoi(token);
+        replay_events.push_back(evt);
+        DEBUG(("Replay: Event gelesen ms=" + std::to_string(evt.ms) +
+               " code=" + std::to_string(evt.code) +
+               " value=" + std::to_string(evt.value)).c_str());
+    }
+    replay_file.close();
+    replay_thread = std::thread(&Recorder::replay_loop, this);
+    DEBUG("Replay Thread gestartet");
+}
+
+void Recorder::stop_replay() {
+    std::lock_guard<std::mutex> lock(rep_mutex);
+    if (!replay_running) return;
+    replay_running = false;
+    if (replay_thread.joinable()) replay_thread.join();
+    DEBUG("Replay Thread gestoppt");
+}
+
+void Recorder::replay_loop() {
+    DEBUG("Replay thread started.");
+    if (replay_events.empty()) return;
+    auto replay_start = std::chrono::steady_clock::now();
+    size_t idx = 0;
+    while (replay_running && idx < replay_events.size()) {
+        auto now = std::chrono::steady_clock::now();
+        long long elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - replay_start).count();
+        long long wait_ms = replay_events[idx].ms - elapsed_ms;
+        if (wait_ms > 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(wait_ms));
+        }
+        local_sender->send_event(replay_events[idx].code, replay_events[idx].value);
+        idx++;
+    }
+    DEBUG("Replay thread finished.");
+}

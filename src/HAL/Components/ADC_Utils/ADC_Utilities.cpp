@@ -137,6 +137,9 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
 }
 
 std::vector<Profil> ADC_Utilities::loadProfile() {
+	if (!FILE_EXISTS(PROFIL_DATEI)) {
+		//Event: noch keine Datei erstellt
+	}
     std::ifstream file(PROFIL_DATEI);
     std::vector<Profil> result;
     std::string line;

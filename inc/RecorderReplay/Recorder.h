@@ -14,6 +14,7 @@
 #include "QNet.h"
 #include "PulseMsg.h"
 
+#include <fstream>
 #include <vector>
 #include <time.h> // für timer_t
 #include <queue>
@@ -69,9 +70,10 @@ public: //============================================ contructors & destructors
 		std::thread receiver_thread;
 		std::thread writer_thread;
 		std::thread RecReplay_thread;
+		std::thread replay_thread;
 
 	    std::ofstream file;
-
+	    std::atomic<bool> writer_ready{false};
 		bool record_running;
 		bool replay_running;
 		bool running;
@@ -80,6 +82,8 @@ public: //============================================ contructors & destructors
 
 		std::queue<EventEntry> event_queue;
 		std::mutex queue_mutex;
+		std::mutex rec_mutex;
+		std::mutex rep_mutex;
 		std::condition_variable queue_cv;
 
 		std::vector<ReplayEvent> replay_events;
@@ -92,6 +96,7 @@ public: //============================================ contructors & destructors
 		void threadFunction();
 		void receiver_loop();
 		void writer_loop();
+		void replay_loop();
 
 	};
 
