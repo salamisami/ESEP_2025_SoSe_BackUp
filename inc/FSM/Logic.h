@@ -20,6 +20,15 @@ public: //============================================ constructors & destructor
 	 * @param to_self_sender to send events to self
 	 */
 	Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender);
+
+	/**
+	 * @brief Same as above, but the context data can be injected
+	 * @param local sender to send events out
+	 * @param to_self_sender to send events to self
+	 * @param data context data to be injected
+	 */
+	Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender, ContextData* input_data);
+
 	/**
 	* @brief This constructor is used, if the dispatcher is broadcast type. The context will use the same sender to send events out and to self
 	* @param sender to send events out AND to self
@@ -45,6 +54,7 @@ private: //================================================ private variables ==
 	//primitive types
 	//bool and char
 	bool logicRunning;
+	bool contextInjected = false;
 
 
 

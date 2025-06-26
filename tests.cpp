@@ -10,7 +10,7 @@
 
 #define EXPECT_STATE(expected_state) \
     do { \
-        WAIT(1); \
+        WAIT(10); \
         std::string is_state = logic->show_state(); \
         EXPECT_EQ(is_state, expected_state); \
     } while (0)
@@ -27,6 +27,7 @@ protected:
     Mock_PM::Sender* logic_sender;
     I_Sender* to_self_sender;
     Logic* logic;
+    ContextData* data;
 
     void SetUp() override {
         cout << "Setting up test fixture..." << endl;
@@ -35,7 +36,8 @@ protected:
         hal_receiver = new Mock_PM::Receiver();
         logic_sender = new Mock_PM::Sender(hal_receiver);
         to_self_sender = new Mock_PM::Sender(logic_receiver);
-        logic = new Logic(logic_receiver, logic_sender, to_self_sender);
+        data = new ContextData(logic_sender, to_self_sender);
+        logic = new Logic(logic_receiver, logic_sender, to_self_sender, data);
 
         // Boot sequence
         remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
@@ -47,6 +49,7 @@ protected:
         WAIT(10);
 
         delete logic;
+        delete data;
         delete to_self_sender;
         delete logic_sender;
         delete hal_receiver;
@@ -86,6 +89,65 @@ protected:
 //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
 //     EXPECT_STATE("Yellow MotorEnable");
 // }
+
+TEST_F(LogicStateTest, SortingOrderPositiveTest) {
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    WAIT(10);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE("PieceFlat");
+    data->is_ramp_full = false;
+    data->actual_piece = Piece::FLAT;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceTall");
+    data->is_ramp_full = false;
+    data->actual_piece = Piece::TALL;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceTallWithMetal");
+    data->is_ramp_full = false;
+    data->actual_piece = Piece::TALL_WITH_METAL;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceFlat");
+}
+
+TEST_F(LogicStateTest, SortingOrderNegativeTest) {
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    WAIT(10);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+
+    //test PieceFlat
+    EXPECT_STATE("PieceFlat");
+    data->is_ramp_full = false;
+    data->actual_piece = Piece::UNKNOWN;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceFlat");
+
+    //change state to tall
+    data->actual_piece = Piece::FLAT;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceTall");
+    //test PieceTall
+    data->actual_piece = Piece::UNKNOWN;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceTall");
+
+    //change state to tall metal
+    data->actual_piece = Piece::TALL;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceTallWithMetal");
+    //test PieceWithMetal
+    data->actual_piece = Piece::UNKNOWN;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceTallWithMetal");
+
+    //change state to flat
+    data->actual_piece = Piece::TALL_WITH_METAL;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceFlat");
+    //test PieceWithMetal
+    data->actual_piece = Piece::UNKNOWN;
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
+    EXPECT_STATE("PieceFlat");
+}
 
 
 /**

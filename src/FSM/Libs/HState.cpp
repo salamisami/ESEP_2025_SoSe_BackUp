@@ -110,6 +110,9 @@ std::string HState::get_current_state() {
     return substate_name;
 }
 
+
+
+//================================================ internal events ================================================
 State* HState::timer(TIMER_ID id) {
     if(substate == nullptr) {
         return nullptr;
@@ -124,6 +127,37 @@ State* HState::timer(TIMER_ID id) {
     }
     return nullptr;
 }
+
+State* HState::sort_out() {
+    return handle_event_using_function(&State::sort_out);
+}
+
+State* HState::sort_out_fbm2() {
+    return handle_event_using_function(&State::sort_out_fbm2);
+}
+
+State* HState::let_through() {
+    return handle_event_using_function(&State::let_through);
+}
+
+State* HState::check_piece() {
+    return handle_event_using_function(&State::check_piece);
+}
+
+State* HState::reset_to_flat() {
+    return handle_event_using_function(&State::reset_to_flat);
+}
+
+State* HState::reset_to_tall() {
+    return handle_event_using_function(&State::reset_to_tall);
+}
+
+State* HState::reset_to_tall_w_metal() {
+    return handle_event_using_function(&State::reset_to_tall_w_metal);
+}
+
+
+//================================================ external events ================================================
 
 
 State* HState::laser_front_blocked() {

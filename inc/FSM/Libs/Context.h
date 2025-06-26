@@ -30,6 +30,7 @@ private:
     State* handleInterrupt(int event_value);
     State* handleCOM(int event_value);
     State* handleADC(int event_value);
+    State* handleInternal(int event_value);
 };
 
 //================================================= constructors & destructors =================================================
@@ -47,6 +48,39 @@ Context<T>::~Context() {
 }
 
 //===================================================== private functions =====================================================
+
+template <typename T>
+State* Context<T>::handleInternal(int event_value) {
+    State* newState = nullptr;
+    switch((Internal_Enum) event_value) {
+        //TODO is this true?
+        case Internal_Enum::SORT_OUT:
+            newState = state->sort_out();
+            break;
+        case Internal_Enum::SORT_OUT_FBM2:
+            newState = state->sort_out_fbm2();
+            break;
+        case Internal_Enum::LET_THROUGH:
+            newState = state->let_through();
+            break;
+        case Internal_Enum::CHECK_PIECE:
+            newState = state->check_piece();
+            break;
+        case Internal_Enum::RESET_TO_FLAT:
+            newState = state->reset_to_flat();
+            break;
+        case Internal_Enum::RESET_TO_TALL:
+            newState = state->reset_to_tall();
+            break;
+        case Internal_Enum::RESET_TO_TALL_W_METAL:
+            newState = state->reset_to_tall_w_metal();
+            break;
+        default:
+            break;
+    }
+    return newState;
+}
+
 template<typename T>
 State* Context<T>::handleADC(int event_value) {
     //TODO put newState = state->function() here
@@ -80,6 +114,15 @@ State* Context<T>::handleCOM(int event_value) {
             break;
         case COM_Enum::BUTTON_ESTOP_RELEASED:
             newState = state->com_button_estop_released();
+            break;
+        case COM_Enum::RESET_TO_FLAT:
+            newState = state->reset_to_flat();
+            break;
+        case COM_Enum::RESET_TO_TALL:
+            newState = state->reset_to_tall();
+            break;
+        case COM_Enum::RESET_TO_TALL_W_METAL:
+            newState = state->reset_to_tall_w_metal();
             break;
         default:
             break;
@@ -169,9 +212,11 @@ State* Context<T>::handleInterrupt(int event_value) {
     return newState;
 }
 
+
+
 //===================================================== public functions =====================================================
 template <typename T>
-std::string Context<T>::show_state(){
+std::string Context<T>::show_state() {
     return state->get_current_state();
 }
 
@@ -185,14 +230,17 @@ void Context<T>::handleEvent(_pulse event) {
         case Topic::INTERRUPT:
             newState = handleInterrupt(event_value);
             break;
-        case Topic::COM:
-            newState = handleCOM(event_value);
-            break;
         case Topic::TIMER:
             newState = state->timer((TIMER_ID) event_value);
             break;
         case Topic::ADC:
             newState = handleADC(event_value);
+            break;
+        case Topic::INTERNAL:
+            newState = handleInternal(event_value);
+            break;
+        case Topic::COM:
+            newState = handleCOM(event_value);
             break;
         case Topic::STOP_THREAD:
             state->exit();

@@ -31,6 +31,21 @@ public:
     virtual State* clone() override;
     virtual std::string get_current_state() override;
 
+      //================================================ internal events ================================================
+    virtual State* timer(TIMER_ID id) override;
+
+    virtual State* sort_out() override;
+    virtual State* sort_out_fbm2() override;
+    virtual State* let_through() override;
+    virtual State* check_piece() override;
+    virtual State* reset_to_flat() override;
+    virtual State* reset_to_tall() override;
+    virtual State* reset_to_tall_w_metal() override;
+
+    
+
+    //================================================ external events ================================================
+
     virtual State* laser_front_blocked() override;
     virtual State* laser_front_unblocked() override;
     virtual State* laser_back_blocked() override;
@@ -61,11 +76,13 @@ public:
     virtual State* is_switch() override;
 
 
-
-
     virtual State* adc_calibration_done() override;
 
-    virtual State* timer(TIMER_ID id) override;
+    
+
+
+
+    //================================================ private variables ================================================
 
 
 

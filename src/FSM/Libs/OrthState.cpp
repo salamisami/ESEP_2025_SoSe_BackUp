@@ -94,6 +94,8 @@ std::string OrthState::get_current_state() {
     return appended_string;
 }
 
+//================================================ internal events ================================================
+
 State* OrthState::timer(TIMER_ID id) {
     for(auto& current_substate : substates) {
         State* newSubstate = current_substate->timer(id);
@@ -107,6 +109,36 @@ State* OrthState::timer(TIMER_ID id) {
     }
     return nullptr;
 }
+
+State* OrthState::sort_out() {
+    return handle_event_using_function(&State::sort_out);
+}
+
+State* OrthState::sort_out_fbm2() {
+    return handle_event_using_function(&State::sort_out_fbm2);
+}
+
+State *OrthState::check_piece() {
+    return handle_event_using_function(&State::check_piece);
+}
+
+State *OrthState::let_through() {
+    return handle_event_using_function(&State::let_through);
+}
+
+State *OrthState::reset_to_flat() {
+    return handle_event_using_function(&State::reset_to_flat);
+}
+
+State *OrthState::reset_to_tall() {
+    return handle_event_using_function(&State::reset_to_tall);
+}
+State *OrthState::reset_to_tall_w_metal() {
+    return handle_event_using_function(&State::reset_to_tall_w_metal);
+}
+
+
+//================================================ external events ================================================
 
 
 State* OrthState::laser_front_blocked() {

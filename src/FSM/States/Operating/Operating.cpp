@@ -2,7 +2,7 @@
 
 //================================================= constructors & destructors =================================================
 
-Operating::Operating(ContextData* data): State(data) {
+Operating::Operating(ContextData* data): HState(data, new SortingOrder(data)) {
 }
 
 Operating::~Operating() {

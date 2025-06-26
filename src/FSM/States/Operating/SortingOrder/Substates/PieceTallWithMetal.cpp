@@ -1,0 +1,46 @@
+#include "PieceTallWithMetal.h"
+
+//================================================= constructors & destructors =================================================
+PieceTallWithMetal::PieceTallWithMetal(ContextData* data) : State(data) {
+    //substate = new SubState(data);
+}
+
+PieceTallWithMetal::~PieceTallWithMetal() {}
+
+//===================================================== private functions =====================================================
+
+
+//===================================================== public functions =====================================================
+void PieceTallWithMetal::entry(){
+	PRINT_STATE;
+}
+
+void PieceTallWithMetal::exit(){
+	PRINT_STATE;
+}
+
+State* PieceTallWithMetal::clone(){
+	return new PieceTallWithMetal(data);
+}
+
+State* PieceTallWithMetal::reset_to_flat() {
+	return new PieceFlat(data);
+}
+
+State* PieceTallWithMetal::reset_to_tall() {
+	return new PieceTall(data);
+}
+
+State* PieceTallWithMetal::check_piece() {
+	if (data->actual_piece == Piece::TALL_WITH_METAL) {
+		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
+		return new PieceFlat(data);
+	}
+	if (data->is_ramp_full) {
+		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
+	} else {
+		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
+	}
+	return nullptr;
+	//return new PieceTallWithMetal(data);
+}
