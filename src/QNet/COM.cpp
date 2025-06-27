@@ -348,3 +348,39 @@ void COM::updateHeartbeat()
 {
     lastHeartbeat = std::chrono::steady_clock::now();
 }
+
+COM::UnpackResult COM::unpack_piece(int32_t pulse_value) {
+    PulsePiece pp;
+    pp.value = pulse_value;
+    UnpackResult result;
+    result.valid = false;
+
+    // Validate each field
+    if (pp.bits.id > MAX_PIECE_ID) {
+        result.error = "Invalid piece ID: " + std::to_string(pp.bits.id);
+        return result;
+    }
+
+    if (pp.bits.zustand >= MAX_PIECE_STATES) {
+        result.error = "Invalid piece state: " + std::to_string(pp.bits.zustand);
+        return result;
+    }
+
+    // If using enum types
+    #ifdef USE_ENUM_TYPES
+    if (pp.bits.type >= MAX_PIECE_TYPES) {
+        result.error = "Invalid piece type: " + std::to_string(pp.bits.type);
+        return result;
+    }
+    #endif
+
+    result.piece.id = static_cast<int>(pp.bits.id);
+    result.piece.zustand = static_cast<PieceState>(pp.bits.zustand);
+    result.piece.hoch = pp.bits.hoch != 0;
+    result.piece.metall = pp.bits.metall != 0;
+    result.piece.bohrung = pp.bits.bohrung != 0;
+    result.valid = true;
+
+    return result;
+}
+
