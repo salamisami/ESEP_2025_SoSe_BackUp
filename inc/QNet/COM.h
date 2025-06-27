@@ -4,6 +4,7 @@
 #include "QNet.h"
 #include "Event.h"
 #include "Thread_COM.h"
+#include "pieceQueue.h"
 #include <chrono>
 #include <deque>
 #include <mutex>
@@ -41,8 +42,27 @@ private:
     void handle_QNX_pulse(_pulse* msg, int rcvid);
     void handle_QNX_IO_msg(_pulse* msg, int rcvid);
 
+    struct UnpackResult {
+        bool valid;
+        Piece piece;
+        std::string error;
+    };
 
+    union PulsePiece {
+        struct {
+            uint32_t id        : 8;   // Allows IDs 0-255
+            uint32_t zustand   : 4;   // Supports up to 16 PieceState values
+            uint32_t hoch      : 1;
+            uint32_t metall    : 1;
+            uint32_t bohrung   : 1;
+            uint32_t reserved  : 17;   // Available for future use
+        } bits;
+        int32_t value;  // The actual pulse data
+    };
     
+    //Piece
+    UnpackResult unpack_piece(int32_t pulse_value);
+
     // Shared state
     I_Receiver* _server;
     const char* _clientSendName;
