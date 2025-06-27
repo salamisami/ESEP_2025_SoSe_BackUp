@@ -42,7 +42,7 @@ void Logic::threadFunction() {
         int status = local_receiver->receive_event(&event);
         if(status == 0) {
             eventNo++;
-            printf("Event Code: %d, Event Value: %d\n", event.code, event.value.sival_int);
+            //printf("Event Code: %d, Event Value: %d\n", event.code, event.value.sival_int);
 
 
             int8_t topic = event.code;
