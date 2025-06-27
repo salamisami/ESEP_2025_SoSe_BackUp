@@ -72,7 +72,7 @@ void COM::runClient() {
     COUT("COM Client started.");
     const int MAX_RETRIES = 50;
     const int RETRY_DELAY_MS = 1000;
-    const int HEARTBEAT_INTERVAL_MS = 5000;
+    const int HEARTBEAT_INTERVAL_MS = 2000;
 
     auto lastHeartbeatTime = std::chrono::steady_clock::now();
     int retry_count = 0;
@@ -254,6 +254,14 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
             /* A client disconnected all its connections (called
             * name_close() for each name_open() of our name) or
             * terminated. */
+            _pulse timeoutEvent;
+            int8_t comCode = (int8_t) Topic::COM;
+            int value = (int) COM_Enum::TIMEOUT_COM;
+
+            timeoutEvent.code = comCode;
+            timeoutEvent.value.sival_int = value;
+            COUT("Sending Timeout Notification");
+            sendToDispatcher(timeoutEvent);  // Andere Maschine disconeccted -> Timeout
             ConnectDetach(msg->scoid);
             break;
         case _PULSE_CODE_UNBLOCK:
@@ -278,11 +286,11 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
 
 void COM::processMessage(const _pulse& msg) {
     // Process ES messages immediately Same priority goes to connection lost
-    if (msg.code == ((int) COM_Enum::BUTTON_ESTOP_PRESSED)) {
+    if (msg.value.sival_int == ((int) COM_Enum::BUTTON_ESTOP_PRESSED)) {
         sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
         COUT("SENDING ESTOP TO DISPATCHER");
     } 
-    else {
+    else if (msg.value.sival_int != ((int) COM_Enum::TIMEOUT_COM)){
         // Add your message processing logic here
         sendToDispatcher(msg);
     }
