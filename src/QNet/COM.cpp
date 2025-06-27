@@ -245,15 +245,15 @@ void COM::handle_QNX_pulse(_pulse* msg, int rcvid) {
     }
 }
 void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
+    _pulse timeoutEvent;
+    int8_t comCode = (int8_t) Topic::COM;
+    int value = (int) COM_Enum::TIMEOUT_COM;
     switch(msg->code) {
         case _PULSE_CODE_DISCONNECT:
             printf(" _PULSE_CODE_DISCONNECT\n");
             /* A client disconnected all its connections (called
             * name_close() for each name_open() of our name) or
             * terminated. */
-            _pulse timeoutEvent;
-            int8_t comCode = (int8_t) Topic::COM;
-            int value = (int) COM_Enum::TIMEOUT_COM;
 
             timeoutEvent.code = comCode;
             timeoutEvent.value.sival_int = value;
