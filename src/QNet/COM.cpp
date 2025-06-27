@@ -72,9 +72,6 @@ void COM::runClient() {
     COUT("COM Client started.");
     const int MAX_RETRIES = 50;
     const int RETRY_DELAY_MS = 1000;
-    const int HEARTBEAT_INTERVAL_MS = 2000;
-
-    auto lastHeartbeatTime = std::chrono::steady_clock::now();
     int retry_count = 0;
 
     while (running) {
@@ -105,7 +102,7 @@ void COM::runClient() {
         	int value = (int) COM_Enum::TIMEOUT_COM;
         	timeoutEvent.code = comCode;
         	timeoutEvent.value.sival_int = value;
-        	COUT("Sending Timeout Notification to dispatcher");
+        	COUT("Sending Timeout Notification to dispatcher, CLIENT cant connect to other machine");
         	sendToDispatcher(timeoutEvent);
         }
         else {
@@ -172,7 +169,7 @@ void COM::runServer() {
 		struct _pulse event;
 		struct _msg_info info;  // Message info structure
 		struct sigevent sigev;
-		uint64_t timeout_nsec = 5 * 1000000000ULL; // 5 seconds in nanoseconds
+		uint64_t timeout_nsec = 10 * 1000000000ULL; // 5 seconds in nanoseconds
 
 		// Setup timeout structure
 		sigev.sigev_notify = SIGEV_UNBLOCK;
@@ -212,7 +209,7 @@ void COM::runServer() {
 
                 timeoutEvent.code = comCode;
                 timeoutEvent.value.sival_int = value;
-                COUT("Sending Timeout Notification");
+                COUT("Sending Timeout Notification; Server");
                 sendToDispatcher(timeoutEvent);
             }
         }
