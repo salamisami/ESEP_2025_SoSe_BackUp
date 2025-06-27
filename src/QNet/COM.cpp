@@ -198,6 +198,7 @@ void COM::sendToServer(const _pulse &msg, int priority)
 void COM::runServer()
 {
     COUT("COM server started.");
+    bool disconnected = true;
     while (running)
     {
         struct _pulse event;
@@ -224,6 +225,15 @@ void COM::runServer()
         if (rcvid == 0)
         {
             COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
+            if (disconnected){
+                _pulse reconnectEvent;
+                int8_t comCode = (int8_t)Topic::COM;
+                int value = (int)COM_Enum::RECONNECT;
+                reconnectEvent.code = comCode;
+                reconnectEvent.value.sival_int = value;
+                COUT("Sending Reconnect Notification; Server");
+                sendToDispatcher(reconnectEvent);
+            }
 
             if ((_PULSE_CODE_MINAVAIL <= event.code) && (event.code <= _PULSE_CODE_MAXAVAIL))
             {
