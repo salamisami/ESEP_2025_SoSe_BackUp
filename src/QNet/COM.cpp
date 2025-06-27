@@ -175,7 +175,7 @@ void COM::sendHeartbeat()
 {
 
     auto now = std::chrono::steady_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
         now - lastHeartbeat);
 
     if (elapsed.count() >= HEARTBEAT_INTERVAL)
@@ -203,7 +203,7 @@ void COM::runServer()
         struct _pulse event;
         struct _msg_info info; // Message info structure
         struct sigevent sigev;
-        uint64_t timeout_nsec = 10 * 1000000000ULL; // 5 seconds in nanoseconds
+        uint64_t timeout_nsec = 3 * 1000000000ULL; // 5 seconds in nanoseconds
 
         // Setup timeout structure
         sigev.sigev_notify = SIGEV_UNBLOCK;
