@@ -226,13 +226,14 @@ void COM::runServer()
         {
             COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
             if (disconnected){
+            	disconnected = false;
                 _pulse reconnectEvent;
                 int8_t comCode = (int8_t)Topic::COM;
                 int value = (int)COM_Enum::RECONNECT;
-                timeoutEvent.code = comCode;
-                timeoutEvent.value.sival_int = value;
+                reconnectEvent.code = comCode;
+                reconnectEvent.value.sival_int = value;
                 COUT("Sending Reconnect Notification; Server");
-                sendToDispatcher(timeoutEvent);
+                sendToDispatcher(reconnectEvent);
             }
 
             if ((_PULSE_CODE_MINAVAIL <= event.code) && (event.code <= _PULSE_CODE_MAXAVAIL))
@@ -251,6 +252,7 @@ void COM::runServer()
             if (errno == ETIMEDOUT)
             {
                 // Timeout occurred
+            	disconnected = true;
                 updateHeartbeat();
 
                 _pulse timeoutEvent;
