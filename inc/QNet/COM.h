@@ -64,7 +64,7 @@ private:
     std::thread dispatcherThread;
     
     // Constants
-    static constexpr int HEARTBEAT_INTERVAL = 2;
+    static constexpr int HEARTBEAT_INTERVAL = 1000;
 
     template<typename T, typename... Args>
     std::unique_ptr<T> make_unique(Args&&... args) {
