@@ -4,6 +4,7 @@
 #include "QNet.h"
 #include "Event.h"
 #include "Thread_COM.h"
+#include "pieceQueue.h"
 #include <chrono>
 #include <deque>
 #include <mutex>
