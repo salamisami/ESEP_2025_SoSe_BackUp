@@ -42,8 +42,8 @@ using namespace std;
 
 int main() {
   cout << "Starting Program..." << endl; // prints Hello World!!!
-  //system("slay gns");
-  //system("gns -c ");
+ // system("slay gns");
+ // system("gns -s ");
 
   Dispatcher* dispatcher = new Dispatcher();
   std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
