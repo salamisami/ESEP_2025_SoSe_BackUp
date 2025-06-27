@@ -9,7 +9,8 @@
 
 class OperatingMock : public OrthState {
 public: //============================================ constructors & destructors ============================================
-    OperatingMock(ContextData* data) ;
+	OperatingMock(ContextData* data);    
+	OperatingMock(ContextData* data, std::vector<State*> cloned_substates);
     virtual ~OperatingMock();
 	
 

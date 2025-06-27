@@ -5,7 +5,7 @@
 #include "State.h"
 #include "Timer.h"
 #include "TimerReceivedIM.h"
-#include "Operating.h"
+#include "OperatingMock.h"
 
 
 class WaitingIM : public State {

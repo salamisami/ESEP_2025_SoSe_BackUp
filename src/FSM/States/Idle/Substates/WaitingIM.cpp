@@ -19,16 +19,20 @@ void WaitingIM::entry() {
 void WaitingIM::exit() {
     PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
-    
+
 }
 
 //load history
 State* WaitingIM::button_start_released() {
     if(data->stateStack->empty()) {
-        return new Operating(data);
+        return new OperatingMock(data);
     }
     State* loaded_state = data->stateStack->top();
     data->stateStack->pop();
+    // while(!data->stateStack->empty()) {
+    //     delete data->stateStack->top();
+    //     data->stateStack->pop();
+    // }
     return loaded_state;
 }
 

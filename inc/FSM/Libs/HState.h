@@ -20,7 +20,7 @@ public:
 
     //Disable copy constructor, because we're going to use clone() instead
     HState(const HState& other) = delete;
-    virtual ~HState() override;
+    virtual ~HState();
 
     //================================================ public functions ================================================
 public:

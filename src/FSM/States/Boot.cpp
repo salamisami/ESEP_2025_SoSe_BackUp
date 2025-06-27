@@ -28,5 +28,5 @@ State* Boot::is_pusher(){
 State* Boot::is_switch(){
     data->is_switch = true;
     DEBUG("Machine is Switch Type");
-    return new OperatingMock(data);
+    return new ModeHandler(data);
 }
