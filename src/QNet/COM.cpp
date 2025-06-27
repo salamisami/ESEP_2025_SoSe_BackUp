@@ -88,10 +88,8 @@ void COM::runClient()
     while (running)
     {
         // Connection management (unchanged)
-        if (!_client || _client->getcoid() == -1)
+        while (!_client || _client->getcoid() == -1)
         {
-            if (retry_count < MAX_RETRIES)
-            {
                 try
                 {
                     _client = make_unique<Thread_COM::Sender>(_clientSendName);
@@ -99,6 +97,7 @@ void COM::runClient()
                     {
                         retry_count = 0;
                         COUT("Connection established successfully");
+                        break;
                     }
                     else
                     {
@@ -112,28 +111,10 @@ void COM::runClient()
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
                 continue;
-            }
-            else
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS * 2));
-            }
         }
-        if (_client->getcoid() == -1)
-        {
-            _pulse timeoutEvent;
-            int8_t comCode = (int8_t)Topic::COM;
-            int value = (int)COM_Enum::TIMEOUT_COM;
-            timeoutEvent.code = comCode;
-            timeoutEvent.value.sival_int = value;
-            COUT("Sending Timeout Notification to dispatcher, CLIENT cant connect to other machine");
-            sendToDispatcher(timeoutEvent);
-        }
-        else
-        {
             checkQueues();
-        }
         retry_count = 0;
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 void COM::checkQueues()
@@ -251,6 +232,7 @@ void COM::runServer()
         {
             if (errno == ETIMEDOUT)
             {
+            	_client = nullptr;
                 // Timeout occurred
             	disconnected = true;
                 updateHeartbeat();
