@@ -203,7 +203,7 @@ void COM::runServer()
         struct _pulse event;
         struct _msg_info info; // Message info structure
         struct sigevent sigev;
-        uint64_t timeout_nsec = 10 * 1000000000ULL; // 5 seconds in nanoseconds
+        uint64_t timeout_nsec = 3 * 1000000000ULL; // 5 seconds in nanoseconds
 
         // Setup timeout structure
         sigev.sigev_notify = SIGEV_UNBLOCK;
@@ -327,16 +327,21 @@ void COM::handle_QNX_IO_msg(_pulse *msg, int rcvid)
 
 void COM::processMessage(const _pulse &msg)
 {
-    // Process ES messages immediately Same priority goes to connection lost
-    if (msg.value.sival_int == ((int)COM_Enum::BUTTON_ESTOP_PRESSED))
-    {
-        sendToDispatcher(msg, (int)EventPriority::FIRST_PRIO);
-        COUT("SENDING ESTOP TO DISPATCHER");
-    }
-    else if (msg.value.sival_int != ((int)COM_Enum::TIMEOUT_COM))
-    {
-        // Add your message processing logic here
-        sendToDispatcher(msg);
+    if (msg.code == ((int)Topic::COM)){
+        // Process ES messages immediately Same priority goes to connection lost
+        if (msg.value.sival_int == ((int)COM_Enum::BUTTON_ESTOP_PRESSED))
+        {
+            sendToDispatcher(msg, (int)EventPriority::FIRST_PRIO);
+            COUT("SENDING ESTOP TO DISPATCHER");
+        }
+        else if (msg.value.sival_int != ((int)COM_Enum::TIMEOUT_COM))
+        {
+            // Add your message processing logic here
+            sendToDispatcher(msg);
+        }
+    } else {
+        printf("Received non COM Topic from other machine: Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
+
     }
 }
 
