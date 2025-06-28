@@ -81,39 +81,34 @@ void COM::runDispatcher()
 void COM::runClient()
 {
     COUT("COM Client started.");
-    const int MAX_RETRIES = 50;
     const int RETRY_DELAY_MS = 1000;
-    int retry_count = 0;
-
     while (running)
     {
-        // Connection management (unchanged)
+        std::lock_guard<std::mutex> lock(_clientMutex);
         while (!_client || _client->getcoid() == -1)
         {
-                try
+            try
+            {
+                _client = make_unique<Thread_COM::Sender>(_clientSendName);
+                if (_client->getcoid() >= 0)
                 {
-                    _client = make_unique<Thread_COM::Sender>(_clientSendName);
-                    if (_client->getcoid() >= 0)
-                    {
-                        retry_count = 0;
-                        COUT("Connection established successfully");
-                        break;
-                    }
-                    else
-                    {
-                        retry_count++;
-                    }
+                    COUT("Connection established successfully");
+                    break;
                 }
-                catch (...)
+                else
                 {
                     retry_count++;
-                    std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
                 }
-                std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-                continue;
+            }
+            catch (...)
+            {
+                retry_count++;
+                std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
+            continue;
         }
-            checkQueues();
-        retry_count = 0;
+        checkQueues();
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
@@ -161,6 +156,7 @@ void COM::sendHeartbeat()
 
     if (elapsed.count() >= HEARTBEAT_INTERVAL)
     {
+        std::lock_guard<std::mutex> lock(_clientMutex);
         if (_client->getcoid() != -1)
         {
             _client->send_event((int8_t)Topic::COM, (int)COM_Enum::HEARTBEAT);
@@ -171,7 +167,11 @@ void COM::sendHeartbeat()
 
 void COM::sendToServer(const _pulse &msg, int priority)
 {
-    _client->send_event((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
+    std::lock_guard<std::mutex> lock(_clientMutex);
+    if (_client)
+    {
+        _client->send_event((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
+    }
     updateHeartbeat();
 }
 
@@ -206,8 +206,9 @@ void COM::runServer()
         if (rcvid == 0)
         {
             COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
-            if (disconnected){
-            	disconnected = false;
+            if (disconnected)
+            {
+                disconnected = false;
                 _pulse reconnectEvent;
                 int8_t comCode = (int8_t)Topic::COM;
                 int value = (int)COM_Enum::RECONNECT;
@@ -232,9 +233,12 @@ void COM::runServer()
         {
             if (errno == ETIMEDOUT)
             {
-            	_client = nullptr;
+                {
+                    std::lock_guard<std::mutex> lock(_clientMutex);
+                    _client.reset;
+                }
                 // Timeout occurred
-            	disconnected = true;
+                disconnected = true;
                 updateHeartbeat();
 
                 _pulse timeoutEvent;
@@ -321,7 +325,8 @@ void COM::handle_QNX_IO_msg(_pulse *msg, int rcvid)
 
 void COM::processMessage(const _pulse &msg)
 {
-    if (msg.code == ((int)Topic::COM)){
+    if (msg.code == ((int)Topic::COM))
+    {
         // Process ES messages immediately Same priority goes to connection lost
         if (msg.value.sival_int == ((int)COM_Enum::BUTTON_ESTOP_PRESSED))
         {
@@ -333,9 +338,10 @@ void COM::processMessage(const _pulse &msg)
             // Add your message processing logic here
             sendToDispatcher(msg);
         }
-    } else {
+    }
+    else
+    {
         printf("Received non COM Topic from other machine: Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
-
     }
 }
 
