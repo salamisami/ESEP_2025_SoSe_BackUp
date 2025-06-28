@@ -249,3 +249,34 @@ State* OrthState::is_pusher() {
 State* OrthState::is_switch() {
     return handle_event_using_function(&State::is_switch);
 }
+
+//neue States
+State* OrthState::ramp_full(){
+    return handle_event_using_function(&State::ramp_full);
+}
+
+State* OrthState::ramp_not_full(){
+    return handle_event_using_function(&State::ramp_not_full);
+}
+
+State* OrthState::com_ramp_full()
+{
+    return handle_event_using_function(&State::com_ramp_full);
+}
+
+State* OrthState::com_ramp_not_full(){
+    return handle_event_using_function(&State::com_ramp_not_full);
+}
+
+State* OrthState::sorting_out(){
+    return handle_event_using_function(&State::sorting_out);
+}
+
+/* State* HState::error_both_r_full(){
+    return handle_event_using_function(&State::error_both_r_full);
+} */
+
+State* OrthState::error_pieces_too_close_fixed()
+{
+    return handle_event_using_function(&State::error_pieces_too_close_fixed);
+}

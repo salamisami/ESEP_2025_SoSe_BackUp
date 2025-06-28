@@ -87,6 +87,17 @@ public: //================================================ public functions ====
 
     virtual State* adc_calibration_done();
 
+     //neue States
+    virtual State* ramp_full();
+    virtual State* ramp_not_full();
+    virtual State* sorting_out();
+    //virtual State* error_both_r_full();
+    virtual State* error_pieces_too_close_fixed();
+
+    //neue COM States
+    virtual State* com_ramp_full();
+    virtual State* com_ramp_not_full();
+
 
 
 

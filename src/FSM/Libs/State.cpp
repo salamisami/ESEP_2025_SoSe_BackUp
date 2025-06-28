@@ -193,3 +193,35 @@ State* State::is_pusher() {
 State* State::is_switch() {
     return nullptr;
 }
+
+//neue States
+State* State::ramp_full(){
+    return nullptr;
+}
+
+State* State::ramp_not_full(){
+    return nullptr;
+}
+
+State* State::com_ramp_full()
+{
+    return nullptr;
+}
+
+State* State::com_ramp_not_full(){
+    return nullptr;
+}
+
+State* sorting_out(){
+    return nullptr;
+}
+
+/* State* error_both_r_full(){
+
+    return nullptr;
+} */
+
+State* error_pieces_too_close_fixed()
+{
+    return nullptr;
+}

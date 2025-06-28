@@ -267,3 +267,34 @@ State* HState::is_pusher(){
 State* HState::is_switch(){
     return handle_event_using_function(&State::is_switch);
 }
+
+//neue States
+State* HState::ramp_full(){
+    return handle_event_using_function(&State::ramp_full);
+}
+
+State* HState::ramp_not_full(){
+    return handle_event_using_function(&State::ramp_not_full);
+}
+
+State* HState::com_ramp_full()
+{
+    return handle_event_using_function(&State::com_ramp_full);
+}
+
+State* HState::com_ramp_not_full(){
+    return handle_event_using_function(&State::com_ramp_not_full);
+}
+
+State* HState::sorting_out(){
+    return handle_event_using_function(&State::sorting_out);
+}
+
+/* State* HState::error_both_r_full(){
+    return handle_event_using_function(&State::error_both_r_full);
+} */
+
+State* HState::error_pieces_too_close_fixed()
+{
+    return handle_event_using_function(&State::error_pieces_too_close_fixed);
+}

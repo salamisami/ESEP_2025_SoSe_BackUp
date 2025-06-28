@@ -78,6 +78,23 @@ public:
 
     virtual State* adc_calibration_done() override;
 
+
+     //neue States
+    virtual State* ramp_full() override;
+    virtual State* ramp_not_full() override;
+    virtual State* sorting_out() override;
+    //virtual State* error_both_r_full() override;
+    virtual State* error_pieces_too_close_fixed() override;
+
+    //neue COM States
+    virtual State* com_ramp_full() override;
+    virtual State* com_ramp_not_full() override;
+
+    virtual State* com_button_estop_pressed() override;
+    virtual State* com_button_estop_released() override;
+
+    virtual State* is_pusher() override;
+    virtual State* is_switch() override;
     
 
 
