@@ -49,30 +49,73 @@ void COM::runDispatcher()
     {
         _pulse dispatcherMsg;
         if (_dispatcherRec->receive_event(&dispatcherMsg) == 0)
+            Topic originalTopic = static_cast<Topic>(dispatcherMsg.code);
+        int originalValue = dispatcherMsg.value.sival_int;
         {
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 // TODO: MESSAGES TO BE PASSED TO OTHER MACHINE
-                // Check if the message is of type Topic::INTERRUPT
-                if (dispatcherMsg.code == static_cast<int>(Topic::INTERRUPT))
+                switch (originalTopic)
                 {
-                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                    // Check if the interrupt is either BUTTON_ESTOP_PRESSED or BUTTON_ESTOP_RELEASED
-                    if (dispatcherMsg.value.sival_int == static_cast<int>(InterruptEnum::BUTTON_ESTOP_PRESSED) ||
-                        dispatcherMsg.value.sival_int == static_cast<int>(InterruptEnum::BUTTON_ESTOP_RELEASED))
+                case Topic::INTERRUPT:
+                {
+                    InterruptEnum interruptEvent = static_cast<InterruptEnum>(originalValue);
+                    switch (interruptEvent)
                     {
+                    case InterruptEnum::BUTTON_ESTOP_PRESSED:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED);
                         highPriorityQueue.push_back(dispatcherMsg);
-                        COUT("Received EStop from dispatcher (high priority)");
+                        break;
+                    case InterruptEnum::BUTTON_ESTOP_RELEASED:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED);
+                        highPriorityQueue.push_back(dispatcherMsg);
+                        break;
                     }
-                    else
+                    break;
+                }
+                case Topic::Interal:
+                {
+                    InternalEnum internalEvent = static_cast<ActuatorEnum>(originalValue);
+                    switch (internalEvent)
                     {
-                        // For non-interrupt messages, add to low priority queue
+                    case InternalEnum::RAMP_FULL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_FULL);
                         lowPriorityQueue.push_back(dispatcherMsg);
-                        printf("Received from dispatcher: Event Code: %d, Event Value: %d\n", dispatcherMsg.code, dispatcherMsg.value.sival_int);
+                        break;
+                    case InternalEnum::RAMP_NOT_FULL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_NOT_FULL);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        break;
+                    case InternalEnum::RESET_TO_FLAT:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_FLAT);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        break;
+                    case InternalEnum::RESET_TO_TALL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        break;
+                    case InternalEnum::RESET_TO_TALL_W_METALL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL_W_METALL);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        break;
                     }
+                    break;
+                }
+                case Topic::COM {
+                    lowPriorityQueue.push_back(dispatcherMsg);
+                    break;
+                } default:
+                    break; // No conversion needed
                 }
             }
-            queueCV.notify_one(); // Wake up client thread if it's waiting
+            queueCV.notify_one(); // Wake up client thread
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Small yield
     }
@@ -354,3 +397,12 @@ void COM::updateHeartbeat()
 {
     lastHeartbeat = std::chrono::steady_clock::now();
 }
+
+// Map of event codes that should be converted to COM topic
+const std::unordered_map<int, std::pair<Topic, COM_Enum>> comEquivalentEvents = {
+    // Format: {original_code, {original_topic, COM_enum_value}}
+    {static_cast<int>(InterruptEnum::BUTTON_ESTOP_PRESSED),
+     {Topic::INTERRUPT, COM_Enum::BUTTON_ESTOP_PRESSED}},
+    {static_cast<int>(InterruptEnum::BUTTON_ESTOP_RELEASED),
+     {Topic::INTERRUPT, COM_Enum::BUTTON_ESTOP_RELEASED}},
+};
