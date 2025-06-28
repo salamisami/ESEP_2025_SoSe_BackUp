@@ -246,6 +246,7 @@ void COM::runServer()
             COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
             if (disconnected)
             {
+                // TODO:FLAG für Rampe, bei Reconnect RampFull/Ramp not full schicken
                 disconnected = false;
                 _pulse reconnectEvent;
                 int8_t comCode = (int8_t)Topic::COM;
