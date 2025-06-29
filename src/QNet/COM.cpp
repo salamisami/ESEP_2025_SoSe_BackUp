@@ -112,6 +112,13 @@ void COM::runDispatcher()
                 }
                 case Topic::COM:
                 {
+                	if (originalValue==static_cast<int>(COM_Enum::TIMEOUT_COM)||
+                			originalValue==static_cast<int>(COM_Enum::RECONNECT)||
+							originalValue==static_cast<int>(COM_Enum::HEARTBEAT)||
+							originalValue==static_cast<int>(COM_Enum::RAMP_FULL)||
+							originalValue==static_cast<int>(COM_Enum::RAMP_NOT_FULL)){
+                		break;
+                	}
                     lowPriorityQueue.push_back(dispatcherMsg);
                     break;
                 } default:
@@ -181,9 +188,11 @@ void COM::checkQueues()
     while (!lowPriorityQueue.empty())
     {
         COUT("Something in low prio");
+
         auto msg = lowPriorityQueue.front();
         lowPriorityQueue.pop_front();
         lock.unlock();
+        printf("Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
         sendToServer(msg);
         lock.lock();
     }
@@ -256,7 +265,7 @@ void COM::runServer()
                 int valueCom = (int)COM_Enum::RECONNECT;
                 reconnectEvent.code = comCode;
                 reconnectEvent.value.sival_int = valueCom;
-                //COUT("Sending Reconnect Notification; Server");
+                COUT("Sending Reconnect Notification; Server");
                 sendToDispatcher(reconnectEvent);
                 int reconnectValue;
                 _pulse rampEvent;
