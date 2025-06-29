@@ -55,7 +55,6 @@ void COM::runDispatcher()
 
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
-                // TODO: MESSAGES TO BE PASSED TO OTHER MACHINE
                 switch (originalTopic)
                 {
                 case Topic::INTERRUPT:
@@ -95,6 +94,18 @@ void COM::runDispatcher()
                         dispatcherMsg.code = static_cast<int>(Topic::COM);
                         dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL);
                         lowPriorityQueue.push_back(dispatcherMsg);
+                        break;
+                    case Internal_Enum::RAMP_NOT_FULL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_NOT_FULL);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        rampfull = false;
+                        break;
+                    case Internal_Enum::RAMP_FULL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_FULL);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        rampfull = true;
                         break;
                     }
                     break;
@@ -239,15 +250,28 @@ void COM::runServer()
             COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
             if (disconnected)
             {
-                // TODO:FLAG für Rampe, bei Reconnect RampFull/Ramp not full schicken
                 disconnected = false;
                 _pulse reconnectEvent;
                 int8_t comCode = (int8_t)Topic::COM;
-                int value = (int)COM_Enum::RECONNECT;
+                int valueCom = (int)COM_Enum::RECONNECT;
                 reconnectEvent.code = comCode;
-                reconnectEvent.value.sival_int = value;
-                COUT("Sending Reconnect Notification; Server");
+                reconnectEvent.value.sival_int = valueCom;
+                //COUT("Sending Reconnect Notification; Server");
                 sendToDispatcher(reconnectEvent);
+                int reconnectValue;
+                _pulse rampEvent;
+                if(rampfull){
+                	reconnectValue = (int)COM_Enum::RAMP_FULL;
+                }
+                else {
+                	reconnectValue = (int)COM_Enum::RAMP_NOT_FULL;
+                }
+                rampEvent.code=comCode;
+                rampEvent.value.sival_int = reconnectValue;
+                (rampEvent);
+                std::lock_guard<std::mutex> lock(queueMutex);
+                lowPriorityQueue.push_back(rampEvent);
+
             }
 
             if ((_PULSE_CODE_MINAVAIL <= event.code) && (event.code <= _PULSE_CODE_MAXAVAIL))

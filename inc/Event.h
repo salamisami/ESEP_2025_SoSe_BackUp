@@ -126,7 +126,9 @@ enum class Internal_Enum : int
     CHECK_PIECE,
     RESET_TO_FLAT,
     RESET_TO_TALL,
-    RESET_TO_TALL_W_METAL
+    RESET_TO_TALL_W_METAL,
+	RAMP_FULL,
+	RAMP_NOT_FULL
 };
 
 enum class TIMER_ID : int
