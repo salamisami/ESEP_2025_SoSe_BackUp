@@ -126,7 +126,7 @@ enum class Internal_Enum : int
     RESET_TO_FLAT,
     RESET_TO_TALL,
     RESET_TO_TALL_W_METAL
-}
+};
 
 enum class TIMER_ID : int
 {
