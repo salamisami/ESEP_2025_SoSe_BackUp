@@ -119,6 +119,10 @@ void COM::runDispatcher()
 							originalValue==static_cast<int>(COM_Enum::RAMP_NOT_FULL)){
                 		break;
                 	}
+                	if (FBM == 1 && (originalValue==static_cast<int>(COM_Enum::FBM_2_BUSY) || originalValue==static_cast<int>(COM_Enum::FBM_2_READY)))
+                	{
+                		break;
+                	}
                     lowPriorityQueue.push_back(dispatcherMsg);
                     break;
                 } default:
