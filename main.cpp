@@ -4,8 +4,13 @@
 #include "COM.h"
 #include "Timer.h"
 #include "Logic.h"
+#include "Event.h"
 #include "Remote_Controller.h"
+#include "inc/MQTT/MQTT_Utilities.h"
+
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include <unistd.h>
 
 #include "inc/MQTT/MQTT_Utilities.h"
@@ -42,8 +47,8 @@ using namespace std;
 
 int main() {
   cout << "Starting Program..." << endl; // prints Hello World!!!
- // system("slay gns");
- // system("gns -s ");
+  //system("slay gns");
+  //system("gns -c ");
 
   Dispatcher* dispatcher = new Dispatcher();
   std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
