@@ -107,6 +107,12 @@ void COM::runDispatcher()
                         lowPriorityQueue.push_back(dispatcherMsg);
                         rampfull = true;
                         break;
+                    case Internal_Enum::REQUEST_TRANSFER:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::REQUEST_TRANSFER);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        rampfull = true;
+                        break;
                     }
                     break;
                 }
@@ -116,11 +122,26 @@ void COM::runDispatcher()
                 			originalValue==static_cast<int>(COM_Enum::RECONNECT)||
 							originalValue==static_cast<int>(COM_Enum::HEARTBEAT)||
 							originalValue==static_cast<int>(COM_Enum::RAMP_FULL)||
-							originalValue==static_cast<int>(COM_Enum::RAMP_NOT_FULL)){
+							originalValue==static_cast<int>(COM_Enum::RAMP_NOT_FULL)||
+            				originalValue==static_cast<int>(COM_Enum::RESET_TO_FLAT)||
+            				originalValue==static_cast<int>(COM_Enum::RESET_TO_TALL)||
+            				originalValue==static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL)){
                 		break;
                 	}
-                	if (FBM == 1 && (originalValue==static_cast<int>(COM_Enum::FBM_2_BUSY) || originalValue==static_cast<int>(COM_Enum::FBM_2_READY)))
+                	if (FBM == 1)
                 	{
+                		if ((originalValue==static_cast<int>(COM_Enum::FBM_2_BUSY) ||
+                				originalValue==static_cast<int>(COM_Enum::FBM_2_READY))||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_FAILED)||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_DONE))
+                		break;
+                	}
+                	if (FBM == 2)
+                	{
+                		if (originalValue==static_cast<int>(COM_Enum::TRANSFER_START_TALL) ||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_START_FLAT)||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_START_OTHER)||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_START_TALL_W_METAL))
                 		break;
                 	}
                     lowPriorityQueue.push_back(dispatcherMsg);
@@ -270,7 +291,7 @@ void COM::runServer()
                 reconnectEvent.code = comCode;
                 reconnectEvent.value.sival_int = valueCom;
                 COUT("Sending Reconnect Notification; Server");
-                sendToDispatcher(reconnectEvent);
+                sendToDispatcher(reconnectEvent, (int)EventPriority::FIRST_PRIO);
                 int reconnectValue;
                 _pulse rampEvent;
                 if(rampfull){
@@ -317,7 +338,7 @@ void COM::runServer()
                 timeoutEvent.code = comCode;
                 timeoutEvent.value.sival_int = value;
                 COUT("Sending Timeout Notification; Server");
-                sendToDispatcher(timeoutEvent);
+                sendToDispatcher(timeoutEvent,(int)EventPriority::FIRST_PRIO);
             }
         }
         if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX))

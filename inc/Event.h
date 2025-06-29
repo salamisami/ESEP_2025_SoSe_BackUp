@@ -127,7 +127,8 @@ enum class Internal_Enum : int
     RESET_TO_TALL,
     RESET_TO_TALL_W_METAL,
 	RAMP_FULL,
-	RAMP_NOT_FULL
+	RAMP_NOT_FULL,
+	REQUEST_TRANSFER
 };
 
 enum class TIMER_ID : int
