@@ -49,9 +49,10 @@ void COM::runDispatcher()
     {
         _pulse dispatcherMsg;
         if (_dispatcherRec->receive_event(&dispatcherMsg) == 0)
+        {
             Topic originalTopic = static_cast<Topic>(dispatcherMsg.code);
         int originalValue = dispatcherMsg.value.sival_int;
-        {
+
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 // TODO: MESSAGES TO BE PASSED TO OTHER MACHINE
@@ -75,21 +76,11 @@ void COM::runDispatcher()
                     }
                     break;
                 }
-                case Topic::Interal:
+                case Topic::INTERNAL:
                 {
-                    Internal_Enum internalEvent = static_cast<ActuatorEnum>(originalValue);
+                    Internal_Enum internalEvent = static_cast<Internal_Enum>(originalValue);
                     switch (internalEvent)
                     {
-                    case Internal_Enum::RAMP_FULL:
-                        dispatcherMsg.code = static_cast<int>(Topic::COM);
-                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_FULL);
-                        lowPriorityQueue.push_back(dispatcherMsg);
-                        break;
-                    case Internal_Enum::RAMP_NOT_FULL:
-                        dispatcherMsg.code = static_cast<int>(Topic::COM);
-                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_NOT_FULL);
-                        lowPriorityQueue.push_back(dispatcherMsg);
-                        break;
                     case Internal_Enum::RESET_TO_FLAT:
                         dispatcherMsg.code = static_cast<int>(Topic::COM);
                         dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_FLAT);
@@ -100,15 +91,16 @@ void COM::runDispatcher()
                         dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL);
                         lowPriorityQueue.push_back(dispatcherMsg);
                         break;
-                    case Internal_Enum::RESET_TO_TALL_W_METALL:
+                    case Internal_Enum::RESET_TO_TALL_W_METAL:
                         dispatcherMsg.code = static_cast<int>(Topic::COM);
-                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL_W_METALL);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL);
                         lowPriorityQueue.push_back(dispatcherMsg);
                         break;
                     }
                     break;
                 }
-                case Topic::COM {
+                case Topic::COM:
+                {
                     lowPriorityQueue.push_back(dispatcherMsg);
                     break;
                 } default:
@@ -274,7 +266,7 @@ void COM::runServer()
             {
                 {
                     std::lock_guard<std::mutex> lock(_clientMutex);
-                    _client.reset;
+                    _client.reset();
                 }
                 // Timeout occurred
                 disconnected = true;
