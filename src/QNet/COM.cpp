@@ -116,11 +116,26 @@ void COM::runDispatcher()
                 			originalValue==static_cast<int>(COM_Enum::RECONNECT)||
 							originalValue==static_cast<int>(COM_Enum::HEARTBEAT)||
 							originalValue==static_cast<int>(COM_Enum::RAMP_FULL)||
-							originalValue==static_cast<int>(COM_Enum::RAMP_NOT_FULL)){
+							originalValue==static_cast<int>(COM_Enum::RAMP_NOT_FULL)||
+            				originalValue==static_cast<int>(COM_Enum::RESET_TO_FLAT)||
+            				originalValue==static_cast<int>(COM_Enum::RESET_TO_TALL)||
+            				originalValue==static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL)){
                 		break;
                 	}
-                	if (FBM == 1 && (originalValue==static_cast<int>(COM_Enum::FBM_2_BUSY) || originalValue==static_cast<int>(COM_Enum::FBM_2_READY)))
+                	if (FBM == 1)
                 	{
+                		if ((originalValue==static_cast<int>(COM_Enum::FBM_2_BUSY) ||
+                				originalValue==static_cast<int>(COM_Enum::FBM_2_READY))||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_FAILED)||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_DONE))
+                		break;
+                	}
+                	if (FBM == 2)
+                	{
+                		if (originalValue==static_cast<int>(COM_Enum::TRANSFER_START_TALL) ||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_START_FLAT)||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_START_OTHER)||
+                				originalValue==static_cast<int>(COM_Enum::TRANSFER_START_TALL_W_METAL))
                 		break;
                 	}
                     lowPriorityQueue.push_back(dispatcherMsg);
