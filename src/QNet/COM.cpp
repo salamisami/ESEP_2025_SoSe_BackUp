@@ -49,30 +49,73 @@ void COM::runDispatcher()
     {
         _pulse dispatcherMsg;
         if (_dispatcherRec->receive_event(&dispatcherMsg) == 0)
+            Topic originalTopic = static_cast<Topic>(dispatcherMsg.code);
+        int originalValue = dispatcherMsg.value.sival_int;
         {
             {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 // TODO: MESSAGES TO BE PASSED TO OTHER MACHINE
-                // Check if the message is of type Topic::INTERRUPT
-                if (dispatcherMsg.code == static_cast<int>(Topic::INTERRUPT))
+                switch (originalTopic)
                 {
-                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                    // Check if the interrupt is either BUTTON_ESTOP_PRESSED or BUTTON_ESTOP_RELEASED
-                    if (dispatcherMsg.value.sival_int == static_cast<int>(InterruptEnum::BUTTON_ESTOP_PRESSED) ||
-                        dispatcherMsg.value.sival_int == static_cast<int>(InterruptEnum::BUTTON_ESTOP_RELEASED))
+                case Topic::INTERRUPT:
+                {
+                    InterruptEnum interruptEvent = static_cast<InterruptEnum>(originalValue);
+                    switch (interruptEvent)
                     {
+                    case InterruptEnum::BUTTON_ESTOP_PRESSED:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED);
                         highPriorityQueue.push_back(dispatcherMsg);
-                        COUT("Received EStop from dispatcher (high priority)");
+                        break;
+                    case InterruptEnum::BUTTON_ESTOP_RELEASED:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED);
+                        highPriorityQueue.push_back(dispatcherMsg);
+                        break;
                     }
-                    else
+                    break;
+                }
+                case Topic::Interal:
+                {
+                    Internal_Enum internalEvent = static_cast<ActuatorEnum>(originalValue);
+                    switch (internalEvent)
                     {
-                        // For non-interrupt messages, add to low priority queue
+                    case Internal_Enum::RAMP_FULL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_FULL);
                         lowPriorityQueue.push_back(dispatcherMsg);
-                        printf("Received from dispatcher: Event Code: %d, Event Value: %d\n", dispatcherMsg.code, dispatcherMsg.value.sival_int);
+                        break;
+                    case Internal_Enum::RAMP_NOT_FULL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_NOT_FULL);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        break;
+                    case Internal_Enum::RESET_TO_FLAT:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_FLAT);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        break;
+                    case Internal_Enum::RESET_TO_TALL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        break;
+                    case Internal_Enum::RESET_TO_TALL_W_METALL:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL_W_METALL);
+                        lowPriorityQueue.push_back(dispatcherMsg);
+                        break;
                     }
+                    break;
+                }
+                case Topic::COM {
+                    lowPriorityQueue.push_back(dispatcherMsg);
+                    break;
+                } default:
+                    break; // No conversion needed
                 }
             }
-            queueCV.notify_one(); // Wake up client thread if it's waiting
+            queueCV.notify_one(); // Wake up client thread
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Small yield
     }
@@ -81,39 +124,29 @@ void COM::runDispatcher()
 void COM::runClient()
 {
     COUT("COM Client started.");
-    const int MAX_RETRIES = 50;
     const int RETRY_DELAY_MS = 1000;
-    int retry_count = 0;
-
     while (running)
     {
-        // Connection management (unchanged)
+        std::lock_guard<std::mutex> lock(_clientMutex);
         while (!_client || _client->getcoid() == -1)
         {
-                try
+            try
+            {
+                _client = make_unique<Thread_COM::Sender>(_clientSendName);
+                if (_client->getcoid() >= 0)
                 {
-                    _client = make_unique<Thread_COM::Sender>(_clientSendName);
-                    if (_client->getcoid() >= 0)
-                    {
-                        retry_count = 0;
-                        COUT("Connection established successfully");
-                        break;
-                    }
-                    else
-                    {
-                        retry_count++;
-                    }
+                    COUT("Connection established successfully");
+                    break;
                 }
-                catch (...)
-                {
-                    retry_count++;
-                    std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
-                }
-                std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-                continue;
+            }
+            catch (...)
+            {
+                std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
+            continue;
         }
-            checkQueues();
-        retry_count = 0;
+        checkQueues();
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
@@ -161,6 +194,7 @@ void COM::sendHeartbeat()
 
     if (elapsed.count() >= HEARTBEAT_INTERVAL)
     {
+        std::lock_guard<std::mutex> lock(_clientMutex);
         if (_client->getcoid() != -1)
         {
             _client->send_event((int8_t)Topic::COM, (int)COM_Enum::HEARTBEAT);
@@ -171,7 +205,11 @@ void COM::sendHeartbeat()
 
 void COM::sendToServer(const _pulse &msg, int priority)
 {
-    _client->send_event((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
+    std::lock_guard<std::mutex> lock(_clientMutex);
+    if (_client)
+    {
+        _client->send_event((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
+    }
     updateHeartbeat();
 }
 
@@ -185,7 +223,7 @@ void COM::runServer()
         struct _pulse event;
         struct _msg_info info; // Message info structure
         struct sigevent sigev;
-        uint64_t timeout_nsec = 3 * 1000000000ULL; // 5 seconds in nanoseconds
+        uint64_t timeout_nsec = 3 * 1000000000ULL; // nanoseconds
 
         // Setup timeout structure
         sigev.sigev_notify = SIGEV_UNBLOCK;
@@ -206,8 +244,10 @@ void COM::runServer()
         if (rcvid == 0)
         {
             COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
-            if (disconnected){
-            	disconnected = false;
+            if (disconnected)
+            {
+                // TODO:FLAG für Rampe, bei Reconnect RampFull/Ramp not full schicken
+                disconnected = false;
                 _pulse reconnectEvent;
                 int8_t comCode = (int8_t)Topic::COM;
                 int value = (int)COM_Enum::RECONNECT;
@@ -232,9 +272,12 @@ void COM::runServer()
         {
             if (errno == ETIMEDOUT)
             {
-            	_client = nullptr;
+                {
+                    std::lock_guard<std::mutex> lock(_clientMutex);
+                    _client.reset;
+                }
                 // Timeout occurred
-            	disconnected = true;
+                disconnected = true;
                 updateHeartbeat();
 
                 _pulse timeoutEvent;
@@ -249,7 +292,6 @@ void COM::runServer()
         }
         if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX))
         {
-            // Some QNX IO msg generated by gns was received
             handle_QNX_IO_msg(&event, rcvid);
             continue;
         }
@@ -262,16 +304,10 @@ void COM::handle_QNX_pulse(_pulse *msg, int rcvid)
     {
     case _PULSE_CODE_DISCONNECT:
         printf("PULSE_CODE_DISCONNECT\n");
-        /* A client disconnected all its connections (called
-         * name_close() for each name_open() of our name) or
-         * terminated. */
         ConnectDetach(msg->scoid);
         break;
     case _PULSE_CODE_UNBLOCK:
         printf("received _PULSE_CODE_UNBLOCK\n");
-        /* REPLY blocked client wants to unblock (was hit by
-         * a signal or timed out). It's up to you if you
-         * reply now or later. */
         break;
     default:
         /* A pulse sent by the kernel like
@@ -321,7 +357,8 @@ void COM::handle_QNX_IO_msg(_pulse *msg, int rcvid)
 
 void COM::processMessage(const _pulse &msg)
 {
-    if (msg.code == ((int)Topic::COM)){
+    if (msg.code == ((int)Topic::COM))
+    {
         // Process ES messages immediately Same priority goes to connection lost
         if (msg.value.sival_int == ((int)COM_Enum::BUTTON_ESTOP_PRESSED))
         {
@@ -330,12 +367,12 @@ void COM::processMessage(const _pulse &msg)
         }
         else if (msg.value.sival_int != ((int)COM_Enum::TIMEOUT_COM))
         {
-            // Add your message processing logic here
             sendToDispatcher(msg);
         }
-    } else {
+    }
+    else
+    {
         printf("Received non COM Topic from other machine: Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
-
     }
 }
 
@@ -348,39 +385,3 @@ void COM::updateHeartbeat()
 {
     lastHeartbeat = std::chrono::steady_clock::now();
 }
-
-COM::UnpackResult COM::unpack_piece(int32_t pulse_value) {
-    PulsePiece pp;
-    pp.value = pulse_value;
-    UnpackResult result;
-    result.valid = false;
-
-    // Validate each field
-    if (pp.bits.id > MAX_PIECE_ID) {
-        result.error = "Invalid piece ID: " + std::to_string(pp.bits.id);
-        return result;
-    }
-
-    if (pp.bits.zustand >= MAX_PIECE_STATES) {
-        result.error = "Invalid piece state: " + std::to_string(pp.bits.zustand);
-        return result;
-    }
-
-    // If using enum types
-    #ifdef USE_ENUM_TYPES
-    if (pp.bits.type >= MAX_PIECE_TYPES) {
-        result.error = "Invalid piece type: " + std::to_string(pp.bits.type);
-        return result;
-    }
-    #endif
-
-    result.piece.id = static_cast<int>(pp.bits.id);
-    result.piece.zustand = static_cast<PieceState>(pp.bits.zustand);
-    result.piece.hoch = pp.bits.hoch != 0;
-    result.piece.metall = pp.bits.metall != 0;
-    result.piece.bohrung = pp.bits.bohrung != 0;
-    result.valid = true;
-
-    return result;
-}
-

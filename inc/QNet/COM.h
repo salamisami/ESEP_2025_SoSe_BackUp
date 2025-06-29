@@ -12,85 +12,63 @@
 #include <thread>
 #include <memory>
 
-
 #define COUT(msg) std::cout << msg << std::endl
 
-class COM {
+class COM
+{
 public:
-    COM(I_Receiver* server, const char* clientSendName,
-        I_Receiver* dispatcherRec, I_Sender* dispatcherSen);
+    COM(I_Receiver *server, const char *clientSendName,
+        I_Receiver *dispatcherRec, I_Sender *dispatcherSen);
     ~COM();
-    
+
     void start();
     void stop();
-    void addMessage(const _pulse& msg);
 
 private:
     // Client side
     void runClient();
     void checkQueues();
     void sendHeartbeat();
-    void sendToServer(const _pulse& msg, int priority = (int) EventPriority::DEFAULT);
-    
+    void sendToServer(const _pulse &msg, int priority = (int)EventPriority::DEFAULT);
+
     void runDispatcher();
 
     // Server side
     void runServer();
-    void processMessage(const _pulse& msg);
-    void sendToDispatcher(const _pulse& msg, int priority = (int) EventPriority::DEFAULT);
+    void processMessage(const _pulse &msg);
+    void sendToDispatcher(const _pulse &msg, int priority = (int)EventPriority::DEFAULT);
     void updateHeartbeat();
-    void handle_QNX_pulse(_pulse* msg, int rcvid);
-    void handle_QNX_IO_msg(_pulse* msg, int rcvid);
-
-    struct UnpackResult {
-        bool valid;
-        Piece piece;
-        std::string error;
-    };
-
-    union PulsePiece {
-        struct {
-            uint32_t id        : 8;   // Allows IDs 0-255
-            uint32_t zustand   : 4;   // Supports up to 16 PieceState values
-            uint32_t hoch      : 1;
-            uint32_t metall    : 1;
-            uint32_t bohrung   : 1;
-            uint32_t reserved  : 17;   // Available for future use
-        } bits;
-        int32_t value;  // The actual pulse data
-    };
-    
-    //Piece
-    UnpackResult unpack_piece(int32_t pulse_value);
+    void handle_QNX_pulse(_pulse *msg, int rcvid);
+    void handle_QNX_IO_msg(_pulse *msg, int rcvid);
 
     // Shared state
-    I_Receiver* _server;
-    const char* _clientSendName;
-    std::unique_ptr<I_Sender> _client;  // Automatically nullptr by default
+    I_Receiver *_server;
+    const char *_clientSendName;
+    std::unique_ptr<I_Sender> _client;
+    std::mutex _clientMutex;
 
-    I_Receiver* _dispatcherRec;
-    I_Sender* _dispatcherSen;
+    I_Receiver *_dispatcherRec;
+    I_Sender *_dispatcherSen;
     std::chrono::steady_clock::time_point lastHeartbeat;
     bool running;
 
-    
     std::deque<_pulse> highPriorityQueue;
     std::deque<_pulse> lowPriorityQueue;
     std::mutex queueMutex;
     std::condition_variable queueCV;
-    
+
     std::thread clientThread;
     std::thread serverThread;
     std::thread dispatcherThread;
-    
+
     // Constants
     static constexpr int HEARTBEAT_INTERVAL = 1000;
 
-    template<typename T, typename... Args>
-    std::unique_ptr<T> make_unique(Args&&... args) {
+    template <typename T, typename... Args>
+    std::unique_ptr<T> make_unique(Args &&...args)
+    {
         return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
     }
 };
-
 
 #endif // COM_H
