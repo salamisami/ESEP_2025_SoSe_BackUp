@@ -104,7 +104,7 @@ int main() {
   // int8_t comCode = (int8_t) Topic::COM;
   // int value = (int) COM_Enum::BUTTON_ESTOP_PRESSED;
 
-  //HAL* hal = new HAL(hal_receiver, hal_sender);
+  HAL* hal = new HAL(hal_receiver, hal_sender);
 
   /*while (true){
   senderDispatcher-> send_event(comCode, value);
