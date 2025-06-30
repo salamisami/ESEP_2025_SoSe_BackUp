@@ -27,7 +27,7 @@
 #define R26 4700.0f
 #define VOLTAGE_DIVIDER_FACTOR ((R25 + R26) / R25)
 #define PROFIL_DATEI "ESEP-Team-1-1_25/profile_calibration.csv"
-#define MESS_TOLERANZ  0.15f
+#define MESS_TOLERANZ  0.22f
 #define MAX_WERT 400
 
 typedef struct {
