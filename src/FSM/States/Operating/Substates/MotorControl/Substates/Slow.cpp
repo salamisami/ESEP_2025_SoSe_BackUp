@@ -21,7 +21,7 @@ void Slow::exit(){
     PRINT_STATE;
 }
 
-State* Slow::motor_fasst(){
+State* Slow::motor_fast(){
     if (data->motor_slowed){
         return new Slow(data);
     }
