@@ -40,7 +40,7 @@ State *Fast::motor_slow()
 }
 State *Fast::motor_fast()
 {
-    return new Fast();
+    return new Fast(data);
 }
 
 State *Fast::motor_stop_fsm()
