@@ -20,6 +20,7 @@ public: //================================================ public functions ====
 	State* delete_w_motor() override;
     State* motor_fast() override;
     State* motor_stop_fsm() override;
+    State* motor_slow() override;
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

@@ -21,9 +21,9 @@ void Slow::exit(){
     PRINT_STATE;
 }
 
-State* Slow::motor_fasst(){
+State* Slow::motor_fast(){
     if (data->motor_slowed){
-        return new Slow();
+        return new Slow(data);
     }
     else{
         data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
@@ -41,11 +41,14 @@ State *Slow::delete_w_motor()
 {
     if (data->workpieces)
     {
-        return new Slow();
+        return new Slow(data);
     }
     else
     {
         data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
         return new Idle(data);
     }
+}
+State* Slow::motor_slow(){
+    return new Slow(data);
 }
