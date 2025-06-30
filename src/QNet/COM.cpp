@@ -421,7 +421,7 @@ void COM::processMessage(const _pulse &msg)
             sendToDispatcher(msg, (int)EventPriority::FIRST_PRIO);
             COUT("SENDING ESTOP TO DISPATCHER");
         }
-        else if (msg.value.sival_int != ((int)COM_Enum::TIMEOUT_COM))
+        else if (msg.value.sival_int != (((int)COM_Enum::TIMEOUT_COM)||((int)COM_Enum::HEARTBEAT)))
         {
             sendToDispatcher(msg);
         }
