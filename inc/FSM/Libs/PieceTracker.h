@@ -1,23 +1,29 @@
-#ifndef PIECE_H
-#define PIECE_H
+#ifndef PIECETRACKER_H
+#define PIECETRACKER_H
 #pragma once
 
+#include "Macros.h"
+#include "Stopwatch.h"
+
 #include <cstdint>
-#include <chrono>
+#include <thread>
+//#include <sys/neutrino.h>
+//#include <sys/syspage.h>
+#include <sched.h>
+#include <utility>
+
+#define TIMESTAMP_LENGTH 6
 
 enum class Area : uint8_t {
-	START = 0,
-	START_ADC,
+	START_ADC = 0,
 	ADC,
 	ADC_GATE,
 	GATE,
 	GATE_END,
-	END,
-	GATE_RAMP,
-	RAMP
+	GATE_RAMP
 };
 
-enum class Timestamp: uint8_t {
+enum class Timestamp : uint8_t {
 	ADC_BLOCKED = 0,
 	ADC_UNBLOCKED,
 	LASER_GATE_BLOCKED,
@@ -25,6 +31,14 @@ enum class Timestamp: uint8_t {
 	END,
 	LASER_RAMP_BLOCKED
 };
+
+//  AREA:
+// 	START_ADC = 0
+// 	ADC 1,
+// 	ADC_GATE 2,
+// 	GATE 3,
+// 	GATE_END 4,
+// 	GATE_RAMP 5,
 
 /**
  * 0: ADC_BLOCKED
@@ -35,17 +49,17 @@ enum class Timestamp: uint8_t {
  * 5: LASER_RAMP_BLOCKED
  */
 typedef struct {
-	long timestamp[6];
+	long timestamp[TIMESTAMP_LENGTH];
 } TimeProfile;
 
-class Piece {
+class PieceTracker {
 public: //============================================ constructors & destructors ============================================
 	/**
 	 * @brief Creates a piece, by inserting time profile.
 	 * @param input_profile the calibration profile of time stamps, which we got from the calibration in Servicemode
 	 */
-	Piece(TimeProfile input_profile);
-	virtual ~Piece();
+	PieceTracker(TimeProfile input_profile_fast, TimeProfile input_profile_slow);
+	virtual ~PieceTracker();
 
 
 public: //================================================ public functions ================================================
@@ -62,6 +76,18 @@ public: //================================================ public functions ====
 	 */
 	void stop();
 
+	void reset();
+
+
+
+	void debug_mode(bool debug);
+
+	/**
+	 * @brief attempts to send the piece to the ramp
+	 * @retval true if the send is valid
+	 * @retval false if the send is not valid
+	 */
+	bool send_to_ramp();
 	/**
 	 * @brief returns current area of this piece
 	 * @return the area, in which the piece is currently located
@@ -77,19 +103,33 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
-	TimeProfile profile;
+	std::thread debug_thread;
+	Stopwatch stopwatch;
+	//Timer timer;
 	//pointers
 	//primitive types
+	long fast_deadlines[6];
+	long slow_deadlines[6];
+
+	long fast_timestamps[6];
+	long slow_timestamps[6];
+
+	double current_position = 0;
 	//bool and char
-	Area area;
-	double position = 0;
-
-
+	bool running = false;
+	Area current_area = Area::START_ADC;
+	uint8_t current_mode = 0;
+	bool debug = true;
 
 
 private: //================================================ private functions ================================================
-	//void privateFunction();
-
+	std::pair<Area, double> timestamp_to_area_pos(const long& timestamp, const uint8_t& mode);
+	long area_pos_to_timestamp(const Area& input_area, const double& position, const uint8_t mode);
+	void convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast);
+	void debug_function();
+	//void set_thread_priority(pthread_t thread, int priority);
+	std::pair<Area, double> calculate_area_pos(const Area& input_area, const double& position, const uint8_t& mode);
+	void update();
 };
 
 #endif

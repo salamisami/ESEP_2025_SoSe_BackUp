@@ -27,7 +27,7 @@ void ADC_Class::calibrate() {
     }
     calibrate_mtx.lock();
     DEBUG("Calibrating Pieces 🛠️");
-    ADC_Utilities::calibrateComponents(adc, tscadc, bandVoltage);
+    ADC_Utilities::calibrateComponents(adc, tscadc, bandVoltage, &adcStopped );
     DEBUG("Calibrating Pieces done ✅");
     sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATION_DONE);
     calibrate_mtx.unlock();
@@ -42,7 +42,7 @@ void ADC_Class::measureClassifySend() {
     measure_mtx.lock();
     ADC_Utilities::expect_piece(adc,tscadc,bandVoltage, &adcStopped);
     sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
-    ADC_Enum name = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage);
+    ADC_Enum name = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage,&adcStopped);
     sender->send_event((int8_t) Topic::ADC, (int) name);
     measure_mtx.unlock();
     //std::cout << "Erkanntes Event " << (int) name << "\n";

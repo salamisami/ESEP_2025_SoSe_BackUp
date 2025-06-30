@@ -19,11 +19,11 @@ State::State(ContextData* data) : data(data) {
 //===================================================== private functions =====================================================
 
 void State::entry() {
-    PRINT_STATE;
+    DEBUG("Warning, function of abstract class entry() is called.");
 }
 
 void State::exit() {
-    PRINT_STATE;
+    DEBUG("Warning, function of abstract class exit() is called.");
 }
 
 std::string State::demangle(const char* mangled) {
@@ -38,8 +38,10 @@ std::string State::demangle(const char* mangled) {
 
 //===================================================== public functions =====================================================
 
+//TODO this is the problem of the deep history
 State* State::clone() {
-    return new State(data);
+    DEBUG("Warning, function of abstract class State::clone() is called.");
+    return nullptr;
 }
 
 std::string State::get_current_state() {

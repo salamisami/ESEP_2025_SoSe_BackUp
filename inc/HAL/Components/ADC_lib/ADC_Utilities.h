@@ -56,9 +56,9 @@ public: //============================================ contructors & destructors
 
 
 public: //================================================ public functions ================================================
-	static ADC_Enum executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage);
+	static ADC_Enum executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage,bool* adcStopped);
 	static float define_band_voltage(ADC& adc, TSCADC& tscadc);
-	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage);
+	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage,bool* adcStopped);
 	static void expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped);
 
 private: //================================================ private variables ================================================

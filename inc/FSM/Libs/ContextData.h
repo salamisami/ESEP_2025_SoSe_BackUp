@@ -7,7 +7,7 @@
 #include "QNet.h"
 //#include "State.h"
 #include "Stopwatch.h"
-#include "Piece.h"
+#include "PieceTracker.h"
 #include <vector>
 #include <stack>
 #include <queue>
@@ -42,6 +42,7 @@ public:
     I_Sender* timer_sender;
     Timer* timer;
     I_Sender* sender;
+    PieceTracker* piece_tracker;
     bool is_switch = false;
 
 };

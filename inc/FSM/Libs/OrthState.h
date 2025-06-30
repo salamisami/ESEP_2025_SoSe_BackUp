@@ -28,14 +28,16 @@ public:
     virtual void entry() override;
     virtual void exit() override;
 
-    virtual OrthState* clone() override;
+    //TODO make virtual
+    virtual State* clone() override;
 
     /**
      * @brief adds one substate to run parallel among with other existing substates. This function will also call the entry() of the new added substate.
      * @param input_state substate to add
      */
     void spawn_orthogonal_state(State* input_state);
-    //virtual std::string show_state() override;
+    
+    virtual std::string get_current_state() override;
 
     virtual State* laser_front_blocked() override;
     virtual State* laser_front_unblocked() override;
@@ -76,10 +78,12 @@ public:
     //================================================ private variables ================================================
 protected:
     std::vector<State*> substates;
+    std::vector<State*> clone_substates();
 
     //================================================ private functions ================================================
 private:
     State* handle_event_using_function(State* (State::* handler_function)());
+    
 
 
 };
