@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <string>
 
-#define FBM 1
+#define FBM 2
 
 #define DEBUG(msg) std::cout << msg << std::endl
 
