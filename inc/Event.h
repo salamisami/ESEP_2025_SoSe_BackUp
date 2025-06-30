@@ -101,7 +101,6 @@ enum class COM_Enum : int
     BUTTON_ESTOP_RELEASED,
     HEARTBEAT,
     TIMEOUT_COM,
-    RECONNECT,
     RAMP_FULL,
     RAMP_NOT_FULL,
     RESET_TO_FLAT,
@@ -115,7 +114,8 @@ enum class COM_Enum : int
     TRANSFER_START_TALL,
     TRANSFER_START_TALL_W_METAL,
     TRANSFER_START_FLAT,
-    TRANSFER_START_OTHER
+    TRANSFER_START_OTHER,
+    COM_CONNECTED
 };
 
 enum class Internal_Enum : int

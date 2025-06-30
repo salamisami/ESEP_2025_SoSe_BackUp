@@ -72,6 +72,11 @@ void COM::runDispatcher()
                         dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED);
                         highPriorityQueue.push_back(dispatcherMsg);
                         break;
+                    case InterruptEnum::BUTTON_RESET_PRESSED:
+                        dispatcherMsg.code = static_cast<int>(Topic::COM);
+                        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED);
+                        highPriorityQueue.push_back(dispatcherMsg);
+                        break;
                     }
                     break;
                 }
@@ -119,7 +124,7 @@ void COM::runDispatcher()
                 case Topic::COM:
                 {
                 	if (originalValue==static_cast<int>(COM_Enum::TIMEOUT_COM)||
-                			originalValue==static_cast<int>(COM_Enum::RECONNECT)||
+                			originalValue==static_cast<int>(COM_Enum::COM_CONNECTED)||
 							originalValue==static_cast<int>(COM_Enum::HEARTBEAT)||
 							originalValue==static_cast<int>(COM_Enum::RAMP_FULL)||
 							originalValue==static_cast<int>(COM_Enum::RAMP_NOT_FULL)||
@@ -287,10 +292,10 @@ void COM::runServer()
                 disconnected = false;
                 _pulse reconnectEvent;
                 int8_t comCode = (int8_t)Topic::COM;
-                int valueCom = (int)COM_Enum::RECONNECT;
+                int valueCom = (int)COM_Enum::COM_CONNECTED;
                 reconnectEvent.code = comCode;
                 reconnectEvent.value.sival_int = valueCom;
-                COUT("Sending Reconnect Notification; Server");
+                COUT("Sending COM_CONNECTED Notification; Server");
                 sendToDispatcher(reconnectEvent, (int)EventPriority::FIRST_PRIO);
                 int reconnectValue;
                 _pulse rampEvent;
