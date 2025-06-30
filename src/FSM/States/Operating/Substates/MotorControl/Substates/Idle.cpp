@@ -1,21 +1,27 @@
-#include "SortingOrder.h"
+#include "Idle.h"
 
 //================================================= constructors & destructors =================================================
-SortingOrder::SortingOrder(ContextData* data) : HState(data, new PieceFlat(data)) {
+Idle::Idle(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-SortingOrder::~SortingOrder() {}
+Idle::~Idle() {}
 
 //===================================================== private functions =====================================================
 
+
 //===================================================== public functions =====================================================
-void SortingOrder::entry(){
+void Idle::entry(){
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 	PRINT_STATE;
-	HState::entry();
 }
 
-void SortingOrder::exit(){
-	HState::exit();
-	PRINT_STATE;
+void Idle::exit(){
+    //TODO:Update data
+    PRINT_STATE;
+}
+
+State* Idle::motor_fast(){
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
+    return new Fast(data);
 }

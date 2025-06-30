@@ -84,7 +84,11 @@ enum class Internal_Enum: int{
     CHECK_PIECE,
     RESET_TO_FLAT,
     RESET_TO_TALL,
-    RESET_TO_TALL_W_METAL
+    RESET_TO_TALL_W_METAL,
+    DELETE_W_MOTOR ,
+    MOTOR_FAST,
+    MOTOR_SLOW,
+    MOTOR_STOP_FSM
 };
 
 enum class COM_Enum: int{

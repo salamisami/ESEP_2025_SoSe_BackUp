@@ -5,13 +5,14 @@
 #include "State.h"
 #include "Macros.h"
 
-template<typename T>
-class Context {
+template <typename T>
+class Context
+{
     static_assert(std::is_base_of<State, T>::value, "Template parameter must inherit from State");
     //============================================ constructors & destructors ============================================
 public:
     Context();
-    Context(ContextData* data);
+    Context(ContextData *data);
     virtual ~Context();
 
     //================================================ public functions ================================================
@@ -19,11 +20,10 @@ public:
     virtual void handleEvent(_pulse event);
     std::string show_state();
 
-
     //================================================ private variables ================================================
 protected:
-    ContextData* data;
-    State* state;
+    ContextData *data;
+    State *state;
 
     //================================================ private functions ================================================
 private:
@@ -35,15 +35,18 @@ private:
 
 //================================================= constructors & destructors =================================================
 template <typename T>
-Context<T>::Context() {
+Context<T>::Context()
+{
 }
 template <typename T>
-Context<T>::Context(ContextData* data) :state(new T(data)) {
+Context<T>::Context(ContextData *data) : state(new T(data))
+{
     this->data = data;
     state->entry();
 }
 template <typename T>
-Context<T>::~Context() {
+Context<T>::~Context()
+{
     delete state;
 }
 
@@ -74,6 +77,18 @@ State* Context<T>::handleInternal(int event_value) {
             break;
         case Internal_Enum::RESET_TO_TALL_W_METAL:
             newState = state->reset_to_tall_w_metal();
+            break;
+        case Internal_Enum::DELETE_W_MOTOR:
+            newState = state->delete_w_motor();
+            break;
+        case Internal_Enum::MOTOR_FAST:
+            newState = state->motor_fast();
+            break;
+        case Internal_Enum::MOTOR_SLOW:
+            newState = state->motor_slow();
+            break;
+        case Internal_Enum::MOTOR_STOP_FSM:
+            newState = state->motor_stop_fsm();
             break;
         default:
             break;
@@ -130,84 +145,87 @@ State* Context<T>::handleCOM(int event_value) {
     return newState;
 }
 
+
 template <typename T>
-State* Context<T>::handleInterrupt(int event_value) {
-    State* newState = nullptr;
-    switch((InterruptEnum) event_value) {
-        case InterruptEnum::LASER_FRONT_BLOCKED:
-            newState = state->laser_front_blocked();
-            break;
-        case InterruptEnum::LASER_FRONT_UNBLOCKED:
-            newState = state->laser_front_unblocked();
-            break;
-        case InterruptEnum::LASER_BACK_BLOCKED:
-            newState = state->laser_back_blocked();
-            break;
-        case InterruptEnum::LASER_BACK_UNBLOCKED:
-            newState = state->laser_back_unblocked();
-            break;
-        case InterruptEnum::BUTTON_START_PRESSED:
-            newState = state->button_start_pressed();
-            break;
-        case InterruptEnum::BUTTON_START_RELEASED:
-            newState = state->button_start_released();
-            break;
-        case InterruptEnum::BUTTON_STOP_PRESSED:
-            newState = state->button_stop_pressed();
-            break;
-        case InterruptEnum::BUTTON_STOP_RELEASED:
-            newState = state->button_stop_released();
-            break;
-        case InterruptEnum::BUTTON_RESET_PRESSED:
-            newState = state->button_reset_pressed();
-            break;
-        case InterruptEnum::BUTTON_RESET_RELEASED:
-            newState = state->button_reset_released();
-            break;
-        case InterruptEnum::BUTTON_ESTOP_PRESSED:
-            newState = state->button_estop_pressed();
-            break;
-        case InterruptEnum::BUTTON_ESTOP_RELEASED:
-            newState = state->button_estop_released();
-            break;
-        case InterruptEnum::METAL_DETECTED:
-            newState = state->metal_detected();
-            break;
-        case InterruptEnum::METAL_NOT_DETECTED:
-            newState = state->metal_not_detected();
-            break;
-        case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
-            newState = state->laser_sorting_gate_blocked();
-            break;
-        case InterruptEnum::LASER_SORTING_GATE_UNBLOCKED:
-            newState = state->laser_sorting_gate_unblocked();
-            break;
-        case InterruptEnum::LASER_RAMP_BLOCKED:
-            newState = state->laser_ramp_blocked();
-            break;
-        case InterruptEnum::LASER_RAMP_UNBLOCKED:
-            newState = state->laser_ramp_unblocked();
-            break;
-        case InterruptEnum::ADC_TOP_AREA_BLOCKED:
-            newState = state->adc_top_area_blocked();
-            break;
-        case InterruptEnum::ADC_TOP_AREA_UNBLOCKED:
-            newState = state->adc_top_area_unblocked();
-            break;
-            // case InterruptEnum::ADC_SIDE_AREA_BLOCKED:
-            //     newState = state->adc_side_area_blocked();
-            //     break;
-            // case InterruptEnum::ADC_SIDE_AREA_UNBLOCKED:
-            //     newState = state->adc_side_area_unblocked();
-            //     break;
-        case InterruptEnum::IS_SWITCH:
-            newState = state->is_switch();
-            break;
-        case InterruptEnum::IS_PUSHER:
-            newState = state->is_pusher();
-            break;
-        default:
-            break;
+State *Context<T>::handleInterrupt(int event_value)
+{
+    State *newState = nullptr;
+    switch ((InterruptEnum)event_value)
+    {
+    case InterruptEnum::LASER_FRONT_BLOCKED:
+        newState = state->laser_front_blocked();
+        break;
+    case InterruptEnum::LASER_FRONT_UNBLOCKED:
+        newState = state->laser_front_unblocked();
+        break;
+    case InterruptEnum::LASER_BACK_BLOCKED:
+        newState = state->laser_back_blocked();
+        break;
+    case InterruptEnum::LASER_BACK_UNBLOCKED:
+        newState = state->laser_back_unblocked();
+        break;
+    case InterruptEnum::BUTTON_START_PRESSED:
+        newState = state->button_start_pressed();
+        break;
+    case InterruptEnum::BUTTON_START_RELEASED:
+        newState = state->button_start_released();
+        break;
+    case InterruptEnum::BUTTON_STOP_PRESSED:
+        newState = state->button_stop_pressed();
+        break;
+    case InterruptEnum::BUTTON_STOP_RELEASED:
+        newState = state->button_stop_released();
+        break;
+    case InterruptEnum::BUTTON_RESET_PRESSED:
+        newState = state->button_reset_pressed();
+        break;
+    case InterruptEnum::BUTTON_RESET_RELEASED:
+        newState = state->button_reset_released();
+        break;
+    case InterruptEnum::BUTTON_ESTOP_PRESSED:
+        newState = state->button_estop_pressed();
+        break;
+    case InterruptEnum::BUTTON_ESTOP_RELEASED:
+        newState = state->button_estop_released();
+        break;
+    case InterruptEnum::METAL_DETECTED:
+        newState = state->metal_detected();
+        break;
+    case InterruptEnum::METAL_NOT_DETECTED:
+        newState = state->metal_not_detected();
+        break;
+    case InterruptEnum::LASER_SORTING_GATE_BLOCKED:
+        newState = state->laser_sorting_gate_blocked();
+        break;
+    case InterruptEnum::LASER_SORTING_GATE_UNBLOCKED:
+        newState = state->laser_sorting_gate_unblocked();
+        break;
+    case InterruptEnum::LASER_RAMP_BLOCKED:
+        newState = state->laser_ramp_blocked();
+        break;
+    case InterruptEnum::LASER_RAMP_UNBLOCKED:
+        newState = state->laser_ramp_unblocked();
+        break;
+    case InterruptEnum::ADC_TOP_AREA_BLOCKED:
+        newState = state->adc_top_area_blocked();
+        break;
+    case InterruptEnum::ADC_TOP_AREA_UNBLOCKED:
+        newState = state->adc_top_area_unblocked();
+        break;
+        // case InterruptEnum::ADC_SIDE_AREA_BLOCKED:
+        //     newState = state->adc_side_area_blocked();
+        //     break;
+        // case InterruptEnum::ADC_SIDE_AREA_UNBLOCKED:
+        //     newState = state->adc_side_area_unblocked();
+        //     break;
+    case InterruptEnum::IS_SWITCH:
+        newState = state->is_switch();
+        break;
+    case InterruptEnum::IS_PUSHER:
+        newState = state->is_pusher();
+        break;
+    default:
+        break;
     }
     return newState;
 }
@@ -220,11 +238,11 @@ std::string Context<T>::show_state() {
     return state->get_current_state();
 }
 
-
 template <typename T>
-void Context<T>::handleEvent(_pulse event) {
-    State* newState = nullptr;
-    Topic event_code = (Topic) event.code;
+void Context<T>::handleEvent(_pulse event)
+{
+    State *newState = nullptr;
+    Topic event_code = (Topic)event.code;
     int event_value = event.value.sival_int;
     switch(event_code) {
         case Topic::INTERRUPT:
@@ -248,7 +266,8 @@ void Context<T>::handleEvent(_pulse event) {
         default:
             break;
     }
-    if(newState != nullptr) {
+    if (newState != nullptr)
+    {
         state->exit();
         delete state;
         state = newState;

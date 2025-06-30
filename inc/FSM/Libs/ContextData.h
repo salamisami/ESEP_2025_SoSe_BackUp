@@ -48,6 +48,9 @@ public:
     bool is_ramp_full = false;
 
 
+    bool workpieces = false;
+    bool motor_slowed = false;
+    bool motor_stopped = false;
 };
 
 #endif
