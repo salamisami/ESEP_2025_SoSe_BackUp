@@ -4,7 +4,7 @@
 
 #include "HState.h"
 #include "IdleMode.h"
-#include "SortingOrder.h"
+#include "PseudoState.h"
 
 class Operating : public HState {
 //============================================ constructors & destructors ============================================
