@@ -47,7 +47,7 @@ using namespace std;
 
 int main() {
   cout << "Starting Program..." << endl; // prints Hello World!!!
-  //system("slay gns");
+  system("slay gns");
   #ifdef FBM_1
   system("gns -s ");
   #else
@@ -62,7 +62,7 @@ int main() {
 
   Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
-  //Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
+  Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
   Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
   Thread_COM::Sender* com_sender_local = new Thread_COM::Sender(FBM_N_DISPATCHER);

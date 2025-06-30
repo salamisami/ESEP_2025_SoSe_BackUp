@@ -42,11 +42,11 @@ void Dispatcher::run_dispatcher() {
 	} while(num_comp < MAX_NUM_COMP);
 
 	//connecting to all Components
-	coid_arr[0] = 0;//name_open(FBM_N_HAL, NAME_FLAG_ATTACH_GLOBAL);
+	coid_arr[0] = name_open(FBM_N_HAL, NAME_FLAG_ATTACH_GLOBAL);
 	coid_arr[1] = name_open(FBM_N_FSM, NAME_FLAG_ATTACH_GLOBAL);
-	coid_arr[2] = name_open(FBM_N_RECORDER, NAME_FLAG_ATTACH_GLOBAL);
+	coid_arr[2] = 0;//name_open(FBM_N_RECORDER, NAME_FLAG_ATTACH_GLOBAL);
 	coid_arr[3] = name_open(FBM_N_COM_RECEIVER, NAME_FLAG_ATTACH_GLOBAL);
-	coid_arr[4] = name_open(FBM_N_REMOTE, NAME_FLAG_ATTACH_GLOBAL);
+	coid_arr[4] =0;// name_open(FBM_N_REMOTE, NAME_FLAG_ATTACH_GLOBAL);
 
 	//dispatching Messages
 	while(1) {

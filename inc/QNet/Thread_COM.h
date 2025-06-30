@@ -12,12 +12,8 @@
 #include <unistd.h>
 #include <string>
 
-<<<<<<< Updated upstream
-//change here to set up which machine
+
 #define FBM_1
-=======
-#define FBM 1
->>>>>>> Stashed changes
 
 #define DEBUG(msg) std::cout << msg << std::endl
 

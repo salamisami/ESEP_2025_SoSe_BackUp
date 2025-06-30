@@ -38,6 +38,7 @@ Logic::~Logic() {
 void Logic::threadFunction() {
     int eventNo = 0;
     while(logicRunning) {
+    	//DEBUG("FSM thread function started.");
         _pulse event;
         int status = local_receiver->receive_event(&event);
         if(status == 0) {
