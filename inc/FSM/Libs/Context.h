@@ -315,6 +315,7 @@ State* Context<T>::handlePiece(int event_value) {
     return newState;
 }
 
+
 template <typename T>
 State* Context<T>::handleError(int event_value) {
     State* newState = nullptr;
