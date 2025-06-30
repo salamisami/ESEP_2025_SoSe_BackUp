@@ -1,22 +1,20 @@
-#ifndef BOOT_H
-#define BOOT_H
+#ifndef PSEUDOSTATE_H
+#define PSEUDOSTATE_H
 #pragma once
 
+//This state is only purposed for placeholder state
 #include "State.h"
-#include "ModeHandler.h"
-#include "OperatingMock.h"
-class Boot : public State {
+
+class PseudoState : public State {
 public: //============================================ constructors & destructors ============================================
-    Boot(ContextData* data);
-    virtual ~Boot();
+    PseudoState(ContextData* data) ;
+    virtual ~PseudoState();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
-
-	State* is_switch() override;
-	State* is_pusher() override;
+    void entry() override;
+    void exit() override;
+	State* clone() override;
     
 
 

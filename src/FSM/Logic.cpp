@@ -9,6 +9,17 @@ Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_se
     init();
 }
 
+Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender, ContextData* input_data)
+    : local_receiver(local_receiver)
+    , local_sender(local_sender)
+    , to_self_sender(to_self_sender)
+    , data(input_data) {
+    fsm = new Context<Boot>(data);
+    logicRunning = true;
+    contextInjected = true;
+    logicThread = std::thread(&Logic::threadFunction, this);
+}
+
 Logic::Logic(I_Receiver* local_receiver, I_Sender* local_sender)
     : local_receiver(local_receiver)
     , local_sender(local_sender)
@@ -30,7 +41,9 @@ Logic::~Logic() {
         logicThread.join();
     }
     delete fsm;
-    delete data;
+    if(!contextInjected){
+        delete data;
+    }
 }
 
 //===================================================== private functions =====================================================

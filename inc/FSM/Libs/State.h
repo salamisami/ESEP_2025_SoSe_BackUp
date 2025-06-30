@@ -40,6 +40,21 @@ public: //================================================ public functions ====
      */
     virtual std::string get_current_state();
 
+    //================================================ internal events ================================================
+    virtual State* timer(TIMER_ID id);
+    
+    virtual State* sort_out();
+    virtual State* sort_out_fbm2();
+    virtual State* let_through();
+    virtual State* check_piece();
+    virtual State* reset_to_flat();
+    virtual State* reset_to_tall();
+    virtual State* reset_to_tall_w_metal();
+
+
+
+    //================================================ external events ================================================
+
     virtual State* laser_front_blocked();
     virtual State* laser_front_unblocked();
     virtual State* laser_back_blocked();
@@ -72,7 +87,7 @@ public: //================================================ public functions ====
 
     virtual State* adc_calibration_done();
 
-    virtual State* timer(TIMER_ID id);
+
 
 
 

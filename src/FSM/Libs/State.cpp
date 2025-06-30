@@ -53,6 +53,39 @@ State* State::timer(TIMER_ID id) {
     return nullptr;
 }
 
+//================================================ internal events ================================================
+
+State* State::sort_out() {
+    return nullptr;
+}
+
+State* State::sort_out_fbm2() {
+    return nullptr;
+}
+
+State* State::let_through() {
+    return nullptr;
+}
+
+State* State::check_piece() {
+    return nullptr;
+}
+
+State* State::reset_to_flat() {
+    return nullptr;
+}
+
+State* State::reset_to_tall() {
+    return nullptr;
+}
+
+State* State::reset_to_tall_w_metal() {
+    return nullptr;
+}
+
+
+//================================================ external events ================================================
+
 State* State::laser_front_blocked() {
     return nullptr;
 }

@@ -21,7 +21,7 @@ public:
     OrthState(ContextData* data, std::vector<State*> initial_substates);
     //Disable copy constructor, because we're going to use clone() instead
     OrthState(const OrthState&) = delete;
-    virtual ~OrthState() override;
+    virtual ~OrthState();
 
     //================================================ public functions ================================================
 public:
@@ -38,6 +38,19 @@ public:
     void spawn_orthogonal_state(State* input_state);
     
     virtual std::string get_current_state() override;
+
+    //================================================ internal events ================================================
+    virtual State* timer(TIMER_ID id) override;
+
+    virtual State* sort_out() override;
+    virtual State* sort_out_fbm2() override;
+    virtual State* let_through() override;
+    virtual State* check_piece() override;
+    virtual State* reset_to_flat() override;
+    virtual State* reset_to_tall() override;
+    virtual State* reset_to_tall_w_metal() override;
+
+    //================================================ external events ================================================
 
     virtual State* laser_front_blocked() override;
     virtual State* laser_front_unblocked() override;
@@ -71,7 +84,7 @@ public:
 
     virtual State* adc_calibration_done() override;
 
-    virtual State* timer(TIMER_ID id) override;
+    
 
 
 
