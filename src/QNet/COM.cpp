@@ -70,6 +70,11 @@ void COM::runDispatcher() {
                                     dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED);
                                     highPriorityQueue.push_back(dispatcherMsg);
                                     break;
+                                /*case InterruptEnum::BUTTON_RESET_RELEASED:
+                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
+                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_RELEASED);
+                                    highPriorityQueue.push_back(dispatcherMsg);
+                                    break;*/
                                 default:
                                     break;
                             }
@@ -124,7 +129,9 @@ void COM::runDispatcher() {
                                 originalValue == static_cast<int>(COM_Enum::RAMP_NOT_FULL) ||
                                 originalValue == static_cast<int>(COM_Enum::RESET_TO_FLAT) ||
                                 originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL) ||
-                                originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL)) {
+                                originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL)||
+                                originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED)||
+                                originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED)) {
                                 break;
                             }
                             if(FBM == 1) {
@@ -138,7 +145,9 @@ void COM::runDispatcher() {
                                 if(originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL) ||
                                     originalValue == static_cast<int>(COM_Enum::TRANSFER_START_FLAT) ||
                                     originalValue == static_cast<int>(COM_Enum::TRANSFER_START_OTHER) ||
-                                    originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL_W_METAL))
+                                    originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL_W_METAL)||
+                                    originalValue == static_cast<int>(COM_Enum::REQUEST_TRANSFER)
+									)
                                     break;
                             }
                             lowPriorityQueue.push_back(dispatcherMsg);

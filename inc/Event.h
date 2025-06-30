@@ -115,7 +115,8 @@ enum class COM_Enum : int
     TRANSFER_START_TALL_W_METAL,
     TRANSFER_START_FLAT,
     TRANSFER_START_OTHER,
-    COM_CONNECTED
+    COM_CONNECTED,
+	BUTTON_RESET_PRESSED
 };
 
 enum class Internal_Enum : int
