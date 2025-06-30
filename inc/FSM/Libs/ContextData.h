@@ -44,7 +44,9 @@ public:
     I_Sender* sender;
     PieceTracker* piece_tracker;
     bool is_switch = false;
-
+    bool workpieces = false;
+    bool motor_slowed = false;
+    bool motor_stopped = false;
 };
 
 #endif

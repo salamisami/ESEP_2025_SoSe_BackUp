@@ -73,7 +73,15 @@ enum class Topic : int8_t {
     COM,
     ADC,
     STOP_THREAD,
-    TIMER
+    TIMER,
+    INTERNAL
+};
+
+enum class Internal_Enum : int {
+    DELETE_W_MOTOR = 1,
+    MOTOR_FAST,
+    MOTOR_SLOW,
+    MOTOR_STOP_FSM
 };
 
 enum class ADC_Enum : int {
