@@ -286,7 +286,7 @@ void COM::runServer()
 
         if (rcvid == 0)
         {
-            COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
+            //COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
             if (disconnected)
             {
                 disconnected = false;

@@ -54,14 +54,14 @@ void Dispatcher::run_dispatcher() {
 //connecting to all Components
 	switch(FBM){
 	case 1:
-		coid_arr[0] = 0;//name_open(FBM_1_HAL, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[0] = name_open(FBM_1_HAL, NAME_FLAG_ATTACH_GLOBAL);
 		coid_arr[1] = name_open(FBM_1_FSM, NAME_FLAG_ATTACH_GLOBAL);
 		coid_arr[2] = name_open(FBM_1_RECORDER, NAME_FLAG_ATTACH_GLOBAL);
 		coid_arr[3] = name_open(FBM_1_COM_RECEIVER, NAME_FLAG_ATTACH_GLOBAL);
 		coid_arr[4] = name_open(FBM_1_REMOTE, NAME_FLAG_ATTACH_GLOBAL);
 		break;
 	case 2:
-		coid_arr[0] = 0;//name_open(FBM_2_HAL, NAME_FLAG_ATTACH_GLOBAL);
+		coid_arr[0] = name_open(FBM_2_HAL, NAME_FLAG_ATTACH_GLOBAL);
 		coid_arr[1] = name_open(FBM_2_FSM, NAME_FLAG_ATTACH_GLOBAL);
 		coid_arr[2] = name_open(FBM_2_RECORDER, NAME_FLAG_ATTACH_GLOBAL);
 		coid_arr[3] = name_open(FBM_2_COM_RECEIVER, NAME_FLAG_ATTACH_GLOBAL);
