@@ -21,7 +21,7 @@ public:
     OrthState(ContextData* data, std::vector<State*> initial_substates);
     //Disable copy constructor, because we're going to use clone() instead
     OrthState(const OrthState&) = delete;
-    virtual ~OrthState() override;
+    virtual ~OrthState();
 
     //================================================ public functions ================================================
 public:
