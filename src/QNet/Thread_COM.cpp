@@ -70,10 +70,7 @@ Receiver::Receiver(const char* name) {
         exit(-1);
     }
 
-    if(str_gns_name.compare(FBM_1_DISPATCHER) == 0) {
-        return;
-    }
-    if(str_gns_name.compare(FBM_2_DISPATCHER) == 0) {
+    if(str_gns_name.compare(FBM_N_DISPATCHER) == 0) {
         return;
     }
 
