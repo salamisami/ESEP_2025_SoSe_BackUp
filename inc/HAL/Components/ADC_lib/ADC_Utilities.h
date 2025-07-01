@@ -58,7 +58,7 @@ public: //================================================ public functions ====
 	static ADC_Enum executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage,bool* adcStopped);
 	static float define_band_voltage(ADC& adc, TSCADC& tscadc);
 	static void calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage,bool* adcStopped);
-	static void expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped);
+	static bool expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStoppedint,int timeout_ms);
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

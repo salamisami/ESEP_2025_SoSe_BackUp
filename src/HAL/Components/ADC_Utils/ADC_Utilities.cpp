@@ -220,22 +220,33 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     return ADC_Enum::ADC_W_NOT_DETECT;
 }
 
-void ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
+bool ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped, int timeout_ms) {
     std::vector<float> werte;
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
     bool erkannt = false;
-    while(!*adcStopped) {
+
+    auto start_time = std::chrono::steady_clock::now();
+
+    while (!*adcStopped) {
         adc.sample();
-        //TODO Magic number
         usleep(1000);
         uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
         float voltage = (raw / 4095.0f) * REF_VOLTAGE;
         float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
-        //TODO tick for ADC_TIMEOUT
-        if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
+
+        if (!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
             erkannt = true;
-            return;
+            return true;
         }
+
+        // Timeout prüfen
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
+        if (elapsed_ms > timeout_ms) {
+
+            return false;
+        }
+
         nanosleep(&delay, NULL);
     }
 }
