@@ -86,7 +86,7 @@ void Recorder::writer_loop() {
         writer_ready = true; // Damit Main nicht ewig wartet
         return;
     }
-    file << "timestamp,code,value\n";
+    file << "timestamp,code,value,Event Name\n";
     file.flush();
     start_time = std::chrono::system_clock::now();
     writer_ready = true; // <<<<<< Jetzt signalisiere "bereit"
@@ -97,7 +97,7 @@ void Recorder::writer_loop() {
 
         while (!event_queue.empty()) {
             const auto& e = event_queue.front();
-            file << e.ms << "," << e.code << "," << e.value << "\n";
+            file << e.ms << "," << e.code << "," << e.value << "," << interruptEnumToString(e.value) << "\n";
             event_queue.pop();
         }
         file.flush();
@@ -117,6 +117,7 @@ void Recorder::start_replay() {
     replay_running = true;
 
     if (!FILE_EXISTS(RECORDER_CSV)) {
+    	//
         std::cerr << "Replay: Datei existiert nicht!\n";
         replay_running = false;
         return;
@@ -170,4 +171,34 @@ void Recorder::replay_loop() {
         idx++;
     }
     DEBUG("Replay thread finished.");
+}
+
+std::string Recorder::interruptEnumToString(int value) {
+    switch(static_cast<InterruptEnum>(value)) {
+        case InterruptEnum::LASER_FRONT_BLOCKED: return "LASER_FRONT_BLOCKED";
+        case InterruptEnum::LASER_FRONT_UNBLOCKED: return "LASER_FRONT_UNBLOCKED";
+        case InterruptEnum::LASER_BACK_BLOCKED: return "LASER_BACK_BLOCKED";
+        case InterruptEnum::LASER_BACK_UNBLOCKED: return "LASER_BACK_UNBLOCKED";
+        case InterruptEnum::BUTTON_START_PRESSED: return "BUTTON_START_PRESSED";
+        case InterruptEnum::BUTTON_START_RELEASED: return "BUTTON_START_RELEASED";
+        case InterruptEnum::BUTTON_STOP_PRESSED: return "BUTTON_STOP_PRESSED";
+        case InterruptEnum::BUTTON_STOP_RELEASED: return "BUTTON_STOP_RELEASED";
+        case InterruptEnum::BUTTON_RESET_PRESSED: return "BUTTON_RESET_PRESSED";
+        case InterruptEnum::BUTTON_RESET_RELEASED: return "BUTTON_RESET_RELEASED";
+        case InterruptEnum::BUTTON_ESTOP_PRESSED: return "BUTTON_ESTOP_PRESSED";
+        case InterruptEnum::BUTTON_ESTOP_RELEASED: return "BUTTON_ESTOP_RELEASED";
+        case InterruptEnum::METAL_DETECTED: return "METAL_DETECTED";
+        case InterruptEnum::METAL_NOT_DETECTED: return "METAL_NOT_DETECTED";
+        case InterruptEnum::LASER_SORTING_GATE_BLOCKED: return "LASER_SORTING_GATE_BLOCKED";
+        case InterruptEnum::LASER_SORTING_GATE_UNBLOCKED: return "LASER_SORTING_GATE_UNBLOCKED";
+        case InterruptEnum::LASER_RAMP_BLOCKED: return "LASER_RAMP_BLOCKED";
+        case InterruptEnum::LASER_RAMP_UNBLOCKED: return "LASER_RAMP_UNBLOCKED";
+        case InterruptEnum::ADC_TOP_AREA_BLOCKED: return "ADC_TOP_AREA_BLOCKED";
+        case InterruptEnum::ADC_TOP_AREA_UNBLOCKED: return "ADC_TOP_AREA_UNBLOCKED";
+        case InterruptEnum::ADC_SIDE_AREA_BLOCKED: return "ADC_SIDE_AREA_BLOCKED";
+        case InterruptEnum::ADC_SIDE_AREA_UNBLOCKED: return "ADC_SIDE_AREA_UNBLOCKED";
+        case InterruptEnum::IS_SWITCH: return "IS_SWITCH";
+        case InterruptEnum::IS_PUSHER: return "IS_PUSHER";
+        default: return "UNKNOWN";
+    }
 }

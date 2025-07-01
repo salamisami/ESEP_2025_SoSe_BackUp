@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <atomic>
 
 
 // Kein extern "C" notwendig, da du C++ verwendest
@@ -37,6 +38,9 @@ public:
     MQTT_Utilities& operator = (const MQTT_Utilities&) = delete;
     virtual ~MQTT_Utilities() = delete;
 
+
+    static std::atomic<bool> connection_lost;
+
     // Initialisierung und Verbindungsaufbau
     static int mqtt_festo_init(const char* broker, const char* client_id);
 
@@ -58,6 +62,8 @@ public:
     static void delivered(void *context, MQTTClient_deliveryToken dt);
 
     static void connlost(void *context, char *cause);
+
+    static int internal_msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message);
 
 private:
 

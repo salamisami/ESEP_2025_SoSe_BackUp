@@ -13,6 +13,7 @@
 #include "Macros.h"
 #include "QNet.h"
 #include "PulseMsg.h"
+//#include "gnuplot-iostream.h"
 
 #include <fstream>
 #include <vector>
@@ -32,7 +33,6 @@
 #include <sys/neutrino.h>
 #include <cstring> // für memset
 
-#define RECORDER_CSV "ESEP-Team-1-1_25/events.csv"
 
 class Recorder {
 public: //============================================ contructors & destructors ============================================
@@ -97,6 +97,7 @@ public: //============================================ contructors & destructors
 		void receiver_loop();
 		void writer_loop();
 		void replay_loop();
+		std::string interruptEnumToString(int value);
 
 	};
 

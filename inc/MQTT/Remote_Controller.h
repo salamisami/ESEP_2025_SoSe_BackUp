@@ -24,7 +24,8 @@
 #include <mutex>
 #include <condition_variable>
 
-
+#define HEARTBEAT_TIMEOUT_MS 2500
+//typedef int MQTTClient_deliveryToken;
 
 class Remote_Controller {
 
@@ -40,14 +41,13 @@ class Remote_Controller {
 	public: //================================================ public functions ================================================
 
 
-		//static void on_command(const char* payload);
-		void test_ins();
-
 
 	private: //================================================ private variables ================================================
 		//classes, STL containers, and structs
 		std::thread RemConThreadRecive;
 		std::thread RemConThreadSend;
+		std::thread RemConThreadHeartBeat;
+
 		//mock here
 		PulseMsg::Receiver* mock_dispatcher_receiver;
 		PulseMsg::Sender* mock_dispatcher_sender;
@@ -61,7 +61,7 @@ class Remote_Controller {
 		//bool and char
 		volatile bool RemCon_recive_running;
 		volatile bool RemCon_send_running;
-
+		volatile bool RemCon_HeartCheck_running;
 		bool detached;
 
 
@@ -71,6 +71,10 @@ class Remote_Controller {
 		void init();
 		void threadFunctionRecive();
 		void threadFunctionSend();
+		void threadFunctionHeartbeat();
+//		void connlost(char *cause); // Instanzfunktion
+//		int internal_msgarrvd(char *topicName, int topicLen, MQTTClient_message *message); // Instanzfunktion
+//		void delivered(MQTTClient_deliveryToken dt); // Instanzfunktion
 		//void test_ins();
 
 	};

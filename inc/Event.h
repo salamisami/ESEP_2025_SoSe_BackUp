@@ -62,7 +62,8 @@ enum class ActuatorEnum : int {
     LED_Q1_ON,
     LED_Q1_OFF,
     LED_Q2_ON,
-    LED_Q2_OFF
+    LED_Q2_OFF,
+	WAKE_UP
 };
 
 
@@ -73,7 +74,8 @@ enum class Topic : int8_t {
     ADC,
     STOP_THREAD,
     TIMER,
-	REC_REPLAY
+	REC_REPLAY,
+	REM_CON
 };
 
 enum class ADC_Enum : int {
@@ -111,6 +113,8 @@ enum class RecReplayEnum: int {
 	STOP_REPLAY
 };
 
-
-
+enum class RemoteControl: int {
+	RECONNECT,
+	MQTT_CONNECTED
+};
 #endif
