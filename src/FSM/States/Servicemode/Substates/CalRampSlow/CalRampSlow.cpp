@@ -2,12 +2,10 @@
 
 
 //================================================= constructors & destructors =================================================
-CalRampSlow::CalRampSlow(ContextData* data) : OrthState(data, std::vector<State*>(
-    {
-        new EndToGateCRS(data),
-        new PusherIdleCRS(data)
-    }
-)) {
+CalRampSlow::CalRampSlow(ContextData* data) : OrthState(data,
+    {new EndToGateCRS(data),new PusherIdleCRS(data)} ///substates
+    , new CalibrationFinished(data)                  //default class
+) {
     //substate = new SubState(data);
 }
 
@@ -25,15 +23,4 @@ void CalRampSlow::entry() {
 void CalRampSlow::exit() {
     OrthState::exit();
     PRINT_STATE;
-}
-
-State* CalRampSlow::laser_ramp_blocked() {
-    //explicit exit
-    for(auto& current_substate : substates) {
-        State* newSubstate = current_substate->laser_ramp_blocked();
-        if(newSubstate != nullptr) {
-            return newSubstate;
-        }
-    }
-    return nullptr;
 }
