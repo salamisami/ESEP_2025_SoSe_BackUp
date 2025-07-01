@@ -2,6 +2,7 @@
 
 //================================================= constructors & destructors =================================================
 TrafficMock::TrafficMock(ContextData* data) : HState(data, new Green(data)) {}
+TrafficMock::TrafficMock(ContextData* data, State* initial_state) : HState(data, initial_state) {}
 
 TrafficMock::~TrafficMock() {}
 
@@ -9,18 +10,18 @@ TrafficMock::~TrafficMock() {}
 
 
 //===================================================== public functions =====================================================
-void TrafficMock::entry(){
+void TrafficMock::entry() {
 	PRINT_STATE;
 	//action here
 	HState::entry();
 }
 
-void TrafficMock::exit(){
+void TrafficMock::exit() {
 	HState::exit();
 	PRINT_STATE;
 	//action here
 }
 
-State* TrafficMock::clone(){
+State* TrafficMock::clone() {
 	return new TrafficMock(data, substate->clone());
 }

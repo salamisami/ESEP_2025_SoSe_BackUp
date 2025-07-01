@@ -7,6 +7,7 @@
 
 #include "Timer.h"
 #include "Logic.h"
+#include "Boot.h"
 
 #include <iostream>
 
@@ -26,9 +27,7 @@ int main() {
     Mock_PM::Sender* logic_sender = new Mock_PM::Sender(hal_receiver);
     I_Sender* to_self_sender = new Mock_PM::Sender(logic_receiver);
 
-
-
-    Logic* logic = new Logic(logic_receiver, logic_sender, to_self_sender);
+    auto logic = new Logic<Boot>(logic_receiver, logic_sender, to_self_sender);
     //boot
     WAIT(1000);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
