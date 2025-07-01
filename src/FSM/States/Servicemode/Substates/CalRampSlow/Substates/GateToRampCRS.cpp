@@ -27,5 +27,5 @@ void GateToRampCRS::exit(){
 }
 
 State* GateToRampCRS::laser_ramp_blocked(){
-	return new CalibrationFinished(data);
+	return State::EXIT_STATE;
 }
