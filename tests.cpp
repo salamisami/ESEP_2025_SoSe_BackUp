@@ -19,14 +19,15 @@
 
 using namespace std;
 
-class LogicStateTest : public ::testing::Test {
+template <typename InitialState>
+class LogicBaseTest : public ::testing::Test {
 protected:
     Mock_PM::Receiver* logic_receiver;
     Mock_PM::Sender* remote_control;
     Mock_PM::Receiver* hal_receiver;
     Mock_PM::Sender* logic_sender;
     I_Sender* to_self_sender;
-    Logic* logic;
+    Logic<InitialState>* logic;
     ContextData* data;
 
     void SetUp() override {
@@ -37,7 +38,7 @@ protected:
         logic_sender = new Mock_PM::Sender(hal_receiver);
         to_self_sender = new Mock_PM::Sender(logic_receiver);
         data = new ContextData(logic_sender, to_self_sender);
-        logic = new Logic(logic_receiver, logic_sender, to_self_sender, data);
+        logic = new Logic<InitialState>(logic_receiver, logic_sender, to_self_sender, data);
 
         // Boot sequence
         remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
@@ -58,52 +59,79 @@ protected:
     }
 };
 
-// TEST_F(LogicStateTest, DeepHistoryTest) {
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(10);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-//     EXPECT_STATE("Green MotorDisable");
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-//     EXPECT_STATE("Yellow MotorDisable");
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
-//     EXPECT_STATE("Yellow MotorEnable");
+// Test fixture with Boot as initial state
+class RealImplementationTesting : public LogicBaseTest<Boot> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<Boot>::SetUp();
+    }
+};
 
-//     //save history
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_PRESSED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_RELEASED);
-//     WAIT(500);
-//     EXPECT_STATE("IdleIM");
+// Test fixture with IdleMode as initial state
+class DeepHistorySetup : public LogicBaseTest<IdleMock> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<IdleMock>::SetUp();
+    }
+};
 
-//     //load history
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(10);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-//     EXPECT_STATE("Yellow MotorEnable");
+TEST_F(DeepHistorySetup, DeepHistoryTest) {
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    WAIT(10);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE("Green MotorDisable");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE("Yellow MotorDisable");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("Yellow MotorEnable");
 
-//     //modify state
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
-//     EXPECT_STATE("Red MotorDisable");
-    
-//     //save history
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_PRESSED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_RELEASED);
-//     WAIT(500);
-//     EXPECT_STATE("IdleIM");
+    //save history
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_RELEASED);
+    WAIT(500);
+    EXPECT_STATE("IdleMock");
 
-//     //load history
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(10);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-//     EXPECT_STATE("Red MotorDisable");
+    //load history
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    WAIT(10);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE("Yellow MotorEnable");
 
-// }
+    //modify state
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("Red MotorDisable");
 
-// TEST_F(LogicStateTest, SortingOrderPositiveTest) {
+    //save history
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_RELEASED);
+    WAIT(500);
+    EXPECT_STATE("IdleMock");
+
+    //load history
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    WAIT(10);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE("Red MotorDisable");
+
+    //default exit
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
+    WAIT(10);
+    EXPECT_STATE("IdleMock");
+
+    //entry with zero deep history
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    WAIT(10);
+    EXPECT_STATE("Green MotorDisable");
+
+}
+
+// TEST_F(RealImplementationTesting, SortingOrderPositiveTest) {
 //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
 //     WAIT(10);
 //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
@@ -122,7 +150,7 @@ protected:
 //     EXPECT_STATE("PieceFlat");
 // }
 
-// TEST_F(LogicStateTest, SortingOrderNegativeTest) {
+// TEST_F(RealImplementationTesting, SortingOrderNegativeTest) {
 //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
 //     WAIT(10);
 //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
@@ -166,7 +194,7 @@ protected:
 /**
  * @brief enter service mode
  */
-TEST_F(LogicStateTest, ServiceModeFullTest) {
+TEST_F(RealImplementationTesting, ServiceModeFullTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     WAIT(2100);
@@ -264,7 +292,7 @@ TEST_F(LogicStateTest, ServiceModeFullTest) {
 /**
  * @brief enter adc calibration mode, then estop
  */
-TEST_F(LogicStateTest, AdcCalibrationThenEstop) {
+TEST_F(RealImplementationTesting, AdcCalibrationThenEstop) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     WAIT(2100);
@@ -296,19 +324,19 @@ TEST_F(LogicStateTest, AdcCalibrationThenEstop) {
 /**
  * @brief enter operating mode, by pressing start button shortly
  */
- TEST_F(LogicStateTest, ShortTimerTest) {
-     //go to service mode
-     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-     EXPECT_STATE("WaitingIM");
-     WAIT(500);
-     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-     EXPECT_STATE("PseudoState");
- }
+TEST_F(RealImplementationTesting, ShortTimerTest) {
+    //go to service mode
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    EXPECT_STATE("WaitingIM");
+    WAIT(500);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE("PseudoState");
+}
 
- /**
-  * @brief enter adc calibration mode, by long pressing start button
-  */
-TEST_F(LogicStateTest, LongTimerTest) {
+/**
+ * @brief enter adc calibration mode, by long pressing start button
+ */
+TEST_F(RealImplementationTesting, LongTimerTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     EXPECT_STATE("WaitingIM");

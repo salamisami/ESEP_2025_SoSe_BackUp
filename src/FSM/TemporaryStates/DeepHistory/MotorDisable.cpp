@@ -27,3 +27,7 @@ State* MotorDisable::button_reset_pressed(){
 State* MotorDisable::clone(){
 	return new MotorDisable(data);
 }
+
+State* MotorDisable::laser_back_blocked() {
+	return State::EXIT_STATE;
+}

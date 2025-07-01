@@ -251,8 +251,17 @@ void Context<T>::handleEvent(_pulse event) {
     if(newState != nullptr) {
         state->exit();
         delete state;
-        state = newState;
-        state->entry();
+        // Check if we're getting an exit request
+        if(newState == State::EXIT_STATE) {
+            // Handle according to your state machine's requirements:
+            // - Terminate program
+            // - Transition to error state
+            // - Restart machine
+            THROW("Top-level state requested exit");
+        } else {
+            state = newState;
+            state->entry();
+        }
     }
 }
 

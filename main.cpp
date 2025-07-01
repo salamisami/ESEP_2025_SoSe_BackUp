@@ -5,6 +5,8 @@
 #include "Timer.h"
 #include "Logic.h"
 #include "Remote_Controller.h"
+#include "Boot.h"
+
 #include <iostream>
 #include <unistd.h>
 
@@ -80,7 +82,7 @@ int main() {
 
 
     
-    Logic* logic = new Logic(fsm_receiver, fsm_sender);
+    auto logic = new Logic<Boot>(fsm_receiver, fsm_sender);
     //start recorder here
     Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, rc_sender); //comment this to test without RC
 

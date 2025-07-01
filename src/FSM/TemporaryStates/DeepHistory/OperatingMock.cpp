@@ -3,17 +3,12 @@
 //================================================= constructors & destructors =================================================
 OperatingMock::OperatingMock(ContextData* data) : OrthState(
 	data,
-	std::vector<State*>({
-		new Green(data),
-		new MotorDisable(data)
-		})
+	{ new TrafficMock(data), new MotorDisable(data) },
+	new IdleMock(data)
 ) {
-	//substate = new SubState(data);
 }
 
-OperatingMock::OperatingMock(ContextData* data, std::vector<State*> cloned_substates) : OrthState(data, cloned_substates){
-	
-}
+OperatingMock::OperatingMock(ContextData* data, std::vector<State*> cloned_substates) : OrthState(data, cloned_substates, new IdleMock(data)) {}
 
 OperatingMock::~OperatingMock() {
 	//OrthState::~OrthState();
@@ -24,7 +19,7 @@ OperatingMock::~OperatingMock() {
 
 //===================================================== public functions =====================================================
 
-State* OperatingMock::clone(){
+State* OperatingMock::clone() {
 	auto cloned_substates = OrthState::clone_substates();
 	OperatingMock* cloned_state = new OperatingMock(data, cloned_substates);
 	return cloned_state;
@@ -44,5 +39,5 @@ void OperatingMock::exit() {
 //save history
 State* OperatingMock::button_stop_pressed() {
 	data->stateStack->push(clone());
-	return new IdleIM(data);
+	return new IdleMock(data);
 }

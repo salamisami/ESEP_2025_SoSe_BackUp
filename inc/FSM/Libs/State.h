@@ -14,7 +14,7 @@ public: //============================================ constructors & destructor
      * @brief State is a very basic state, containing only entry and exit. It does not contain any substates or orthogonal states.
      * @param data a global context data, which should be visible across the states
      */
-    State(ContextData* data);
+    State(ContextData* data) : data(data) {};
     //Disable copy constructor, because we're going to use clone() instead
     State(const State& other) = delete;
     virtual ~State() = default;
@@ -24,84 +24,207 @@ public: //================================================ public functions ====
     /**
      * @brief Enters the state. This function must be overidden by the child state.
      */
-    virtual void entry();
+    virtual void entry() {
+        DEBUG("Warning, function of abstract class entry() is called.");
+    }
     /**
      * @brief Exits the state. This function must be overidden by the child state.
      */
-    virtual void exit();
+    virtual void exit() {
+        DEBUG("Warning, function of abstract class exit() is called.");
+    }
     /**
      * @brief Clones the current state.
      * @return Cloned state, which is already allocated to heap
      */
-    virtual State* clone();
+    virtual State* clone() {
+        DEBUG("Warning, function of abstract class State::clone() is called.");
+        return nullptr;
+    }
     /**
      * @brief Returns the name of the current state.
      * @return The name of current state as string
      */
-    virtual std::string get_current_state();
+    virtual std::string get_current_state() {
+        const char* state_name = typeid(*this).name();
+        return demangle(state_name);
+    }
 
     //================================================ internal events ================================================
-    virtual State* timer(TIMER_ID id);
-    
-    virtual State* sort_out();
-    virtual State* sort_out_fbm2();
-    virtual State* let_through();
-    virtual State* check_piece();
-    virtual State* reset_to_flat();
-    virtual State* reset_to_tall();
-    virtual State* reset_to_tall_w_metal();
+    virtual State* timer(TIMER_ID id) {
+        return nullptr;
+    }
 
+    static State* EXIT_STATE;
 
+    virtual State* sort_out() {
+        return handle_event_using_function(&State::sort_out);
+    }
+
+    virtual State* sort_out_fbm2() {
+        return handle_event_using_function(&State::sort_out_fbm2);
+    }
+
+    virtual State* let_through() {
+        return handle_event_using_function(&State::let_through);
+    }
+
+    virtual State* check_piece() {
+        return handle_event_using_function(&State::check_piece);
+    }
+
+    virtual State* reset_to_flat() {
+        return handle_event_using_function(&State::reset_to_flat);
+    }
+
+    virtual State* reset_to_tall() {
+        return handle_event_using_function(&State::reset_to_tall);
+    }
+
+    virtual State* reset_to_tall_w_metal() {
+        return handle_event_using_function(&State::reset_to_tall_w_metal);
+    }
 
     //================================================ external events ================================================
 
-    virtual State* laser_front_blocked();
-    virtual State* laser_front_unblocked();
-    virtual State* laser_back_blocked();
-    virtual State* laser_back_unblocked();
-    virtual State* button_start_pressed();
-    virtual State* button_start_released();
-    virtual State* button_stop_pressed();
-    virtual State* button_stop_released();
-    virtual State* button_reset_pressed();
-    virtual State* button_reset_released();
-    virtual State* button_estop_pressed();
-    virtual State* button_estop_released();
-    virtual State* metal_detected();
-    virtual State* metal_not_detected();
-    virtual State* laser_sorting_gate_blocked();
-    virtual State* laser_sorting_gate_unblocked();
-    virtual State* laser_ramp_blocked();
-    virtual State* laser_ramp_unblocked();
-    virtual State* adc_top_area_blocked();
-    virtual State* adc_top_area_unblocked();
-    virtual State* adc_side_area_blocked();     //unused
-    virtual State* adc_side_area_unblocked();   //unused
 
-    virtual State* com_button_estop_pressed();
-    virtual State* com_button_estop_released();
+    virtual State* laser_front_blocked() {
+        return handle_event_using_function(&State::laser_front_blocked);
+    }
 
-    virtual State* is_pusher();
-    virtual State* is_switch();
+    virtual State* laser_front_unblocked() {
+        return handle_event_using_function(&State::laser_front_unblocked);
+    }
+
+    virtual State* laser_back_blocked() {
+        return handle_event_using_function(&State::laser_back_blocked);
+    }
+
+    virtual State* laser_back_unblocked() {
+        return handle_event_using_function(&State::laser_back_unblocked);
+    }
+
+    virtual State* button_start_pressed() {
+        return handle_event_using_function(&State::button_start_pressed);
+    }
+
+    virtual State* button_start_released() {
+        return handle_event_using_function(&State::button_start_released);
+    }
+
+    virtual State* button_stop_pressed() {
+        return handle_event_using_function(&State::button_stop_pressed);
+    }
+
+    virtual State* button_stop_released() {
+        return handle_event_using_function(&State::button_stop_released);
+    }
+
+    virtual State* button_reset_pressed() {
+        return handle_event_using_function(&State::button_reset_pressed);
+    }
+
+    virtual State* button_reset_released() {
+        return handle_event_using_function(&State::button_reset_released);
+    }
+
+    virtual State* button_estop_pressed() {
+        return handle_event_using_function(&State::button_estop_pressed);
+    }
+
+    virtual State* button_estop_released() {
+        return handle_event_using_function(&State::button_estop_released);
+    }
+
+    virtual State* metal_detected() {
+        return handle_event_using_function(&State::metal_detected);
+    }
+
+    virtual State* metal_not_detected() {
+        return handle_event_using_function(&State::metal_not_detected);
+    }
+
+    virtual State* laser_sorting_gate_blocked() {
+        return handle_event_using_function(&State::laser_sorting_gate_blocked);
+    }
+
+    virtual State* laser_sorting_gate_unblocked() {
+        return handle_event_using_function(&State::laser_sorting_gate_unblocked);
+    }
+
+    virtual State* laser_ramp_blocked() {
+        return handle_event_using_function(&State::laser_ramp_blocked);
+    }
+
+    virtual State* laser_ramp_unblocked() {
+        return handle_event_using_function(&State::laser_ramp_unblocked);
+    }
+
+    virtual State* adc_top_area_blocked() {
+        return handle_event_using_function(&State::adc_top_area_blocked);
+    }
+
+    virtual State* adc_top_area_unblocked() {
+        return handle_event_using_function(&State::adc_top_area_unblocked);
+    }
+
+    virtual State* adc_side_area_blocked() {
+        return handle_event_using_function(&State::adc_side_area_blocked);
+    }
+
+    virtual State* adc_side_area_unblocked() {
+        return handle_event_using_function(&State::adc_side_area_unblocked);
+    }
+
+    virtual State* com_button_estop_pressed() {
+        return handle_event_using_function(&State::com_button_estop_pressed);
+    }
+
+    virtual State* com_button_estop_released() {
+        return handle_event_using_function(&State::com_button_estop_released);
+    }
+
+    virtual State* com_button_reset_pressed() {
+        return handle_event_using_function(&State::com_button_reset_pressed);
+    }
+
+    virtual State* adc_calibration_done() {
+        return handle_event_using_function(&State::adc_calibration_done);
+    }
+
+    virtual State* is_pusher() {
+        return handle_event_using_function(&State::is_pusher);
+    }
+
+    virtual State* is_switch() {
+        return handle_event_using_function(&State::is_switch);
+    }
 
 
-    virtual State* adc_calibration_done();
 
 
 
-
-
-protected: //================================================ private variables ================================================
+protected: //================================================ protected ================================================
     //classes, STL containers, and structs
     //pointers
     ContextData* data;
     //primitive types
     //bool and char
 
+    virtual State* handle_event_using_function(State* (State::* handler_function)()) {
+        return nullptr;
+    }
+
 
 
 private: //================================================ private functions ================================================
-    std::string demangle(const char* mangled);
+    std::string demangle(const char* mangled) {
+        int status;
+        char* demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
+        std::string result = (status == 0) ? demangled : mangled;
+        free(demangled);
+        return result;
+    }
 
 };
 
