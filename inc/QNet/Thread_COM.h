@@ -13,7 +13,7 @@
 #include <string>
 
 
-#define FBM_1
+#define FBM_2
 
 #define DEBUG(msg) std::cout << msg << std::endl
 
@@ -28,6 +28,8 @@
 	#define FBM_N_RECORDER  	"Rec_1"
 	#define FBM_N_REMOTE    	"Rem_1"
 	#define FBM_N_DISPATCHER 	"Dis_1"
+	#define RECEIVE_TOPIC		"festo/anlage1/status/"
+	#define COMMAND_TOPIC		"festo/anlage1/command/"
 #endif
 
 #ifdef FBM_2
@@ -41,6 +43,8 @@
 	#define FBM_N_RECORDER  	"Rec_2"
 	#define FBM_N_REMOTE   		"Rem_2"
 	#define FBM_N_DISPATCHER 	"Dis_2"
+	#define RECEIVE_TOPIC		"festo/anlage2/status/"
+	#define COMMAND_TOPIC		"festo/anlage2/command/"
 #endif
 
 namespace Thread_COM {

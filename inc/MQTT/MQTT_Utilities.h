@@ -8,6 +8,7 @@
 #ifndef MQTT_UTILITIES_H
 #define MQTT_UTILITIES_H
 #include "MQTTClient.h"
+#include "Thread_COM.h"
 #include <unistd.h>
 #include <hw/inout.h>
 #include <sys/neutrino.h>
@@ -21,13 +22,13 @@
 // Kein extern "C" notwendig, da du C++ verwendest
 
 
-#define BROKER_ADR        "tcp://192.168.101.2:1883"
+#define BROKER_ADR        "tcp://192.168.101.5:1883"
 #define NO_OF_TOPICS      10
 #define NO_OF_ITERATIONS  4
 #define STR_BUF_SIZE      100
 #define QOS               1
 #define TIMEOUT           10000L
-#define ClientID		"Festo_FBM1"
+#define ClientID		"Festo_FBM2"
 
 
 class MQTT_Utilities{

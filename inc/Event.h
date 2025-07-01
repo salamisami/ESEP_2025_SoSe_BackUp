@@ -77,8 +77,9 @@ enum class Topic : int8_t
     STOP_THREAD,
     TIMER,
 	REC_REPLAY,
-	REM_CON
-    INTERNAL
+	REM_CON,
+	INTERNAL
+
 };
 
 enum class ADC_Enum : int

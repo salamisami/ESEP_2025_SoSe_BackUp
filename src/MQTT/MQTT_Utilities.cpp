@@ -56,7 +56,7 @@ int MQTT_Utilities::internal_msgarrvd(void *context, char *topicName, int topicL
 	        if (topicName) MQTTClient_free(topicName);
 	        return 1;
 	    }
-    if (strcmp(topicName, "festo/anlage1/command") == 0 && g_command_callback) {
+    if (strcmp(topicName, COMMAND_TOPIC) == 0 && g_command_callback) {
         char payload[message->payloadlen+1];
         memcpy(payload, message->payload, message->payloadlen);
         payload[message->payloadlen] = '\0';
@@ -70,7 +70,7 @@ int MQTT_Utilities::internal_msgarrvd(void *context, char *topicName, int topicL
 
 int MQTT_Utilities::mqtt_festo_subscribe_command(void (*command_callback)(const char* payload)) {
     g_command_callback = command_callback;
-    return MQTTClient_subscribe(MQTT_Utilities::client, "festo/anlage1/command", QOS);
+    return MQTTClient_subscribe(MQTT_Utilities::client, COMMAND_TOPIC, QOS);
 }
 
 int MQTT_Utilities::mqtt_festo_subscribe(const char* topic, void (*cb)(const char* payload)) {
@@ -91,7 +91,7 @@ int MQTT_Utilities::mqtt_festo_init(const char* broker, const char* client_id) {
     MQTTClient_willOptions will_opts = MQTTClient_willOptions_initializer;
     int rc;
 
-    will_opts.topicName = "festo/anlage1/status/online";
+    will_opts.topicName = (std::string(RECEIVE_TOPIC) + "online").c_str();;
     will_opts.message   = "offline";
     will_opts.qos       = 1;
     will_opts.retained  = 1;

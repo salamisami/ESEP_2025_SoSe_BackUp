@@ -103,7 +103,6 @@ int main() {
 
 
     
-    Logic* logic = new Logic(fsm_receiver, fsm_sender);
     //start recorder here
     Recorder* rec = new Recorder(recorder_receiver,recorder_sender);
 
