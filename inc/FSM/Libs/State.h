@@ -114,6 +114,33 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::motor_stop_fsm);
     }
 
+    virtual State* sort_out() {
+        return handle_event_using_function(&State::sort_out);
+    }
+
+    virtual State* sort_out_fbm2() {
+        return handle_event_using_function(&State::sort_out_fbm2);
+    }
+
+    virtual State* let_through() {
+        return handle_event_using_function(&State::let_through);
+    }
+
+    virtual State* check_piece() {
+        return handle_event_using_function(&State::check_piece);
+    }
+
+    virtual State* reset_to_flat() {
+        return handle_event_using_function(&State::reset_to_flat);
+    }
+
+    virtual State* reset_to_tall() {
+        return handle_event_using_function(&State::reset_to_tall);
+    }
+
+    virtual State* reset_to_tall_w_metal() {
+        return handle_event_using_function(&State::reset_to_tall_w_metal);
+    }
 
     //================================================ external events ================================================
 
