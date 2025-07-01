@@ -13,7 +13,7 @@ TARGET = $(OUTPUT_DIR)/$(ARTIFACT)
 
 #Compiler definitions
 
-CC = qcc -Vgcc_nto$(PLATFORM)
+CC = qcc -DVERBOSE_STATES -Vgcc_nto$(PLATFORM)
 CXX = q++ -lang-c++ -Vgcc_nto$(PLATFORM)
 LD = $(CXX)
 

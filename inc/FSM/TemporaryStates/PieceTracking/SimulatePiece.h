@@ -1,20 +1,24 @@
-#ifndef CALIBRATIONFINISHED_H
-#define CALIBRATIONFINISHED_H
+#ifndef SIMULATEPIECE_H
+#define SIMULATEPIECE_H
 #pragma once
 
-#include "State.h"
+#include "OrthState.h"
+#include "Fast.h"
+#include "LetPieceThrough.h"
+#include "IdleTest.h"
 #include "TimeProfileManager.h"
 
-
-class CalibrationFinished : public State {
+class SimulatePiece : public OrthState {
 public: //============================================ constructors & destructors ============================================
-    CalibrationFinished(ContextData* data) ;
-    virtual ~CalibrationFinished();
+    SimulatePiece(ContextData* data) ;
+    virtual ~SimulatePiece();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* laser_back_blocked() override;
     
 
 

@@ -1,20 +1,21 @@
-#ifndef CALIBRATIONFINISHED_H
-#define CALIBRATIONFINISHED_H
+#ifndef IDLETEST_H
+#define IDLETEST_H
 #pragma once
 
 #include "State.h"
-#include "TimeProfileManager.h"
+#include "RunMotor.h"
 
-
-class CalibrationFinished : public State {
+class IdleTest : public State {
 public: //============================================ constructors & destructors ============================================
-    CalibrationFinished(ContextData* data) ;
-    virtual ~CalibrationFinished();
+    IdleTest(ContextData* data) ;
+    virtual ~IdleTest();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* laser_front_blocked() override;
     
 
 

@@ -1,16 +1,51 @@
 #include "Thread_COM.h"
-
+#include <iostream>
 using namespace Thread_COM;
 
 //================================================= contructors & destructors =================================================
 
 Sender::Sender(const char* name) {
     receiver_coid = name_open(name,NAME_FLAG_ATTACH_GLOBAL);
-    if(receiver_coid < 0){
-        //error
+    if (receiver_coid < 0) {
+        switch (errno) {
+            case EINTR:
+                std::cerr << "Error: name_open() operation interrupted by signal" << std::endl;
+                // Consider retrying the operation if appropriate for your application
+                break;
+            case EINVAL:
+                std::cerr << "Error: Invalid arguments passed to name_open()" << std::endl;
+                // Check the 'name' parameter and flags
+                break;
+            case ELOOP:
+                std::cerr << "Error: Too many symbolic links or prefixes in name path" << std::endl;
+                // Simplify the path or check for cyclic symbolic links
+                break;
+            case EMFILE:
+                std::cerr << "Error: Process file descriptor limit reached" << std::endl;
+                // Close unused file descriptors or increase the limit
+                break;
+            case ENAMETOOLONG:
+                std::cerr << "Error: Name string exceeds maximum allowed length" << std::endl;
+                // Use a shorter name or check PATH_MAX
+                break;
+            case ENFILE:
+                std::cerr << "Error: System file table is full" << std::endl;
+                // Wait and retry later or report system resource issue
+                break;
+            case ENOENT:
+                std::cerr << "Error: Name '" << name << "' does not exist" << std::endl;
+                // Verify the name exists or handle missing resource
+                break;
+            default:
+                std::cerr << "Error: Unknown error in name_open(): " << strerror(errno) << std::endl;
+                break;
+        }
+	}
+    else {
+                std::cout << "Success: Name '" << name << "' connected" << std::endl;
+                // Verify the name exists or handle missing resource
     }
 }
-
 Sender::~Sender(){
     name_close(receiver_coid);
 }
@@ -35,32 +70,10 @@ Receiver::Receiver(const char* name) {
         exit(-1);
     }
 
-    if(str_gns_name.compare(FBM_1_DISPATCHER) == 0) {
-        return;
-    }
-    if(str_gns_name.compare(FBM_2_DISPATCHER) == 0) {
+    if(str_gns_name.compare(FBM_N_DISPATCHER) == 0) {
         return;
     }
 
-    // switch(FBM) {
-    //     case 1:
-    //         coid = name_open(FBM_1_DISPATCHER, NAME_FLAG_ATTACH_GLOBAL);
-    //         if(-1 == coid) {
-    //             printf("%s: ", gns_name);
-    //             perror(" name_open on Dispatcher failed");
-    //         }
-    //         break;
-    //     case 2:
-    //         coid = name_open(FBM_2_DISPATCHER, NAME_FLAG_ATTACH_GLOBAL);
-    //         if(-1 == coid) {
-    //             printf("%s: ", gns_name);
-    //             perror(" name_open on Dispatcher failed");
-    //         }
-    //         break;
-    //     default:
-    //         perror("Foerderbandmodul is not defined\n");
-    //         exit(-1);
-    // }
 }
 
 Receiver::~Receiver(){
@@ -86,7 +99,7 @@ void Receiver::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
             * reply now or later. */
             break;
         case 12:
-            //antwort auf name_open()
+        	printf("%s Sending EOK, connect\n", gns_name);
             MsgReply(rcvid, EOK, NULL, 0);
             break;
         default:

@@ -25,7 +25,7 @@ void WaitingIM::exit() {
 //load history
 State* WaitingIM::button_start_released() {
     if(data->stateStack->empty()) {
-        return new OperatingMock(data);
+        return new Operating(data);
     }
     State* loaded_state = data->stateStack->top();
     data->stateStack->pop();

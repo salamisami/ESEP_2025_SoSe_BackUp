@@ -393,10 +393,12 @@ void Actuator::handle_event(_pulse event) {
         case Topic::COM:
             if(event_value == (int) COM_Enum::BUTTON_ESTOP_PRESSED) {
                 is_neighbor_estop = true;
+                check_estop();
             } else if(event_value == (int) COM_Enum::BUTTON_ESTOP_RELEASED) {
                 is_neighbor_estop = false;
+                check_estop();
             }
-            check_estop();
+            printf("Event Code: %d, Event Value: %d\n", event.code, event.value.sival_int);
             break;
         default:
             break;

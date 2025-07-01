@@ -1,15 +1,13 @@
-#ifndef CALIBRATIONFINISHED_H
-#define CALIBRATIONFINISHED_H
+#ifndef STOPTEST_H
+#define STOPTEST_H
 #pragma once
 
 #include "State.h"
-#include "TimeProfileManager.h"
 
-
-class CalibrationFinished : public State {
+class StopTest : public State {
 public: //============================================ constructors & destructors ============================================
-    CalibrationFinished(ContextData* data) ;
-    virtual ~CalibrationFinished();
+    StopTest(ContextData* data) ;
+    virtual ~StopTest();
 	
 
 public: //================================================ public functions ================================================

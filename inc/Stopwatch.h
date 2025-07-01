@@ -29,16 +29,20 @@ public: //================================================ public functions ====
 
 	long peek_time();
 
+	void reset();
+
 
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	std::mutex mtx;
-	 std::chrono::time_point<std::chrono::steady_clock> start_time;
+	std::chrono::time_point<std::chrono::steady_clock> start_time;
+	std::chrono::milliseconds accumulated_time{ 0 }; // Stores paused time
 	//pointers
 	//primitive types
 	//bool and char
 	bool is_running = false;
+	bool is_reset = false;
 
 
 

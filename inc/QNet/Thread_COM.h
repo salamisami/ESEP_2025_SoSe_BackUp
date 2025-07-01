@@ -12,24 +12,36 @@
 #include <unistd.h>
 #include <string>
 
-#define FBM 1
 
-//FBM_1
-#define FBM_1_HAL "Hal_1"
-#define FBM_1_FSM "Fsm_1"
-#define FBM_1_COM "Com_1"
-#define FBM_1_RECORDER "Rec_1"
-#define FBM_1_REMOTE "Rem_1"
-#define FBM_1_DISPATCHER "Dis_1"
+#define FBM_1
 
+#define DEBUG(msg) std::cout << msg << std::endl
 
-//FBM_2
-#define FBM_2_HAL "Hal_2"
-#define FBM_2_FSM "Fsm_2"
-#define FBM_2_COM "Com_2"
-#define FBM_2_RECORDER "Rec_2"
-#define FBM_2_REMOTE "Rem_2"
-#define FBM_2_DISPATCHER "Dis_2"
+// Configuration for FBM Module 1
+#ifdef FBM_1
+	#define FBM					1
+	#define FBM_N_HAL       	"Hal_1"
+	#define FBM_N_FSM       	"Fsm_1"
+	#define FBM_N_COM       	"Com_1"
+	#define FBM_N_COM_EXT		"Com_2"
+	#define FBM_N_COM_RECEIVER	"Com_receiver_1"
+	#define FBM_N_RECORDER  	"Rec_1"
+	#define FBM_N_REMOTE    	"Rem_1"
+	#define FBM_N_DISPATCHER 	"Dis_1"
+#endif
+
+#ifdef FBM_2
+	// Default to FBM Module 2
+	#define FBM					2
+	#define FBM_N_HAL       	"Hal_2"
+	#define FBM_N_FSM       	"Fsm_2"
+	#define FBM_N_COM       	"Com_2"
+	#define FBM_N_COM_EXT		"Com_1"
+	#define FBM_N_COM_RECEIVER 	"Com_receiver_2"
+	#define FBM_N_RECORDER  	"Rec_2"
+	#define FBM_N_REMOTE   		"Rem_2"
+	#define FBM_N_DISPATCHER 	"Dis_2"
+#endif
 
 namespace Thread_COM {
 	class Receiver : public I_Receiver {

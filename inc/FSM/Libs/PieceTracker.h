@@ -1,11 +1,16 @@
-#ifndef PIECE_H
-#define PIECE_H
+#ifndef PIECETRACKER_H
+#define PIECETRACKER_H
 #pragma once
 
 #include "Macros.h"
+#include "Stopwatch.h"
 
 #include <cstdint>
 #include <thread>
+//#include <sys/neutrino.h>
+//#include <sys/syspage.h>
+#include <sched.h>
+#include <utility>
 
 #define TIMESTAMP_LENGTH 6
 
@@ -27,24 +32,13 @@ enum class Timestamp : uint8_t {
 	LASER_RAMP_BLOCKED
 };
 
-
+//  AREA:
 // 	START_ADC = 0
 // 	ADC 1,
 // 	ADC_GATE 2,
 // 	GATE 3,
 // 	GATE_END 4,
 // 	GATE_RAMP 5,
-
-typedef struct {
-	double slow_speed[6];
-	double fast_speed[6];
-} Speed;
-
-
-typedef struct {
-	long slow[6];
-	long fast[6];
-} Deadlines;
 
 /**
  * 0: ADC_BLOCKED
@@ -58,14 +52,14 @@ typedef struct {
 	long timestamp[TIMESTAMP_LENGTH];
 } TimeProfile;
 
-class Piece {
+class PieceTracker {
 public: //============================================ constructors & destructors ============================================
 	/**
 	 * @brief Creates a piece, by inserting time profile.
 	 * @param input_profile the calibration profile of time stamps, which we got from the calibration in Servicemode
 	 */
-	Piece(TimeProfile input_profile_slow, TimeProfile input_profile_fast, uint8_t tick_duration = 100);
-	virtual ~Piece();
+	PieceTracker(TimeProfile input_profile_fast, TimeProfile input_profile_slow);
+	virtual ~PieceTracker();
 
 
 public: //================================================ public functions ================================================
@@ -81,6 +75,12 @@ public: //================================================ public functions ====
 	 * @brief tells the piece that the belt is stopped. Its internal are and position should be paused.
 	 */
 	void stop();
+
+	void reset();
+
+
+
+	void debug_mode(bool debug);
 
 	/**
 	 * @brief attempts to send the piece to the ramp
@@ -103,30 +103,33 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
-	Deadlines deadlines;
-	std::condition_variable cv_occupied;
-	std::thread piece_thread;
+	std::thread debug_thread;
+	Stopwatch stopwatch;
 	//Timer timer;
 	//pointers
 	//primitive types
-	Speed speed;
+	long fast_deadlines[6];
+	long slow_deadlines[6];
+
+	long fast_timestamps[6];
+	long slow_timestamps[6];
+
+	double current_position = 0;
 	//bool and char
 	bool running = false;
-	volatile Area current_area = Area::START_ADC;
-	volatile double current_position = 0;
-	uint8_t mode = 0;
-	uint8_t tick_duration;
-
-
+	Area current_area = Area::START_ADC;
+	uint8_t current_mode = 0;
+	bool debug = true;
 
 
 private: //================================================ private functions ================================================
-	//void privateFunction();
-	Deadlines convert_to_deadlines(TimeProfile input_timetable_slow, TimeProfile input_timetable_fast);
-	Speed convert_deadlines_to_speed(const Deadlines deadline);
-	void thread_function();
-	Area step(Area initial_area);
-
+	std::pair<Area, double> timestamp_to_area_pos(const long& timestamp, const uint8_t& mode);
+	long area_pos_to_timestamp(const Area& input_area, const double& position, const uint8_t mode);
+	void convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast);
+	void debug_function();
+	//void set_thread_priority(pthread_t thread, int priority);
+	std::pair<Area, double> calculate_area_pos(const Area& input_area, const double& position, const uint8_t& mode);
+	void update();
 };
 
 #endif
