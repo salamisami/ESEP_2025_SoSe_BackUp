@@ -1,24 +1,22 @@
-#ifndef MOTORDISABLE_H
-#define MOTORDISABLE_H
+#ifndef TRAFFICMOCK_H
+#define TRAFFICMOCK_H
 #pragma once
 
-#include "State.h"
-#include "MotorEnable.h"
+#include "HState.h"
+#include "Green.h"
 
-class MotorDisable : public State {
+class TrafficMock : public HState {
 public: //============================================ constructors & destructors ============================================
-    MotorDisable(ContextData* data) ;
-    virtual ~MotorDisable();
+    TrafficMock(ContextData* data);
+	TrafficMock(ContextData* data, State* initial_substate);
+    virtual ~TrafficMock();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	State* button_reset_pressed() override;
-	State* laser_back_blocked() override;
-    
 	State* clone() override;
+    
 
 
 private: //================================================ private variables ================================================
