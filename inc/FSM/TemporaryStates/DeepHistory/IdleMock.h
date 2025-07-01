@@ -1,24 +1,23 @@
-#ifndef MOTORDISABLE_H
-#define MOTORDISABLE_H
+#ifndef IDLEMOCK_H
+#define IDLEMOCK_H
 #pragma once
 
 #include "State.h"
-#include "MotorEnable.h"
+#include "OperatingMock.h"
 
-class MotorDisable : public State {
+class IdleMock : public State {
 public: //============================================ constructors & destructors ============================================
-    MotorDisable(ContextData* data) ;
-    virtual ~MotorDisable();
+    IdleMock(ContextData* data) ;
+    virtual ~IdleMock();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	State* button_reset_pressed() override;
-	State* laser_back_blocked() override;
-    
 	State* clone() override;
+
+	State* button_start_pressed() override;
+    
 
 
 private: //================================================ private variables ================================================
