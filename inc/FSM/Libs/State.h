@@ -55,7 +55,7 @@ public: //================================================ public functions ====
         return nullptr;
     }
 
-    inline static State* EXIT_STATE = reinterpret_cast<State*>(0x1);
+    static State* EXIT_STATE;
 
     virtual State* sort_out() {
         return handle_event_using_function(&State::sort_out);
