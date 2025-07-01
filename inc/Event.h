@@ -114,7 +114,8 @@ enum class RecReplayEnum: int {
 };
 
 enum class RemoteControl: int {
+	MQTT_DISCONNECTED,
+	MQTT_CONNECTED,
 	RECONNECT,
-	MQTT_CONNECTED
 };
 #endif

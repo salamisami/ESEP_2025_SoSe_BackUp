@@ -15,10 +15,6 @@ std::mutex heartbeatMutex;
 
 std::condition_variable queueCV;
 static void on_command(const char* payload);
-//static void (*g_command_callback)(const char* payload) = NULL;
-//static void connlost_static(void *context, char *cause);
-//static int internal_msgarrvd_static(void *context, char *topicName, int topicLen, MQTTClient_message *message);
-//static void delivered_static(void *context, MQTTClient_deliveryToken dt);
 std::chrono::steady_clock::time_point last_heartbeat = std::chrono::steady_clock::now();
 
 
@@ -27,7 +23,7 @@ Remote_Controller::Remote_Controller(I_Receiver* local_receiver, I_Sender* local
     detached = false;
     this->local_receiver = local_receiver;
     this->local_sender = local_sender;
-    init();
+    init(false);
 }
 
 Remote_Controller::Remote_Controller()  {
@@ -37,7 +33,7 @@ Remote_Controller::Remote_Controller()  {
     //TODO converting mock_dispatcher_Receiver to stack casues problem
     local_sender = new PulseMsg::Sender(mock_dispatcher_receiver->getchid());
     mock_dispatcher_sender = new PulseMsg::Sender(local_receiver->getchid());
-    init();
+    init(false);
 }
 
 Remote_Controller::~Remote_Controller() {
@@ -56,35 +52,55 @@ Remote_Controller::~Remote_Controller() {
     }
 }
 
-void Remote_Controller::init() {
-	//TODO automatische IP Zuweisung
-	int rc = MQTT_Utilities::mqtt_festo_init("tcp://192.168.101.5:1883", ClientID);
-		if (rc != 0) {
-		    printf("MQTT init failed! Fehlercode: %d\n", rc);
-		}
+void Remote_Controller::init(bool reInit) {
+    // Erst alles aufräumen, falls nötig (z.B. nach reInit)
+    // Hier ggf. alte Threads joinen, falls noch laufend
 
-			int subscribe_rc = MQTT_Utilities::mqtt_festo_subscribe_command(on_command);
-			printf("Subscribe return code: %d", subscribe_rc);
-			//MQTT_Utilities::connection_lost = false;
-		    // Beispiel: Initialstatus publishen
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q1", "0");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q2", "0");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/start", "0");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/reset", "0");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/rutsche", "0");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/rutsche", "0");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red", "off");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/red", "off");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow", "off");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/yellow", "off");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green", "off");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/green", "off");
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/notaus","false");
-			std::string msg = std::string(ClientID) + " is connected";
-			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
-		    RemConThreadRecive = std::thread(&Remote_Controller::threadFunctionRecive, this);
-		    RemConThreadSend = std::thread(&Remote_Controller::threadFunctionSend, this);
-		    RemConThreadHeartBeat = std::thread(&Remote_Controller::threadFunctionHeartbeat, this);
+    bool mqtt_connected = false;
+    int rc = 0;
+
+    while (!mqtt_connected) {
+        rc = MQTT_Utilities::mqtt_festo_init("tcp://192.168.101.5:1883", ClientID);
+        if (rc != 0) {
+            printf("MQTT init failed! Fehlercode: %d\n", rc);
+            // Optional: Altes MQTT aufräumen
+            MQTT_Utilities::mqtt_festo_cleanup();
+            std::this_thread::sleep_for(std::chrono::seconds(5));
+            continue;
+        }
+        mqtt_connected = true;
+    }
+
+    int subscribe_rc = MQTT_Utilities::mqtt_festo_subscribe_command(on_command);
+    printf("Subscribe return code: %d\n", subscribe_rc);
+
+    // Initialstatus publishen:
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q1", "0");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/q2", "0");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/start", "0");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/reset", "0");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/rutsche", "0");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/rutsche", "0");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/red", "off");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/red", "off");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/yellow", "off");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/yellow", "off");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/ampel/green", "off");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage2/status/ampel/green", "off");
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1/status/notaus", "false");
+
+    std::string msg = std::string(ClientID) + " is connected";
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+
+    // Threads neu starten (vorher joinen/stoppen falls nötig!)
+    RemConThreadRecive = std::thread(&Remote_Controller::threadFunctionRecive, this);
+    RemConThreadSend = std::thread(&Remote_Controller::threadFunctionSend, this);
+
+    if (!reInit) {
+        RemConThreadHeartBeat = std::thread(&Remote_Controller::threadFunctionHeartbeat, this);
+    }
+    int8_t RemConCode = (int8_t) Topic::REM_CON;
+    local_sender->send_event(RemConCode, (int) RemoteControl::MQTT_CONNECTED);
 }
 
 void Remote_Controller::threadFunctionRecive(){
@@ -210,7 +226,10 @@ void Remote_Controller::threadFunctionSend(){
 	while (RemCon_send_running && !MQTT_Utilities::connection_lost) {
 		int command = 0;
 		std::unique_lock<std::mutex> lock(queueMutex);
-		queueCV.wait(lock, []{ return !commandQueue.empty(); }); // Warte auf neue Kommandos
+		queueCV.wait(lock, []{
+		return !commandQueue.empty() || MQTT_Utilities::connection_lost || dash_conn_lost ; });
+	    if (MQTT_Utilities::connection_lost || dash_conn_lost) break;
+	    if (commandQueue.empty()) continue;// Warte auf neue Kommandos
 		command = commandQueue.front();
 		commandQueue.pop();
 		switch(command){
@@ -256,9 +275,12 @@ void Remote_Controller::threadFunctionHeartbeat() {
 
             int8_t AcuatorCode = (int8_t) Topic::ACTUATOR;
             local_sender->send_event(AcuatorCode, (int) ActuatorEnum::WAKE_UP);
-
             if (RemConThreadRecive.joinable()) RemConThreadRecive.join();
+            queueCV.notify_all();
             if (RemConThreadSend.joinable()) RemConThreadSend.join();
+
+            int8_t RemConCode = (int8_t) Topic::REM_CON;
+            local_sender->send_event(RemConCode, (int) RemoteControl::MQTT_DISCONNECTED);
 
             // MQTT sauber beenden
             MQTTClient_disconnect(MQTT_Utilities::client, 1000);
@@ -269,18 +291,19 @@ void Remote_Controller::threadFunctionHeartbeat() {
             printf("Waiting for reconnect command ...\n");
             bool reconnect = false;
             while (!reconnect) {
-//                // Empfange event mit lokalem Receiver, z.B.
-//                _pulse event;
-//                int status = local_receiver->receive_event(&event);
-//                RemoteControl event_value = (RemoteControl) event.value.sival_int;
-//                Topic event_code = (Topic) event.code;
-//                if (status == 0 && event_code == Topic::REM_CON) {
-//                	if(event_value == RemoteControl::RECONNECT)
-//                    reconnect = true;
-//                    printf("Reconnect command received!\n");
-//                }
-                std::this_thread::sleep_for(std::chrono::seconds(10));
-                reconnect = true;
+                // Empfange event mit lokalem Receiver, z.B.
+                _pulse event;
+                int status = local_receiver->receive_event(&event);
+                RemoteControl event_value = (RemoteControl) event.value.sival_int;
+                Topic event_code = (Topic) event.code;
+                if (status == 0 && event_code == Topic::REM_CON) {
+                	if(event_value == RemoteControl::RECONNECT)
+                    reconnect = true;
+                    printf("Reconnect command received!\n");
+                }
+            	  //Fürs testen
+//                std::this_thread::sleep_for(std::chrono::seconds(10));
+//                reconnect = true;
             }
 
             // Flags zurücksetzen, wenn nötig
@@ -288,9 +311,10 @@ void Remote_Controller::threadFunctionHeartbeat() {
             dash_conn_lost = false;
 
             // Neu initialisieren (startet alle Threads, MQTT etc.)
-            init();
+            init(true);
         } else {
             // Alles OK: Herzschlag
+        	dash_conn_lost = true;
             std::this_thread::sleep_for(std::chrono::seconds(3));
         }
     }
@@ -339,8 +363,9 @@ static void on_command(const char* payload) {
 	    } else if (strncmp(payload, "RepStop", len) == 0) {
 	        Last_Command = 12;
 	    } else if (strncmp(payload, "HeartBeat", len) == 0) {
-	        Last_Command = 13;
+//	        Last_Command = 13;
 	        dash_conn_lost = false;
+	        return;
 	    } else {
 	        Last_Command = 0;
 	        printf("[MQTT-DEBUG] Unbekannter Payload erhalten: '%.*s'\n", (int)len, payload);

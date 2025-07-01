@@ -68,7 +68,7 @@ class Remote_Controller {
 
 	private: //================================================ private functions ================================================
 
-		void init();
+		void init(bool reinit);
 		void threadFunctionRecive();
 		void threadFunctionSend();
 		void threadFunctionHeartbeat();
