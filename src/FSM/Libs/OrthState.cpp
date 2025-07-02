@@ -280,3 +280,59 @@ State* OrthState::error_pieces_too_close_fixed()
 {
     return handle_event_using_function(&State::error_pieces_too_close_fixed);
 }
+
+State* OrthState::unblock_starting_area()
+{
+    return handle_event_using_function(&State::unblock_starting_area);
+}
+
+
+State* OrthState::error_c_lost_com()
+{
+    return handle_event_using_function(&State::error_c_lost_com);
+}
+
+State* OrthState::error_c_lost_nr()
+{
+    return handle_event_using_function(&State::error_c_lost_nr);
+}
+
+State* OrthState::error_c_lost_mqtt()
+{
+    return handle_event_using_function(&State::error_c_lost_mqtt);
+}
+
+State* OrthState::com_connected()
+{
+    return handle_event_using_function(&State::com_connected);
+}
+
+State* OrthState::mqtt_connected()
+{
+    return handle_event_using_function(&State::mqtt_connected);
+}
+
+State* OrthState::adc_invalid_measure()
+{
+    return handle_event_using_function(&State::adc_invalid_measure);
+}
+
+State* OrthState::cant_find_calb_conf()
+{
+    return handle_event_using_function(&State::cant_find_calb_conf);
+}
+
+State* OrthState::cant_find_rep_conf()
+{
+    return handle_event_using_function(&State::cant_find_rep_conf);
+}
+
+State* OrthState::error_w_lost()
+{
+    return handle_event_using_function(&State::error_w_lost);
+}
+
+State* OrthState::error_w_appear()
+{
+    return handle_event_using_function(&State::error_w_appear);
+}

@@ -298,3 +298,59 @@ State* HState::error_pieces_too_close_fixed()
 {
     return handle_event_using_function(&State::error_pieces_too_close_fixed);
 }
+
+State* HState::unblock_starting_area()
+{
+    return handle_event_using_function(&State::unblock_starting_area);
+}
+
+
+State* HState::error_c_lost_com()
+{
+    return handle_event_using_function(&State::error_c_lost_com);
+}
+
+State* HState::error_c_lost_nr()
+{
+    return handle_event_using_function(&State::error_c_lost_nr);
+}
+
+State* HState::error_c_lost_mqtt()
+{
+    return handle_event_using_function(&State::error_c_lost_mqtt);
+}
+
+State* HState::com_connected()
+{
+    return handle_event_using_function(&State::com_connected);
+}
+
+State* HState::mqtt_connected()
+{
+    return handle_event_using_function(&State::mqtt_connected);
+}
+
+State* HState::adc_invalid_measure()
+{
+    return handle_event_using_function(&State::adc_invalid_measure);
+}
+
+State* HState::cant_find_calb_conf()
+{
+    return handle_event_using_function(&State::cant_find_calb_conf);
+}
+
+State* HState::cant_find_rep_conf()
+{
+    return handle_event_using_function(&State::cant_find_rep_conf);
+}
+
+State* HState::error_w_lost()
+{
+    return handle_event_using_function(&State::error_w_lost);
+}
+
+State* HState::error_w_appear()
+{
+    return handle_event_using_function(&State::error_w_appear);
+}

@@ -85,6 +85,7 @@ public:
     virtual State* sorting_out() override;
     //virtual State* error_both_r_full() override;
     virtual State* error_pieces_too_close_fixed() override;
+    virtual State* unblock_starting_area() override;
 
     //neue COM States
     virtual State* com_ramp_full() override;
@@ -96,7 +97,18 @@ public:
     virtual State* is_pusher() override;
     virtual State* is_switch() override;
     
-
+    
+    //States für ErrorHandler
+    virtual State* error_c_lost_com() override;
+    virtual State* error_c_lost_nr() override;
+    virtual State* error_c_lost_mqtt() override;
+    virtual State* com_connected() override;
+    virtual State* mqtt_connected() override;
+    virtual State* adc_invalid_measure() override;
+    virtual State* cant_find_calb_conf() override;
+    virtual State* cant_find_rep_conf() override;
+    virtual State* error_w_lost() override;
+    virtual State* error_w_appear() override;
 
 
     //================================================ private variables ================================================

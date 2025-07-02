@@ -212,16 +212,72 @@ State* State::com_ramp_not_full(){
     return nullptr;
 }
 
-State* sorting_out(){
+State* State::sorting_out(){
     return nullptr;
 }
 
-/* State* error_both_r_full(){
+/* State* State::error_both_r_full(){
 
     return nullptr;
 } */
 
-State* error_pieces_too_close_fixed()
+State* State::error_pieces_too_close_fixed()
+{
+    return nullptr;
+}
+
+State* State::unblock_starting_area()
+{
+    return nullptr;
+}
+
+
+State* State::error_c_lost_com()
+{
+    return nullptr;
+}
+
+State* State::error_c_lost_nr()
+{
+    return nullptr;
+}
+
+State* State::error_c_lost_mqtt()
+{
+    return nullptr;
+}
+
+State* State::com_connected()
+{
+    return nullptr;
+}
+
+State* State::mqtt_connected()
+{
+    return nullptr;
+}
+
+State* State::adc_invalid_measure()
+{
+    return nullptr;
+}
+
+State* State::cant_find_calb_conf()
+{
+    return nullptr;
+}
+
+State* State::cant_find_rep_conf()
+{
+    return nullptr;
+}
+
+State* State::error_w_lost()
+{
+    return nullptr;
+}
+
+State* State::error_w_appear()
 {
     return nullptr;
 }

@@ -93,11 +93,24 @@ public: //================================================ public functions ====
     virtual State* sorting_out();
     //virtual State* error_both_r_full();
     virtual State* error_pieces_too_close_fixed();
+    virtual State* unblock_starting_area();
 
     //neue COM States
     virtual State* com_ramp_full();
     virtual State* com_ramp_not_full();
 
+
+    //States für ErrorHandler
+    virtual State* error_c_lost_com();
+    virtual State* error_c_lost_nr();
+    virtual State* error_c_lost_mqtt();
+    virtual State* com_connected();
+    virtual State* mqtt_connected();
+    virtual State* adc_invalid_measure();
+    virtual State* cant_find_calb_conf();
+    virtual State* cant_find_rep_conf();
+    virtual State* error_w_lost();
+    virtual State* error_w_appear();
 
 
 
