@@ -39,4 +39,3 @@ ContextData::~ContextData() {
 
 //===================================================== public functions =====================================================
 
-//void ContextData::publicFunction(){}
