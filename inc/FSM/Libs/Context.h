@@ -124,6 +124,9 @@ State* Context<T>::handleCOM(int event_value) {
         case COM_Enum::RESET_TO_TALL_W_METAL:
             newState = state->reset_to_tall_w_metal();
             break;
+        case COM_Enum::BUTTON_RESET_PRESSED:
+            newState = state->com_button_reset_pressed();
+            break;
         default:
             break;
     }
