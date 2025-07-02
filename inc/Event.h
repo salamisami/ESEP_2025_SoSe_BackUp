@@ -81,23 +81,6 @@ enum class Topic : int8_t
     INTERNAL
 };
 
-enum class Internal_Enum: int{
-    SORT_OUT,
-    SORT_OUT_FBM2,
-    LET_THROUGH,
-    CHECK_PIECE,
-    RESET_TO_FLAT,
-    RESET_TO_TALL,
-    RESET_TO_TALL_W_METAL
-};
-
-enum class COM_Enum: int{
-    BUTTON_ESTOP_PRESSED = 1,
-    BUTTON_ESTOP_RELEASED,
-    RESET_TO_FLAT,
-    RESET_TO_TALL,
-    RESET_TO_TALL_W_METAL,
-};
 
 enum class ADC_Enum : int
 {
