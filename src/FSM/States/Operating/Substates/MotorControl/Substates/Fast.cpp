@@ -30,6 +30,7 @@ State *Fast::delete_w_motor()
     }
     else
     {
+        updateData(MotorPieceState::DELETE_W_MOTOR);
         return new Idle(data);
     }
 }
