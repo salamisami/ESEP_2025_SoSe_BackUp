@@ -17,10 +17,11 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
     
-	State* delete_w_motor() override;
     State* motor_fast() override;
     State* motor_stop_fsm() override;
+    State* delete_w_motor() override;
     State* motor_slow() override;
+    void updateData(MotorPieceState motorPieceState);
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

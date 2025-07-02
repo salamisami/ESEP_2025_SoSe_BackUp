@@ -52,7 +52,7 @@ public:
     bool workpieces = false;
     bool motor_slowed = false;
     bool motor_stopped = false;
-    StateContainer workpiece_List;
+    StateContainer workpieceList;
 };
 
 #endif

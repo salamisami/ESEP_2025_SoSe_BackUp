@@ -16,6 +16,7 @@ public: //================================================ public functions ====
     void exit() override;
     
     State* motor_fast() override;
+    void updateData(MotorPieceState motorPieceState);
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

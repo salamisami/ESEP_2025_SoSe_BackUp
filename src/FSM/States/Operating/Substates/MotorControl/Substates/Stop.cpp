@@ -62,3 +62,23 @@ State *Stop::motor_stop_fsm()
 {
     return new Stop();
 }
+
+void Stop::updateData(MotorPieceState motorPieceState) {
+    int id = data->event_paylod;
+    
+    if (motorPieceState == MotorPieceState::DELETE_W_MOTOR) {
+        // Remove the ID from the list if it exists
+        if (data->workpieceList.contains(id)) {
+            data->workpieceList.remove(id);
+        } else {
+            printf("Warning: Trying to delete ID %d that doesn't exist in workpiece list\n", id);
+        }
+    } else {
+        // Normal update/add logic
+        if (data->workpieceList.contains(id)) {
+            data->workpieceList.updateState(id, motorPieceState);
+        } else {
+            data->workpieceList.add(id, motorPieceState);
+        }
+    }
+}

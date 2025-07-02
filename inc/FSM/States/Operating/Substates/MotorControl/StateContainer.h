@@ -5,7 +5,8 @@
 enum class MotorPieceState {
     FAST,
     SLOW,
-    STOPPED
+    STOPPED,
+    DELETE_W_MOTOR
 };
 
 struct StateEntry {

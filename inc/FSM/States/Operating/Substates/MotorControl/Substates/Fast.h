@@ -21,6 +21,7 @@ public: //================================================ public functions ====
     State* motor_slow() override;
     State* motor_fast() override;
     State* motor_stop_fsm() override;
+    void updateData(MotorPieceState motorPieceState);
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
