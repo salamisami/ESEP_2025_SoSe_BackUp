@@ -10,7 +10,7 @@
 #include <stdexcept> // For std::runtime_error
 #include <sstream>
 
-#define SAVE_LOCATION_TIMEPROFILE "time_profiles.csv"
+
 
 
 class TimeProfileManager {
