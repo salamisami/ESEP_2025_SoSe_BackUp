@@ -13,7 +13,6 @@ Idle::~Idle() {}
 //===================================================== public functions =====================================================
 void Idle::entry(){
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
-  data->
 	PRINT_STATE;
 }
 
@@ -24,6 +23,7 @@ void Idle::exit(){
 
 State* Idle::motor_fast(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
+    updateData(MotorPieceState::FAST);
     return new Fast(data);
 }
 
