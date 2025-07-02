@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-enum class State {
+enum class MotorPieceState {
     FAST,
     SLOW,
     STOPPED
@@ -10,19 +10,19 @@ enum class State {
 
 struct StateEntry {
     int id;
-    State state;
+    MotorPieceState motorPieceState;
 };
 
 class StateContainer {
     std::vector<StateEntry> entries;
     
 public:
-    void add(int id, State state) {
+    void add(int id, MotorPieceState motorPieceState) {
         if (std::any_of(entries.begin(), entries.end(), 
                        [id](const StateEntry& e) { return e.id == id; })) {
             throw std::runtime_error("ID already exists");
         }
-        entries.push_back({id, state});
+        entries.push_back({id, motorPieceState});
     }
     
     void remove(int id) {
@@ -31,21 +31,27 @@ public:
                       entries.end());
     }
     
-    void updateState(int id, State newState) {
+    void updateState(int id, MotorPieceState newState) {
         auto it = std::find_if(entries.begin(), entries.end(),
                               [id](const StateEntry& e) { return e.id == id; });
         if (it != entries.end()) {
-            it->state = newState;
+            it->motorPieceState = newState;
         } else {
             throw std::runtime_error("ID not found");
         }
     }
     
-    State getState(int id) const {
+    void updateStateAll(MotorPieceState newState) {
+        for (auto& entry : entries) {
+            entry.motorPieceState = newState;
+        }
+    }
+    
+    MotorPieceState getState(int id) const {
         auto it = std::find_if(entries.begin(), entries.end(),
                               [id](const StateEntry& e) { return e.id == id; });
         if (it != entries.end()) {
-            return it->state;
+            return it->motorPieceState;
         }
         throw std::runtime_error("ID not found");
     }
