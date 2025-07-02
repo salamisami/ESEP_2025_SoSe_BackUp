@@ -13,6 +13,7 @@ Idle::~Idle() {}
 //===================================================== public functions =====================================================
 void Idle::entry(){
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
+  data->
 	PRINT_STATE;
 }
 
