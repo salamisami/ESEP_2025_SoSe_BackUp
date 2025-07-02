@@ -1,5 +1,4 @@
 #include "NodeRedFehlerQuittiert.h"
-#include "NodeRedNoError.h"
 
 
 //================================================= constructors & destructors =================================================

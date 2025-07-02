@@ -1,5 +1,4 @@
 #include "ConfFehlerUnquittiert.h"
-#include "ConfFehlerQuittiert.h"
 
 
 //================================================= constructors & destructors =================================================

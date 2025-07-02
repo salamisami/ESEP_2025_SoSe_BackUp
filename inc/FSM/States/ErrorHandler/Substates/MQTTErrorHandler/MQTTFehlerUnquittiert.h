@@ -3,6 +3,8 @@
 #pragma once
 
 #include "State.h"
+#include "MQTTFehlerQuittiert.h"
+
 
 class MQTTFehlerUnquittiert : public State {
 public: //============================================ constructors & destructors ============================================

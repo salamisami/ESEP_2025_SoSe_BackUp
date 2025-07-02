@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "COMNoError.h"
 
 class COMFehlerQuittiert : public State {
 public: //============================================ constructors & destructors ============================================

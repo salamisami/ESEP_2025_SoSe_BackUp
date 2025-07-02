@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "PieceLostFehlerUnquittiert.h"
 
 class PieceLostNoError : public State {
 public: //============================================ constructors & destructors ============================================

@@ -10,6 +10,12 @@ ErrorHandler::ErrorHandler(ContextData* data) : OrthState(data,
 	//substate = new SubState(data);
 }
 
+ErrorHandler::ErrorHandler(ContextData* data, std::vector<State*> initial_substates) : OrthState(data,
+	initial_substates
+) {
+	//substate = new SubState(data);
+}
+
 ErrorHandler::~ErrorHandler() {}
 
 //===================================================== private functions =====================================================
@@ -19,7 +25,7 @@ ErrorHandler::~ErrorHandler() {}
 State* ErrorHandler::clone()
 {
 	auto cloned_substates = OrthState::clone_substates();
-	ErrorHandler* cloned_state = new ErrorHandler(data, clone_substates);
+	ErrorHandler* cloned_state = new ErrorHandler(data, cloned_substates);
 	return cloned_state;
 }
 

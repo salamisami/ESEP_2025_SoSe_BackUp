@@ -1,5 +1,4 @@
 #include "PieceLostFehlerUnquittiert.h"
-#include "PieceLostFehlerQuittiert.h"
 
 
 //================================================= constructors & destructors =================================================

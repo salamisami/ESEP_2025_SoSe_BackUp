@@ -1,4 +1,3 @@
-#include "PieceAppearedNoError.h"
 #include "PieceAppearedFehlerQuittiert.h"
 
 

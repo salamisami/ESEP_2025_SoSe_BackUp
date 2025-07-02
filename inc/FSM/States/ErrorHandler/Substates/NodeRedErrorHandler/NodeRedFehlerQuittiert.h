@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "NodeRedNoError.h"
 
 class NodeRedFehlerQuittiert : public State {
 public: //============================================ constructors & destructors ============================================

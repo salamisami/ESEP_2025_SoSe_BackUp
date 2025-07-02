@@ -3,6 +3,8 @@
 #pragma once
 
 #include "State.h"
+#include "NodeRedFehlerQuittiert.h"
+
 
 class NodeRedFehlerUnquittiert : public State {
 public: //============================================ constructors & destructors ============================================

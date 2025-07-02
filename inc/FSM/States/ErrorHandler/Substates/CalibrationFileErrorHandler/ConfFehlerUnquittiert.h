@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "ConfFehlerQuittiert.h"
 
 class ConfFehlerUnquittiert : public State {
 public: //============================================ constructors & destructors ============================================

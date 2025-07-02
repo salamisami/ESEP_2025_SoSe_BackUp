@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "ReplayNoError.h"
 
 class ReplayFehlerQuittiert : public State {
 public: //============================================ constructors & destructors ============================================

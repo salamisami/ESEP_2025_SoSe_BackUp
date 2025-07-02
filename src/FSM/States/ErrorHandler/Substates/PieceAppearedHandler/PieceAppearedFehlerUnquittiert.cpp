@@ -1,4 +1,3 @@
-#include "PieceAppearedFehlerQuittiert.h"
 #include "PieceAppearedFehlerUnquittiert.h"
 
 //================================================= constructors & destructors =================================================

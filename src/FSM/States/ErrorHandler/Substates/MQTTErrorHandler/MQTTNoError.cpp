@@ -1,29 +1,28 @@
-#include "MQTTRedFehlerQuittiert.h"
 #include "MQTTNoError.h"
 
 
 //================================================= constructors & destructors =================================================
-MQTTRedFehlerQuittiert::MQTTRedFehlerQuittiert(ContextData* data) : State(data) {
+MQTTNoError::MQTTNoError(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-MQTTRedFehlerQuittiert::~MQTTRedFehlerQuittiert() {}
+MQTTNoError::~MQTTNoError() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void MQTTRedFehlerQuittiert::entry(){
+void MQTTNoError::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void MQTTRedFehlerQuittiert::exit(){
+void MQTTNoError::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* error_c_lost_mqtt()
 {
-    return new MQTTNoError(data);
+    return new MQTTFehlerUnquittiert(data);
 }

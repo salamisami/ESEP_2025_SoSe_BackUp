@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "PieceAppearedFehlerQuittiert.h"
 
 class PieceAppearedFehlerUnquittiert  : public State {
 public: //============================================ constructors & destructors ============================================

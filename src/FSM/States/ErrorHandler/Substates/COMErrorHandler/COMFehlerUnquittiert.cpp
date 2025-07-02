@@ -1,29 +1,28 @@
-#include "MQTTNoError.h"
-#include "MQTTFehlerUnquittiert.h"
+#include "COMFehlerUnquittiert.h"
 
 
 //================================================= constructors & destructors =================================================
-MQTTNoError::MQTTNoError(ContextData* data) : State(data) {
+COMFehlerUnquittiert::COMFehlerUnquittiert(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-MQTTNoError::~MQTTNoError() {}
+COMFehlerUnquittiert::~COMFehlerUnquittiert() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void MQTTNoError::entry(){
+void COMFehlerUnquittiert::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void MQTTNoError::exit(){
+void COMFehlerUnquittiert::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* error_c_lost_mqtt()
+State* button_reset_released()
 {
-    return new MQTTFehlerUnquittiert(data);
+    return new COMFehlerQuittiert(data);
 }

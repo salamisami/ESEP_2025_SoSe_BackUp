@@ -1,4 +1,3 @@
-#include "MQTTFehlerQuittiert.h"
 #include "MQTTFehlerUnquittiert.h"
 
 
@@ -25,5 +24,5 @@ void MQTTFehlerUnquittiert::exit(){
 
 State* button_reset_released()
 {
-    return new MQTTFehlerUnquittiert(data);
+    return new MQTTFehlerQuittiert(data);
 }

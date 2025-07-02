@@ -1,29 +1,28 @@
-#include "COMNoError.h"
-#include "COMFehlerUnquittiert.h"
+#include "MQTTFehlerQuittiert.h"
 
 
 //================================================= constructors & destructors =================================================
-COMNoError::COMNoError(ContextData* data) : State(data) {
+MQTTFehlerQuittiert::MQTTFehlerQuittiert(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-COMNoError::~COMNoError() {}
+MQTTFehlerQuittiert::~MQTTFehlerQuittiert() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void COMNoError::entry(){
+void MQTTFehlerQuittiert::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void COMNoError::exit(){
+void MQTTFehlerQuittiert::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* error_c_lost_com()
+State* button_reset_released()
 {
-    return new COMFehlerUnquittiert(data);
+    return new MQTTNoError(data);
 }

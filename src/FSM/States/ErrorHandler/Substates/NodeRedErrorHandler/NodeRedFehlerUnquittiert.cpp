@@ -1,4 +1,3 @@
-#include "NodeRedFehlerQuittiert.h"
 #include "NodeRedFehlerUnquittiert.h"
 
 
