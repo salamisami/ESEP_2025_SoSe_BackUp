@@ -75,7 +75,11 @@ enum class Topic : int8_t {
     STOP_THREAD,
     TIMER,
     INTERNAL,
-    CHECK_PIECE
+    CHECK_PIECE,
+    MOTOR_STOP_FSM,
+    MOTOR_SLOW,
+    MOTOR_FAST,
+    DELETE_W_MOTOR
 };
 
 enum class Internal_Enum : int {
