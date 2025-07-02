@@ -131,7 +131,8 @@ void COM::runDispatcher() {
                                 originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL) ||
                                 originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL)||
                                 originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED)||
-                                originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED)) {
+                                originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED)||
+                                originalValue == static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED)      ) {
                                 break;
                             }
                             if(FBM == 1) {
