@@ -15,6 +15,15 @@
 //forward declaration
 class State;
 
+
+class Piece {
+public:
+    int id = 0;
+    CheckPiece_Enum type = CheckPiece_Enum::UNKNOWN;
+    long sorting_time = 0;
+};
+
+
 class ContextData {
     //============================================ constructors & destructors ============================================
 public:
@@ -39,7 +48,12 @@ public:
     TimeProfile timeprofile_slow;
     CheckPiece_Enum actual_piece = CheckPiece_Enum::UNKNOWN;
     //TODO implement a safe stack here, that returns nullptr if no elements left in the stack
-    std::stack<State*>* stateStack;
+    std::stack<State*>* modehandler_history;
+    std::stack<State*>* estop_history;
+
+    Piece piece;
+
+
     I_Sender* timer_sender;
     Timer* timer;
     I_Sender* sender;

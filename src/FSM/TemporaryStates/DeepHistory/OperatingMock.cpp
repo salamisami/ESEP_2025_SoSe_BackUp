@@ -38,6 +38,6 @@ void OperatingMock::exit() {
 
 //save history
 State* OperatingMock::button_stop_pressed() {
-	data->stateStack->push(clone());
+	data->modehandler_history->push(clone());
 	return new IdleMock(data);
 }

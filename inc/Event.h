@@ -78,7 +78,7 @@ enum class Topic : int8_t {
     CHECK_PIECE
 };
 
-enum class Internal_Enum: int{
+enum class Internal_Enum : int {
     SORT_OUT,
     SORT_OUT_FBM2,
     LET_THROUGH,
@@ -87,8 +87,7 @@ enum class Internal_Enum: int{
     RESET_TO_TALL_W_METAL
 };
 
-enum class COM_Enum : int
-{
+enum class COM_Enum : int {
     NEW_PIECE_TO_SORT = 1,
     NEW_PIECE_NOT_TO_SORT,
     BUTTON_ESTOP_PRESSED,
@@ -128,7 +127,7 @@ enum class ADC_Enum : int {
 
 
 
-enum class TIMER_ID: int {
+enum class TIMER_ID : int {
     WAITING_IM = 1,
     OPENGATE_CDS,
     OPENGATE_LPT,
@@ -137,7 +136,7 @@ enum class TIMER_ID: int {
     CAL_GATE_RAMP1
 };
 
-enum class CheckPiece_Enum: int{
+enum class CheckPiece_Enum : int {
     UNKNOWN = 0,
     FLAT,
     TALL,

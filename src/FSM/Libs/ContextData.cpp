@@ -5,7 +5,7 @@
 ContextData::ContextData(){}
 ContextData::ContextData(I_Sender* sender, I_Sender* to_self_sender) {
     this->sender = sender;
-    stateStack = new std::stack<State*>();
+    modehandler_history = new std::stack<State*>();
     timer = new Timer(to_self_sender);
 }
 
@@ -13,12 +13,12 @@ ContextData::ContextData(I_Sender* sender, I_Sender* to_self_sender) {
 ContextData::~ContextData() {
     delete timer;
     State* current_state;
-    while(!stateStack->empty()) {
-        current_state = stateStack->top();  // For stack, use top() instead of iterating
+    while(!modehandler_history->empty()) {
+        current_state = modehandler_history->top();  // For stack, use top() instead of iterating
         delete current_state;
-        stateStack->pop();
+        modehandler_history->pop();
     }
-    delete stateStack;
+    delete modehandler_history;
 }
 
 //===================================================== private functions =====================================================

@@ -24,11 +24,11 @@ void WaitingIM::exit() {
 
 //load history
 State* WaitingIM::button_start_released() {
-    if(data->stateStack->empty()) {
+    if(data->modehandler_history->empty()) {
         return new Operating(data);
     }
-    State* loaded_state = data->stateStack->top();
-    data->stateStack->pop();
+    State* loaded_state = data->modehandler_history->top();
+    data->modehandler_history->pop();
     return loaded_state;
 }
 
