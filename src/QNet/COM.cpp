@@ -153,8 +153,23 @@ void COM::runDispatcher() {
                             }
                             lowPriorityQueue.push_back(dispatcherMsg);
                             break;
-                        } default:
-                            break; // No conversion needed
+                        }
+                    case Topic::REM_CON:
+                        {
+                            switch(originalValue) {
+                                case static_cast<int>(RemoteControl::MQTT_CONNECTED):
+                                    mqttConnected = true;
+                                    break;
+                                case static_cast<int>(RemoteControl::MQTT_DISCONNECTED):
+                                    mqttConnected = false;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        }
+                    default:
+                        break; // No conversion needed
                 }
             }
             queueCV.notify_one(); // Wake up client thread
@@ -293,6 +308,19 @@ void COM::runServer() {
                 //(rampEvent);
                 std::lock_guard<std::mutex> lock(queueMutex);
                 lowPriorityQueue.push_back(rampEvent);
+                
+                // Send MQTT connection status
+                _pulse mqttEvent;
+                int8_t remConCode = (int8_t) Topic::REM_CON;
+                int mqttValue;
+                if(mqttConnected) {
+                    mqttValue = (int) RemoteControl::MQTT_CONNECTED;
+                } else {
+                    mqttValue = (int) RemoteControl::MQTT_DISCONNECTED;
+                }
+                mqttEvent.code = remConCode;
+                mqttEvent.value.sival_int = mqttValue;
+                lowPriorityQueue.push_back(mqttEvent);
 
             }
 
