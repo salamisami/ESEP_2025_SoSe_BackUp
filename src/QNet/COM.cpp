@@ -52,122 +52,17 @@ void COM::runDispatcher() {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 switch(originalTopic) {
                     case Topic::INTERRUPT:
-                        {
-                            InterruptEnum interruptEvent = static_cast<InterruptEnum>(originalValue);
-                            switch(interruptEvent) {
-                                case InterruptEnum::BUTTON_ESTOP_PRESSED:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED);
-                                    highPriorityQueue.push_back(dispatcherMsg);
-                                    break;
-                                case InterruptEnum::BUTTON_ESTOP_RELEASED:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED);
-                                    highPriorityQueue.push_back(dispatcherMsg);
-                                    break;
-                                case InterruptEnum::BUTTON_RESET_PRESSED:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED);
-                                    highPriorityQueue.push_back(dispatcherMsg);
-                                    break;
-                                /*case InterruptEnum::BUTTON_RESET_RELEASED:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_RELEASED);
-                                    highPriorityQueue.push_back(dispatcherMsg);
-                                    break;*/
-                                default:
-                                    break;
-                            }
-                        }
+                        handleInterruptTopic(originalValue, dispatcherMsg);
+                        break;
                     case Topic::INTERNAL:
-                        {
-                            Internal_Enum internalEvent = static_cast<Internal_Enum>(originalValue);
-                            switch(internalEvent) {
-                                case Internal_Enum::RESET_TO_FLAT:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_FLAT);
-                                    lowPriorityQueue.push_back(dispatcherMsg);
-                                    break;
-                                case Internal_Enum::RESET_TO_TALL:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL);
-                                    lowPriorityQueue.push_back(dispatcherMsg);
-                                    break;
-                                case Internal_Enum::RESET_TO_TALL_W_METAL:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL);
-                                    lowPriorityQueue.push_back(dispatcherMsg);
-                                    break;
-                                case Internal_Enum::RAMP_NOT_FULL:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_NOT_FULL);
-                                    lowPriorityQueue.push_back(dispatcherMsg);
-                                    rampfull = false;
-                                    break;
-                                case Internal_Enum::RAMP_FULL:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_FULL);
-                                    lowPriorityQueue.push_back(dispatcherMsg);
-                                    rampfull = true;
-                                    break;
-                                case Internal_Enum::REQUEST_TRANSFER:
-                                    dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::REQUEST_TRANSFER);
-                                    lowPriorityQueue.push_back(dispatcherMsg);
-                                    rampfull = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
+                        handleInternalTopic(originalValue, dispatcherMsg);
+                        break;
                     case Topic::COM:
-                        {
-                            if(originalValue == static_cast<int>(COM_Enum::TIMEOUT_COM) ||
-                                originalValue == static_cast<int>(COM_Enum::COM_CONNECTED) ||
-                                originalValue == static_cast<int>(COM_Enum::HEARTBEAT) ||
-                                originalValue == static_cast<int>(COM_Enum::RAMP_FULL) ||
-                                originalValue == static_cast<int>(COM_Enum::RAMP_NOT_FULL) ||
-                                originalValue == static_cast<int>(COM_Enum::RESET_TO_FLAT) ||
-                                originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL) ||
-                                originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL)||
-                                originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED)||
-                                originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED)||
-                                originalValue == static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED)      ) {
-                                break;
-                            }
-                            if(FBM == 1) {
-                                if((originalValue == static_cast<int>(COM_Enum::FBM_2_BUSY) ||
-                                    originalValue == static_cast<int>(COM_Enum::FBM_2_READY)) ||
-                                    originalValue == static_cast<int>(COM_Enum::TRANSFER_FAILED) ||
-                                    originalValue == static_cast<int>(COM_Enum::TRANSFER_DONE))
-                                    break;
-                            }
-                            if(FBM == 2) {
-                                if(originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL) ||
-                                    originalValue == static_cast<int>(COM_Enum::TRANSFER_START_FLAT) ||
-                                    originalValue == static_cast<int>(COM_Enum::TRANSFER_START_OTHER) ||
-                                    originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL_W_METAL)||
-                                    originalValue == static_cast<int>(COM_Enum::REQUEST_TRANSFER)
-									)
-                                    break;
-                            }
-                            lowPriorityQueue.push_back(dispatcherMsg);
-                            break;
-                        }
+                        handleComTopic(originalValue, dispatcherMsg);
+                        break;
                     case Topic::REM_CON:
-                        {
-                            switch(originalValue) {
-                                case static_cast<int>(RemoteControl::MQTT_CONNECTED):
-                                    mqttConnected = true;
-                                    break;
-                                case static_cast<int>(RemoteControl::MQTT_DISCONNECTED):
-                                    mqttConnected = false;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        }
+                        handleRemConTopic(originalValue, dispatcherMsg);
+                        break;
                     default:
                         break; // No conversion needed
                 }
@@ -437,4 +332,118 @@ void COM::sendToDispatcher(const _pulse& msg, int priority) {
 
 void COM::updateHeartbeat() {
     lastHeartbeat = std::chrono::steady_clock::now();
+}
+
+void COM::handleInterruptTopic(int originalValue, _pulse& dispatcherMsg) {
+    InterruptEnum interruptEvent = static_cast<InterruptEnum>(originalValue);
+    switch(interruptEvent) {
+        case InterruptEnum::BUTTON_ESTOP_PRESSED:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED);
+            highPriorityQueue.push_back(dispatcherMsg);
+            break;
+        case InterruptEnum::BUTTON_ESTOP_RELEASED:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED);
+            highPriorityQueue.push_back(dispatcherMsg);
+            break;
+        case InterruptEnum::BUTTON_RESET_PRESSED:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED);
+            highPriorityQueue.push_back(dispatcherMsg);
+            break;
+        /*case InterruptEnum::BUTTON_RESET_RELEASED:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_RELEASED);
+            highPriorityQueue.push_back(dispatcherMsg);
+            break;*/
+        default:
+            break;
+    }
+}
+
+void COM::handleInternalTopic(int originalValue, _pulse& dispatcherMsg) {
+    Internal_Enum internalEvent = static_cast<Internal_Enum>(originalValue);
+    switch(internalEvent) {
+        case Internal_Enum::RESET_TO_FLAT:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_FLAT);
+            lowPriorityQueue.push_back(dispatcherMsg);
+            break;
+        case Internal_Enum::RESET_TO_TALL:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL);
+            lowPriorityQueue.push_back(dispatcherMsg);
+            break;
+        case Internal_Enum::RESET_TO_TALL_W_METAL:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL);
+            lowPriorityQueue.push_back(dispatcherMsg);
+            break;
+        case Internal_Enum::RAMP_NOT_FULL:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_NOT_FULL);
+            lowPriorityQueue.push_back(dispatcherMsg);
+            rampfull = false;
+            break;
+        case Internal_Enum::RAMP_FULL:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_FULL);
+            lowPriorityQueue.push_back(dispatcherMsg);
+            rampfull = true;
+            break;
+        case Internal_Enum::REQUEST_TRANSFER:
+            dispatcherMsg.code = static_cast<int>(Topic::COM);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::REQUEST_TRANSFER);
+            lowPriorityQueue.push_back(dispatcherMsg);
+            rampfull = true;
+            break;
+        default:
+            break;
+    }
+}
+
+void COM::handleComTopic(int originalValue, _pulse& dispatcherMsg) {
+    if(originalValue == static_cast<int>(COM_Enum::TIMEOUT_COM) ||
+        originalValue == static_cast<int>(COM_Enum::COM_CONNECTED) ||
+        originalValue == static_cast<int>(COM_Enum::HEARTBEAT) ||
+        originalValue == static_cast<int>(COM_Enum::RAMP_FULL) ||
+        originalValue == static_cast<int>(COM_Enum::RAMP_NOT_FULL) ||
+        originalValue == static_cast<int>(COM_Enum::RESET_TO_FLAT) ||
+        originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL) ||
+        originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL)||
+        originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED)||
+        originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED)||
+        originalValue == static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED)) {
+        return;
+    }
+    if(FBM == 1) {
+        if((originalValue == static_cast<int>(COM_Enum::FBM_2_BUSY) ||
+            originalValue == static_cast<int>(COM_Enum::FBM_2_READY)) ||
+            originalValue == static_cast<int>(COM_Enum::TRANSFER_FAILED) ||
+            originalValue == static_cast<int>(COM_Enum::TRANSFER_DONE))
+            return;
+    }
+    if(FBM == 2) {
+        if(originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL) ||
+            originalValue == static_cast<int>(COM_Enum::TRANSFER_START_FLAT) ||
+            originalValue == static_cast<int>(COM_Enum::TRANSFER_START_OTHER) ||
+            originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL_W_METAL)||
+            originalValue == static_cast<int>(COM_Enum::REQUEST_TRANSFER))
+            return;
+    }
+    lowPriorityQueue.push_back(dispatcherMsg);
+}
+
+void COM::handleRemConTopic(int originalValue, _pulse& dispatcherMsg) {
+    switch(originalValue) {
+        case static_cast<int>(RemoteControl::MQTT_CONNECTED):
+            mqttConnected = true;
+            break;
+        case static_cast<int>(RemoteControl::MQTT_DISCONNECTED):
+            mqttConnected = false;
+            break;
+        default:
+            break;
+    }
 }

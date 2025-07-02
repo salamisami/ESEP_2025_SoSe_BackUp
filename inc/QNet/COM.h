@@ -31,6 +31,12 @@ private:
     void sendToServer(const _pulse &msg, int priority = (int)EventPriority::DEFAULT);
 
     void runDispatcher();
+    
+    // Handler functions for different topics
+    void handleInterruptTopic(int originalValue, _pulse& dispatcherMsg);
+    void handleInternalTopic(int originalValue, _pulse& dispatcherMsg);
+    void handleComTopic(int originalValue, _pulse& dispatcherMsg);
+    void handleRemConTopic(int originalValue, _pulse& dispatcherMsg);
 
     // Server side
     void runServer();
