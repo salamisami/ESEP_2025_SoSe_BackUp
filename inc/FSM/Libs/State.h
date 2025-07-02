@@ -223,6 +223,70 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::com_button_reset_pressed);
     }
 
+    virtual State* new_piece_to_sort() {
+        return handle_event_using_function(&State::new_piece_to_sort);
+    }
+
+    virtual State* new_piece_not_to_sort() {
+        return handle_event_using_function(&State::new_piece_not_to_sort);
+    }
+
+    virtual State* heartbeat() {
+        return handle_event_using_function(&State::heartbeat);
+    }
+
+    virtual State* timeout_com() {
+        return handle_event_using_function(&State::timeout_com);
+    }
+
+    virtual State* reconnect() {
+        return handle_event_using_function(&State::reconnect);
+    }
+
+    virtual State* ramp_full() {
+        return handle_event_using_function(&State::ramp_full);
+    }
+
+    virtual State* ramp_not_full() {
+        return handle_event_using_function(&State::ramp_not_full);
+    }
+
+    virtual State* fbm_2_ready() {
+        return handle_event_using_function(&State::fbm_2_ready);
+    }
+
+    virtual State* fbm_2_busy() {
+        return handle_event_using_function(&State::fbm_2_busy);
+    }
+
+    virtual State* request_transfer() {
+        return handle_event_using_function(&State::request_transfer);
+    }
+
+    virtual State* transfer_done() {
+        return handle_event_using_function(&State::transfer_done);
+    }
+
+    virtual State* transfer_failed() {
+        return handle_event_using_function(&State::transfer_failed);
+    }
+
+    virtual State* transfer_start_tall() {
+        return handle_event_using_function(&State::transfer_start_tall);
+    }
+
+    virtual State* transfer_start_tall_w_metal() {
+        return handle_event_using_function(&State::transfer_start_tall_w_metal);
+    }
+
+    virtual State* transfer_start_flat() {
+        return handle_event_using_function(&State::transfer_start_flat);
+    }
+
+    virtual State* transfer_start_other() {
+        return handle_event_using_function(&State::transfer_start_other);
+    }
+
     virtual State* adc_calibration_done() {
         return handle_event_using_function(&State::adc_calibration_done);
     }
