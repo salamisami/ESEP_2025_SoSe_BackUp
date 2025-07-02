@@ -79,13 +79,13 @@ enum class Topic : int8_t {
     MOTOR_SLOW,
     MOTOR_FAST,
     DELETE_W_MOTOR
+    CHECK_PIECE
 };
 
 enum class Internal_Enum: int{
     SORT_OUT,
     SORT_OUT_FBM2,
     LET_THROUGH,
-    CHECK_PIECE,
     RESET_TO_FLAT,
     RESET_TO_TALL,
     RESET_TO_TALL_W_METAL,
@@ -128,7 +128,7 @@ enum class TIMER_ID: int {
     CAL_GATE_RAMP1
 };
 
-enum class Piece: int{
+enum class CheckPiece_Enum: int{
     UNKNOWN = 0,
     FLAT,
     TALL,

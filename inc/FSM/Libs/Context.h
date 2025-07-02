@@ -31,6 +31,7 @@ private:
     State* handleCOM(int event_value);
     State* handleADC(int event_value);
     State* handleInternal(int event_value);
+    State* handlePiece(int event_value);
 };
 
 //================================================= constructors & destructors =================================================
@@ -65,9 +66,6 @@ State* Context<T>::handleInternal(int event_value) {
             break;
         case Internal_Enum::LET_THROUGH:
             newState = state->let_through();
-            break;
-        case Internal_Enum::CHECK_PIECE:
-            newState = state->check_piece();
             break;
         case Internal_Enum::RESET_TO_FLAT:
             newState = state->reset_to_flat();
@@ -231,6 +229,28 @@ State *Context<T>::handleInterrupt(int event_value)
 }
 
 
+template <typename T>
+State* Context<T>::handlePiece(int event_value)  {
+    State* newState = nullptr;
+    switch((CheckPiece_Enum) event_value) {
+        case CheckPiece_Enum::UNKNOWN:
+            newState = state->unknown_piece();
+            break;
+        case CheckPiece_Enum::FLAT:
+            newState = state->flat_piece();
+            break;
+        case CheckPiece_Enum::TALL:
+            newState = state->tall_piece();
+            break;
+        case CheckPiece_Enum::TALL_WITH_METAL:
+            newState = state->tall_w_metal_piece();
+            break;
+        default:
+            break;
+    }
+    return newState;
+}
+
 
 //===================================================== public functions =====================================================
 template <typename T>
@@ -260,6 +280,9 @@ void Context<T>::handleEvent(_pulse event)
             break;
         case Topic::COM:
             newState = handleCOM(event_value);
+            break;
+        case Topic::CHECK_PIECE:
+            newState = handlePiece(event_value);
             break;
         case Topic::STOP_THREAD:
             state->exit();

@@ -32,7 +32,7 @@ State* PieceTallWithMetal::reset_to_tall() {
 }
 
 State* PieceTallWithMetal::check_piece() {
-	if (data->actual_piece == Piece::TALL_WITH_METAL) {
+	if (data->actual_piece == CheckPiece_Enum::TALL_WITH_METAL) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
 		return new PieceFlat(data);
 	}
