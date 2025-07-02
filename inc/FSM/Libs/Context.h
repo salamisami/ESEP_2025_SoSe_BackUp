@@ -107,11 +107,32 @@ State* Context<T>::handleCOM(int event_value) {
     State* newState = nullptr;
     switch((COM_Enum) event_value) {
         //TODO is this true?
+        case COM_Enum::NEW_PIECE_TO_SORT:
+            newState = state->new_piece_to_sort();
+            break;
+        case COM_Enum::NEW_PIECE_NOT_TO_SORT:
+            newState = state->new_piece_not_to_sort();
+            break;
         case COM_Enum::BUTTON_ESTOP_PRESSED:
             newState = state->com_button_estop_pressed();
             break;
         case COM_Enum::BUTTON_ESTOP_RELEASED:
             newState = state->com_button_estop_released();
+            break;
+        case COM_Enum::HEARTBEAT:
+            newState = state->heartbeat();
+            break;
+        case COM_Enum::TIMEOUT_COM:
+            newState = state->timeout_com();
+            break;
+        case COM_Enum::RECONNECT:
+            newState = state->reconnect();
+            break;
+        case COM_Enum::RAMP_FULL:
+            newState = state->ramp_full();
+            break;
+        case COM_Enum::RAMP_NOT_FULL:
+            newState = state->ramp_not_full();
             break;
         case COM_Enum::RESET_TO_FLAT:
             newState = state->reset_to_flat();
@@ -121,6 +142,33 @@ State* Context<T>::handleCOM(int event_value) {
             break;
         case COM_Enum::RESET_TO_TALL_W_METAL:
             newState = state->reset_to_tall_w_metal();
+            break;
+        case COM_Enum::FBM_2_READY:
+            newState = state->fbm_2_ready();
+            break;
+        case COM_Enum::FBM_2_BUSY:
+            newState = state->fbm_2_busy();
+            break;
+        case COM_Enum::REQUEST_TRANSFER:
+            newState = state->request_transfer();
+            break;
+        case COM_Enum::TRANSFER_DONE:
+            newState = state->transfer_done();
+            break;
+        case COM_Enum::TRANSFER_FAILED:
+            newState = state->transfer_failed();
+            break;
+        case COM_Enum::TRANSFER_START_TALL:
+            newState = state->transfer_start_tall();
+            break;
+        case COM_Enum::TRANSFER_START_TALL_W_METAL:
+            newState = state->transfer_start_tall_w_metal();
+            break;
+        case COM_Enum::TRANSFER_START_FLAT:
+            newState = state->transfer_start_flat();
+            break;
+        case COM_Enum::TRANSFER_START_OTHER:
+            newState = state->transfer_start_other();
             break;
         default:
             break;
