@@ -71,6 +71,10 @@ public:
     bool isEmpty() const {
         return container.empty();
     }
+    
+    bool isEmpty() const {
+        return entries.empty();
+    }
 };
 
 #endif // STATECONTAINER_H
