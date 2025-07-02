@@ -136,6 +136,20 @@ int main() {
 
   }
 
+  delete hal;
+     delete rec;
+     delete logic;
+     delete remcon;
+
+     delete RemCon_receiver;
+     delete rc_sender;
+     delete recorder_receiver;
+     delete recorder_sender;
+     delete hal_sender;
+     delete fsm_sender;
+     delete fsm_receiver;
+     delete hal_receiver;
+
   cout << "Program Finished." << endl;
   return 0;
 

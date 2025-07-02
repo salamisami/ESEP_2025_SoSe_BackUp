@@ -39,19 +39,41 @@ Remote_Controller::Remote_Controller()  {
 }
 
 Remote_Controller::~Remote_Controller() {
-    mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
-    RemConThreadRecive.join();
-    RemConThreadSend.join();
-    RemConThreadHeartBeat.join();
+	// 1. Stop-Flags setzen
+	    RemCon_recive_running = false;
+	    RemCon_send_running = false;
+	    RemCon_HeartCheck_running = false;
+	    MQTT_Utilities::connection_lost = true;
 
-    if(detached) {
-        delete mock_dispatcher_sender;
-        delete local_sender;
-        delete mock_dispatcher_receiver;
-        delete local_receiver;
-    } else {
-        delete mock_dispatcher_sender;
-    }
+	    // 2. Threads ggf. aufwecken
+	    queueCV.notify_all();
+//	    int8_t AcuatorCode = (int8_t) Topic::ACTUATOR;
+//	    local_sender->send_event(AcuatorCode, (int) ActuatorEnum::WAKE_UP);
+
+	    // 3. Stop-Event schicken
+	    if (mock_dispatcher_sender)
+	        mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
+
+	    // 4. Threads joinen (warten bis sie beendet sind)
+	    if (RemConThreadRecive.joinable())
+	        RemConThreadRecive.join();
+	    if (RemConThreadSend.joinable())
+	        RemConThreadSend.join();
+	    if (RemConThreadHeartBeat.joinable())
+	        RemConThreadHeartBeat.join();
+
+	    // 5. Ressourcen freigeben
+	    if(detached) {
+	        delete mock_dispatcher_sender;
+	        delete local_sender;
+	        delete mock_dispatcher_receiver;
+	        delete local_receiver;
+	    } else {
+	        delete mock_dispatcher_sender;
+	    }
+
+	    // 6. MQTT aufräumen
+	    MQTT_Utilities::mqtt_festo_cleanup();
 }
 
 void Remote_Controller::init(bool reInit) {
@@ -82,7 +104,8 @@ void Remote_Controller::init(bool reInit) {
     MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/yellow").c_str(), "off");
     MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/green").c_str(), "off");
     MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "notaus").c_str(), "false");
-
+    DEBUG(make_topic(RECEIVE_TOPIC, "q1").c_str());
+    DEBUG(make_topic(RECEIVE_TOPIC, "ampel/green/0.5").c_str());
     std::string msg = std::string(ClientID) + " is connected";
     MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
 
@@ -133,6 +156,7 @@ void Remote_Controller::threadFunctionRecive(){
                             break;
                         case ActuatorEnum::TRAFFIC_GREEN_ON_SLOW:
                             MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/green/0.5").c_str(), "on");
+
                             break;
                         case ActuatorEnum::TRAFFIC_YELLOW_ON:
                             MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/yellow").c_str(), "on");
@@ -242,7 +266,7 @@ void Remote_Controller::threadFunctionHeartbeat() {
     RemCon_HeartCheck_running = true;
     while (RemCon_HeartCheck_running) {
         if (MQTT_Utilities::connection_lost || dash_conn_lost) {
-            printf("Connection lost detected. Cleaning up ...\n");
+        	DEBUG("Connection lost detected. Cleaning up ...\n");
             RemCon_send_running = false;
             RemCon_recive_running = false;
 
@@ -259,7 +283,7 @@ void Remote_Controller::threadFunctionHeartbeat() {
             MQTTClient_destroy(&MQTT_Utilities::client);
             MQTT_Utilities::client = nullptr;
 
-            printf("Waiting for reconnect command ...\n");
+            DEBUG("Waiting for reconnect command ...\n");
             bool reconnect = false;
             while (!reconnect) {
                 _pulse event;
@@ -269,7 +293,7 @@ void Remote_Controller::threadFunctionHeartbeat() {
                 if (status == 0 && event_code == Topic::REM_CON) {
                     if(event_value == RemoteControl::RECONNECT)
                         reconnect = true;
-                    printf("Reconnect command received!\n");
+                    DEBUG("Reconnect command received!\n");
                 }
             }
             MQTT_Utilities::connection_lost = false;
@@ -284,12 +308,12 @@ void Remote_Controller::threadFunctionHeartbeat() {
 
 static void on_command(const char* payload) {
     if (!payload) {
-        printf("[MQTT-DEBUG] Warning: Received null payload in on_command\n");
+    	printf("[MQTT-DEBUG] Warning: Received null payload in on_command\n");
         return;
     }
     size_t len = strnlen(payload, 128);
     if (len == 0) {
-        printf("[MQTT-DEBUG] Warning: Received empty payload in on_command\n");
+    	printf("[MQTT-DEBUG] Warning: Received empty payload in on_command\n");
         return;
     }
     printf("[MQTT-DEBUG] Payload empfangen: '%.*s'\n", (int)len, payload);
