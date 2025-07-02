@@ -48,7 +48,7 @@ public:
     std::stack<State*>* modehandler_history;
     std::stack<State*>* estop_history;
 
-    Piece piece;
+    //Piece piece;
 
 
     I_Sender* timer_sender;
