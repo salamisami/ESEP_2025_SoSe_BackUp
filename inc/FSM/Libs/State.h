@@ -84,6 +84,10 @@ public: //================================================ public functions ====
     virtual State* is_pusher();
     virtual State* is_switch();
 
+    virtual State* delete_w_motor();
+    virtual State* motor_slow();
+    virtual State* motor_fast();
+    virtual State* motor_stop_fsm();
 
     virtual State* adc_calibration_done();
 
