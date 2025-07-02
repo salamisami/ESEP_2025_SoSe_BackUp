@@ -1,6 +1,4 @@
 #include "RampNotFull.h"
-#include "RampTimer.h"
-#include "HState.h"
 
 
 
@@ -18,7 +16,7 @@ RampNotFull::~RampNotFull() {}
 void RampNotFull::entry(){
 	PRINT_STATE;
     //TODO CODE
-    data->sender->send_event(Topic::INTERNAL, INTERNAL_Enum::RAMP_NOT_FULL);
+    data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RAMP_NOT_FULL);
     //HState::entry();
 }
 

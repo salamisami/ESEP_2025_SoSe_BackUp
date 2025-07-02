@@ -200,30 +200,64 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::is_switch);
     }
 
-     //neue States
-    virtual State* ramp_full();
-    virtual State* ramp_not_full();
-    virtual State* sorting_out();
-    //virtual State* error_both_r_full();
-    virtual State* error_pieces_too_close_fixed();
-    virtual State* unblock_starting_area();
+    // Neue States
+    virtual State* ramp_full() {
+        return handle_event_using_function(&State::ramp_full);
+    }
+    virtual State* ramp_not_full() {
+        return handle_event_using_function(&State::ramp_not_full);
+    }
+    virtual State* sorting_out() {
+        return handle_event_using_function(&State::sorting_out);
+    }
+    virtual State* error_pieces_too_close_fixed() {
+        return handle_event_using_function(&State::error_pieces_too_close_fixed);
+    }
+    virtual State* unblock_starting_area() {
+        return handle_event_using_function(&State::unblock_starting_area);
+    }
 
-    //neue COM States
-    virtual State* com_ramp_full();
-    virtual State* com_ramp_not_full();
+    // Neue COM States
+    virtual State* com_ramp_full() {
+        return handle_event_using_function(&State::com_ramp_full);
+    }
+    virtual State* com_ramp_not_full() {
+        return handle_event_using_function(&State::com_ramp_not_full);
+    }
+
+    // States für ErrorHandler
+    virtual State* error_c_lost_com() {
+        return handle_event_using_function(&State::error_c_lost_com);
+    }
+    virtual State* error_c_lost_nr() {
+        return handle_event_using_function(&State::error_c_lost_nr);
+    }
+    virtual State* error_c_lost_mqtt() {
+        return handle_event_using_function(&State::error_c_lost_mqtt);
+    }
+    virtual State* com_connected() {
+        return handle_event_using_function(&State::com_connected);
+    }
+    virtual State* mqtt_connected() {
+        return handle_event_using_function(&State::mqtt_connected);
+    }
+    virtual State* adc_invalid_measure() {
+        return handle_event_using_function(&State::adc_invalid_measure);
+    }
+    virtual State* cant_find_calb_conf() {
+        return handle_event_using_function(&State::cant_find_calb_conf);
+    }
+    virtual State* cant_find_rep_conf() {
+        return handle_event_using_function(&State::cant_find_rep_conf);
+    }
+    virtual State* error_w_lost() {
+        return handle_event_using_function(&State::error_w_lost);
+    }
+    virtual State* error_w_appear() {
+        return handle_event_using_function(&State::error_w_appear);
+    }
 
 
-    //States für ErrorHandler
-    virtual State* error_c_lost_com();
-    virtual State* error_c_lost_nr();
-    virtual State* error_c_lost_mqtt();
-    virtual State* com_connected();
-    virtual State* mqtt_connected();
-    virtual State* adc_invalid_measure();
-    virtual State* cant_find_calb_conf();
-    virtual State* cant_find_rep_conf();
-    virtual State* error_w_lost();
-    virtual State* error_w_appear();
 
 
 

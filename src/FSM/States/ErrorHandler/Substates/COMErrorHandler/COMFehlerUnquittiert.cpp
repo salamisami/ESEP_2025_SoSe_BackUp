@@ -22,7 +22,12 @@ void COMFehlerUnquittiert::exit(){
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* COMFehlerUnquittiert::button_reset_released()
 {
     return new COMFehlerQuittiert(data);
+}
+
+State* COMFehlerUnquittiert::com_connected()
+{
+    return new COMReconnectedUnquittiert(data);
 }

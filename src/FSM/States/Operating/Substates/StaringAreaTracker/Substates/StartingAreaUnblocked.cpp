@@ -23,7 +23,8 @@ void StartingAreaUnblocked::exit(){
 	PRINT_STATE;
 }
 
-State* NoRampFull::laser_front_blocked()
+
+State* StartingAreaUnblocked::laser_front_blocked()
 {
     return new StartingAreaBlocked(data);
 }

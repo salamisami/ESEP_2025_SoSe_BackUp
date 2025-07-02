@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "MQTTNoError.h"
 
 class MQTTReconnectedUnquittiert : public State {
 public: //============================================ constructors & destructors ============================================

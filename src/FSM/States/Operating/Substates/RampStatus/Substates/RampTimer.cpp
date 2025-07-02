@@ -31,4 +31,5 @@ State* RampTimer::laser_ramp_unblocked()
 State* RampTimer::timer(TIMER_ID id)
 {
     if(id == TIMER_ID::RAMP_TIMER) return new RampFull(data);
+    return nullptr;
 }

@@ -1,27 +1,29 @@
-#include "PieceAppearedFehlerUnquittiert.h"
+#include "MQTTReconnected.h"
+
+
 
 //================================================= constructors & destructors =================================================
-PieceAppearedFehlerUnquittiert::PieceAppearedFehlerUnquittiert(ContextData* data) : State(data) {
+MQTTReconnected::MQTTReconnected(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceAppearedFehlerUnquittiert::~PieceAppearedFehlerUnquittiert() {}
+MQTTReconnected::~MQTTReconnected() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceAppearedFehlerUnquittiert::entry(){
+void MQTTReconnected::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void PieceAppearedFehlerUnquittiert::exit(){
+void MQTTReconnected::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* PieceAppearedFehlerUnquittiert::button_reset_released()
+State* MQTTReconnected::button_reset_released()
 {
-    return new PieceAppearedFehlerQuittiert(data);
+    return new MQTTNoError(data);
 }

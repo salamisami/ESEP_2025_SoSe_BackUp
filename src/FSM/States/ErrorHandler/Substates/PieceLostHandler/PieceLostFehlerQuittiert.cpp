@@ -22,7 +22,7 @@ void PieceLostFehlerQuittiert::exit(){
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* PieceLostFehlerQuittiert::button_reset_released()
 {
     return new PieceLostNoError(data);
 }

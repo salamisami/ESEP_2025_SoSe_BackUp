@@ -22,7 +22,7 @@ void NodeRedNoError::exit(){
 	PRINT_STATE;
 }
 
-State* error_c_lost_nr()
+State* NodeRedNoError::error_c_lost_nr()
 {
     return new NodeRedFehlerUnquittiert(data);
 }

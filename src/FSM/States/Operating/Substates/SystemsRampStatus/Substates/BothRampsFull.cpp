@@ -35,7 +35,7 @@ State* BothRampsFull::ramp_not_full()
 
 State* BothRampsFull::sorting_out()
 {
-    data->sender->send_event(Topic::ERROR, Error::ERROR_BOTH_R_FULL);
+    data->sender->send_event((int8_t)Topic::ERROR, (int) Error::ERROR_BOTH_R_FULL);
     return new BothRampsFull(data);
 }
 

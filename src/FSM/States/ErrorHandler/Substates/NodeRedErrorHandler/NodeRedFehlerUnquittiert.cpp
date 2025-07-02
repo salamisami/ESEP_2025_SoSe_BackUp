@@ -22,7 +22,7 @@ void NodeRedFehlerUnquittiert::exit(){
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* NodeRedFehlerUnquittiert::button_reset_released()
 {
     return new NodeRedFehlerQuittiert(data);
 }

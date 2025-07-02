@@ -23,7 +23,7 @@ void COMFehlerQuittiert::exit(){
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* COMFehlerQuittiert::com_connected()
 {
     return new COMNoError(data);
 }

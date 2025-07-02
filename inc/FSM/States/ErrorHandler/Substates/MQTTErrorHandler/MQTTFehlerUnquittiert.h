@@ -4,6 +4,7 @@
 
 #include "State.h"
 #include "MQTTFehlerQuittiert.h"
+#include "MQTTReconnectedUnquittiert.h"
 
 
 class MQTTFehlerUnquittiert : public State {

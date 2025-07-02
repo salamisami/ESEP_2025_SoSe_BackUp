@@ -22,7 +22,7 @@ void CalibNoError::exit(){
 	PRINT_STATE;
 }
 
-State* cant_find_rep_conf()
+State* CalibNoError::cant_find_calb_conf()
 {
     return new ConfFehlerUnquittiert(data);
 }

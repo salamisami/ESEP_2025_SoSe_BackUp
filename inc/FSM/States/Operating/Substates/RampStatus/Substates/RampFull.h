@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "RampNotFull.h"
 
 
 class RampFull : public State {

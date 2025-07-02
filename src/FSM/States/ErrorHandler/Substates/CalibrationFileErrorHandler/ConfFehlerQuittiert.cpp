@@ -1,28 +1,28 @@
-#include "ReplayFehlerQuittiert.h"
+#include "ConfFehlerQuittiert.h"
 
 
 //================================================= constructors & destructors =================================================
-ReplayFehlerQuittiert::ReplayFehlerQuittiert(ContextData* data) : State(data) {
+ConfFehlerQuittiert::ConfFehlerQuittiert(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-ReplayFehlerQuittiert::~ReplayFehlerQuittiert() {}
+ConfFehlerQuittiert::~ConfFehlerQuittiert() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void ReplayFehlerQuittiert::entry(){
+void ConfFehlerQuittiert::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void ReplayFehlerQuittiert::exit(){
+void ConfFehlerQuittiert::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* ConfFehlerQuittiert::button_reset_released()
 {
-    return new ReplayNoError(data);
+    return new CalibNoError(data);
 }

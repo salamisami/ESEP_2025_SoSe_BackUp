@@ -1,27 +1,30 @@
-#include "PieceAppearedFehlerUnquittiert.h"
+#include "PiecesTooClose.h"
+
+
 
 //================================================= constructors & destructors =================================================
-PieceAppearedFehlerUnquittiert::PieceAppearedFehlerUnquittiert(ContextData* data) : State(data) {
+PiecesTooClose::PiecesTooClose(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceAppearedFehlerUnquittiert::~PieceAppearedFehlerUnquittiert() {}
+PiecesTooClose::~PiecesTooClose() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceAppearedFehlerUnquittiert::entry(){
+void PiecesTooClose::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void PieceAppearedFehlerUnquittiert::exit(){
+void PiecesTooClose::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* PieceAppearedFehlerUnquittiert::button_reset_released()
+
+State* PiecesTooClose::error_pieces_too_close_fixed()
 {
-    return new PieceAppearedFehlerQuittiert(data);
+    return new StartingAreaBlocked(data);
 }

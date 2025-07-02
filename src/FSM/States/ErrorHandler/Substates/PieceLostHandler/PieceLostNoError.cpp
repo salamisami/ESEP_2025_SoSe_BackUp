@@ -22,7 +22,7 @@ void PieceLostNoError::exit(){
 	PRINT_STATE;
 }
 
-State* error_w_lost()
+State* PieceLostNoError::error_w_lost()
 {
     return new PieceLostFehlerUnquittiert(data);
 }

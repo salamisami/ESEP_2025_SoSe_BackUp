@@ -82,6 +82,9 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::RAMP_NOT_FULL:
             newState = state->ramp_not_full();
             break;
+        case Internal_Enum::UNBLOCK_STARTING_AREA:
+            newState = state->unblock_starting_area();
+            break;
         default:
             break;
     }

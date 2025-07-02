@@ -22,7 +22,7 @@ void MQTTNoError::exit(){
 	PRINT_STATE;
 }
 
-State* error_c_lost_mqtt()
+State* MQTTNoError::error_c_lost_mqtt()
 {
     return new MQTTFehlerUnquittiert(data);
 }

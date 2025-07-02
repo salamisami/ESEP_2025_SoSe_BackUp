@@ -4,6 +4,7 @@
 
 #include "State.h"
 #include "COMFehlerQuittiert.h"
+#include "COMReconnectedUnquittiert.h"
 
 class COMFehlerUnquittiert : public State {
 public: //============================================ constructors & destructors ============================================

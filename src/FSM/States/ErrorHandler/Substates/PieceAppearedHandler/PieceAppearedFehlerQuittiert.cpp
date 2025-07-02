@@ -22,7 +22,7 @@ void PieceAppearedFehlerQuittiert::exit(){
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* PieceAppearedFehlerQuittiert::button_reset_released()
 {
     return new PieceAppearedNoError(data);
 }

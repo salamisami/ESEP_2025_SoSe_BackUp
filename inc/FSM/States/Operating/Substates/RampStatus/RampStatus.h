@@ -2,7 +2,8 @@
 #define RAMPSTATUS_H
 #pragma once
 
-#include "State.h"
+#include "HState.h"
+#include "RampNotFull.h"
 
 
 class RampStatus : public HState {

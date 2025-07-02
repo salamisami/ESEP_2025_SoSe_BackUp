@@ -1,27 +1,29 @@
-#include "PieceAppearedFehlerUnquittiert.h"
+#include "COMReconnected.h"
+
+
 
 //================================================= constructors & destructors =================================================
-PieceAppearedFehlerUnquittiert::PieceAppearedFehlerUnquittiert(ContextData* data) : State(data) {
+COMReconnected::COMReconnected(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceAppearedFehlerUnquittiert::~PieceAppearedFehlerUnquittiert() {}
+COMReconnected::~COMReconnected() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceAppearedFehlerUnquittiert::entry(){
+void COMReconnected::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void PieceAppearedFehlerUnquittiert::exit(){
+void COMReconnected::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* PieceAppearedFehlerUnquittiert::button_reset_released()
+State* COMReconnected::button_reset_released()
 {
-    return new PieceAppearedFehlerQuittiert(data);
+    return new COMNoError(data);
 }

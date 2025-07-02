@@ -22,7 +22,7 @@ void COMNoError::exit(){
 	PRINT_STATE;
 }
 
-State* error_c_lost_com()
+State* COMNoError::error_c_lost_com()
 {
     return new COMFehlerUnquittiert(data);
 }

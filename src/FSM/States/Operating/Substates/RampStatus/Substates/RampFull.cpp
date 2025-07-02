@@ -1,5 +1,4 @@
 #include "RampFull.h"
-#include "RampNotFull.h"
 
 
 //================================================= constructors & destructors =================================================
@@ -16,7 +15,7 @@ RampFull::~RampFull() {}
 void RampFull::entry(){
 	PRINT_STATE;
     //TODO CODE
-    data->sender->send_event(Topic::INTERNAL, Internal_Enum::RAMP_FULL);
+    data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RAMP_FULL);
 }
 
 void RampFull::exit(){
@@ -24,7 +23,7 @@ void RampFull::exit(){
 	PRINT_STATE;
 }
 
-State* laser_ramp_blocked()
+State* RampFull::laser_ramp_unblocked()
 {
     return new RampNotFull(data);
 }

@@ -22,7 +22,7 @@ void ReplayFehlerQuittiert::exit(){
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* ReplayFehlerQuittiert::button_reset_released()
 {
     return new ReplayNoError(data);
 }

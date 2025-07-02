@@ -22,7 +22,7 @@ void PieceAppearedNoError::exit(){
 	PRINT_STATE;
 }
 
-State* error_w_appeared()
+State* PieceAppearedNoError::error_w_appear()
 {
     return new PieceAppearedFehlerUnquittiert(data);
 }

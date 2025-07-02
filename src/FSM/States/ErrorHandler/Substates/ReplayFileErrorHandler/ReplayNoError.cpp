@@ -22,7 +22,7 @@ void ReplayNoError::exit(){
 	PRINT_STATE;
 }
 
-State* cant_find_rep_conf()
+State* ReplayNoError::cant_find_rep_conf()
 {
     return new ReplayFehlerUnquittiert(data);
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "RampTimer.h"
 
 
 class RampNotFull : public State {

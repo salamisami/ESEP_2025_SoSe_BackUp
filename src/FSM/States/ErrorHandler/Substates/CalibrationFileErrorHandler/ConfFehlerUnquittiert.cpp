@@ -22,7 +22,7 @@ void ConfFehlerUnquittiert::exit(){
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* ConfFehlerUnquittiert::button_reset_released()
 {
     return new ConfFehlerQuittiert(data);
 }

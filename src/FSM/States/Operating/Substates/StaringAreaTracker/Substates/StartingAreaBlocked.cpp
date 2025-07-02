@@ -1,27 +1,35 @@
-#include "PieceAppearedFehlerUnquittiert.h"
+#include "StartingAreaBlocked.h"
+
+
 
 //================================================= constructors & destructors =================================================
-PieceAppearedFehlerUnquittiert::PieceAppearedFehlerUnquittiert(ContextData* data) : State(data) {
+StartingAreaBlocked::StartingAreaBlocked(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-PieceAppearedFehlerUnquittiert::~PieceAppearedFehlerUnquittiert() {}
+StartingAreaBlocked::~StartingAreaBlocked() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void PieceAppearedFehlerUnquittiert::entry(){
+void StartingAreaBlocked::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void PieceAppearedFehlerUnquittiert::exit(){
+void StartingAreaBlocked::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* PieceAppearedFehlerUnquittiert::button_reset_released()
+
+State* StartingAreaBlocked::laser_front_blocked()
 {
-    return new PieceAppearedFehlerQuittiert(data);
+    return new StartingAreaBlocked(data);
+}
+
+State* StartingAreaBlocked::unblock_starting_area()
+{
+    return new StartingAreaUnblocked(data);
 }

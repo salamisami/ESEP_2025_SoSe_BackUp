@@ -22,7 +22,7 @@ void MQTTFehlerQuittiert::exit(){
 	PRINT_STATE;
 }
 
-State* button_reset_released()
+State* MQTTFehlerQuittiert::mqtt_connected()
 {
     return new MQTTNoError(data);
 }

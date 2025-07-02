@@ -6,10 +6,10 @@
 #include "StartingAreaBlocked.h"
 
 
-class StartingAreaUnblocked : public State {
+class PiecesTooClose : public State {
 public: //============================================ constructors & destructors ============================================
-    StartingAreaUnblocked(ContextData* data) ;
-    virtual ~StartingAreaUnblocked();
+    PiecesTooClose(ContextData* data) ;
+    virtual ~PiecesTooClose();
 	
 
 public: //================================================ public functions ================================================
