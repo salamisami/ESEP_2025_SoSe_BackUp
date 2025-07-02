@@ -21,8 +21,8 @@ void GateToRampCRF::exit(){
 	PRINT_STATE;
 	long ramp_duration = data->stopwatch.stop();
 	data->stopwatch.reset();
-	long ramp_timestamp = data->timeprofile_fast.timestamp[(int)Timestamp::LASER_GATE_BLOCKED] + ramp_duration;
-	data->timeprofile_fast.timestamp[(int)Timestamp::LASER_RAMP_BLOCKED] = ramp_timestamp;
+	long ramp_timestamp = data->timeprofile.fast_timestamps[(int)Timestamp::LASER_GATE_BLOCKED] + ramp_duration;
+	data->timeprofile.fast_timestamps[(int)Timestamp::LASER_RAMP_BLOCKED] = ramp_timestamp;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 }
 

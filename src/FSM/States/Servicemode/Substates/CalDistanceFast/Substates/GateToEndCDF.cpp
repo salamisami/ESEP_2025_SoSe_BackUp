@@ -13,12 +13,12 @@ GateToEndCDF::~GateToEndCDF() {}
 //===================================================== public functions =====================================================
 void GateToEndCDF::entry(){
 	PRINT_STATE;
-    data->timeprofile_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] = data->stopwatch.peek_time();
+    data->timeprofile.fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED] = data->stopwatch.peek_time();
 }
 
 void GateToEndCDF::exit(){
     PRINT_STATE;
-    data->timeprofile_fast.timestamp[(int) Timestamp::END] = data->stopwatch.peek_time();
+    data->timeprofile.fast_timestamps[(int) Timestamp::END] = data->stopwatch.peek_time();
 }
 
 State* GateToEndCDF::laser_back_blocked(){

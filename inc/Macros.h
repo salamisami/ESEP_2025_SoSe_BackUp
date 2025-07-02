@@ -30,3 +30,5 @@
 #else
 #define PRINT_STATE
 #endif
+
+#define SAVE_LOCATION_TIMEPROFILE "time_profiles.csv"

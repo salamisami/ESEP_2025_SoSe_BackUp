@@ -13,7 +13,7 @@ PieceAtGateCDF::~PieceAtGateCDF() {}
 //===================================================== public functions =====================================================
 void PieceAtGateCDF::entry(){
 	PRINT_STATE;
-	data->timeprofile_fast.timestamp[(int)Timestamp::LASER_GATE_BLOCKED] = data->stopwatch.peek_time();
+	data->timeprofile.fast_timestamps[(int)Timestamp::LASER_GATE_BLOCKED] = data->stopwatch.peek_time();
 
 }
 

@@ -9,6 +9,7 @@
 //#include "State.h"
 #include "Stopwatch.h"
 #include "PieceTracker.h"
+#include "Piece.h"
 #include <vector>
 #include <stack>
 #include <queue>
@@ -17,12 +18,7 @@
 class State;
 
 
-class Piece {
-public:
-    int id = 0;
-    CheckPiece_Enum type = CheckPiece_Enum::UNKNOWN;
-    long sorting_time = 0;
-};
+
 
 
 class ContextData {
@@ -46,8 +42,7 @@ public:
 public:
     int event_payload;
     Stopwatch stopwatch;
-    TimeProfile timeprofile_fast;
-    TimeProfile timeprofile_slow;
+    TimeProfile timeprofile;
     CheckPiece_Enum actual_piece = CheckPiece_Enum::UNKNOWN;
     //TODO implement a safe stack here, that returns nullptr if no elements left in the stack
     std::stack<State*>* modehandler_history;

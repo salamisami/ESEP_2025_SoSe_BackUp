@@ -96,18 +96,18 @@ public: //================================================ public functions ====
     virtual State* reset_to_tall_w_metal() {
         return handle_event_using_function(&State::reset_to_tall_w_metal);
     }
-//====================================================MotorPiece======================================================
-    virtual State* delete_w_motor(){
-      return handle_event_using_function(&State::delete_w_motor)
+    //====================================================MotorPiece======================================================
+    virtual State* delete_w_motor() {
+        return handle_event_using_function(&State::delete_w_motor);
     }
-    virtual State* motor_slow(){
-      return handle_event_using_function(&State::motor_slow)
+    virtual State* motor_slow() {
+        return handle_event_using_function(&State::motor_slow);
     }
-    virtual State* motor_fast(){
-      return handle_event_using_function(&State::motor_fast)
+    virtual State* motor_fast() {
+        return handle_event_using_function(&State::motor_fast);
     }
-    virtual State* motor_stop_fsm(){
-      return handle_event_using_function(&State::motor_stop_fsm)
+    virtual State* motor_stop_fsm() {
+        return handle_event_using_function(&State::motor_stop_fsm);
     }
 
 

@@ -278,7 +278,7 @@ State *Context<T>::handleInterrupt(int event_value)
 
 
 template <typename T>
-State* Context<T>::handlePiece(int event_value)  {
+State* Context<T>::handlePiece(int event_value) {
     State* newState = nullptr;
     switch((CheckPiece_Enum) event_value) {
         case CheckPiece_Enum::UNKNOWN:
