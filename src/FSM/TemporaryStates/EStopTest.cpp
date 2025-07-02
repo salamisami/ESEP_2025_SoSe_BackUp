@@ -29,8 +29,8 @@ State* EStopTest::button_estop_pressed() {
 }
 
 State* EStopTest::button_estop_released() {
-	return nullptr;
 	PRINT_STATE;
+	return nullptr;
 }
 State* EStopTest::button_reset_pressed() {
 	PRINT_STATE;

@@ -112,10 +112,12 @@ Logic<InitialState>::~Logic() {
 //===================================================== private functions =====================================================
 template <typename InitialState>
 void Logic<InitialState>::threadFunction() {
+    DEBUG("Logic thread is running");
     int eventNo = 0;
     while(logicRunning) {
         _pulse event;
         int status = local_receiver->receive_event(&event);
+       ;
         if(status == 0) {
             eventNo++;
             int8_t topic = event.code;
