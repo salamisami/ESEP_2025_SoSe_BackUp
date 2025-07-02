@@ -5,6 +5,7 @@
 
 #include "Timer.h"
 #include "QNet.h"
+#include "StateContainer.h"
 //#include "State.h"
 #include "Stopwatch.h"
 #include "PieceTracker.h"
@@ -47,10 +48,10 @@ public:
     bool is_switch = false;
     bool is_ramp_full = false;
 
-
     bool workpieces = false;
     bool motor_slowed = false;
     bool motor_stopped = false;
+    StateContainer workpiece_List;
 };
 
 #endif
