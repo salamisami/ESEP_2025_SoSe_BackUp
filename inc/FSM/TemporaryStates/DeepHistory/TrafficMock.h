@@ -1,22 +1,21 @@
-#ifndef BOOT_H
-#define BOOT_H
+#ifndef TRAFFICMOCK_H
+#define TRAFFICMOCK_H
 #pragma once
 
-#include "State.h"
-#include "ModeHandler.h"
-#include "OperatingMock.h"
-class Boot : public State {
+#include "HState.h"
+#include "Green.h"
+
+class TrafficMock : public HState {
 public: //============================================ constructors & destructors ============================================
-    Boot(ContextData* data);
-    virtual ~Boot();
+    TrafficMock(ContextData* data);
+	TrafficMock(ContextData* data, State* initial_substate);
+    virtual ~TrafficMock();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
-
-	State* is_switch() override;
-	State* is_pusher() override;
+    void entry() override;
+    void exit() override;
+	State* clone() override;
     
 
 

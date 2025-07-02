@@ -16,6 +16,7 @@ public: //================================================ public functions ====
     void exit() override;
 
 	State* button_reset_pressed() override;
+	State* laser_back_blocked() override;
     
 	State* clone() override;
 
