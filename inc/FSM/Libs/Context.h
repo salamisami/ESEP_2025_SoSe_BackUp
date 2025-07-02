@@ -244,6 +244,7 @@ void Context<T>::handleEvent(_pulse event)
     State *newState = nullptr;
     Topic event_code = (Topic)event.code;
     int event_value = event.value.sival_int;
+    data->event_payload = event_value;
     switch(event_code) {
         case Topic::INTERRUPT:
             newState = handleInterrupt(event_value);

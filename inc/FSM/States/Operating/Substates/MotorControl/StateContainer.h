@@ -73,4 +73,8 @@ public:
     size_t size() const {
         return entries.size();
     }
+    
+    bool isEmpty() const {
+        return entries.empty();
+    }
 };
