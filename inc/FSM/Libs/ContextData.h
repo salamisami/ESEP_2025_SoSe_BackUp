@@ -39,7 +39,8 @@ public:
     TimeProfile timeprofile_slow;
     Piece actual_piece = Piece::UNKNOWN;
     //TODO implement a safe stack here, that returns nullptr if no elements left in the stack
-    std::stack<State*>* stateStack;
+    std::stack<State*>* estop_history;
+    std::stack<State*>* modehandler_history;
     I_Sender* timer_sender;
     Timer* timer;
     I_Sender* sender;
