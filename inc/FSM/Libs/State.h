@@ -96,6 +96,20 @@ public: //================================================ public functions ====
     virtual State* reset_to_tall_w_metal() {
         return handle_event_using_function(&State::reset_to_tall_w_metal);
     }
+//====================================================MotorPiece======================================================
+    virtual State* delete_w_motor(){
+      return handle_event_using_function(&State::delete_w_motor)
+    }
+    virtual State* motor_slow(){
+      return handle_event_using_function(&State::motor_slow)
+    }
+    virtual State* motor_fast(){
+      return handle_event_using_function(&State::motor_fast)
+    }
+    virtual State* motor_stop_fsm(){
+      return handle_event_using_function(&State::motor_stop_fsm)
+    }
+
 
     //================================================ external events ================================================
 
@@ -111,11 +125,6 @@ public: //================================================ public functions ====
     virtual State* laser_back_blocked() {
         return handle_event_using_function(&State::laser_back_blocked);
     }
-    virtual State* delete_w_motor();
-    virtual State* motor_slow();
-    virtual State* motor_fast();
-    virtual State* motor_stop_fsm();
-
     virtual State* laser_back_unblocked() {
         return handle_event_using_function(&State::laser_back_unblocked);
     }
