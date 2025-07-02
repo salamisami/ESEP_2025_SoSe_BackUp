@@ -266,19 +266,19 @@ void Context<T>::handleEvent(_pulse event)
             break;
         case TOPIC::MOTOR_STOP_FSM:
           State *newState = nullptr;
-          newstate = state->motor_stop_fsm(event_value);
+          newstate = state->motor_stop_fsm();
           break;
         case TOPIC::MOTOR_FAST:
           State *newState = nullptr;
-          newState = state->motor_fast(event_value);
+          newState = state->motor_fast();
           break;
         case TOPIC::MOTOR_SLOW:
           State *newState = nullptr;
-          newState = state->motor_slow(event_value);
+          newState = state->motor_slow();
           break;
         case TOPIC::DELETE_W_MOTOR:
           State *newState = nullptr;
-          newState = state->delete_w_motor(event_value);
+          newState = state->delete_w_motor();
           break;
         default:
             break;
