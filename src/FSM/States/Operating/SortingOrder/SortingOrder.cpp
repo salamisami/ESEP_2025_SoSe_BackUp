@@ -1,26 +1,22 @@
-#include "CalRampSlow.h"
-
+#include "SortingOrder.h"
 
 //================================================= constructors & destructors =================================================
-CalRampSlow::CalRampSlow(ContextData* data) : OrthState(data,
-    {new EndToGateCRS(data),new PusherIdleCRS(data)} ///substates
-    , new CalibrationFinished(data)                  //default class
-) {
+SortingOrder::SortingOrder(ContextData* data) : HState(data, new PieceFlat(data)) {
     //substate = new SubState(data);
 }
 
-CalRampSlow::~CalRampSlow() {}
+SortingOrder::~SortingOrder() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void CalRampSlow::entry() {
-    PRINT_STATE;
-    OrthState::entry();
+void SortingOrder::entry(){
+	PRINT_STATE;
+	HState::entry();
 }
 
-void CalRampSlow::exit() {
-    OrthState::exit();
-    PRINT_STATE;
+void SortingOrder::exit(){
+	HState::exit();
+	PRINT_STATE;
 }

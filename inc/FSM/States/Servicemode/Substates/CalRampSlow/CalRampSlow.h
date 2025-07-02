@@ -8,15 +8,13 @@
 
 class CalRampSlow : public OrthState {
 public: //============================================ constructors & destructors ============================================
-    CalRampSlow(ContextData* data) ;
+    CalRampSlow(ContextData* data);
     virtual ~CalRampSlow();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	State* laser_ramp_blocked() override;
     
 
 

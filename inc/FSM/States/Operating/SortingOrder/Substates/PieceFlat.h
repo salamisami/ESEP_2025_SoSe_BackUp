@@ -1,22 +1,25 @@
-#ifndef BOOT_H
-#define BOOT_H
+#ifndef PIECEFLAT_H
+#define PIECEFLAT_H
 #pragma once
 
 #include "State.h"
-#include "ModeHandler.h"
-#include "OperatingMock.h"
-class Boot : public State {
+#include "PieceTall.h"
+#include "PieceTallWithMetal.h"
+
+class PieceFlat : public State {
 public: //============================================ constructors & destructors ============================================
-    Boot(ContextData* data);
-    virtual ~Boot();
+    PieceFlat(ContextData* data) ;
+    virtual ~PieceFlat();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
+    void entry() override;
+    void exit() override;
+	State* clone() override;
 
-	State* is_switch() override;
-	State* is_pusher() override;
+	State* check_piece() override;
+	State* reset_to_tall() override;
+	State* reset_to_tall_w_metal() override;
     
 
 

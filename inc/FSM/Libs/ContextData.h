@@ -37,6 +37,7 @@ public:
     Stopwatch stopwatch;
     TimeProfile timeprofile_fast;
     TimeProfile timeprofile_slow;
+    Piece actual_piece = Piece::UNKNOWN;
     //TODO implement a safe stack here, that returns nullptr if no elements left in the stack
     std::stack<State*>* stateStack;
     I_Sender* timer_sender;
@@ -44,6 +45,8 @@ public:
     I_Sender* sender;
     PieceTracker* piece_tracker;
     bool is_switch = false;
+    bool is_ramp_full = false;
+
 
 };
 

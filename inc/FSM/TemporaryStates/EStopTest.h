@@ -1,22 +1,35 @@
-#ifndef BOOT_H
-#define BOOT_H
+#ifndef ESTOPTEST_H
+#define ESTOPTEST_H
 #pragma once
 
 #include "State.h"
-#include "ModeHandler.h"
-#include "OperatingMock.h"
-class Boot : public State {
+
+class EStopTest : public State {
 public: //============================================ constructors & destructors ============================================
-    Boot(ContextData* data);
-    virtual ~Boot();
+    EStopTest(ContextData* data) ;
+    virtual ~EStopTest();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
+    void entry() override;
+    void exit() override;
+	State* clone() override;
 
-	State* is_switch() override;
-	State* is_pusher() override;
+
+	State* button_estop_pressed() override;
+	State* button_estop_released() override;
+
+	State* button_reset_pressed() override;
+	State* button_reset_released() override;
+
+
+	//COM------------------------------
+
+	
+	State* com_button_estop_pressed() override;
+	State* com_button_estop_released() override;
+
+	State* com_button_reset_pressed() override;
     
 
 

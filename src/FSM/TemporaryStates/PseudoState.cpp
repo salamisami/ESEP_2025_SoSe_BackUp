@@ -1,26 +1,24 @@
-#include "CalRampSlow.h"
-
+#include "PseudoState.h"
 
 //================================================= constructors & destructors =================================================
-CalRampSlow::CalRampSlow(ContextData* data) : OrthState(data,
-    {new EndToGateCRS(data),new PusherIdleCRS(data)} ///substates
-    , new CalibrationFinished(data)                  //default class
-) {
+PseudoState::PseudoState(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-CalRampSlow::~CalRampSlow() {}
+PseudoState::~PseudoState() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void CalRampSlow::entry() {
-    PRINT_STATE;
-    OrthState::entry();
+void PseudoState::entry(){
+	PRINT_STATE;
 }
 
-void CalRampSlow::exit() {
-    OrthState::exit();
-    PRINT_STATE;
+void PseudoState::exit(){
+	PRINT_STATE;
+}
+
+State* PseudoState::clone(){
+	return new PseudoState(data);
 }

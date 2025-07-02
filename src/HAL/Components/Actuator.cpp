@@ -398,7 +398,7 @@ void Actuator::handle_event(_pulse event) {
                 is_neighbor_estop = false;
                 check_estop();
             }
-            printf("Event Code: %d, Event Value: %d\n", event.code, event.value.sival_int);
+            //printf("Event Code: %d, Event Value: %d\n", event.code, event.value.sival_int);
             break;
         default:
             break;

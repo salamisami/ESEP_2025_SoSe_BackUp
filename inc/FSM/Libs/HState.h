@@ -15,68 +15,100 @@ public:
      * @brief HState is a hierarchial state. It contains one substate as a pointer. This HState also contains entry and exit functions.
      * @param data a global context data. The data will be forwarded to parent class (State)
      * @param initial_substate the initial of the substate inside this hierarchial state
+     * @param default_exit_next_state the next state to go, after the substate has reached the default exit.
      */
-    HState(ContextData* data, State* initial_substate);
+    HState(ContextData* data, State* initial_substate, State* default_exit_next_state = nullptr)
+        :State(data)
+        , substate(initial_substate)
+        , default_exit_state_(default_exit_next_state) {
+        //std::cout << "HState Constructor" << std::endl;
+    }
 
     //Disable copy constructor, because we're going to use clone() instead
     HState(const HState& other) = delete;
-    virtual ~HState() override;
+    virtual ~HState() override {
+        //std::cout << "HState Destructor" << std::endl;
+        if(substate != nullptr) {
+            delete substate;
+        }
+    }
 
     //================================================ public functions ================================================
 public:
-    virtual void entry() override;
-    virtual void exit() override;
+    virtual void entry() override {
+        //PRINT_STATE;
+        substate->entry();
+    }
+    virtual void exit() override {
+        //PRINT_STATE;
+        substate->exit();
+    }
 
     //TODO make virtual
-    virtual State* clone() override;
-    virtual std::string get_current_state() override;
+    virtual State* clone() override {
+        DEBUG("Warning, function of abstract class HState::clone() is called.");
+        return nullptr;
+    }
+    virtual std::string get_current_state() override {
+        std::string substate_name = substate->get_current_state();
+        return substate_name;
+    }
 
-    virtual State* laser_front_blocked() override;
-    virtual State* laser_front_unblocked() override;
-    virtual State* laser_back_blocked() override;
-    virtual State* laser_back_unblocked() override;
-    virtual State* button_start_pressed() override;
-    virtual State* button_start_released() override;
-    virtual State* button_stop_pressed() override;
-    virtual State* button_stop_released() override;
-    virtual State* button_reset_pressed() override;
-    virtual State* button_reset_released() override;
-    virtual State* button_estop_pressed() override;
-    virtual State* button_estop_released() override;
-    virtual State* metal_detected() override;
-    virtual State* metal_not_detected() override;
-    virtual State* laser_sorting_gate_blocked() override;
-    virtual State* laser_sorting_gate_unblocked() override;
-    virtual State* laser_ramp_blocked() override;
-    virtual State* laser_ramp_unblocked() override;
-    virtual State* adc_top_area_blocked() override;
-    virtual State* adc_top_area_unblocked() override;
-    virtual State* adc_side_area_blocked() override;     //unused
-    virtual State* adc_side_area_unblocked() override;   //unused
+    //================================================ internal events ================================================
+    virtual State* timer(TIMER_ID id) override {
+        if(substate == nullptr) {
+            return nullptr;
+        }
+        State* newSubstate = substate->timer(id);
+        if(newSubstate == State::EXIT_STATE) {
+            // Handle substate exit
+            substate->exit();
+            delete substate;
+            substate = nullptr;
 
-    virtual State* com_button_estop_pressed() override;
-    virtual State* com_button_estop_released() override;
-
-    virtual State* is_pusher() override;
-    virtual State* is_switch() override;
-
-
-
-
-    virtual State* adc_calibration_done() override;
-
-    virtual State* timer(TIMER_ID id) override;
+            // Return default exit state to parent
+            return default_exit_state_;
+        } else if(newSubstate != nullptr) {
+            // there is substate change, change only the substate
+            substate->exit();
+            delete substate;
+            substate = newSubstate;
+            substate->entry();
+        }
+        return nullptr;
+    }
 
 
 
     //================================================ private variables ================================================
 protected:
     State* substate;
+    State* default_exit_state_;  // State to transition to on exit
 
-    //================================================ private functions ================================================
-private:
-    State* handle_event_using_function(State* (State::* handler_function)());
+    //================================================ protected ================================================
+protected:
+    State* handle_event_using_function(State* (State::* handler_function)()) override {
+        if(substate == nullptr) {
+            return nullptr;
+        }
+        State* newSubstate = (substate->*handler_function)();
+        if(newSubstate == State::EXIT_STATE) {
+            // Handle substate exit
+            substate->exit();
+            delete substate;
+            substate = nullptr;
 
+            // Return default exit state to parent
+            return default_exit_state_;
+        } else if(newSubstate) {
+            // Normal state transition
+            substate->exit();
+            delete substate;
+            substate = newSubstate;
+            newSubstate->entry();
+        }
+        return nullptr;
+    }
 
 };
 

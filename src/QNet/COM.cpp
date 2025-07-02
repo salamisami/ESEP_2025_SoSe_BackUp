@@ -67,7 +67,7 @@ void COM::runDispatcher() {
                                     break;
                                 case InterruptEnum::BUTTON_RESET_PRESSED:
                                     dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED);
+                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED);
                                     highPriorityQueue.push_back(dispatcherMsg);
                                     break;
                                 /*case InterruptEnum::BUTTON_RESET_RELEASED:
@@ -131,7 +131,8 @@ void COM::runDispatcher() {
                                 originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL) ||
                                 originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL)||
                                 originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED)||
-                                originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED)) {
+                                originalValue == static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED)||
+                                originalValue == static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED)      ) {
                                 break;
                             }
                             if(FBM == 1) {
@@ -212,7 +213,7 @@ void COM::checkQueues() {
         auto msg = lowPriorityQueue.front();
         lowPriorityQueue.pop_front();
         lock.unlock();
-        printf("Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
+        //printf("Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
         sendToServer(msg);
         lock.lock();
     }
@@ -388,6 +389,10 @@ void COM::processMessage(const _pulse& msg) {
         if(msg.value.sival_int == ((int) COM_Enum::BUTTON_ESTOP_PRESSED)) {
             sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
             COUT("SENDING ESTOP TO DISPATCHER");
+        }
+        else if (msg.value.sival_int == ((int)COM_Enum::BUTTON_RESET_PRESSED)){
+        	sendToDispatcher(msg);
+        	return;
         }
         else if (msg.value.sival_int != (((int)COM_Enum::TIMEOUT_COM)||((int)COM_Enum::HEARTBEAT)))
         {

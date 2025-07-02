@@ -4,7 +4,7 @@
 
 #include "Macros.h"
 #include "Stopwatch.h"
-
+#include <condition_variable>
 #include <cstdint>
 #include <thread>
 //#include <sys/neutrino.h>
@@ -18,6 +18,7 @@ enum class Area : uint8_t {
 	START_ADC = 0,
 	ADC,
 	ADC_GATE,
+
 	GATE,
 	GATE_END,
 	GATE_RAMP
@@ -103,23 +104,27 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
-	std::thread debug_thread;
-	Stopwatch stopwatch;
-	//Timer timer;
-	//pointers
-	//primitive types
 	long fast_deadlines[6];
 	long slow_deadlines[6];
 
 	long fast_timestamps[6];
 	long slow_timestamps[6];
 
-	double current_position = 0;
+	std::condition_variable cv_occupied;
+	std::thread piece_thread;
+	std::thread debug_thread;
+	//Timer timer;
+	//pointers
+	//primitive types
+	Stopwatch stopwatch;
 	//bool and char
 	bool running = false;
 	Area current_area = Area::START_ADC;
+	double current_position = 0;
 	uint8_t current_mode = 0;
 	bool debug = true;
+
+
 
 
 private: //================================================ private functions ================================================

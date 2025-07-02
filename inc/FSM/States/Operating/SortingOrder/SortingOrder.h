@@ -1,22 +1,19 @@
-#ifndef BOOT_H
-#define BOOT_H
+#ifndef SORTINGORDER_H
+#define SORTINGORDER_H
 #pragma once
 
-#include "State.h"
-#include "ModeHandler.h"
-#include "OperatingMock.h"
-class Boot : public State {
+#include "HState.h"
+#include "PieceFlat.h"
+
+class SortingOrder : public HState {
 public: //============================================ constructors & destructors ============================================
-    Boot(ContextData* data);
-    virtual ~Boot();
+    SortingOrder(ContextData* data) ;
+    virtual ~SortingOrder();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
-
-	State* is_switch() override;
-	State* is_pusher() override;
+    void entry() override;
+    void exit() override;
     
 
 

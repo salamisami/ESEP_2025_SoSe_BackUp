@@ -76,11 +76,11 @@ enum class Topic : int8_t
     ADC,
     STOP_THREAD,
     TIMER,
-	REC_REPLAY,
+    REC_REPLAY,
 	REM_CON,
-	INTERNAL
-
+    INTERNAL
 };
+
 
 enum class ADC_Enum : int
 {
@@ -146,6 +146,13 @@ enum class TIMER_ID : int
     PUSHRAMP_STR,
     CAL_GATE_RAMP2,
     CAL_GATE_RAMP1
+};
+
+enum class Piece: int{
+    UNKNOWN = 0,
+    FLAT,
+    TALL,
+    TALL_WITH_METAL
 };
 
 enum class RecReplayEnum: int {
