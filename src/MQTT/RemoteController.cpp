@@ -39,19 +39,39 @@ Remote_Controller::Remote_Controller()  {
 }
 
 Remote_Controller::~Remote_Controller() {
-    mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
-    RemConThreadRecive.join();
-    RemConThreadSend.join();
-    RemConThreadHeartBeat.join();
+	// 1. Stop-Flags setzen
+	    RemCon_recive_running = false;
+	    RemCon_send_running = false;
+	    RemCon_HeartCheck_running = false;
+	    MQTT_Utilities::connection_lost = true;
 
-    if(detached) {
-        delete mock_dispatcher_sender;
-        delete local_sender;
-        delete mock_dispatcher_receiver;
-        delete local_receiver;
-    } else {
-        delete mock_dispatcher_sender;
-    }
+	    // 2. Threads ggf. aufwecken
+	    queueCV.notify_all();
+
+	    // 3. Stop-Event schicken
+//	    if (mock_dispatcher_sender)
+//	        mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
+
+	    // 4. Threads joinen (warten bis sie beendet sind)
+	    if (RemConThreadRecive.joinable())
+	        RemConThreadRecive.join();
+	    if (RemConThreadSend.joinable())
+	        RemConThreadSend.join();
+	    if (RemConThreadHeartBeat.joinable())
+	        RemConThreadHeartBeat.join();
+
+	    // 5. Ressourcen freigeben
+	    if(detached) {
+	        delete mock_dispatcher_sender;
+	        delete local_sender;
+	        delete mock_dispatcher_receiver;
+	        delete local_receiver;
+	    } else {
+	        delete mock_dispatcher_sender;
+	    }
+
+	    // 6. MQTT aufräumen
+	    MQTT_Utilities::mqtt_festo_cleanup();
 }
 
 void Remote_Controller::init(bool reInit) {

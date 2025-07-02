@@ -19,33 +19,6 @@
 #define COUT(msg) std::cout << msg << std::endl
 using namespace std;
 
-//volatile int lastCommand = 0;
-//void on_command(const char* payload) {
-//    printf("Befehl empfangen: %s\n", payload);
-//    if (strcmp(payload, "start") == 0) {
-//    	lastCommand = 1;
-////        mqtt_festo_publish("festo/anlage1-2/status/Start", "1");
-////        mqtt_festo_publish("festo/anlage1-2/console", "Anlage gestartet");
-//    } else if (strcmp(payload, "stop") == 0) {
-//    	lastCommand = 2;
-////        mqtt_festo_publish("festo/anlage1-2/status/Start", "0");
-////        mqtt_festo_publish("festo/anlage1-2/console", "Anlage gestoppt");
-//    } else if (strcmp(payload, "notaus") == 0) {
-//    	lastCommand = 3;
-////        mqtt_festo_publish("festo/anlage1-2/status/Reset", "0");
-////        mqtt_festo_publish("festo/anlage1-2/console", "NOT-AUS aktiviert");
-//        // Hier ggf. deine eigentliche Notaus-Logik ergänzen!
-//    } else if (strcmp(payload, "reset") == 0) {
-//    	lastCommand = 4;
-////        mqtt_festo_publish("festo/anlage1-2/status/Reset", "1");
-////        mqtt_festo_publish("festo/anlage1-2/console", "Anlage zurückgesetzt");
-//    } else {
-//        //mqtt_festo_publish("festo/anlage1-2/console", "Unbekannter Befehl!");
-//    }
-//}
-
-
-
 int main() {
   cout << "Starting Program..." << endl; // prints Hello World!!!
   system("slay gns");
@@ -135,6 +108,20 @@ int main() {
   while(1) {
 
   }
+   delete hal;
+   delete rec;
+   delete logic;
+   delete remcon;
+
+   delete RemCon_receiver;
+   delete rc_sender;
+   delete recorder_receiver;
+   delete recorder_sender;
+   delete hal_sender;
+   delete fsm_sender;
+   delete fsm_receiver;
+   delete hal_receiver;
+
 
   cout << "Program Finished." << endl;
   return 0;
