@@ -13,7 +13,7 @@ ADCToGateCDS::~ADCToGateCDS() {}
 //===================================================== public functions =====================================================
 void ADCToGateCDS::entry(){
 	PRINT_STATE;
-	data->timeprofile_slow.timestamp[(int)Timestamp::ADC_UNBLOCKED] = data->stopwatch.peek_time();
+	data->timeprofile.slow_timestamps[(int)Timestamp::ADC_UNBLOCKED] = data->stopwatch.peek_time();
 
 }
 

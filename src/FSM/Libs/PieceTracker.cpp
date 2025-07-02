@@ -1,17 +1,14 @@
 #include "PieceTracker.h"
 
 //================================================= constructors & destructors =================================================
-PieceTracker::PieceTracker(TimeProfile input_profile_fast, TimeProfile input_profile_slow) {
-    convert_to_deadlines(input_profile_slow, input_profile_fast);
+
+
+PieceTracker::PieceTracker(const std::string& config_location) {
+    TimeProfileManager::load_profile(&time_profile, config_location);
     running = true;
-    std::copy(std::begin(input_profile_fast.timestamp), std::end(input_profile_fast.timestamp), std::begin(fast_timestamps));
-    std::copy(std::begin(input_profile_slow.timestamp), std::end(input_profile_slow.timestamp), std::begin(slow_timestamps));
-    //piece_thread = std::thread(&PieceTracker::thread_function, this);
-    //set_thread_priority(piece_thread.native_handle(), 255);  // Higher priority for main thread
-    //piece_thread.detach();
     stop();
     debug_thread = std::thread(&PieceTracker::debug_function, this);
-    //debug_thread.detach();
+    debug_thread.detach();
 }
 
 PieceTracker::~PieceTracker() {
@@ -19,9 +16,9 @@ PieceTracker::~PieceTracker() {
     running = false;  // Signal threads to stop
 
     // Wake up threads if they're waiting
-    if(debug_thread.joinable()) {
-        debug_thread.join();
-    }
+    // if(debug_thread.joinable()) {
+    //     debug_thread.join();
+    // }
 }
 
 //===================================================== private functions =====================================================
@@ -34,6 +31,10 @@ PieceTracker::~PieceTracker() {
 // Timestamp: 5612
 // Timestamp: 4857
 
+
+//piece_thread = std::thread(&PieceTracker::thread_function, this);
+//set_thread_priority(piece_thread.native_handle(), 255);  // Higher priority for main thread
+//piece_thread.detach();
 // void PieceTracker::set_thread_priority(pthread_t thread, int priority) {
 //     struct sched_param param;
 //     param.sched_priority = priority;
@@ -61,11 +62,11 @@ std::pair<Area, double> PieceTracker::timestamp_to_area_pos(const long& timestam
             return std::make_pair(Area::START_ADC, 0);
         case 1:
             //slow
-            selected_timestamps = slow_timestamps;
+            selected_timestamps = time_profile.slow_timestamps;
             break;
         case 2:
             //fast
-            selected_timestamps = fast_timestamps;
+            selected_timestamps = time_profile.fast_timestamps;
             break;
         default:
             THROW("Wrong mode");
@@ -102,13 +103,13 @@ long PieceTracker::area_pos_to_timestamp(const Area& input_area, const double& i
             return 0;
         case 1:
             //slow
-            selected_timestamps = slow_timestamps;
-            selected_deadlines = slow_deadlines;
+            selected_timestamps = time_profile.slow_timestamps;
+            selected_deadlines = time_profile.slow_deadlines;
             break;
         case 2:
             //fast
-            selected_timestamps = fast_timestamps;
-            selected_deadlines = fast_deadlines;
+            selected_timestamps = time_profile.fast_timestamps;
+            selected_deadlines = time_profile.fast_deadlines;
             break;
         default:
             THROW("Wrong mode");
@@ -128,22 +129,6 @@ long PieceTracker::area_pos_to_timestamp(const Area& input_area, const double& i
     // long start = selected_timestamps[(int) input_area - 1];
     // long end = selected_timestamps[(int) input_area];
     // return (long) (current_position * (end - start) + start ) / 100;
-}
-
-void PieceTracker::convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast) {
-    slow_deadlines[0] = input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
-    slow_deadlines[1] = input_timetable_slow.timestamp[(int) Timestamp::ADC_UNBLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
-    slow_deadlines[2] = input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::ADC_UNBLOCKED];
-    slow_deadlines[3] = input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-    slow_deadlines[4] = input_timetable_slow.timestamp[(int) Timestamp::END] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
-    slow_deadlines[5] = input_timetable_slow.timestamp[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-
-    fast_deadlines[0] = input_timetable_fast.timestamp[(int) Timestamp::ADC_BLOCKED];
-    fast_deadlines[1] = input_timetable_fast.timestamp[(int) Timestamp::ADC_UNBLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::ADC_BLOCKED];
-    fast_deadlines[2] = input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::ADC_UNBLOCKED];
-    fast_deadlines[3] = input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-    fast_deadlines[4] = input_timetable_fast.timestamp[(int) Timestamp::END] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
-    fast_deadlines[5] = input_timetable_fast.timestamp[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
 }
 
 
