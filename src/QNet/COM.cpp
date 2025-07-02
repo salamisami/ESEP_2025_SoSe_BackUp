@@ -212,7 +212,7 @@ void COM::checkQueues() {
         auto msg = lowPriorityQueue.front();
         lowPriorityQueue.pop_front();
         lock.unlock();
-        printf("Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
+        //printf("Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
         sendToServer(msg);
         lock.lock();
     }
