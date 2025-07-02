@@ -67,7 +67,7 @@ void COM::runDispatcher() {
                                     break;
                                 case InterruptEnum::BUTTON_RESET_PRESSED:
                                     dispatcherMsg.code = static_cast<int>(Topic::COM);
-                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED);
+                                    dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED);
                                     highPriorityQueue.push_back(dispatcherMsg);
                                     break;
                                 /*case InterruptEnum::BUTTON_RESET_RELEASED:
