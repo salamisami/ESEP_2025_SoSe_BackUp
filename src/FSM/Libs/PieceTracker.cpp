@@ -221,4 +221,3 @@ bool DistanceTracker::send_to_ramp() {
         return true;
     }
     return false;
-}
