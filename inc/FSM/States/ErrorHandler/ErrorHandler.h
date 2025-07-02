@@ -6,11 +6,13 @@
 
 class ErrorHandler : public OrthState {
 public: //============================================ constructors & destructors ============================================
-    ErrorHandler(ContextData* data) ;
+    ErrorHandler(ContextData* data);
+	ErrorHandler(ContextData* data, std::vector<State*> initial_substates);
     virtual ~ErrorHandler();
 	
 
 public: //================================================ public functions ================================================
+	State* clone() override;
     void entry() override;
     void exit() override;
 

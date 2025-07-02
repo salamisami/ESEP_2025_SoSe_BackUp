@@ -3,9 +3,9 @@
 
 //================================================= constructors & destructors =================================================
 ErrorHandler::ErrorHandler(ContextData* data) : OrthState(data,
-	std::vector<State*>({
+	{
 		//TODO return substate...
-		})
+	}
 ) {
 	//substate = new SubState(data);
 }
@@ -16,6 +16,13 @@ ErrorHandler::~ErrorHandler() {}
 
 
 //===================================================== public functions =====================================================
+State* ErrorHandler::clone()
+{
+	auto cloned_substates = OrthState::clone_substates();
+	ErrorHandler* cloned_state = new ErrorHandler(data, clone_substates);
+	return cloned_state;
+}
+
 void ErrorHandler::entry() {
 	PRINT_STATE;
 	//data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
