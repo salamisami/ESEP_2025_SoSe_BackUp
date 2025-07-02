@@ -103,6 +103,10 @@ public: //================================================ public functions ====
     virtual State* laser_back_blocked() {
         return handle_event_using_function(&State::laser_back_blocked);
     }
+    virtual State* delete_w_motor();
+    virtual State* motor_slow();
+    virtual State* motor_fast();
+    virtual State* motor_stop_fsm();
 
     virtual State* laser_back_unblocked() {
         return handle_event_using_function(&State::laser_back_unblocked);
