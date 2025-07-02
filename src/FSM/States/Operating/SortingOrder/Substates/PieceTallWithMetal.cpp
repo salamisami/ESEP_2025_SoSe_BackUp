@@ -54,4 +54,3 @@ State* PieceTallWithMetal::tall_piece() {
 	}
 	return nullptr;
 	//return new PieceTallWithMetal(data);
-}

@@ -126,10 +126,6 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::let_through);
     }
 
-    virtual State* check_piece() {
-        return handle_event_using_function(&State::check_piece);
-    }
-
     virtual State* reset_to_flat() {
         return handle_event_using_function(&State::reset_to_flat);
     }
