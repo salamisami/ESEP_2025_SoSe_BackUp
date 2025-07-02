@@ -85,3 +85,7 @@ void Stop::updateData(MotorPieceState motorPieceState) {
         }
     }
 }
+
+State* Stop::clone() {
+    return new Stop(data);
+}

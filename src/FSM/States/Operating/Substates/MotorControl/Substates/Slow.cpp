@@ -75,3 +75,7 @@ void Slow::updateData(MotorPieceState motorPieceState) {
         }
     }
 }
+
+State* Slow::clone() {
+    return new Slow(data);
+}

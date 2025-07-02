@@ -71,3 +71,7 @@ void Fast::updateData(MotorPieceState motorPieceState) {
         }
     }
 }
+
+State* Fast::clone() {
+    return new Fast(data);
+}

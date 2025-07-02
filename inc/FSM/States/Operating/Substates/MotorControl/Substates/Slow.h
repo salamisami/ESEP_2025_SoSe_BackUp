@@ -21,6 +21,7 @@ public: //================================================ public functions ====
     State* motor_stop_fsm() override;
     State* delete_w_motor() override;
     State* motor_slow() override;
+    State* clone() override;
     void updateData(MotorPieceState motorPieceState);
 
 private: //================================================ private variables ================================================

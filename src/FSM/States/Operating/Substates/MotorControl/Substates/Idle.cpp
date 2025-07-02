@@ -46,3 +46,7 @@ void Idle::updateData(MotorPieceState motorPieceState) {
         }
     }
 }
+
+State* Idle::clone() {
+    return new Idle(data);
+}
