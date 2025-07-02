@@ -115,6 +115,7 @@
 /// @endcond
 */
 
+
 #include "../MQTTpaho/MQTTExportDeclarations.h"
 
 #include "../MQTTpaho/MQTTProperties.h"
@@ -1388,6 +1389,7 @@ LIBMQTT_API const char* MQTTClient_strerror(int code);
 #endif
 
 #endif
+
 
 /**
   * @cond MQTTClient_main

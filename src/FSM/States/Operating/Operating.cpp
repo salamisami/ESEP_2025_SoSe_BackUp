@@ -17,6 +17,7 @@ Operating::~Operating() {
 void Operating::entry() {
     PRINT_STATE;
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON);
+    data->sender->send_event((int8_t)Topic::ADC, (int) ADC_Enum::ADC_MESURE);
 }
 
 void Operating::exit() {

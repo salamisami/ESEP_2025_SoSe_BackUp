@@ -22,6 +22,10 @@
 #define WAIT(x) usleep(x * 1000)
 #endif
 
+#define FILE_EXISTS(fname) (std::ifstream(fname).good())
+#define RECORDER_CSV "ESEP-Team-1-1_25/events.csv"
+#define PROFIL_DATEI "ESEP-Team-1-1_25/profile_calibration.csv"
+
 #define DEBUG(msg) std::cout << msg << std::endl
 #endif
 

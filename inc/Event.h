@@ -9,9 +9,9 @@
 
 #include <cstdint>
 
-
-enum class InterruptEnum : int {
-    LASER_FRONT_BLOCKED = 1, //the rest will continue (-2, -3)
+enum class InterruptEnum : int
+{
+    LASER_FRONT_BLOCKED = 1, // the rest will continue (-2, -3)
     LASER_FRONT_UNBLOCKED,
     LASER_BACK_BLOCKED,
     LASER_BACK_UNBLOCKED,
@@ -36,7 +36,8 @@ enum class InterruptEnum : int {
     IS_SWITCH,
     IS_PUSHER
 };
-enum class ActuatorEnum : int {
+enum class ActuatorEnum : int
+{
     MOTOR_RIGHT_START = 1,
     MOTOR_LEFT_START,
     MOTOR_SLOW_ON,
@@ -63,17 +64,20 @@ enum class ActuatorEnum : int {
     LED_Q1_ON,
     LED_Q1_OFF,
     LED_Q2_ON,
-    LED_Q2_OFF
+    LED_Q2_OFF,
+	WAKE_UP
 };
 
-
-enum class Topic : int8_t {
+enum class Topic : int8_t
+{
     INTERRUPT = 1,
     ACTUATOR,
     COM,
     ADC,
     STOP_THREAD,
     TIMER,
+    REC_REPLAY,
+	REM_CON,
     INTERNAL
 };
 
@@ -92,10 +96,11 @@ enum class COM_Enum: int{
     BUTTON_ESTOP_RELEASED,
     RESET_TO_FLAT,
     RESET_TO_TALL,
-    RESET_TO_TALL_W_METAL
+    RESET_TO_TALL_W_METAL,
 };
 
-enum class ADC_Enum : int {
+enum class ADC_Enum : int
+{
     ADC_WH_DETECT = 0xFFA0,
     ADC_WF_DETECT,
     ADC_W_B_DETECT,
@@ -106,12 +111,52 @@ enum class ADC_Enum : int {
     ADC_CALIBRATION_DONE,
     ADC_STOP,
 	ADC_RESET,
-    ADC_NEW_PIECE
+    ADC_NEW_PIECE,
+	ADC_TIMEOUT
 };
 
+enum class COM_Enum : int
+{
+    NEW_PIECE_TO_SORT = 1,
+    NEW_PIECE_NOT_TO_SORT,
+    BUTTON_ESTOP_PRESSED,
+    BUTTON_ESTOP_RELEASED,
+    HEARTBEAT,
+    TIMEOUT_COM,
+    RAMP_FULL,
+    RAMP_NOT_FULL,
+    RESET_TO_FLAT,
+    RESET_TO_TALL,
+    RESET_TO_TALL_W_METAL,
+    FBM_2_READY,
+    FBM_2_BUSY,
+    REQUEST_TRANSFER,
+    TRANSFER_DONE,
+    TRANSFER_FAILED,
+    TRANSFER_START_TALL,
+    TRANSFER_START_TALL_W_METAL,
+    TRANSFER_START_FLAT,
+    TRANSFER_START_OTHER,
+    COM_CONNECTED,
+	BUTTON_RESET_PRESSED
+};
 
+enum class Internal_Enum : int
+{
+    SORT_OUT = 1,
+    SORT_OUT_FBM2,
+    LET_THROUGH,
+    CHECK_PIECE,
+    RESET_TO_FLAT,
+    RESET_TO_TALL,
+    RESET_TO_TALL_W_METAL,
+	RAMP_FULL,
+	RAMP_NOT_FULL,
+	REQUEST_TRANSFER
+};
 
-enum class TIMER_ID: int {
+enum class TIMER_ID : int
+{
     WAITING_IM = 1,
     OPENGATE_CDS,
     OPENGATE_LPT,
@@ -127,8 +172,17 @@ enum class Piece: int{
     TALL_WITH_METAL
 };
 
+enum class RecReplayEnum: int {
+    START_REC = 1,
+    STOP_REC,
+    START_REPLAY,
+	STOP_REPLAY
+};
 
-
-
-
+enum class RemoteControl: int {
+	MQTT_DISCONNECTED,
+	MQTT_CONNECTED,
+	RECONNECT,
+};
 #endif
+

@@ -1,19 +1,23 @@
 #include "HAL.h"
 #include "Dispatcher.h"
 #include "Thread_COM.h"
-
+#include "Recorder.h"
+#include "COM.h"
 #include "Timer.h"
 #include "Logic.h"
+#include "Event.h"
 #include "Remote_Controller.h"
 #include "Boot.h"
 #include "EStopTest.h"
 
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include <unistd.h>
 
 #include "inc/MQTT/MQTT_Utilities.h"
 #define ONE_MILLISECOND 1000
-
+#define COUT(msg) std::cout << msg << std::endl
 using namespace std;
 
 //volatile int lastCommand = 0;
@@ -45,24 +49,31 @@ using namespace std;
 
 int main() {
     cout << "Starting Program..." << endl; // prints Hello World!!!
+    system("slay gns");
+    #ifdef FBM_1
     system("gns -s ");
+    #else
+    system("gns -c");
+    #endif
 
     Dispatcher* dispatcher = new Dispatcher();
     std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
 
+    Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_N_FSM);
+    Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
+    //Thread_COM::Receiver* recorder_receiver = new Thread_COM::Receiver(FBM_N_RECORDER);
+    Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
-    Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_1_FSM);
-    Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
-    
-    Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    //Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
+    Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
-    //Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_1_REMOTE); //comment this to test without RC
-    Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    Thread_COM::Sender* com_sender_local = new Thread_COM::Sender(FBM_N_DISPATCHER);
+    Thread_COM::Receiver* com_external_receiver = new Thread_COM::Receiver(FBM_N_COM);
+    Thread_COM::Receiver* com_receiver_local = new Thread_COM::Receiver(FBM_N_COM_RECEIVER);
 
-    Thread_COM::Sender* com_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
+    Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_N_HAL);
+    Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
-    Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_1_HAL);
-    Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_1_DISPATCHER);
 
     // Timestamp slow: 6707
     // Timestamp slow: 7987
@@ -82,14 +93,29 @@ int main() {
     // }
 
 
-    
+
+
+
+
+
     auto logic = new Logic<EStopTest>(fsm_receiver, fsm_sender);
-    //start recorder here
+    //Recorder* rec = new Recorder(recorder_receiver, recorder_sender);
     //Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, rc_sender); //comment this to test without RC
+    COM* externCommunication = new COM(com_external_receiver, FBM_N_COM_EXT, com_receiver_local, com_sender_local);
+    externCommunication->start();
+
+    // Thread_COM::Sender* senderDispatcher = new Thread_COM::Sender(FBM_N_DISPATCHER);
+    // int8_t comCode = (int8_t) Topic::COM;
+    // int value = (int) COM_Enum::BUTTON_ESTOP_PRESSED;
 
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
-
+    /*while (true){
+    senderDispatcher-> send_event(comCode, value);
+    auto remaining = std::chrono::milliseconds(5000);
+    COUT("sending Estop.");
+    std::this_thread::sleep_for(remaining);
+    }*/
     // WAIT(3000);
 
     // delete def;

@@ -1,7 +1,10 @@
 
 #include "MQTT_Utilities.h"
+
 MQTTClient MQTT_Utilities::client = nullptr;
 static void (*g_command_callback)(const char* payload) = NULL;
+std::atomic<bool> MQTT_Utilities::connection_lost(false);
+
 
 // Helper
 int MQTT_Utilities::mqtt_festo_publish(const char* topic, const char* payload) {
@@ -43,8 +46,17 @@ int MQTT_Utilities::mqtt_festo_publish(const char* topic, const char* payload) {
 //	return rc;
 //}
 
-static int internal_msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
-    if (strcmp(topicName, "festo/anlage1/command") == 0 && g_command_callback) {
+int MQTT_Utilities::internal_msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
+//	if (MQTT_Utilities::connection_lost){
+//		return 1;
+//	}
+	if (!topicName || !message || !message->payload) {
+	        printf("MQTT: Bad message received\n");
+	        if (message) MQTTClient_freeMessage(&message);
+	        if (topicName) MQTTClient_free(topicName);
+	        return 1;
+	    }
+    if (strcmp(topicName, COMMAND_TOPIC) == 0 && g_command_callback) {
         char payload[message->payloadlen+1];
         memcpy(payload, message->payload, message->payloadlen);
         payload[message->payloadlen] = '\0';
@@ -58,19 +70,20 @@ static int internal_msgarrvd(void *context, char *topicName, int topicLen, MQTTC
 
 int MQTT_Utilities::mqtt_festo_subscribe_command(void (*command_callback)(const char* payload)) {
     g_command_callback = command_callback;
-    return MQTTClient_subscribe(client, "festo/anlage1/command", QOS);
+    return MQTTClient_subscribe(MQTT_Utilities::client, COMMAND_TOPIC, QOS);
 }
 
 int MQTT_Utilities::mqtt_festo_subscribe(const char* topic, void (*cb)(const char* payload)) {
     // Quick&Dirty: im internen Callback erweitern, z.B. per Hashmap wenn viele Topics
     // (siehe internal_msgarrvd)
-    return MQTTClient_subscribe(client, topic, QOS);
+    return MQTTClient_subscribe(MQTT_Utilities::client, topic, QOS);
 }
 
 void MQTT_Utilities::delivered(void *context, MQTTClient_deliveryToken dt) {}
 
 void MQTT_Utilities::connlost(void *context, char *cause) {
-    printf("MQTT Connection lost! Cause: %s\n", cause);
+	 MQTT_Utilities::connection_lost = true;
+	 printf("MQTT Connection lost! Cause: %s\n", cause ? cause : "(null)");
 }
 
 int MQTT_Utilities::mqtt_festo_init(const char* broker, const char* client_id) {
@@ -78,7 +91,7 @@ int MQTT_Utilities::mqtt_festo_init(const char* broker, const char* client_id) {
     MQTTClient_willOptions will_opts = MQTTClient_willOptions_initializer;
     int rc;
 
-    will_opts.topicName = "festo/anlage1/status/online";
+    will_opts.topicName = (std::string(RECEIVE_TOPIC) + "online").c_str();;
     will_opts.message   = "offline";
     will_opts.qos       = 1;
     will_opts.retained  = 1;
@@ -86,11 +99,11 @@ int MQTT_Utilities::mqtt_festo_init(const char* broker, const char* client_id) {
     conn_opts.keepAliveInterval = 20;
     conn_opts.cleansession = 1;
 
-    rc = MQTTClient_create(&client, broker, client_id, MQTTCLIENT_PERSISTENCE_NONE, NULL);
+    rc = MQTTClient_create(&MQTT_Utilities::client, broker, client_id, MQTTCLIENT_PERSISTENCE_NONE, NULL);
     if (rc != MQTTCLIENT_SUCCESS) return rc;
 
-    MQTTClient_setCallbacks(client, NULL, MQTT_Utilities::connlost, internal_msgarrvd, MQTT_Utilities::delivered);
-    rc = MQTTClient_connect(client, &conn_opts);
+    MQTTClient_setCallbacks(MQTT_Utilities::client, NULL, MQTT_Utilities::connlost,MQTT_Utilities::internal_msgarrvd, MQTT_Utilities::delivered);
+    rc = MQTTClient_connect(MQTT_Utilities::client, &conn_opts);
     if (rc != MQTTCLIENT_SUCCESS) return rc;
 
     // Beim Start als "online" markieren:
@@ -99,9 +112,10 @@ int MQTT_Utilities::mqtt_festo_init(const char* broker, const char* client_id) {
 }
 
 void MQTT_Utilities::mqtt_festo_cleanup(void) {
-	//mqtt_festo_publish("festo/anlage1-2/status/online", "offline");
-	MQTTClient_disconnect(MQTT_Utilities::client, 10000);
-	MQTTClient_destroy(&MQTT_Utilities::client);
+//	//mqtt_festo_publish("festo/anlage1-2/status/online", "offline");
+//	MQTTClient_disconnect(MQTT_Utilities::client, 10000);
+//	MQTTClient_destroy(&MQTT_Utilities::client);
+//	MQTT_Utilities::client = nullptr;
 }
 
 void MQTT_Utilities::mqtt_festo_heartbeat(void) {
@@ -134,31 +148,31 @@ void MQTT_Utilities::mqtt_festo_heartbeat(void) {
 //	return rc;
 //}
 
-int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
-    printf("Message arrived on topic: %s\n", topicName);
-    // Annahme: Command-Topic
-    if(strcmp(topicName, "festo/anlage1/command") == 0) {
-        // Payload als String verarbeiten
-        char cmd[32] = {0};
-        strncpy(cmd, (char*)message->payload, message->payloadlen);
-        cmd[message->payloadlen] = '\0';
-        if(strcmp(cmd, "start") == 0) {
-            // Starte Anlage
-        	//std::cout << "start in msgarrvd" << std::endl;
-        } else if(strcmp(cmd, "stop") == 0) {
-            // Stoppe Anlage
-        } else if(strcmp(cmd, "notaus") == 0) {
-            // Not-Aus auslösen
-        } else if(strcmp(cmd, "reset") == 0) {
-            // Anlage zurücksetzen
-        } else {
-            printf("Unbekannter Befehl: %s\n", cmd);
-        }
-    }
-    MQTTClient_freeMessage(&message);
-    MQTTClient_free(topicName);
-    return 1;
-}
+//int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
+//    printf("Message arrived on topic: %s\n", topicName);
+//    // Annahme: Command-Topic
+//    if(strcmp(topicName, "festo/anlage1/command") == 0) {
+//        // Payload als String verarbeiten
+//        char cmd[32] = {0};
+//        strncpy(cmd, (char*)message->payload, message->payloadlen);
+//        cmd[message->payloadlen] = '\0';
+//        if(strcmp(cmd, "start") == 0) {
+//            // Starte Anlage
+//        	//std::cout << "start in msgarrvd" << std::endl;
+//        } else if(strcmp(cmd, "stop") == 0) {
+//            // Stoppe Anlage
+//        } else if(strcmp(cmd, "notaus") == 0) {
+//            // Not-Aus auslösen
+//        } else if(strcmp(cmd, "reset") == 0) {
+//            // Anlage zurücksetzen
+//        } else {
+//            printf("Unbekannter Befehl: %s\n", cmd);
+//        }
+//    }
+//    MQTTClient_freeMessage(&message);
+//    MQTTClient_free(topicName);
+//    return 1;
+//}
 
 
 

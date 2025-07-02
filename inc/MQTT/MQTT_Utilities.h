@@ -8,6 +8,7 @@
 #ifndef MQTT_UTILITIES_H
 #define MQTT_UTILITIES_H
 #include "MQTTClient.h"
+#include "Thread_COM.h"
 #include <unistd.h>
 #include <hw/inout.h>
 #include <sys/neutrino.h>
@@ -15,18 +16,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <atomic>
 
 
 // Kein extern "C" notwendig, da du C++ verwendest
 
 
-#define BROKER_ADR        "tcp://192.168.101.2:1883"
+#define BROKER_ADR        "tcp://192.168.101.5:1883"
 #define NO_OF_TOPICS      10
 #define NO_OF_ITERATIONS  4
 #define STR_BUF_SIZE      100
 #define QOS               1
 #define TIMEOUT           10000L
-#define ClientID		"Festo_FBM1"
+#define ClientID		"Festo_FBM2"
 
 
 class MQTT_Utilities{
@@ -36,6 +38,9 @@ public:
     MQTT_Utilities(const MQTT_Utilities&) = delete;
     MQTT_Utilities& operator = (const MQTT_Utilities&) = delete;
     virtual ~MQTT_Utilities() = delete;
+
+
+    static std::atomic<bool> connection_lost;
 
     // Initialisierung und Verbindungsaufbau
     static int mqtt_festo_init(const char* broker, const char* client_id);
@@ -58,6 +63,8 @@ public:
     static void delivered(void *context, MQTTClient_deliveryToken dt);
 
     static void connlost(void *context, char *cause);
+
+    static int internal_msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message);
 
 private:
 
