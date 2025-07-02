@@ -3,12 +3,16 @@
 //================================================= constructors & destructors =================================================
 
 
-PieceTracker::PieceTracker(const std::string& config_location) {
+PieceTracker::PieceTracker(const std::string& config_location, bool debug) {
     TimeProfileManager::load_profile(&time_profile, config_location);
     running = true;
+    this->debug = debug;
     stop();
-    debug_thread = std::thread(&PieceTracker::debug_function, this);
-    debug_thread.detach();
+    if(debug) {
+        debug_thread = std::thread(&PieceTracker::debug_function, this);
+    }
+
+    //debug_thread.detach();
 }
 
 PieceTracker::~PieceTracker() {
@@ -16,9 +20,9 @@ PieceTracker::~PieceTracker() {
     running = false;  // Signal threads to stop
 
     // Wake up threads if they're waiting
-    // if(debug_thread.joinable()) {
-    //     debug_thread.join();
-    // }
+    if(debug) {
+        debug_thread.join();
+    }
 }
 
 //===================================================== private functions =====================================================
@@ -77,7 +81,7 @@ std::pair<Area, double> PieceTracker::timestamp_to_area_pos(const long& timestam
     if(timestamp < selected_timestamps[0]) {
         area = (Area) 0;
         position = (double) timestamp / selected_timestamps[0] * 100;
-       //printf("position: %d, timestamp: %d, selected_timestamp: %d\n", (int) position, (int) timestamp, (int) selected_timestamps[0]);
+        //printf("position: %d, timestamp: %d, selected_timestamp: %d\n", (int) position, (int) timestamp, (int) selected_timestamps[0]);
         return std::make_pair(area, position);
     }
     for(int i = 1; i < TIMESTAMP_LENGTH - 1; i++) {
@@ -145,7 +149,7 @@ void PieceTracker::debug_function() {
 
 //updates area and pos from the last time.
 std::pair<Area, double> PieceTracker::calculate_area_pos(const Area& last_area, const double& last_pos, const uint8_t& mode) {
-    if(mode == (int) 0){
+    if(mode == (int) 0) {
         return std::make_pair(last_area, last_pos);
     }
     //TODO continue here
@@ -153,7 +157,7 @@ std::pair<Area, double> PieceTracker::calculate_area_pos(const Area& last_area, 
     long current_position_in_ms = stopwatch.peek_time() + last_position_in_ms;
     stopwatch.reset();
     stopwatch.start();
-    return timestamp_to_area_pos(current_position_in_ms,mode);
+    return timestamp_to_area_pos(current_position_in_ms, mode);
 }
 
 void PieceTracker::update() {
@@ -184,6 +188,7 @@ void PieceTracker::stop() {
 
 
 void PieceTracker::reset() {
+    stop();
     stopwatch.reset();
     current_mode = 0;
     current_area = Area::START_ADC;

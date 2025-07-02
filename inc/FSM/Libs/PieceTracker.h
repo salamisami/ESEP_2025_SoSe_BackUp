@@ -47,7 +47,7 @@ enum class Area : uint8_t {
 
 class PieceTracker {
 public: //============================================ constructors & destructors ============================================
-	PieceTracker(const std::string& config_location);
+	PieceTracker(const std::string& config_location, bool debug = false);
 	virtual ~PieceTracker();
 
 
@@ -103,7 +103,7 @@ private: //================================================ private variables ==
 	Stopwatch stopwatch;
 	TimeProfile time_profile;
 	//bool and char
-	bool running = false;
+	volatile bool running = false;
 	Area current_area = Area::START_ADC;
 	double current_position = 0;
 	uint8_t current_mode = 0;

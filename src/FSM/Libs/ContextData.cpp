@@ -7,7 +7,7 @@ ContextData::ContextData(I_Sender* sender, I_Sender* to_self_sender) {
     this->sender = sender;
     modehandler_history = new std::stack<State*>();
     timer = new Timer(to_self_sender);
-    piece_tracker = new PieceTracker(SAVE_LOCATION_TIMEPROFILE);
+    piece_tracker = new PieceTracker(SAVE_LOCATION_TIMEPROFILE, true);
 }
 
 
