@@ -24,7 +24,7 @@ State* PieceTall::clone(){
 }
 
 State* PieceTall::check_piece() {
-	if (data->actual_piece == Piece::TALL) {
+	if (data->actual_piece == CheckPiece_Enum::TALL) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
 		return new PieceTallWithMetal(data);
 	}

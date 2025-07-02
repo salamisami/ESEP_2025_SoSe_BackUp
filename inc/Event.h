@@ -74,14 +74,14 @@ enum class Topic : int8_t {
     ADC,
     STOP_THREAD,
     TIMER,
-    INTERNAL
+    INTERNAL,
+    CHECK_PIECE
 };
 
 enum class Internal_Enum: int{
     SORT_OUT,
     SORT_OUT_FBM2,
     LET_THROUGH,
-    CHECK_PIECE,
     RESET_TO_FLAT,
     RESET_TO_TALL,
     RESET_TO_TALL_W_METAL
@@ -120,7 +120,7 @@ enum class TIMER_ID: int {
     CAL_GATE_RAMP1
 };
 
-enum class Piece: int{
+enum class CheckPiece_Enum: int{
     UNKNOWN = 0,
     FLAT,
     TALL,

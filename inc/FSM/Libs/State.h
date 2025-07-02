@@ -57,6 +57,22 @@ public: //================================================ public functions ====
 
     static State* EXIT_STATE;
 
+    virtual State* unknown_piece() {
+        return handle_event_using_function(&State::unknown_piece);
+    }
+
+    virtual State* flat_piece() {
+        return handle_event_using_function(&State::flat_piece);
+    }
+
+    virtual State* tall_piece() {
+        return handle_event_using_function(&State::tall_piece);
+    }
+
+    virtual State* tall_w_metal_piece() {
+        return handle_event_using_function(&State::tall_w_metal_piece);
+    }
+
     virtual State* sort_out() {
         return handle_event_using_function(&State::sort_out);
     }
@@ -67,10 +83,6 @@ public: //================================================ public functions ====
 
     virtual State* let_through() {
         return handle_event_using_function(&State::let_through);
-    }
-
-    virtual State* check_piece() {
-        return handle_event_using_function(&State::check_piece);
     }
 
     virtual State* reset_to_flat() {
