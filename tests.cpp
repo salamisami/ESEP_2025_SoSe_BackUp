@@ -6,6 +6,7 @@
 #include "ModeHandler.h"
 #include "Timer.h"
 #include "Logic.h"
+#include "SortingOrder.h"
 #include <gtest/gtest.h>
 
 #define EXPECT_STATE(expected_state) \
@@ -64,6 +65,13 @@ class RealImplementationTesting : public LogicBaseTest<Boot> {
 protected:
     void SetUp() override {
         LogicBaseTest<Boot>::SetUp();
+    }
+};
+
+class SubRealImplementationTesting : public LogicBaseTest<SortingOrder> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<SortingOrder>::SetUp();
     }
 };
 
@@ -131,64 +139,48 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
 
 }
 
-// TEST_F(RealImplementationTesting, SortingOrderPositiveTest) {
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(10);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-//     EXPECT_STATE("PieceFlat");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::FLAT;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTall");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::TALL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTallWithMetal");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::TALL_WITH_METAL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
-// }
+TEST_F(SubRealImplementationTesting, SortingOrderPositiveTest) {
+    EXPECT_STATE("PieceFlat");
+    data->is_ramp_full = false;
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::FLAT);
+    EXPECT_STATE("PieceTall");
+    data->is_ramp_full = false;
+    
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::TALL);
+    EXPECT_STATE("PieceTallWithMetal");
+    data->is_ramp_full = false;
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::TALL_WITH_METAL);
+    EXPECT_STATE("PieceFlat");
+}
 
-// TEST_F(RealImplementationTesting, SortingOrderNegativeTest) {
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(10);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+TEST_F(SubRealImplementationTesting, SortingOrderNegativeTest) {
+    //test PieceFlat
+    EXPECT_STATE("PieceFlat");
+    data->is_ramp_full = false;
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::UNKNOWN);
+    EXPECT_STATE("PieceFlat");
 
-//     //test PieceFlat
-//     EXPECT_STATE("PieceFlat");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
+    //change state to tall
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::FLAT);
+    EXPECT_STATE("PieceTall");
+    //test PieceTall
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::UNKNOWN);
+    EXPECT_STATE("PieceTall");
 
-//     //change state to tall
-//     data->actual_piece = Piece::FLAT;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTall");
-//     //test PieceTall
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTall");
+    //change state to tall metal
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::TALL);
+    EXPECT_STATE("PieceTallWithMetal");
+    //test PieceWithMetal
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::UNKNOWN);
+    EXPECT_STATE("PieceTallWithMetal");
 
-//     //change state to tall metal
-//     data->actual_piece = Piece::TALL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTallWithMetal");
-//     //test PieceWithMetal
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTallWithMetal");
-
-//     //change state to flat
-//     data->actual_piece = Piece::TALL_WITH_METAL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
-//     //test PieceWithMetal
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
-// }
+    //change state to flat
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::TALL_WITH_METAL);
+    EXPECT_STATE("PieceFlat");
+    //test PieceWithMetal
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::UNKNOWN);
+    EXPECT_STATE("PieceFlat");
+}
 
 
 /**

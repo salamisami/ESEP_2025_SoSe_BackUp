@@ -17,7 +17,10 @@ public: //================================================ public functions ====
     void exit() override;
 	State* clone() override;
 
-	State* check_piece() override;
+	State* tall_w_metal_piece() override;
+	State* tall_piece() override;
+	State* flat_piece() override;
+	
 	State* reset_to_flat() override;
 	State* reset_to_tall() override;
     

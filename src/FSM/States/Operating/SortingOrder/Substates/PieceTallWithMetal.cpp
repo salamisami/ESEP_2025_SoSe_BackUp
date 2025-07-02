@@ -2,7 +2,7 @@
 
 //================================================= constructors & destructors =================================================
 PieceTallWithMetal::PieceTallWithMetal(ContextData* data) : State(data) {
-    //substate = new SubState(data);
+	//substate = new SubState(data);
 }
 
 PieceTallWithMetal::~PieceTallWithMetal() {}
@@ -11,15 +11,15 @@ PieceTallWithMetal::~PieceTallWithMetal() {}
 
 
 //===================================================== public functions =====================================================
-void PieceTallWithMetal::entry(){
+void PieceTallWithMetal::entry() {
 	PRINT_STATE;
 }
 
-void PieceTallWithMetal::exit(){
+void PieceTallWithMetal::exit() {
 	PRINT_STATE;
 }
 
-State* PieceTallWithMetal::clone(){
+State* PieceTallWithMetal::clone() {
 	return new PieceTallWithMetal(data);
 }
 
@@ -31,12 +31,23 @@ State* PieceTallWithMetal::reset_to_tall() {
 	return new PieceTall(data);
 }
 
-State* PieceTallWithMetal::check_piece() {
-	if (data->actual_piece == CheckPiece_Enum::TALL_WITH_METAL) {
-		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
-		return new PieceFlat(data);
+State* PieceTallWithMetal::tall_w_metal_piece() {
+	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
+	return new PieceFlat(data);
+}
+
+State* PieceTallWithMetal::flat_piece() {
+	if(data->is_ramp_full) {
+		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
+	} else {
+		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
 	}
-	if (data->is_ramp_full) {
+	return nullptr;
+	//return new PieceTallWithMetal(data);
+}
+
+State* PieceTallWithMetal::tall_piece() {
+	if(data->is_ramp_full) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
 	} else {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
