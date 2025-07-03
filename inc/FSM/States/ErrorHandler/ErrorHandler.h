@@ -3,6 +3,13 @@
 #pragma once
 
 #include "OrthState.h"
+#include "PieceAppearedNoError.h"
+#include "PieceLostNoError.h"
+#include "MQTTNoError.h"
+#include "COMNoError.h"
+#include "ValidMeasure.h"
+#include "RampNoError.h"
+#include "CalibNoWarning.h"
 
 class ErrorHandler : public OrthState {
 public: //============================================ constructors & destructors ============================================

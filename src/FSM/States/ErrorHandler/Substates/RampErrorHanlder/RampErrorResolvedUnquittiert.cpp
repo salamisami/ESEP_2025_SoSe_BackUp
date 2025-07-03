@@ -22,5 +22,5 @@ void RampErrorResolvedUnquittiert::exit(){
 }
 
 State* RampErrorResolvedUnquittiert::button_reset_released() {
-    
+    return new RampNoError(data);
 }
