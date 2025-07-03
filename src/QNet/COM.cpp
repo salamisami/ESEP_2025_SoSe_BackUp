@@ -212,8 +212,8 @@ void COM::runServer() {
                                                      : static_cast<int>(COM_Enum::RAMP_NOT_FULL);
                 _pulse mqttEvent;
                 mqttEvent.code = static_cast<int8_t>(Topic::REM_CON);
-                mqttEvent.value.sival_int = mqttConnected ? static_cast<int>(RemoteControl::MQTT_CONNECTED)
-                                                          : static_cast<int>(RemoteControl::MQTT_DISCONNECTED);
+                mqttEvent.value.sival_int = mqttConnected ? static_cast<int>(RemoteControlEnum::MQTT_CONNECTED)
+                                                          : static_cast<int>(RemoteControlEnum::MQTT_DISCONNECTED);
                 {
                     std::lock_guard<std::mutex> lock(queueMutex);
                     lowPriorityQueue.push_back(rampEvent);
@@ -470,10 +470,10 @@ void COM::handleRemConTopic(int originalValue, _pulse &dispatcherMsg)
 {
     switch (originalValue)
     {
-    case static_cast<int>(RemoteControl::MQTT_CONNECTED):
+    case static_cast<int>(RemoteControlEnum::MQTT_CONNECTED):
         mqttConnected = true;
         break;
-    case static_cast<int>(RemoteControl::MQTT_DISCONNECTED):
+    case static_cast<int>(RemoteControlEnum::MQTT_DISCONNECTED):
         mqttConnected = false;
         break;
     default:
