@@ -42,4 +42,3 @@ void CalDistanceSlow::exit() {
 //         }
 //     }
 //     return nullptr;
-// }

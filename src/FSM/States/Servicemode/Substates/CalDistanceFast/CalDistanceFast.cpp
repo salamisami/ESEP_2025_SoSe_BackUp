@@ -38,4 +38,3 @@ void CalDistanceFast::exit() {
 //         }
 //     }
 //     return nullptr;
-// }

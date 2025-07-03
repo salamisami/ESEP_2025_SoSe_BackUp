@@ -47,4 +47,3 @@ State* CalRampFast::clone() {
 //         }
 //     }
 //     return nullptr;
-// }
