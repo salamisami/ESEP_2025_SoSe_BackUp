@@ -152,6 +152,9 @@ public: //================================================ public functions ====
     virtual State* laser_front_unblocked() {
         return handle_event_using_function(&State::laser_front_unblocked);
     }
+    virtual State* laser_back_unblocked() {
+        return handle_event_using_function(&State::laser_back_unblocked);
+    }
 
     virtual State* laser_back_blocked() {
         return handle_event_using_function(&State::laser_back_blocked);
