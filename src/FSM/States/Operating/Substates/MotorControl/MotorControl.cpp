@@ -10,7 +10,7 @@ MotorControl::MotorControl(ContextData* data) : OrthState(data,
 	//substate = new SubState(data);
 }
 
-CalDistanceFast::~CalDistanceFast() {}
+MotorControl::~MotorControl() {}
 
 //===================================================== private functions =====================================================
 

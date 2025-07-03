@@ -67,7 +67,7 @@ State *Stop::motor_stop_fsm()
 }
 
 void Stop::updateData(MotorPieceState motorPieceState) {
-    int id = data->event_paylod;
+    int id = data->event_payload;
     
     if (motorPieceState == MotorPieceState::DELETE_W_MOTOR) {
         // Remove the ID from the list if it exists

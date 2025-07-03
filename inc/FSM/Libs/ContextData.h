@@ -35,7 +35,7 @@ public:
 
 //================================================ private variables ================================================
 public:
-    int event_paylod;
+    int event_payload;
     Stopwatch stopwatch;
     TimeProfile timeprofile_fast;
     TimeProfile timeprofile_slow;
