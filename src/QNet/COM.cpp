@@ -250,7 +250,7 @@ void COM::runServer()
 
                 timeoutEvent.code = comCode;
                 timeoutEvent.value.sival_int = value;
-                COUT("Sending Timeout Notification; Server");
+                COUT("Sending Timeout Notification; COM_Server");
                 sendToDispatcher(timeoutEvent, (int)EventPriority::FIRST_PRIO);
             }
         }
@@ -327,7 +327,6 @@ void COM::processMessage(const _pulse &msg)
         if (msg.value.sival_int == ((int)COM_Enum::BUTTON_ESTOP_PRESSED))
         {
             sendToDispatcher(msg, (int)EventPriority::FIRST_PRIO);
-            COUT("SENDING ESTOP TO DISPATCHER");
         }
         else if (msg.value.sival_int == ((int)COM_Enum::BUTTON_RESET_PRESSED))
         {
