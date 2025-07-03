@@ -79,6 +79,7 @@ void COM::runDispatcher() {
                                     break;
                             }
                         }
+                    break;
                     case Topic::INTERNAL:
                         {
                             Internal_Enum internalEvent = static_cast<Internal_Enum>(originalValue);
@@ -120,6 +121,7 @@ void COM::runDispatcher() {
                                     break;
                             }
                         }
+                    break;
                     case Topic::COM:
                         {
                             if(originalValue == static_cast<int>(COM_Enum::TIMEOUT_COM) ||
@@ -245,6 +247,7 @@ void COM::sendToServer(const _pulse& msg, int priority) {
             std::cerr << "Failed to send message to server - marking connection as lost" << std::endl;
         }
     }
+    updateHeartbeat();
 }
 
 // Server side implementation
@@ -258,7 +261,7 @@ void COM::runServer() {
         struct _pulse event;
         struct _msg_info info; // Message info structure
         struct sigevent sigev;
-        uint64_t timeout_nsec = 3 * 1000000000ULL; // nanoseconds
+        uint64_t timeout_nsec = 10 * 1000000000ULL; // nanoseconds
 
         // Setup timeout structure
         sigev.sigev_notify = SIGEV_UNBLOCK;
