@@ -142,7 +142,8 @@ enum class TIMER_ID : int {
     CAL_GATE_RAMP2,
     CAL_GATE_RAMP1,
     STARTADC_PT1,
-    ADCGATE_PT1
+    ADCGATE_PT1,
+    SORTINGOUT_PT1
 };
 
 enum class CheckPiece_Enum : int {
