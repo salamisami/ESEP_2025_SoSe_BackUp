@@ -9,14 +9,13 @@
 
 class Piece{
 public: //================================================ public functions ================================================
-    Piece():piece_tracker(new PieceTracker(SAVE_LOCATION_TIMEPROFILE)){}
-    virtual ~Piece(){
-        delete piece_tracker;
-    }
+    Piece(int id): id(id){};
+    virtual ~Piece() = default;
+
     int id = 0;
     CheckPiece_Enum type = CheckPiece_Enum::UNKNOWN;
     long sorting_time = 0;
-    PieceTracker* piece_tracker;
+    PieceTracker piece_tracker;
 };
 
 

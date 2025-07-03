@@ -3,7 +3,7 @@
 
 //================================================= constructors & destructors =================================================
 CalDistanceSlow::CalDistanceSlow(ContextData* data) : OrthState(data,
-	std::vector<State*>({
+	std::deque<State*>({
 		new IdleCDS(data),
 		new LetPieceThrough(data, OPEN_GATE_SLOW_DURATION)
 		})

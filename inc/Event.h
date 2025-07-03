@@ -88,7 +88,8 @@ enum class Internal_Enum : int {
     LET_THROUGH,
     RESET_TO_FLAT,
     RESET_TO_TALL,
-    RESET_TO_TALL_W_METAL
+    RESET_TO_TALL_W_METAL,
+    NEW_PIECE
 };
 
 enum class COM_Enum : int {

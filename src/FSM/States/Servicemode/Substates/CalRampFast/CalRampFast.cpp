@@ -2,7 +2,7 @@
 
 
 //================================================= constructors & destructors =================================================
-CalRampFast::CalRampFast(ContextData* data) : OrthState(data, std::vector<State*>(
+CalRampFast::CalRampFast(ContextData* data) : OrthState(data, std::deque<State*>(
     {
         new EndToGateCRF(data),
         new PusherIdleCRF(data)

@@ -8,7 +8,7 @@ OperatingMock::OperatingMock(ContextData* data) : OrthState(
 ) {
 }
 
-OperatingMock::OperatingMock(ContextData* data, std::vector<State*> cloned_substates) : OrthState(data, cloned_substates, new IdleMock(data)) {}
+OperatingMock::OperatingMock(ContextData* data, std::deque<State*> cloned_substates) : OrthState(data, cloned_substates, new IdleMock(data)) {}
 
 OperatingMock::~OperatingMock() {
 	//OrthState::~OrthState();

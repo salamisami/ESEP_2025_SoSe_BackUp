@@ -3,7 +3,7 @@
 
 //================================================= constructors & destructors =================================================
 CalDistanceFast::CalDistanceFast(ContextData* data) : OrthState(data,
-	std::vector<State*>({
+	std::deque<State*>({
 		new IdleCDF(data),
 		new LetPieceThrough(data, OPEN_GATE_FAST_DURATION)
 		})

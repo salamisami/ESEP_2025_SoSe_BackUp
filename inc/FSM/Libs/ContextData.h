@@ -12,6 +12,7 @@
 #include <vector>
 #include <stack>
 #include <queue>
+#include <unordered_map>
 
 //forward declaration
 class State;
@@ -41,18 +42,22 @@ public:
 public:
     Stopwatch stopwatch;
     TimeProfile timeprofile;
-    CheckPiece_Enum actual_piece = CheckPiece_Enum::UNKNOWN;
-    //TODO implement a safe stack here, that returns nullptr if no elements left in the stack
+    PieceTracker piece_tracker = PieceTracker(true);
     std::stack<State*>* modehandler_history;
     std::stack<State*>* estop_history;
-
-    //Piece piece;
+    std::unordered_map<int, Piece>* pieces_map;
+    int available_id = 0;
+    
+    // int piece_id = 0;
+    // CheckPiece_Enum ist_type = CheckPiece_Enum::UNKNOWN;
+    // CheckPiece_Enum soll_type = CheckPiece_Enum::UNKNOWN;
+    // long sorting_time = 0;
+    // PieceTracker* piece_tracker;
 
 
     I_Sender* timer_sender;
     Timer* timer;
     I_Sender* sender;
-    PieceTracker* piece_tracker;
     bool is_switch = false;
     bool is_ramp_full = false;
 
