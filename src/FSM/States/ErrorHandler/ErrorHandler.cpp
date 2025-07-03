@@ -4,7 +4,17 @@
 //================================================= constructors & destructors =================================================
 ErrorHandler::ErrorHandler(ContextData* data) : OrthState(data,
 	{
-		//TODO return substate...
+		new PieceAppearedNoError(data),
+		new PieceLostNoError(data),
+		new MQTTNoError(data),
+		new COMNoError(data),
+		new ValidMeasure(data),
+		new RampNoError(data),
+		new CalibNoWarning(data),
+		new ReplayNoWarning(data),
+		new StartingAreaTracker(data),
+		new RampStatus(data),
+		new SystemsRampStatus(data)
 	}
 ) {
 	//substate = new SubState(data);

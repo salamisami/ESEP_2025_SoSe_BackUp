@@ -10,6 +10,10 @@
 #include "ValidMeasure.h"
 #include "RampNoError.h"
 #include "CalibNoWarning.h"
+#include "ReplayNoWarning.h"
+#include "StartingAreaTracker.h"
+#include "RampStatus.h"
+#include "SystemsRampStatus.h"
 
 class ErrorHandler : public OrthState {
 public: //============================================ constructors & destructors ============================================
