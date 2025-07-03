@@ -96,16 +96,16 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::laser_front_unblocked);
     }
 
-    virtual State* delete_w_motor(int pieceID){
+    virtual State* delete_w_motor(){
       return handle_event_using_function(&State::delete_w_motor);
     } 
-    virtual State* motor_slow(int pieceID){
+    virtual State* motor_slow(){
       return handle_event_using_function(&State::motor_slow);
     } 
-    virtual State* motor_fast(int pieceID){
+    virtual State* motor_fast(){
       return handle_event_using_function(&State::motor_fast);
     }    
-    virtual State* motor_stop_fsm(int pieceID){
+    virtual State* motor_stop_fsm(){
       return handle_event_using_function(&State::motor_stop_fsm);
     }
     virtual State* laser_back_blocked() {
