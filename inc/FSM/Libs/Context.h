@@ -285,17 +285,17 @@ State *Context<T>::handleInterrupt(int event_value)
 template <typename T>
 State* Context<T>::handlePiece(int event_value) {
     State* newState = nullptr;
-    switch((CheckPiece_Enum) event_value) {
-        case CheckPiece_Enum::UNKNOWN:
+    switch((PieceEnum) event_value) {
+        case PieceEnum::UNKNOWN:
             newState = state->unknown_piece();
             break;
-        case CheckPiece_Enum::FLAT:
+        case PieceEnum::FLAT:
             newState = state->flat_piece();
             break;
-        case CheckPiece_Enum::TALL:
+        case PieceEnum::TALL:
             newState = state->tall_piece();
             break;
-        case CheckPiece_Enum::TALL_WITH_METAL:
+        case PieceEnum::TALL_WITH_METAL:
             newState = state->tall_w_metal_piece();
             break;
         default:

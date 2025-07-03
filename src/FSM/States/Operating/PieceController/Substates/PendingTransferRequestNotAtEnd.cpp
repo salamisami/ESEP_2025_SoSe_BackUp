@@ -36,5 +36,8 @@ State* PendingTransferRequestNotAtEnd::fbm_2_ready() {
 
 
 State* PendingTransferRequestNotAtEnd::timer(TIMER_ID id) {
-  return new PendingTransferRequestNotAtEnd(data, localdata_);
+  if(id != TIMER_ID::PENDINGTRANSFERREQUESTNOTATEND){
+    return new PendingTransferRequestNotAtEnd(data, localdata_);
+  }
+  return nullptr;
 }

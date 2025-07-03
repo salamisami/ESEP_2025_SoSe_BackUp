@@ -6,6 +6,7 @@
 #include "LocalDataPT1.h"
 #include "PendingTransferRequestNotAtEnd.h"
 #include "PendingTransferRequest_PT1.h"
+#include "PieceMissing_PT1.h"
 
 
 class GateEnd_PT1 : public State {
@@ -21,6 +22,9 @@ public: //================================================ public functions ====
 
 	State* timer(TIMER_ID id) override;
 	State* laser_back_blocked() override;
+
+	State* let_through() override;
+	State* sort_out_fbm2() override;
 
     
 

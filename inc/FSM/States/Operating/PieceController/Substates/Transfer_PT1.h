@@ -4,6 +4,7 @@
 
 #include "State.h"
 #include "LocalDataPT1.h"
+#include "PieceMissing_PT1.h"
 
 class Transfer_PT1 : public State {
 public: //============================================ constructors & destructors ============================================
@@ -17,6 +18,7 @@ public: //================================================ public functions ====
 	State* clone() override;
 
 	State* transfer_done() override;
+	State* transfer_failed() override;
     
 
 
@@ -31,6 +33,7 @@ private: //================================================ private variables ==
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
+	void send_transfer_start();
 	
 };
 

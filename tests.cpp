@@ -174,14 +174,14 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
 TEST_F(SubRealImplementationTesting, SortingOrderPositiveTest) {
     EXPECT_STATE("PieceFlat");
     data->is_ramp_full = false;
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::FLAT);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::FLAT);
     EXPECT_STATE("PieceTall");
     data->is_ramp_full = false;
 
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::TALL);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL);
     EXPECT_STATE("PieceTallWithMetal");
     data->is_ramp_full = false;
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::TALL_WITH_METAL);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL_WITH_METAL);
     EXPECT_STATE("PieceFlat");
 }
 
@@ -189,28 +189,28 @@ TEST_F(SubRealImplementationTesting, SortingOrderNegativeTest) {
     //test PieceFlat
     EXPECT_STATE("PieceFlat");
     data->is_ramp_full = false;
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::UNKNOWN);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
     EXPECT_STATE("PieceFlat");
 
     //change state to tall
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::FLAT);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::FLAT);
     EXPECT_STATE("PieceTall");
     //test PieceTall
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::UNKNOWN);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
     EXPECT_STATE("PieceTall");
 
     //change state to tall metal
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::TALL);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL);
     EXPECT_STATE("PieceTallWithMetal");
     //test PieceWithMetal
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::UNKNOWN);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
     EXPECT_STATE("PieceTallWithMetal");
 
     //change state to flat
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::TALL_WITH_METAL);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL_WITH_METAL);
     EXPECT_STATE("PieceFlat");
     //test PieceWithMetal
-    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) CheckPiece_Enum::UNKNOWN);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
     EXPECT_STATE("PieceFlat");
 }
 

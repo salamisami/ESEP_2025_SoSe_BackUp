@@ -14,6 +14,7 @@ StartADC_PT1::~StartADC_PT1() {}
 void StartADC_PT1::entry(){
 	PRINT_STATE;
 	data->timer->start_timer(100, TIMER_ID::STARTADC_PT1);
+	data->piece_near_adc = true;
 }
 
 void StartADC_PT1::exit(){
@@ -37,8 +38,8 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 		return new ADC_PT1(data, localdata_);
 	} 
 
-	if(data->enough_space){
-		//unblock starting area
+	//TODO calibrate here
+	if(current_position > DISTANCE_BETWEEN_PIECES){
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
 	}
 	return new StartADC_PT1(data, localdata_);
