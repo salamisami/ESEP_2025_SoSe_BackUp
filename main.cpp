@@ -23,10 +23,18 @@
 using namespace std;
 
 
+std::atomic<bool> running(true);
+
+void wait_for_enter() {
+    std::cin.get();
+    running = false;
+}
+
 
 
 int main() {
 
+	std::thread inputThread(wait_for_enter);
 
     cout << "Starting Program..." << endl; // prints Hello World!!!
     system("slay gns");
@@ -62,9 +70,10 @@ int main() {
     externCommunication->start();
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
-    while(1) {
+    while(running) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
-
+    inputThread.join();
    
 
     delete hal;
