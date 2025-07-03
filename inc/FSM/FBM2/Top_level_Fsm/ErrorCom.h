@@ -17,8 +17,8 @@ class ErrorCom : public State{
 	void entry() override;
 	void exit() override;
 
-	state* error_c_lost_mqtt_fixed() override;
-	state* error_c_lost_com_fixed() override;
+	State* error_c_lost_mqtt_fixed() override;
+	State* error_c_lost_com_fixed() override;
 
 };
 

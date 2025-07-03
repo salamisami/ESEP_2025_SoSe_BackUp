@@ -1,0 +1,26 @@
+/*
+ * WaitingForLocalReset.h
+ *
+ *  Created on: 03.07.2025
+ *      Author: User
+ */
+
+#ifndef INC_FSM_SHAREDFSMS_E_STOP_WAITINGFORLOCALRESET_H_
+#define INC_FSM_SHAREDFSMS_E_STOP_WAITINGFORLOCALRESET_H_
+
+class WaitingForLocalReset : public State {
+public:
+	WaitingForLocalReset(data) : State(data){};
+	virtual ~WaitingForLocalReset() : ~State(){};
+
+	void entry() override;
+	void exit() override;
+	State* clone() override;
+
+	State* button_reset_pressed() override;
+	State* button_estop_pressed() override;
+	State* com_button_estop_pressed() override;
+	State* remote_stop() override;
+};
+
+#endif /* INC_FSM_SHAREDFSMS_E_STOP_WAITINGFORLOCALRESET_H_ */

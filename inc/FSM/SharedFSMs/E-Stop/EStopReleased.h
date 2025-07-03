@@ -3,7 +3,6 @@
 #pragma once
 
 #include "State.h"
-#include "EStopQuit.h"
 #include "EStopViaLocal.h"
 #include "EStopViaNeighbor.h"
 
@@ -16,8 +15,10 @@ public: //============================================ constructors & destructor
 public: //================================================ public functions ================================================
 	void entry() override;
 	void exit() override;
+	State* clone() override;
 
 	State* button_reset_pressed() override;
+	State* com_button_reset_pressed() override;
 	State* button_estop_pressed() override;
 	State* com_button_estop_pressed() override;
     

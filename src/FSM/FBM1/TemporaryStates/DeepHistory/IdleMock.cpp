@@ -25,10 +25,10 @@ State* IdleMock::clone() {
 
 //load history if available
 State* IdleMock::button_start_pressed() {
-	if(data->stateStack->empty()) {
+	if(data->modehandler_history->empty()) {
 		return new OperatingMock(data);
 	}
-	State* loaded_history = data->stateStack->top();
-	data->stateStack->pop();
+	State* loaded_history = data->modehandler_history->top();
+	data->modehandler_history->pop();
 	return loaded_history;
 }

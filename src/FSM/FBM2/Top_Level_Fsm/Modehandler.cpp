@@ -5,7 +5,7 @@
  *      Author: User
  */
 
-#include "Modehandler.h"
+#include "../../../../inc/FSM/FBM2/Top_level_Fsm/Modehandler.h"
 
 void Modehandler::entry(){ }
 
@@ -42,5 +42,5 @@ State* Modehandler::com_button_estop_pressed(){
 State* Modehandler::remote_stop(){
 	Modehandler* cloned = this->clone();
 	data->modehandler_history->push(cloned);
-	return new EStop(data,EStopViaReleased);
+	return new EStop(data,EStopReleased);
 }

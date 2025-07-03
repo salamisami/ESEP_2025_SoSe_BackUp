@@ -18,6 +18,10 @@ void BothEstopPressed::exit(){
     PRINT_STATE;
 }
 
+State* BothEstopPressed::clone(){
+	return new BothEstopPressed(data);
+}
+
 State* BothEstopPressed::button_estop_released(){
     return new EStopViaNeighbor(data);
 }

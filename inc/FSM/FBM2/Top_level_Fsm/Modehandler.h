@@ -9,11 +9,13 @@
 #define SRC_FSM_FBM2_TOP_LEVEL_FSM_MODEHANDLER_H_
 
 #include "OrthState.h"
+#include "ContextData.h"
+#include "IdleIM.h"
 
 class Modehandler : public OrthState{
 public:
-	Modehandler(Contextdata* data) : OrthState(data, {new IdleIM}) {};
-	virtual ~Modehandler() : ~OrthState() { };
+	Modehandler(ContextData* data) : OrthState(data, {new IdleIM}) {};
+	virtual ~Modehandler(){ };
 
 	void entry() override;
 	void exit() override;

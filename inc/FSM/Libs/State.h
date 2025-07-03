@@ -217,7 +217,7 @@ public: //================================================ public functions ====
     }
 
     virtual State* remote_stop(){
-    	return handle_event_using_function(&State::remote_stop());
+    	return handle_event_using_function(&State::remote_stop);
     }
 
 protected: //================================================ protected ================================================

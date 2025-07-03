@@ -13,15 +13,26 @@ EStopReleased::~EStopReleased() {}
 
 void EStopReleased::entry(){
     PRINT_STATE;
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON);
+	data->sender->send_event(Topic::ACTUATOR, ActuatorEnum::TRAFFIC_RED_ON);
+	data->sender->send_event(Topic::ACTUATOR, ActuatorEnum::TRAFFIC_YELLOW_OFF);
 }
 
 void EStopReleased::exit(){
+	data->sender->send_event(Topic::ACTUATOR, ActuatorEnum::TRAFFIC_RED_OFF);
     PRINT_STATE;
 }
 
+State* EStopReleased::clone(){
+	return new EStopReleased(data);
+}
+
+State* EStopReleased::com_button_reset_pressed(){
+    return new WaitingForLocalReset(data);
+}
+
+
 State* EStopReleased::button_reset_pressed(){
-    return new EStopQuit(data);
+    return new WaitingForComReset(data);
 }
 
 State* EStopReleased::button_estop_pressed(){
