@@ -1,7 +1,7 @@
 #include "MovingToEnd_PT1.h"
 
 //================================================= constructors & destructors =================================================
-MovingToEnd_PT1::MovingToEnd_PT1(ContextData* data) : State(data) {
+MovingToEnd_PT1::MovingToEnd_PT1(ContextData* data, LocalDataPT1 localdata_) : State(data) {
     //substate = new SubState(data);
 }
 
@@ -12,6 +12,7 @@ MovingToEnd_PT1::~MovingToEnd_PT1() {}
 
 //===================================================== public functions =====================================================
 void MovingToEnd_PT1::entry(){
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.id);
 	PRINT_STATE;
 }
 
@@ -20,5 +21,10 @@ void MovingToEnd_PT1::exit(){
 }
 
 State* MovingToEnd_PT1::clone(){
-	return new MovingToEnd_PT1(data);
+	return new MovingToEnd_PT1(data, localdata_);
 }
+
+State* MovingToEnd_PT1::laser_back_blocked(){
+  return new Transfer_PT1(data, localdata_);
+}
+

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "LocalDataPT1.h"
 
 class MovingToEnd_PT1 : public State {
 public: //============================================ constructors & destructors ============================================
@@ -14,6 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 	State* clone() override;
+  State* laser_back_blocked() override;
     
 
 
@@ -21,6 +23,7 @@ private: //================================================ private variables ==
 	//classes, STL containers, and structs
 	//pointers
 	//primitive types
+	LocalDataPT1 localdata_;
 	//bool and char
    
 	
