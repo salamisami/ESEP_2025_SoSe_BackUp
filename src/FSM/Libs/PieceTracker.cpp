@@ -3,8 +3,8 @@
 //================================================= constructors & destructors =================================================
 
 
-PieceTracker::PieceTracker(const std::string& config_location, bool debug) {
-    TimeProfileManager::load_profile(&time_profile, config_location);
+PieceTracker::PieceTracker(bool debug) {
+    TimeProfileManager::load_profile(&time_profile, SAVE_LOCATION_TIMEPROFILE);
     running = true;
     this->debug = debug;
     stop();

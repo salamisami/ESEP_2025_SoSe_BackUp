@@ -6,7 +6,7 @@
 #include "ContextData.h"
 #include "State.h"
 
-#include <vector>
+#include <deque>
 #include <iostream>
 
 
@@ -19,7 +19,7 @@ public:
      * @param initial_substate the initial substates inside this state
      * @param default_exit_next_state the next state to go, after the substate has reached the default exit.
      */
-    OrthState(ContextData* data, std::vector<State*> initial_substates, State* default_exit_state = nullptr)
+    OrthState(ContextData* data, std::deque<State*> initial_substates, State* default_exit_state = nullptr)
         : State(data)
         , substates(initial_substates)
         , default_exit_state_(default_exit_state) {
@@ -66,6 +66,10 @@ public:
         input_state->entry();
     }
 
+    void despawn_orthogonal_state(){
+        substates.pop_front();
+    }
+
     virtual std::string get_current_state() override {
         std::string appended_string;
         bool first = true; // To avoid leading space
@@ -104,10 +108,10 @@ public:
 
     //================================================ private variables ================================================
 protected:
-    std::vector<State*> substates;
+    std::deque<State*> substates;
     State* default_exit_state_;
-    std::vector<State*> clone_substates() {
-        std::vector<State*> cloned_substates;
+    std::deque<State*> clone_substates() {
+        std::deque<State*> cloned_substates;
         for(auto& current_substate : substates) {
             cloned_substates.push_back(current_substate->clone());
         }

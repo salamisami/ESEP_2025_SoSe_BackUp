@@ -2,7 +2,7 @@
 
 //================================================= constructors & destructors =================================================
 ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data) : OrthState(data,
-	std::vector<State*>({
+	std::deque<State*>({
 		new IdleSMSR(data),
 		new SendToRamp(data)
 		})

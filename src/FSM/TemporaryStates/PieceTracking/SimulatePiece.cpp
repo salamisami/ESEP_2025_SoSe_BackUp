@@ -1,8 +1,8 @@
 /*#include "SimulatePiece.h"
 
 //================================================= constructors & destructors =================================================
-SimulatePiece::SimulatePiece(ContextData* data) : OrthState(data, std::vector<State*>({
-	new FastTemp(data),
+SimulatePiece::SimulatePiece(ContextData* data) : OrthState(data, std::deque<State*>({
+	new Fast(data),
 	new LetPieceThrough(data, OPEN_GATE_FAST_DURATION)
 })) {
     //substate = new SubState(data);
@@ -16,7 +16,7 @@ SimulatePiece::~SimulatePiece() {}
 //===================================================== public functions =====================================================
 void SimulatePiece::entry(){
 	PRINT_STATE;
-	data->piece_tracker->reset();
+	data->piece_tracker.reset();
 
 	//Anlage 11
 	// TimeProfile fast_profile = { { 2084, 2459, 3473, 3955, 5741, 3699 } };
@@ -31,7 +31,7 @@ void SimulatePiece::entry(){
 void SimulatePiece::exit(){
 	OrthState::exit();
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
-	std::cout << "Area: " << (int) data->piece_tracker->getArea() << ", " << "Position: " << (double) data->piece_tracker->getPosition() << std::endl;
+	std::cout << "Area: " << (int) data->piece_tracker.getArea() << ", " << "Position: " << (double) data->piece_tracker.getPosition() << std::endl;
 	//delete data->piece_tracker;
 	PRINT_STATE;
 }

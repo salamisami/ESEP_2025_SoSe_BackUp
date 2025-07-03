@@ -2,17 +2,20 @@
 #include "HState.h"
 
 //================================================= constructors & destructors =================================================
-ContextData::ContextData(){}
+ContextData::ContextData() {}
 ContextData::ContextData(I_Sender* sender, I_Sender* to_self_sender) {
     this->sender = sender;
     modehandler_history = new std::stack<State*>();
+    estop_history = new std::stack<State*>();
     timer = new Timer(to_self_sender);
-    piece_tracker = new PieceTracker(SAVE_LOCATION_TIMEPROFILE, true);
+    //piece_tracker = new PieceTracker(SAVE_LOCATION_TIMEPROFILE, true);
+    pieces_map = new std::unordered_map<int, Piece>;
 }
 
 
 ContextData::~ContextData() {
-    delete piece_tracker;
+    delete pieces_map;
+   // delete piece_tracker;
     delete timer;
     State* current_state;
     while(!modehandler_history->empty()) {
@@ -21,6 +24,13 @@ ContextData::~ContextData() {
         modehandler_history->pop();
     }
     delete modehandler_history;
+
+    while(!estop_history->empty()) {
+        current_state = estop_history->top();  // For stack, use top() instead of iterating
+        delete current_state;
+        estop_history->pop();
+    }
+    delete estop_history;
 }
 
 //===================================================== private functions =====================================================

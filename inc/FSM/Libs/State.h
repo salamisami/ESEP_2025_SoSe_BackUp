@@ -57,6 +57,10 @@ public: //================================================ public functions ====
 
     static State* EXIT_STATE;
 
+    virtual State* new_piece(){
+        return handle_event_using_function(&State::new_piece);
+    }
+
     virtual State* unknown_piece() {
         return handle_event_using_function(&State::unknown_piece);
     }

@@ -134,8 +134,8 @@ TEST_F(PieceTrackingSetup, PieceTrackingTest) {
     WAIT(2000);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);    
     WAIT(1000);
-    EXPECT_EQ(data->piece_tracker->getArea(), Area::GATE_END);
-    EXPECT_EQ(data->piece_tracker->getPosition(), 100);
+    EXPECT_EQ(data->piece_tracker.getArea(), Area::GATE_END);
+    EXPECT_EQ(data->piece_tracker.getPosition(), 100);
 }
 
 TEST_F(DeepHistorySetup, DeepHistoryTest) {
