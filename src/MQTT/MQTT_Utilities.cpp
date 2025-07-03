@@ -95,7 +95,7 @@ int MQTT_Utilities::mqtt_festo_init(const char* broker, const char* client_id) {
     will_opts.message   = "offline";
     will_opts.qos       = 1;
     will_opts.retained  = 1;
-    conn_opts.will = &will_opts;
+    conn_opts.will = NULL;
     conn_opts.keepAliveInterval = 20;
     conn_opts.cleansession = 1;
 

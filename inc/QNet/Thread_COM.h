@@ -29,7 +29,8 @@
 	#define FBM_N_REMOTE    	"Rem_1"
 	#define FBM_N_DISPATCHER 	"Dis_1"
 	#define RECEIVE_TOPIC		"festo/anlage1/status/"
-	#define COMMAND_TOPIC		"festo/anlage1/command/"
+	#define COMMAND_TOPIC		"festo/anlage1/command"
+	#define CLIENT_NAME			"Festo-FBM_1"
 #endif
 
 #ifdef FBM_2
@@ -44,7 +45,8 @@
 	#define FBM_N_REMOTE   		"Rem_2"
 	#define FBM_N_DISPATCHER 	"Dis_2"
 	#define RECEIVE_TOPIC		"festo/anlage2/status/"
-	#define COMMAND_TOPIC		"festo/anlage2/command/"
+	#define COMMAND_TOPIC		"festo/anlage2/command"
+	#define CLIENT_NAME			"Festo-FBM_2"
 #endif
 
 namespace Thread_COM {
