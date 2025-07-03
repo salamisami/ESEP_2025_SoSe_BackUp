@@ -77,9 +77,10 @@ State* PieceControllerFBM1::laser_back_blocked() {
 }
 
 State* PieceControllerFBM1::metal_detected() {
+	return nullptr;
 
 }
 
 State* PieceControllerFBM1::laser_sorting_gate_blocked() {
-
+	return nullptr;
 }

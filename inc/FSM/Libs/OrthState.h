@@ -45,7 +45,7 @@ public:
     virtual void exit() override {
         //PRINT_STATE;
         for(auto& current_substate : substates) {
-            if(current_substate != nullptr){
+            if(current_substate != nullptr) {
                 current_substate->exit();
             }
         }
@@ -66,7 +66,7 @@ public:
         input_state->entry();
     }
 
-    State* despawn_orthogonal_state(){
+    State* despawn_orthogonal_state() {
         State* state_to_despawn = substates.front();
         substates.pop_front();
         return state_to_despawn;
@@ -123,26 +123,28 @@ protected:
 protected:
 
     virtual State* handle_event_using_function(State* (State::* handler_function)()) override {
-        for(auto it = substates.begin(); it != substates.end();) {
-            State* current_substate = *it;
-            // if(current_substate == nullptr) {
-            //     return nullptr;
-            // }
-
+        for(auto it = substates.begin(); it != substates.end(); ) {
+            State*& current_substate = *it;  // Use reference to pointer
+            
             State* newSubstate = (current_substate->*handler_function)();
+
             if(newSubstate == State::EXIT_STATE) {
-                //one of the substates exits.
+                // Handle exit case
                 current_substate->exit();
                 delete current_substate;
-                current_substate = nullptr;
                 it = substates.erase(it);
-            } else if(newSubstate != nullptr) {
-                // there is substate change, change only the substate
+                return default_exit_state_;
+            }
+
+            if(newSubstate != nullptr) {
+                // Handle state transition
                 current_substate->exit();
                 delete current_substate;
                 current_substate = newSubstate;
                 current_substate->entry();
             }
+
+            ++it;  // Common increment for both remaining cases
         }
         return nullptr;
     }
