@@ -14,6 +14,8 @@ Recorder::~Recorder() {
     stop_record();
     stop_replay();
     if (RecReplay_thread.joinable()) RecReplay_thread.join();
+    if (writer_thread.joinable()) writer_thread.join();
+    if (replay_thread.joinable()) replay_thread.join();
 }
 
 void Recorder::threadFunction() {
