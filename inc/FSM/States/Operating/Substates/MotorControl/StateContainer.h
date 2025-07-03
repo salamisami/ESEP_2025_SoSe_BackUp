@@ -1,5 +1,8 @@
+#ifndef STATECONTAINER_H
+#define STATECONTAINER_H
+
+#include <unordered_map>
 #include <vector>
-#include <algorithm>
 #include <stdexcept>
 
 enum class MotorPieceState {
@@ -9,73 +12,65 @@ enum class MotorPieceState {
     DELETE_W_MOTOR
 };
 
-struct StateEntry {
-    int id;
-    MotorPieceState motorPieceState;
-};
-
 class StateContainer {
-    std::vector<StateEntry> entries;
+    std::unordered_map<int, MotorPieceState> container;
     
 public:
     void add(int id, MotorPieceState motorPieceState) {
-        if (std::any_of(entries.begin(), entries.end(), 
-                       [id](const StateEntry& e) { return e.id == id; })) {
+        if (!container.emplace(id, motorPieceState).second) {
             throw std::runtime_error("ID already exists");
         }
-        entries.push_back({id, motorPieceState});
     }
     
     void remove(int id) {
-        entries.erase(std::remove_if(entries.begin(), entries.end(),
-                      [id](const StateEntry& e) { return e.id == id; }),
-                      entries.end());
+        if (container.erase(id) == 0) {
+            throw std::runtime_error("ID not found");
+        }
     }
     
     void updateState(int id, MotorPieceState newState) {
-        auto it = std::find_if(entries.begin(), entries.end(),
-                              [id](const StateEntry& e) { return e.id == id; });
-        if (it != entries.end()) {
-            it->motorPieceState = newState;
+        auto it = container.find(id);
+        if (it != container.end()) {
+            it->second = newState;
         } else {
             throw std::runtime_error("ID not found");
         }
     }
     
     void updateStateAll(MotorPieceState newState) {
-        for (auto& entry : entries) {
-            entry.motorPieceState = newState;
+        for (auto& pair : container) {
+            pair.second = newState;
         }
     }
     
     MotorPieceState getState(int id) const {
-        auto it = std::find_if(entries.begin(), entries.end(),
-                              [id](const StateEntry& e) { return e.id == id; });
-        if (it != entries.end()) {
-            return it->motorPieceState;
+        auto it = container.find(id);
+        if (it != container.end()) {
+            return it->second;
         }
         throw std::runtime_error("ID not found");
     }
     
     bool contains(int id) const {
-        return std::any_of(entries.begin(), entries.end(),
-                          [id](const StateEntry& e) { return e.id == id; });
+        return container.find(id) != container.end();
     }
     
     std::vector<int> getAllIds() const {
         std::vector<int> ids;
-        ids.reserve(entries.size());
-        for (const auto& entry : entries) {
-            ids.push_back(entry.id);
+        ids.reserve(container.size());
+        for (const auto& pair : container) {
+            ids.push_back(pair.first);
         }
         return ids;
     }
     
     size_t size() const {
-        return entries.size();
+        return container.size();
     }
     
     bool isEmpty() const {
-        return entries.empty();
+        return container.empty();
     }
 };
+
+#endif // STATECONTAINER_H
