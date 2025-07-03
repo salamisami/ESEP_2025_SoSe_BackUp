@@ -13,7 +13,7 @@
 #include <string>
 
 
-#define FBM_2
+#define FBM_1
 
 #define DEBUG(msg) std::cout << msg << std::endl
 
