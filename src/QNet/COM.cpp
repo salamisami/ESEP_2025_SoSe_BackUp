@@ -224,7 +224,7 @@ void COM::sendHeartbeat() {
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
         now - lastHeartbeat);
-
+//test commit
     if(elapsed.count() >= HEARTBEAT_INTERVAL) {
         std::lock_guard<std::mutex> lock(_clientMutex);
         if(_client->getcoid() != -1) {
