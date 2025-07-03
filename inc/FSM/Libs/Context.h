@@ -183,7 +183,7 @@ State* Context<T>::handleError(int event_value) {
             newState = state->error_w_lost();
             break;
         case Error::ERROR_BOTH_R_FULL:
-            //newState = state->ram();
+            newState = state->error_both_r_full();
             break;
         case Error::ERROR_C_LOST_NR:
             newState = state->error_c_lost_nr();
@@ -202,6 +202,21 @@ State* Context<T>::handleError(int event_value) {
             break;
         case Error::CANT_FIND_REP_CONF:
             newState = state->cant_find_rep_conf();
+            break;
+        case Error::COM_ERROR_RESOLVED:
+            newState = state->com_error_resolved();
+            break;
+        case Error::RAMP_ERROR_RESOLVED:
+            newState = state->ramp_error_resolved();
+            break;
+        case Error::MQTT_ERROR_RESOLVED:
+            newState = state->mqtt_error_resolved();
+            break;
+        case Error::PIECE_APPEARED_RESOLVED:
+            newState = state->pieace_appeared_resolved();
+            break;
+        case Error::PIECE_LOST_RESOLVED:
+            newState = state->pieace_lost_resolved();
             break;
         default:
             break;

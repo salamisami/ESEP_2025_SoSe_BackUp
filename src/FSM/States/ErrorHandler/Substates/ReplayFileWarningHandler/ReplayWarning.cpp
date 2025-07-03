@@ -1,28 +1,30 @@
-#include "ConfFehlerQuittiert.h"
+#include "ReplayWarning.h"
 
 
 //================================================= constructors & destructors =================================================
-ConfFehlerQuittiert::ConfFehlerQuittiert(ContextData* data) : State(data) {
+ReplayWarning::ReplayWarning(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-ConfFehlerQuittiert::~ConfFehlerQuittiert() {}
+ReplayWarning::~ReplayWarning() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void ConfFehlerQuittiert::entry(){
+void ReplayWarning::entry(){
 	PRINT_STATE;
     //TODO CODE
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON_FAST);
 }
 
-void ConfFehlerQuittiert::exit(){
+void ReplayWarning::exit(){
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* ConfFehlerQuittiert::button_reset_released()
+State* ReplayWarning::button_reset_released()
 {
-    return new CalibNoError(data);
+    return new ReplayNoWarning(data);
 }

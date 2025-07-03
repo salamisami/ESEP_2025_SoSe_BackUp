@@ -1,28 +1,27 @@
-#include "ConfFehlerUnquittiert.h"
-
+#include "RampNoError.h"
 
 //================================================= constructors & destructors =================================================
-ConfFehlerUnquittiert::ConfFehlerUnquittiert(ContextData* data) : State(data) {
+RampNoError::RampNoError(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-ConfFehlerUnquittiert::~ConfFehlerUnquittiert() {}
+RampNoError::~RampNoError() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void ConfFehlerUnquittiert::entry(){
+void RampNoError::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void ConfFehlerUnquittiert::exit(){
+void RampNoError::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* ConfFehlerUnquittiert::button_reset_released()
+State* RampNoError::error_both_r_full()
 {
-    return new ConfFehlerQuittiert(data);
+    return new RampErrorUnquittiert(data);
 }

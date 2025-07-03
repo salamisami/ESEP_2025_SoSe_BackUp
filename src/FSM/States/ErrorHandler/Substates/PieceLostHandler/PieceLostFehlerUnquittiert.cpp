@@ -15,6 +15,8 @@ PieceLostFehlerUnquittiert::~PieceLostFehlerUnquittiert() {}
 void PieceLostFehlerUnquittiert::entry(){
 	PRINT_STATE;
     //TODO CODE
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON_FAST);
 }
 
 void PieceLostFehlerUnquittiert::exit(){

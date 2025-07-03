@@ -1,28 +1,28 @@
-#include "CalibNoError.h"
+#include "ReplayNoWarning.h"
 
 
 //================================================= constructors & destructors =================================================
-CalibNoError::CalibNoError(ContextData* data) : State(data) {
+ReplayNoWarning::ReplayNoWarning(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-CalibNoError::~CalibNoError() {}
+ReplayNoWarning::~ReplayNoWarning() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void CalibNoError::entry(){
+void ReplayNoWarning::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void CalibNoError::exit(){
+void ReplayNoWarning::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* CalibNoError::cant_find_calb_conf()
-{
-    return new ConfFehlerUnquittiert(data);
+
+State* ReplayNoWarning::cant_find_rep_conf() {
+    return new ReplayWarning(data);
 }

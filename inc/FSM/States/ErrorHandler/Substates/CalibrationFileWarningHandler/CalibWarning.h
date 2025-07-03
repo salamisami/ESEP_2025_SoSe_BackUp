@@ -1,14 +1,14 @@
-#ifndef NODEREDFEHLERQUITTIERT_H
-#define NODEREDFEHLERQUITTIERT_H
+#ifndef CALIBWARNING_H
+#define CALIBWARNING_H
 #pragma once
 
 #include "State.h"
-#include "NodeRedNoError.h"
+#include "CalibNoWarning.h"
 
-class NodeRedFehlerQuittiert : public State {
+class CalibWarning : public State {
 public: //============================================ constructors & destructors ============================================
-    NodeRedFehlerQuittiert(ContextData* data) ;
-    virtual ~NodeRedFehlerQuittiert();
+    CalibWarning(ContextData* data) ;
+    virtual ~CalibWarning();
 	
 
 public: //================================================ public functions ================================================

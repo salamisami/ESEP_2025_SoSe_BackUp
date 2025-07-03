@@ -1,28 +1,28 @@
-#include "ReplayFehlerUnquittiert.h"
+#include "CalibNoWarning.h"
 
 
 //================================================= constructors & destructors =================================================
-ReplayFehlerUnquittiert::ReplayFehlerUnquittiert(ContextData* data) : State(data) {
+CalibNoWarning::CalibNoWarning(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-ReplayFehlerUnquittiert::~ReplayFehlerUnquittiert() {}
+CalibNoWarning::~CalibNoWarning() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void ReplayFehlerUnquittiert::entry(){
+void CalibNoWarning::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void ReplayFehlerUnquittiert::exit(){
+void CalibNoWarning::exit(){
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* ReplayFehlerUnquittiert::button_reset_released()
+State* CalibNoWarning::cant_find_calb_conf()
 {
-    return new ReplayFehlerQuittiert(data);
+    return new CalibWarning(data);
 }

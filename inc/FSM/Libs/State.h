@@ -256,6 +256,24 @@ public: //================================================ public functions ====
     virtual State* error_w_appear() {
         return handle_event_using_function(&State::error_w_appear);
     }
+    virtual State* error_both_r_full() {
+        return handle_event_using_function(&State::error_both_r_full);
+    }
+    virtual State* com_error_resolved() {
+        return handle_event_using_function(&State::com_error_resolved);
+    }
+    virtual State* ramp_error_resolved() {
+        return handle_event_using_function(&State::ramp_error_resolved);
+    }
+    virtual State* mqtt_error_resolved() {
+        return handle_event_using_function(&State::mqtt_error_resolved);
+    }
+    virtual State* pieace_appeared_resolved() {
+        return handle_event_using_function(&State::pieace_appeared_resolved);
+    }
+    virtual State* pieace_lost_resolved() {
+        return handle_event_using_function(&State::pieace_lost_resolved);
+    }
 
 
 

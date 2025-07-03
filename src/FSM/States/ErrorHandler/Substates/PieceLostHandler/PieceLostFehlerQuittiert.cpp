@@ -15,9 +15,13 @@ PieceLostFehlerQuittiert::~PieceLostFehlerQuittiert() {}
 void PieceLostFehlerQuittiert::entry(){
 	PRINT_STATE;
     //TODO CODE
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON_SLOW);
 }
 
 void PieceLostFehlerQuittiert::exit(){
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
+    data->sender->send_event((int8_t) Topic::ERROR, (int) Error::PIECE_LOST_RESOLVED);
     //TODO CODE
 	PRINT_STATE;
 }

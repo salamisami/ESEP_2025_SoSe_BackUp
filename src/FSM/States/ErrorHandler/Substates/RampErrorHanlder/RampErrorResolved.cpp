@@ -1,32 +1,30 @@
-#include "MQTTReconnected.h"
-
-
+#include "RampErrorResolved.h"
 
 //================================================= constructors & destructors =================================================
-MQTTReconnected::MQTTReconnected(ContextData* data) : State(data) {
+RampErrorResolved::RampErrorResolved(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-MQTTReconnected::~MQTTReconnected() {}
+RampErrorResolved::~RampErrorResolved() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void MQTTReconnected::entry(){
+void RampErrorResolved::entry(){
 	PRINT_STATE;
     //TODO CODE
 }
 
-void MQTTReconnected::exit(){
+void RampErrorResolved::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
-    data->sender->send_event((int8_t) Topic::ERROR, (int) Error::MQTT_ERROR_RESOLVED);
+    data->sender->send_event((int8_t) Topic::ERROR, (int) Error::RAMP_ERROR_RESOLVED);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START); //Muss auf MotorController angepasst werden
     //TODO CODE
 	PRINT_STATE;
 }
 
-State* MQTTReconnected::button_reset_released()
+State* RampErrorResolved::button_reset_released() {
 {
-    return new MQTTNoError(data);
+    return new RampErrorUnquittiert(data);
 }

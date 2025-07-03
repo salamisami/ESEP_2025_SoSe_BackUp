@@ -1,15 +1,14 @@
-#ifndef NODEREDFEHLERUNQUITTIERT_H
-#define NODEREDFEHLERUNQUITTIERT_H
+#ifndef RAMPERRORRESOLVEDUNQUITTIERT_H
+#define RAMPERRORRESOLVEDUNQUITTIERT_H
 #pragma once
 
 #include "State.h"
-#include "NodeRedFehlerQuittiert.h"
+#include "RampNoError.h"
 
-
-class NodeRedFehlerUnquittiert : public State {
+class RampErrorResolvedUnquittiert : public State {
 public: //============================================ constructors & destructors ============================================
-    NodeRedFehlerUnquittiert(ContextData* data) ;
-    virtual ~NodeRedFehlerUnquittiert();
+    RampErrorResolvedUnquittiert(ContextData* data) ;
+    virtual ~RampErrorResolvedUnquittiert();
 	
 
 public: //================================================ public functions ================================================
