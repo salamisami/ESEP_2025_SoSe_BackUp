@@ -34,7 +34,8 @@ enum class InterruptEnum : int
     ADC_SIDE_AREA_BLOCKED,
     ADC_SIDE_AREA_UNBLOCKED,
     IS_SWITCH,
-    IS_PUSHER
+    IS_PUSHER,
+	REMOTE_STOP
 };
 enum class ActuatorEnum : int
 {
@@ -78,7 +79,8 @@ enum class Topic : int8_t
     TIMER,
     REC_REPLAY,
 	REM_CON,
-    INTERNAL
+    INTERNAL,
+	ERROR
 };
 
 
@@ -162,10 +164,22 @@ enum class RecReplayEnum: int {
 	STOP_REPLAY
 };
 
-enum class RemoteControl: int {
+enum class RemoteControlEnum: int {
 	MQTT_DISCONNECTED,
 	MQTT_CONNECTED,
-	RECONNECT,
+	RECONNECT
 };
+enum class ErrorEnum: int{
+    ERROR_W_LOST=1,
+    ERROR_BOTH_R_FULL,
+    ERROR_C_LOST_NR,
+    ERROR_C_LOST_MQTT,
+    ERROR_C_LOST_COM,
+    ERROR_INVALID_MESURE,
+    CANT_FIND_CALB_CONF,
+    CANT_FIND_REP_CONF
+};
+
+
 #endif
 
