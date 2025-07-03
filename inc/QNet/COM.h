@@ -51,6 +51,7 @@ private:
     std::chrono::steady_clock::time_point lastHeartbeat;
     bool running;
     bool rampfull = false;
+    bool _clientConnected = false;
 
     std::deque<_pulse> highPriorityQueue;
     std::deque<_pulse> lowPriorityQueue;

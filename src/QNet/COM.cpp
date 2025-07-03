@@ -167,13 +167,12 @@ void COM::runClient() {
     //COUT("COM Client started.");
     const int RETRY_DELAY_MS = 1000;
     while(running) {
-
-        while(!_client || _client->getcoid() == -1) {
-            std::lock_guard<std::mutex> lock(_clientMutex);
+        while(!_clientConnected) {
             try {
                 _client = make_unique<Thread_COM::Sender>(_clientSendName);
                 if(_client->getcoid() >= 0) {
                     COUT("Connection established successfully");
+                    _clientConnected=true;
                     break;
                 }
             } catch(...) {
@@ -224,7 +223,7 @@ void COM::sendHeartbeat() {
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
         now - lastHeartbeat);
-//test commit
+
     if(elapsed.count() >= HEARTBEAT_INTERVAL) {
         std::lock_guard<std::mutex> lock(_clientMutex);
         if(_client->getcoid() != -1) {
@@ -305,10 +304,7 @@ void COM::runServer() {
             }
         } else if(rcvid == -1) {
             if(errno == ETIMEDOUT) {
-                {
-                    std::lock_guard<std::mutex> lock(_clientMutex);
-                    _client.reset();
-                }
+               _clientConnected = false; 
                 // Timeout occurred
                 disconnected = true;
                 updateHeartbeat();
@@ -319,7 +315,7 @@ void COM::runServer() {
 
                 timeoutEvent.code = comCode;
                 timeoutEvent.value.sival_int = value;
-                COUT("Sending Timeout Notification; COM_Server");
+                //COUT("Sending Timeout Notification; Server");
                 sendToDispatcher(timeoutEvent, (int) EventPriority::FIRST_PRIO);
             }
         }
