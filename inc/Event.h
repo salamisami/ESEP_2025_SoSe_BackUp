@@ -89,7 +89,8 @@ enum class Internal_Enum : int {
     RESET_TO_FLAT,
     RESET_TO_TALL,
     RESET_TO_TALL_W_METAL,
-    NEW_PIECE
+    NEW_PIECE,
+    UNBLOCK_STARTING_AREA
 };
 
 enum class COM_Enum : int {
@@ -127,7 +128,8 @@ enum class ADC_Enum : int {
     ADC_CALIBRATION_DONE,
     ADC_PREPARE,
     ADC_NEW_PIECE,
-    ADC_STOP
+    ADC_STOP,
+    ADC_TIMEOUT
 };
 
 
@@ -138,7 +140,9 @@ enum class TIMER_ID : int {
     OPENGATE_LPT,
     PUSHRAMP_STR,
     CAL_GATE_RAMP2,
-    CAL_GATE_RAMP1
+    CAL_GATE_RAMP1,
+    STARTADC_PT1,
+    ADCGATE_PT1
 };
 
 enum class CheckPiece_Enum : int {
@@ -148,6 +152,12 @@ enum class CheckPiece_Enum : int {
     TALL_WITH_METAL
 };
 
+enum class ScannedPiece : int {
+    TALL,
+    FLAT,
+    HOLE,
+    UNKNOWN
+};
 
 
 
