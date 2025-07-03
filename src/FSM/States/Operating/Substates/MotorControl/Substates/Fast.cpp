@@ -30,7 +30,6 @@ State *Fast::delete_w_motor()
     }
     else
     {
-        updateData(MotorPieceState::DELETE_W_MOTOR);
         return new Idle(data);
     }
 }
@@ -38,7 +37,6 @@ State *Fast::delete_w_motor()
 State *Fast::motor_slow()
 {
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON);
-    updateData(MotorPieceState::SLOW);
     return new Slow(data);
 }
 State *Fast::motor_fast()
