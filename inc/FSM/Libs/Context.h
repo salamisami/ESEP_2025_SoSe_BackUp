@@ -213,10 +213,13 @@ State* Context<T>::handleError(int event_value) {
             newState = state->mqtt_error_resolved();
             break;
         case Error::PIECE_APPEARED_RESOLVED:
-            newState = state->pieace_appeared_resolved();
+            newState = state->piece_appeared_resolved();
             break;
         case Error::PIECE_LOST_RESOLVED:
-            newState = state->pieace_lost_resolved();
+            newState = state->piece_lost_resolved();
+            break;
+        case Error::PIECES_TOO_CLOSE:
+            newState = state->pieces_too_close();
             break;
         default:
             break;

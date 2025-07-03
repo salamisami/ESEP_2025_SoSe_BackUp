@@ -16,6 +16,7 @@ PiecesTooClose::~PiecesTooClose() {}
 void PiecesTooClose::entry(){
 	PRINT_STATE;
     //TODO CODE
+    data->sender->send_event((int8_t) Topic::ERROR, (int) Error::PIECES_TOO_CLOSE);
 }
 
 void PiecesTooClose::exit(){

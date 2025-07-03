@@ -124,7 +124,8 @@ enum class TIMER_ID: int {
     PUSHRAMP_STR,
     CAL_GATE_RAMP2,
     CAL_GATE_RAMP1,
-    RAMP_TIMER
+    RAMP_TIMER,
+    STARTING_AREA_TIMER
 };
 
 enum class Piece: int{
@@ -148,7 +149,8 @@ enum class Error: int{
     RAMP_ERROR_RESOLVED,
     MQTT_ERROR_RESOLVED,
     PIECE_APPEARED_RESOLVED,
-    PIECE_LOST_RESOLVED
+    PIECE_LOST_RESOLVED,
+    PIECES_TOO_CLOSE
 };
 
 

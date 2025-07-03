@@ -268,11 +268,14 @@ public: //================================================ public functions ====
     virtual State* mqtt_error_resolved() {
         return handle_event_using_function(&State::mqtt_error_resolved);
     }
-    virtual State* pieace_appeared_resolved() {
-        return handle_event_using_function(&State::pieace_appeared_resolved);
+    virtual State* piece_appeared_resolved() {
+        return handle_event_using_function(&State::piece_appeared_resolved);
     }
-    virtual State* pieace_lost_resolved() {
-        return handle_event_using_function(&State::pieace_lost_resolved);
+    virtual State* piece_lost_resolved() {
+        return handle_event_using_function(&State::piece_lost_resolved);
+    }
+    virtual State* pieces_too_close() {
+        return handle_event_using_function(&State::pieces_too_close);
     }
 
 

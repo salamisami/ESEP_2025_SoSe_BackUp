@@ -16,6 +16,7 @@ StartingAreaUnblocked::~StartingAreaUnblocked() {}
 void StartingAreaUnblocked::entry(){
 	PRINT_STATE;
     //TODO CODE
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_Q2_ON);
 }
 
 void StartingAreaUnblocked::exit(){
