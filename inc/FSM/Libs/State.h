@@ -278,6 +278,19 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::pieces_too_close);
     }
 
+    virtual State* delete_w_motor(){
+      return handle_event_using_function(&State::delete_w_motor);
+    } 
+    virtual State* motor_slow(){
+      return handle_event_using_function(&State::motor_slow);
+    } 
+    virtual State* motor_fast(){
+      return handle_event_using_function(&State::motor_fast);
+    }    
+    virtual State* motor_stop_fsm(){
+      return handle_event_using_function(&State::motor_stop_fsm);
+    }
+
 
 
 

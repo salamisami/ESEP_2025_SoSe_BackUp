@@ -88,7 +88,12 @@ enum class Internal_Enum: int{
     RESET_TO_TALL_W_METAL,
     RAMP_FULL,
     RAMP_NOT_FULL,
-    UNBLOCK_STARTING_AREA
+    UNBLOCK_STARTING_AREA,
+    DELETE_W_MOTOR ,
+    MOTOR_FAST,
+    MOTOR_SLOW,
+    MOTOR_STOP_FSM
+
 };
 
 enum class COM_Enum: int{

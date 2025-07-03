@@ -19,7 +19,7 @@ void RampErrorResolved::entry(){
 void RampErrorResolved::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error::RAMP_ERROR_RESOLVED);
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START); //Muss auf MotorController angepasst werden
+    data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::MOTOR_SLOW); 
     //TODO CODE
 	PRINT_STATE;
 }

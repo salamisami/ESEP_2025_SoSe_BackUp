@@ -84,6 +84,17 @@ State* Context<T>::handleInternal(int event_value) {
             break;
         case Internal_Enum::UNBLOCK_STARTING_AREA:
             newState = state->unblock_starting_area();
+            break;case Internal_Enum::DELETE_W_MOTOR:
+            newState = state->delete_w_motor();
+            break;
+        case Internal_Enum::MOTOR_FAST:
+            newState = state->motor_fast();
+            break;
+        case Internal_Enum::MOTOR_SLOW:
+            newState = state->motor_slow();
+            break;
+        case Internal_Enum::MOTOR_STOP_FSM:
+            newState = state->motor_stop_fsm();
             break;
         default:
             break;
