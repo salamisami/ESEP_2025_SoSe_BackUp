@@ -36,3 +36,11 @@ lib/
 # others
 .metadata
 vsc.bat
+CMakeFiles
+Testing/Temporary
+CMakeCache.txt
+CTestTestfile.cmake
+cmake_install.cmake
+tests
+tests[1]_include.cmake
+time_profiles.csv
