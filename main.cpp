@@ -56,7 +56,10 @@ int main() {
     externCommunication->start();
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
-    std::cin.get();  // Warten auf Enter
+   while(1){
+
+   }
+   
 
     delete hal;
     delete externCommunication;
