@@ -167,21 +167,26 @@ void COM::runClient() {
     //COUT("COM Client started.");
     const int RETRY_DELAY_MS = 1000;
     while(running) {
-        while(!_clientConnected) {
+        while(!_clientConnected && running) {
             try {
                 _client = make_unique<Thread_COM::Sender>(_clientSendName);
                 if(_client->getcoid() >= 0) {
                     COUT("Connection established successfully");
-                    _clientConnected=true;
+                    _clientConnected = true;
+                    // Send immediate heartbeat to confirm connection
+                    sendHeartbeat();
                     break;
                 }
             } catch(...) {
                 std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
             }
+            // Don't spam reconnection attempts
             std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-            continue;
+            if (!running) break;
         }
-        checkQueues();
+        if (running && _clientConnected) {
+            checkQueues();
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
@@ -219,21 +224,36 @@ void COM::checkQueues() {
 }
 
 void COM::sendHeartbeat() {
-        if(_clientConnected) {
+    if(_clientConnected && _client) {
+        try {
             _client->send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
+        } catch(...) {
+            // If sending heartbeat fails, mark as disconnected
+            _clientConnected = false;
+            std::cerr << "Failed to send heartbeat - marking connection as lost" << std::endl;
         }
+    }
 }
 
 void COM::sendToServer(const _pulse& msg, int priority) {
-    if(_clientConnected) {
-        _client->send_event((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
+    if(_clientConnected && _client) {
+        try {
+            _client->send_event((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
+        } catch(...) {
+            // If sending fails, mark as disconnected
+            _clientConnected = false;
+            std::cerr << "Failed to send message to server - marking connection as lost" << std::endl;
+        }
     }
 }
 
 // Server side implementation
 void COM::runServer() {
-    //COUT("COM server started.");
+    COUT("COM server started - waiting for incoming connections.");
     bool disconnected = true;
+    int consecutive_timeouts = 0;
+    const int MAX_CONSECUTIVE_TIMEOUTS = 3;
+    
     while(running) {
         struct _pulse event;
         struct _msg_info info; // Message info structure
@@ -258,17 +278,21 @@ void COM::runServer() {
 
         if (rcvid == 0)
         {
+            consecutive_timeouts = 0; // Reset timeout counter on successful receive
             //COUT("RECEIVED MESSAGE FROM OTHER MACHINE");
             if (disconnected)
             {
                 disconnected = false;
+                _clientConnected = true; // Re-establish client connection state
                 _pulse reconnectEvent;
                 int8_t comCode = (int8_t) Topic::COM;
                 int valueCom = (int) COM_Enum::COM_CONNECTED;
                 reconnectEvent.code = comCode;
                 reconnectEvent.value.sival_int = valueCom;
-                //COUT("Sending COM_CONNECTED Notification; Server");
+                COUT("Connection re-established - sending COM_CONNECTED notification");
                 sendToDispatcher(reconnectEvent, (int) EventPriority::FIRST_PRIO);
+                
+                // Send current ramp status to newly connected machine
                 int reconnectValue;
                 _pulse rampEvent;
                 if(rampfull) {
@@ -278,10 +302,9 @@ void COM::runServer() {
                 }
                 rampEvent.code = comCode;
                 rampEvent.value.sival_int = reconnectValue;
-                //(rampEvent);
                 std::lock_guard<std::mutex> lock(queueMutex);
                 lowPriorityQueue.push_back(rampEvent);
-
+                queueCV.notify_one(); // Wake up client to send ramp status
             }
 
             if((_PULSE_CODE_MINAVAIL <= event.code) && (event.code <= _PULSE_CODE_MAXAVAIL)) {
@@ -293,19 +316,29 @@ void COM::runServer() {
             }
         } else if(rcvid == -1) {
             if(errno == ETIMEDOUT) {
-               _clientConnected = false; 
-                // Timeout occurred
-                disconnected = true;
-                updateHeartbeat();
+                consecutive_timeouts++;
+                std::cout << "Timeout #" << consecutive_timeouts << " - waiting for connection..." << std::endl;
+                
+                // Only send timeout notification after multiple consecutive timeouts
+                // and if we were previously connected
+                if (!disconnected && consecutive_timeouts >= MAX_CONSECUTIVE_TIMEOUTS) {
+                    _clientConnected = false; 
+                    disconnected = true;
+                    updateHeartbeat();
 
-                _pulse timeoutEvent;
-                int8_t comCode = (int8_t) Topic::COM;
-                int value = (int) COM_Enum::TIMEOUT_COM;
+                    _pulse timeoutEvent;
+                    int8_t comCode = (int8_t) Topic::COM;
+                    int value = (int) COM_Enum::TIMEOUT_COM;
 
-                timeoutEvent.code = comCode;
-                timeoutEvent.value.sival_int = value;
-                //COUT("Sending Timeout Notification; Server");
-                sendToDispatcher(timeoutEvent, (int) EventPriority::FIRST_PRIO);
+                    timeoutEvent.code = comCode;
+                    timeoutEvent.value.sival_int = value;
+                    COUT("Multiple timeouts occurred - connection lost, sending notification to dispatcher");
+                    sendToDispatcher(timeoutEvent, (int) EventPriority::FIRST_PRIO);
+                }
+            } else {
+                // Handle other receive errors
+                std::cerr << "MsgReceive error: " << strerror(errno) << std::endl;
+                consecutive_timeouts = 0; // Reset on other errors
             }
         }
         if((_IO_BASE <= event.type) && (event.type <= _IO_MAX)) {
@@ -342,10 +375,10 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
             /* A client disconnected all its connections (called
              * name_close() for each name_open() of our name) or
              * terminated. */
-
+            _clientConnected = false;
             timeoutEvent.code = comCode;
             timeoutEvent.value.sival_int = value;
-            //COUT("Sending Timeout Notification");
+            COUT("Client disconnected - sending timeout notification");
             sendToDispatcher(timeoutEvent); // Andere Maschine disconeccted -> Timeout
             ConnectDetach(msg->scoid);
             break;
