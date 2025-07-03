@@ -35,11 +35,11 @@ int main() {
 
     Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_N_FSM);
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
-    //Thread_COM::Receiver* recorder_receiver = new Thread_COM::Receiver(FBM_N_RECORDER); //comment this to test without recorder
+    Thread_COM::Receiver* recorder_receiver = new Thread_COM::Receiver(FBM_N_RECORDER); //comment this to test without recorder
     Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
-    //Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
-    Thread_COM::Sender* rc_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
+    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
+    Thread_COM::Sender* RemCon_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
     Thread_COM::Sender* com_sender_local = new Thread_COM::Sender(FBM_N_DISPATCHER);
     Thread_COM::Receiver* com_external_receiver = new Thread_COM::Receiver(FBM_N_COM);
@@ -50,37 +50,29 @@ int main() {
 
 
     auto logic = new Logic<Boot>(fsm_receiver, fsm_sender);
-    //Recorder* rec = new Recorder(recorder_receiver, recorder_sender);
-    //Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, rc_sender); //comment this to test without RC
+    Recorder* rec = new Recorder(recorder_receiver, recorder_sender);
+    Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
     COM* externCommunication = new COM(com_external_receiver, FBM_N_COM_EXT, com_receiver_local, com_sender_local);
     externCommunication->start();
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
-    // delete def;
-    // delete abc;
 
-    // delete hal_sender;
-    // delete fsm_sender;
-    // delete fsm_receiver;
-    // delete hal_receiver;
+    std::cin.get();  // Warten auf Enter
 
-    while(1) {
-
-    }
-
-  delete hal;
-     delete rec;
-     delete logic;
-     delete remcon;
+    delete hal;
+    delete rec;
+    delete logic;
+    delete remcon;
 
      delete RemCon_receiver;
-     delete rc_sender;
+     delete RemCon_sender;
      delete recorder_receiver;
      delete recorder_sender;
      delete hal_sender;
      delete fsm_sender;
      delete fsm_receiver;
      delete hal_receiver;
+
 
   cout << "Program Finished." << endl;
   return 0;

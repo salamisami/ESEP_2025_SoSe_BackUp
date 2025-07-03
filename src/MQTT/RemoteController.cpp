@@ -15,7 +15,7 @@ std::mutex heartbeatMutex;
 
 std::condition_variable queueCV;
 static void on_command(const char* payload);
-std::chrono::steady_clock::time_point last_heartbeat = std::chrono::steady_clock::now();
+//std::chrono::steady_clock::time_point last_heartbeat = std::chrono::steady_clock::now();
 
 // Helper zum Zusammenbauen der Topics
 inline std::string make_topic(const char* prefix, const char* suffix) {
@@ -104,8 +104,7 @@ void Remote_Controller::init(bool reInit) {
     MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/yellow").c_str(), "off");
     MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/green").c_str(), "off");
     MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "notaus").c_str(), "false");
-    DEBUG(make_topic(RECEIVE_TOPIC, "q1").c_str());
-    DEBUG(make_topic(RECEIVE_TOPIC, "ampel/green/0.5").c_str());
+
     std::string msg = std::string(ClientID) + " is connected";
     MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
 
@@ -286,15 +285,18 @@ void Remote_Controller::threadFunctionHeartbeat() {
             DEBUG("Waiting for reconnect command ...\n");
             bool reconnect = false;
             while (!reconnect) {
-                _pulse event;
-                int status = local_receiver->receive_event(&event);
-                RemoteControl event_value = (RemoteControl) event.value.sival_int;
-                Topic event_code = (Topic) event.code;
-                if (status == 0 && event_code == Topic::REM_CON) {
-                    if(event_value == RemoteControl::RECONNECT)
-                        reconnect = true;
-                    DEBUG("Reconnect command received!\n");
-                }
+//                _pulse event;
+//                int status = local_receiver->receive_event(&event);
+//                RemoteControl event_value = (RemoteControl) event.value.sival_int;
+//                Topic event_code = (Topic) event.code;
+//                if (status == 0 && event_code == Topic::REM_CON) {
+//                    if(event_value == RemoteControl::RECONNECT)
+//                        reconnect = true;
+//                    DEBUG("Reconnect command received!\n");
+//                }
+            	//nur zum testen
+				std::this_thread::sleep_for(std::chrono::seconds(3));
+				reconnect = true;
             }
             MQTT_Utilities::connection_lost = false;
             dash_conn_lost = false;
@@ -316,7 +318,7 @@ static void on_command(const char* payload) {
     	printf("[MQTT-DEBUG] Warning: Received empty payload in on_command\n");
         return;
     }
-    printf("[MQTT-DEBUG] Payload empfangen: '%.*s'\n", (int)len, payload);
+    //printf("[MQTT-DEBUG] Payload empfangen: '%.*s'\n", (int)len, payload);
     int Last_Command = 0;
     if (strncmp(payload, "startPressed", len) == 0) {
         Last_Command = 1;
