@@ -1,7 +1,7 @@
 #include "MovingToEnd_PT1.h"
 
 //================================================= constructors & destructors =================================================
-MovingToEnd_PT1::MovingToEnd_PT1(ContextData* data, LocalDataPT1 localdata_) : State(data) {
+MovingToEnd_PT1::MovingToEnd_PT1(ContextData* data, LocalDataPT1 localdata) : State(data), localdata_(localdata) {
     //substate = new SubState(data);
 }
 
@@ -25,6 +25,13 @@ State* MovingToEnd_PT1::clone(){
 }
 
 State* MovingToEnd_PT1::laser_back_blocked(){
-  return new Transfer_PT1(data, localdata_);
+	auto piece = data->pieces_map->at(localdata_.id);
+	Area current_area = piece->piece_tracker.getArea();
+	int current_position = piece->piece_tracker.getPosition();
+
+	if(current_area == Area::GATE_END){ 
+		return new Transfer_PT1(data, localdata_);
+	}
+	return nullptr;
 }
 

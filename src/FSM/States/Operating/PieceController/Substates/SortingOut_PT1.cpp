@@ -13,12 +13,12 @@ SortingOut_PT1::~SortingOut_PT1() {}
 //===================================================== public functions =====================================================
 void SortingOut_PT1::entry(){
   data->timer->start_timer(1000, TIMER_ID::SORTINGOUT_PT1);
-  data->timer->start();
+  data->stopwatch.start();
 	PRINT_STATE;
 }
 
 void SortingOut_PT1::exit(){
-  data->timer->stop();
+  data->stopwatch.stop();
 	PRINT_STATE;
 }
 

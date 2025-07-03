@@ -30,7 +30,7 @@ State* Measuring_PT1::laser_sorting_gate_blocked() {
 
 	if(current_area == Area::GATE){
 		DEBUG("Typisierung schief gelaufen");
-		return new Gate_PT1(data);
+		return new Gate_PT1(data, localdata_);
 	}
 
 	return nullptr;

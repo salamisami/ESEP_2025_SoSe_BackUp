@@ -30,5 +30,5 @@ State* Gate_PT1::let_through() {
 	return new GateEnd_PT1(data, localdata_);
 }
 State* Gate_PT1::sort_out_fbm2() {
-	return new GateEnd_PT1(data. localdata_);
+	return new GateEnd_PT1(data, localdata_);
 }
