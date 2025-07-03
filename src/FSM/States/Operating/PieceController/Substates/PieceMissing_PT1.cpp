@@ -21,4 +21,3 @@ void PieceMissing_PT1::exit(){
 
 State* PieceMissing_PT1::clone(){
 	return new PieceMissing_PT1(data, localdata_);
-}
