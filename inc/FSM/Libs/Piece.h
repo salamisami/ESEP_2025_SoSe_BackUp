@@ -13,7 +13,7 @@ public: //================================================ public functions ====
     virtual ~Piece() = default;
 
     int id = 0;
-    CheckPiece_Enum type = CheckPiece_Enum::UNKNOWN;
+    PieceEnum type = PieceEnum::UNKNOWN;
     long sorting_time = 0;
     PieceTracker piece_tracker;
 };

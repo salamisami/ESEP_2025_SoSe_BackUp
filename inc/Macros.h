@@ -32,3 +32,5 @@
 #endif
 
 #define SAVE_LOCATION_TIMEPROFILE "time_profiles.csv"
+
+#define DISTANCE_BETWEEN_PIECES 50

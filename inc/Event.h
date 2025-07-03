@@ -150,7 +150,7 @@ enum class TIMER_ID : int {
     PENDINGTRANSFERREQUEST_PT1
 };
 
-enum class CheckPiece_Enum : int {
+enum class PieceEnum : int {
     UNKNOWN = 0,
     FLAT,
     TALL,

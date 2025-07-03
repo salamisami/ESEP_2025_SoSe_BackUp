@@ -50,8 +50,8 @@ public:
     int available_id = 0;
     
     // int piece_id = 0;
-    // CheckPiece_Enum ist_type = CheckPiece_Enum::UNKNOWN;
-    // CheckPiece_Enum soll_type = CheckPiece_Enum::UNKNOWN;
+    // PieceEnum ist_type = PieceEnum::UNKNOWN;
+    // PieceEnum soll_type = PieceEnum::UNKNOWN;
     // long sorting_time = 0;
     // PieceTracker* piece_tracker;
 
@@ -59,9 +59,15 @@ public:
     I_Sender* timer_sender;
     Timer* timer;
     I_Sender* sender;
+
+    //adc -> boot
     bool is_switch = false;
+
+    //rampStatus -> PieceTracker
     bool is_ramp_full = false;
-    bool enough_space = false;
+
+    //PieceTracking -> PieceTracking
+    bool piece_near_adc = false;
 
 
 };

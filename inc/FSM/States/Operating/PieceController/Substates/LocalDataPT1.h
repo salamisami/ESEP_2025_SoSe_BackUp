@@ -9,7 +9,7 @@ public:
 	int id = -1;
 	ScannedPiece ist_type = ScannedPiece::UNKNOWN;
 	int is_metal = false;
-	CheckPiece_Enum soll_type = CheckPiece_Enum::UNKNOWN;
+	PieceEnum validated_type = PieceEnum::UNKNOWN;
 };
 
 #endif
