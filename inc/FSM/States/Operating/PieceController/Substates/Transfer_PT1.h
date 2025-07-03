@@ -4,6 +4,7 @@
 
 #include "State.h"
 #include "LocalDataPT1.h"
+#include "PieceMissing_PT1.h"
 
 class Transfer_PT1 : public State {
 public: //============================================ constructors & destructors ============================================

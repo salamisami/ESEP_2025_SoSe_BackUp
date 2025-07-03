@@ -6,6 +6,7 @@
 #include "LocalDataPT1.h"
 #include "PendingTransferRequestNotAtEnd.h"
 #include "PendingTransferRequest_PT1.h"
+#include "PieceMissing_PT1.h"
 
 
 class GateEnd_PT1 : public State {

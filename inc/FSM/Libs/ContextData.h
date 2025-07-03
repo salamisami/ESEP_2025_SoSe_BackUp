@@ -67,7 +67,9 @@ public:
 
     //rampStatus -> DistanceTracker
     bool is_ramp_full = false;
-    bool enough_space = false;
+
+    //PieceTracking -> PieceTracking
+    bool piece_near_adc = false;
 
     bool workpieces = false;
     bool motor_slowed = false;
