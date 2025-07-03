@@ -219,26 +219,15 @@ void COM::checkQueues() {
 }
 
 void COM::sendHeartbeat() {
-
-    auto now = std::chrono::steady_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-        now - lastHeartbeat);
-
-    if(elapsed.count() >= HEARTBEAT_INTERVAL) {
-        std::lock_guard<std::mutex> lock(_clientMutex);
-        if(_client->getcoid() != -1) {
+        if(_clientConnected) {
             _client->send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
         }
-        updateHeartbeat();
-    }
 }
 
 void COM::sendToServer(const _pulse& msg, int priority) {
-    std::lock_guard<std::mutex> lock(_clientMutex);
-    if(_client) {
+    if(_clientConnected) {
         _client->send_event((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
     }
-    updateHeartbeat();
 }
 
 // Server side implementation
