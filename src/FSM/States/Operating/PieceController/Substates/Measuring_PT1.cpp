@@ -24,7 +24,16 @@ State* Measuring_PT1::clone(){
 }
 
 State* Measuring_PT1::laser_sorting_gate_blocked() {
-	//TODO what's here?
+	auto piece = data->pieces_map->at(localdata_.id);
+	Area current_area = piece->piece_tracker.getArea();
+	int current_position = piece->piece_tracker.getPosition();
+
+	if(current_area == Area::GATE){
+		DEBUG("Typisierung schief gelaufen");
+		return new Gate_PT1(data);
+	}
+
+	return nullptr;
 }
 
 State* Measuring_PT1::adc_wh_detect() {

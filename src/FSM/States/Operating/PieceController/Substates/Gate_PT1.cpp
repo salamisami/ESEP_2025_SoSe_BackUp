@@ -27,10 +27,8 @@ State* Gate_PT1::sort_out() {
 	return new SortingOut_PT1(data, localdata_);
 }
 State* Gate_PT1::let_through() {
-	//TODO
-	return nullptr;
+	return new GateEnd_PT1(data, localdata_);
 }
 State* Gate_PT1::sort_out_fbm2() {
-	//TODO
-	return nullptr;
+	return new GateEnd_PT1(data. localdata_);
 }

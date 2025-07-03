@@ -29,7 +29,6 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 	if(id != TIMER_ID::ADCGATE_PT1){
 		return nullptr;
 	}
-
 	auto piece = data->pieces_map->at(localdata_.id);
 	Area current_area = piece->piece_tracker.getArea();
 	int current_position = piece->piece_tracker.getPosition();
@@ -57,6 +56,7 @@ State* ADCGate_PT1::metal_detected() {
 	int current_position = piece->piece_tracker.getPosition();
 
 	if(current_area == Area::GATE){
-		//TODO what's here?
+		return new IsMetal_PT1(data, localdata_);
 	}
+	return nullptr;
 }

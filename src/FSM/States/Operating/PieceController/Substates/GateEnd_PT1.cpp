@@ -1,7 +1,7 @@
 #include "GateEnd_PT1.h"
 
 //================================================= constructors & destructors =================================================
-GateEnd_PT1::GateEnd_PT1(ContextData* data) : State(data) {
+GateEnd_PT1::GateEnd_PT1(ContextData* data, LocalDataPT1 localdata : State(data), localdata_(localdata) {
     //substate = new SubState(data);
 }
 
@@ -20,5 +20,5 @@ void GateEnd_PT1::exit(){
 }
 
 State* GateEnd_PT1::clone(){
-	return new GateEnd_PT1(data);
+	return new GateEnd_PT1(data, localdata_);
 }
