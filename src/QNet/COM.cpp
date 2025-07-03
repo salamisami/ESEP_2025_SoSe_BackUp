@@ -319,7 +319,7 @@ void COM::runServer() {
 
                 timeoutEvent.code = comCode;
                 timeoutEvent.value.sival_int = value;
-                //COUT("Sending Timeout Notification; Server");
+                COUT("Sending Timeout Notification; COM_Server");
                 sendToDispatcher(timeoutEvent, (int) EventPriority::FIRST_PRIO);
             }
         }

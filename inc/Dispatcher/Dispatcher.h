@@ -19,7 +19,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#define MAX_NUM_COMP 5
+#define MAX_NUM_COMP 3
 
 class Dispatcher {
 public:
