@@ -34,4 +34,3 @@ State* IsMetal_PT1::laser_sorting_gate_blocked() {
 	}
 
 	return nullptr;
-}

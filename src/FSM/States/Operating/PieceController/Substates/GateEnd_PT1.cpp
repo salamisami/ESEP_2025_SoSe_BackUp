@@ -77,4 +77,3 @@ State* GateEnd_PT1::let_through() {
 
 State* GateEnd_PT1::sort_out_fbm2() {
 	return new GateEnd_PT1(data, localdata_);
-}

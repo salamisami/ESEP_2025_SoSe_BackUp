@@ -77,17 +77,6 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::RESET_TO_TALL_W_METAL:
             newState = state->reset_to_tall_w_metal();
             break;
-        case Internal_Enum::DELETE_W_MOTOR:
-            newState = state->delete_w_motor();
-            break;
-        case Internal_Enum::MOTOR_FAST:
-            newState = state->motor_fast();
-            break;
-        case Internal_Enum::MOTOR_SLOW:
-            newState = state->motor_slow();
-            break;
-        case Internal_Enum::MOTOR_STOP_FSM:
-            newState = state->motor_stop_fsm();
         case Internal_Enum::NEW_PIECE:
             newState = state->new_piece();
             break;

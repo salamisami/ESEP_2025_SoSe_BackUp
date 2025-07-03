@@ -77,4 +77,3 @@ State* ADCGate_PT1::metal_detected() {
 		return new IsMetal_PT1(data, localdata_);
 	}
 	return nullptr;
-}

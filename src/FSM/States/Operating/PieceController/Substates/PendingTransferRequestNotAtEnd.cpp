@@ -40,4 +40,3 @@ State* PendingTransferRequestNotAtEnd::timer(TIMER_ID id) {
     return new PendingTransferRequestNotAtEnd(data, localdata_);
   }
   return nullptr;
-}

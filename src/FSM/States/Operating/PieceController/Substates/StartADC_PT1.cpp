@@ -43,4 +43,3 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
 	}
 	return new StartADC_PT1(data, localdata_);
-}

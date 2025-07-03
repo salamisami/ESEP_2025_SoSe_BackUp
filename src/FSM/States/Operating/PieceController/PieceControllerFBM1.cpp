@@ -86,4 +86,3 @@ State* PieceControllerFBM1::metal_detected() {
 
 State* PieceControllerFBM1::laser_sorting_gate_blocked() {
 	return custom_handler_function(&State::laser_sorting_gate_blocked);
-}

@@ -48,4 +48,3 @@ State* ADC_PT1::adc_timeout() {
 			break;
 	}
 	return State::EXIT_STATE;
-}
