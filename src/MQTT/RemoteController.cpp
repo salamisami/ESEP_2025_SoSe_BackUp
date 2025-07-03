@@ -15,7 +15,7 @@ std::mutex heartbeatMutex;
 
 std::condition_variable queueCV;
 static void on_command(const char* payload);
-std::chrono::steady_clock::time_point last_heartbeat = std::chrono::steady_clock::now();
+std::chrono::steady_clock::time_point last_dashboard_heartbeat;
 
 // Helper zum Zusammenbauen der Topics
 inline std::string make_topic(const char* prefix, const char* suffix) {
@@ -89,6 +89,7 @@ void Remote_Controller::init(bool reInit) {
             continue;
         }
         mqtt_connected = true;
+        last_dashboard_heartbeat = std::chrono::steady_clock::now();
     }
 
     int subscribe_rc = MQTT_Utilities::mqtt_festo_subscribe_command(on_command);
@@ -295,6 +296,7 @@ void Remote_Controller::threadFunctionSend(){
             case 6: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_RESET_RELEASED); break;
             case 7: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_PRESSED); break;//TODO: durch REMOTE_STOP ersetzen !
             case 8: //local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED); break;
+            		break;
             case 9: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REC); break;
             case 10: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::STOP_REC); break;
             case 11: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REPLAY); break;
@@ -305,7 +307,19 @@ void Remote_Controller::threadFunctionSend(){
 
 void Remote_Controller::threadFunctionHeartbeat() {
     RemCon_HeartCheck_running = true;
+
+
     while (RemCon_HeartCheck_running) {
+
+    	 auto now = std::chrono::steady_clock::now();
+    	 auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_dashboard_heartbeat).count();
+
+         if (diff > HEARTBEAT_TIMEOUT_MS) {
+             dash_conn_lost = true;
+         } else {
+             dash_conn_lost = false;
+         }
+
         if (MQTT_Utilities::connection_lost || dash_conn_lost) {
         	DEBUG("Connection lost detected. Cleaning up ...\n");
             RemCon_send_running = false;
@@ -344,8 +358,7 @@ void Remote_Controller::threadFunctionHeartbeat() {
             dash_conn_lost = false;
             init(true);
         } else {
-            dash_conn_lost = true;
-            std::this_thread::sleep_for(std::chrono::seconds(3));
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
 }
@@ -387,7 +400,8 @@ static void on_command(const char* payload) {
     } else if (strncmp(payload, "RepStop", len) == 0) {
         Last_Command = 12;
     } else if (strncmp(payload, "HeartBeat", len) == 0) {
-        dash_conn_lost = false;
+        last_dashboard_heartbeat = std::chrono::steady_clock::now();
+        dash_conn_lost = false; // Optional, wenn du sicher bist, dass wieder Kontakt besteht.
         return;
     } else {
         Last_Command = 0;

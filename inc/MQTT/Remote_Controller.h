@@ -24,7 +24,7 @@
 #include <mutex>
 #include <condition_variable>
 
-#define HEARTBEAT_TIMEOUT_MS 2500
+#define HEARTBEAT_TIMEOUT_MS 3000
 //typedef int MQTTClient_deliveryToken;
 
 class Remote_Controller {

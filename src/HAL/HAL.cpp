@@ -20,7 +20,7 @@ HAL::HAL() {
 }
 
 HAL::~HAL() {
-    mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
+    //mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
     halThread.join();
     delete adc;
     delete interrupt;
