@@ -12,7 +12,19 @@ PieceMissing_PT1::~PieceMissing_PT1() {}
 
 //===================================================== public functions =====================================================
 void PieceMissing_PT1::entry(){
+  data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
+  data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
+  if(localdata.ist_type == ScannedPiece::FLAT){
+    data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_FLAT);
+  }
+  else if(localdata.ist_type == ScannedPiece::TALL){
+    data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL);
+  }
+  else if(localdata.is_metal){
+    data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL_W_METAL);
+  }
 	PRINT_STATE;
+  State::EXIT_STATE;
 }
 
 void PieceMissing_PT1::exit(){
@@ -22,3 +34,4 @@ void PieceMissing_PT1::exit(){
 State* PieceMissing_PT1::clone(){
 	return new PieceMissing_PT1(data, localdata_);
 }
+
