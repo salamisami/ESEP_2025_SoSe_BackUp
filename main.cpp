@@ -56,18 +56,24 @@ int main() {
     externCommunication->start();
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
-    // delete def;
-    // delete abc;
+    std::cin.get();  // Warten auf Enter
 
+    delete hal;
+    delete externCommunication;
+    //delete remcon
+    //delete rec
+    delete logic;
+
+    //	 delete remcon;
+
+    //	 delete RemCon_receiver;
+    //	 delete RemCon_sender;
+    //	 delete recorder_receiver;
+    //	 delete recorder_sender;
     // delete hal_sender;
     // delete fsm_sender;
     // delete fsm_receiver;
     // delete hal_receiver;
-
-    while(1) {
-
-    }
-
     cout << "Program Finished." << endl;
     return 0;
 

@@ -79,21 +79,19 @@ void COM::runDispatcher()
     }
 }
 
-void COM::runClient()
-{
+void COM::runClient() {
+    //COUT("COM Client started.");
     const int RETRY_DELAY_MS = 1000;
-    while (running)
-    {
-
-        while (!_client || _client->getcoid() == -1)
-        {
-            std::lock_guard<std::mutex> lock(_clientMutex);
-            try
-            {
+    while(running) {
+        while(!_clientConnected && running) {
+            try {
                 _client = make_unique<Thread_COM::Sender>(_clientSendName);
                 if (_client->getcoid() >= 0)
                 {
                     COUT("Connection established successfully");
+                    _clientConnected = true;
+                    // Send immediate heartbeat to confirm connection
+                    sendHeartbeat();
                     break;
                 }
             }
@@ -101,10 +99,13 @@ void COM::runClient()
             {
                 std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
             }
+            // Don't spam reconnection attempts
             std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-            continue;
+            if (!running) break;
         }
-        checkQueues();
+        if (running && _clientConnected) {
+            checkQueues();
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
@@ -121,17 +122,18 @@ void COM::checkQueues()
         return;
     }
 
-    while (!highPriorityQueue.empty())
-    {
+    while(!highPriorityQueue.empty()) {
+        //COUT("Something in high prio received");
         auto msg = highPriorityQueue.front();
         highPriorityQueue.pop_front();
         lock.unlock();
         sendToServer(msg, (int)EventPriority::FIRST_PRIO);
         lock.lock();
     }
-    while (!lowPriorityQueue.empty())
-    {
-        COUT("Something in low prio");
+
+    // Process low priority only when higher queues are empty
+    while(!lowPriorityQueue.empty()) {
+        //COUT("Something in low prio");
 
         auto msg = lowPriorityQueue.front();
         lowPriorityQueue.pop_front();
@@ -143,41 +145,39 @@ void COM::checkQueues()
     }
 }
 
-void COM::sendHeartbeat()
-{
-
-    auto now = std::chrono::steady_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-        now - lastHeartbeat);
-
-    if (elapsed.count() >= HEARTBEAT_INTERVAL)
-    {
-        std::lock_guard<std::mutex> lock(_clientMutex);
-        if (_client->getcoid() != -1)
-        {
-            _client->send_event((int8_t)Topic::COM, (int)COM_Enum::HEARTBEAT);
+void COM::sendHeartbeat() {
+    if(_clientConnected && _client) {
+        try {
+            _client->send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
+        } catch(...) {
+            // If sending heartbeat fails, mark as disconnected
+            _clientConnected = false;
+            std::cerr << "Failed to send heartbeat - marking connection as lost" << std::endl;
         }
-        updateHeartbeat();
     }
 }
 
-void COM::sendToServer(const _pulse &msg, int priority)
-{
-    std::lock_guard<std::mutex> lock(_clientMutex);
-    if (_client)
-    {
-        _client->send_event((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
+void COM::sendToServer(const _pulse& msg, int priority) {
+    if(_clientConnected && _client) {
+        try {
+            _client->send_event((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
+        } catch(...) {
+            // If sending fails, mark as disconnected
+            _clientConnected = false;
+            std::cerr << "Failed to send message to server - marking connection as lost" << std::endl;
+        }
     }
     updateHeartbeat();
 }
 
 // Server side implementation
-void COM::runServer()
-{
-    COUT("COM server started.");
+void COM::runServer() {
+    COUT("COM server started - waiting for incoming connections.");
     bool disconnected = true;
-    while (running)
-    {
+    int consecutive_timeouts = 0;
+    const int MAX_CONSECUTIVE_TIMEOUTS = 3;
+    
+    while(running) {
         struct _pulse event;
         struct _msg_info info; 
         struct sigevent sigev;
@@ -198,7 +198,7 @@ void COM::runServer()
             if (disconnected)
             {
                 disconnected = false;
-
+                _clientConnected = true; // Re-establish client connection state
                 // Send COM_CONNECTED notification
                 _pulse reconnectEvent;
                 reconnectEvent.code = static_cast<int8_t>(Topic::COM);
@@ -231,27 +231,31 @@ void COM::runServer()
                 handle_QNX_pulse(&event, rcvid);
                 continue;
             }
-        }
-        else if (rcvid == -1)
-        {
-            if (errno == ETIMEDOUT)
-            {
-                {
-                    std::lock_guard<std::mutex> lock(_clientMutex);
-                    _client.reset();
+        } else if(rcvid == -1) {
+            if(errno == ETIMEDOUT) {
+                consecutive_timeouts++;
+                std::cout << "Timeout #" << consecutive_timeouts << " - waiting for connection..." << std::endl;
+                
+                // Only send timeout notification after multiple consecutive timeouts
+                // and if we were previously connected
+                if (!disconnected && consecutive_timeouts >= MAX_CONSECUTIVE_TIMEOUTS) {
+                    _clientConnected = false; 
+                    disconnected = true;
+                    updateHeartbeat();
+
+                    _pulse timeoutEvent;
+                    int8_t comCode = (int8_t) Topic::COM;
+                    int value = (int) COM_Enum::TIMEOUT_COM;
+
+                    timeoutEvent.code = comCode;
+                    timeoutEvent.value.sival_int = value;
+                    COUT("Multiple timeouts occurred - connection lost, sending notification to dispatcher");
+                    sendToDispatcher(timeoutEvent, (int) EventPriority::FIRST_PRIO);
                 }
-                // Timeout occurred
-                disconnected = true;
-                updateHeartbeat();
-
-                _pulse timeoutEvent;
-                int8_t comCode = (int8_t)Topic::COM;
-                int value = (int)COM_Enum::TIMEOUT_COM;
-
-                timeoutEvent.code = comCode;
-                timeoutEvent.value.sival_int = value;
-                COUT("Sending Timeout Notification; COM_Server");
-                sendToDispatcher(timeoutEvent, (int)EventPriority::FIRST_PRIO);
+            } else {
+                // Handle other receive errors
+                std::cerr << "MsgReceive error: " << strerror(errno) << std::endl;
+                consecutive_timeouts = 0; // Reset on other errors
             }
         }
         if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX))
@@ -284,38 +288,37 @@ void COM::handle_QNX_pulse(_pulse *msg, int rcvid)
 void COM::handle_QNX_IO_msg(_pulse *msg, int rcvid)
 {
     _pulse timeoutEvent;
-    int8_t comCode = (int8_t)Topic::COM;
-    int value = (int)COM_Enum::TIMEOUT_COM;
-    switch (msg->code)
-    {
-    case _PULSE_CODE_DISCONNECT:
-        printf(" _PULSE_CODE_DISCONNECT\n");
-        /* A client disconnected all its connections (called
-         * name_close() for each name_open() of our name) or
-         * terminated. */
-
-        timeoutEvent.code = comCode;
-        timeoutEvent.value.sival_int = value;
-        COUT("Sending Timeout Notification");
-        sendToDispatcher(timeoutEvent); // Andere Maschine disconeccted -> Timeout
-        ConnectDetach(msg->scoid);
-        break;
-    case _PULSE_CODE_UNBLOCK:
-        printf(" received _PULSE_CODE_UNBLOCK\n");
-        /* REPLY blocked client wants to unblock (was hit by
-         * a signal or timed out). It's up to you if you
-         * reply now or later. */
-        break;
-    case 12:
-        printf(" Sending EOK, connect\n");
-        MsgReply(rcvid, EOK, NULL, 0);
-        break;
-    default:
-        /* A pulse sent by the kernel like
-         * _PULSE_CODE_COIDDEATH or _PULSE_CODE_THREADDEATH
-         * from the kernel? */
-        printf(" received some other QNX pulse msg code: %d\n", msg->code);
-        break;
+    int8_t comCode = (int8_t) Topic::COM;
+    int value = (int) COM_Enum::TIMEOUT_COM;
+    switch(msg->code) {
+        case _PULSE_CODE_DISCONNECT:
+            //printf(" _PULSE_CODE_DISCONNECT\n");
+            /* A client disconnected all its connections (called
+             * name_close() for each name_open() of our name) or
+             * terminated. */
+            _clientConnected = false;
+            timeoutEvent.code = comCode;
+            timeoutEvent.value.sival_int = value;
+            COUT("Client disconnected - sending timeout notification");
+            sendToDispatcher(timeoutEvent); // Andere Maschine disconeccted -> Timeout
+            ConnectDetach(msg->scoid);
+            break;
+        case _PULSE_CODE_UNBLOCK:
+            printf(" received _PULSE_CODE_UNBLOCK\n");
+            /* REPLY blocked client wants to unblock (was hit by
+             * a signal or timed out). It's up to you if you
+             * reply now or later. */
+            break;
+        case 12:
+            //printf(" Sending EOK, connect\n");
+            MsgReply(rcvid, EOK, NULL, 0);
+            break;
+        default:
+            /* A pulse sent by the kernel like
+             * _PULSE_CODE_COIDDEATH or _PULSE_CODE_THREADDEATH
+             * from the kernel? */
+            printf(" received some other QNX pulse msg code: %d\n", msg->code);
+            break;
     }
 }
 

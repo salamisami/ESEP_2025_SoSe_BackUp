@@ -28,7 +28,7 @@
 #define STR_BUF_SIZE      100
 #define QOS               1
 #define TIMEOUT           10000L
-#define ClientID		"Festo_FBM2"
+#define ClientID		MQTT_CLIENT
 
 
 class MQTT_Utilities{
