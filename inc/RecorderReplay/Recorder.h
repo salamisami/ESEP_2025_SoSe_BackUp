@@ -92,7 +92,7 @@ public: //============================================ contructors & destructors
 
 	private: //================================================ private functions ================================================
 
-		void init();
+		//void init();
 		void threadFunction();
 		void receiver_loop();
 		void writer_loop();
