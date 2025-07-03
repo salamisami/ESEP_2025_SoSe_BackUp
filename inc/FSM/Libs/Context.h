@@ -32,6 +32,7 @@ private:
     State* handleADC(int event_value);
     State* handleInternal(int event_value);
     State* handlePiece(int event_value);
+    State* handleError(int event_value);
 };
 
 //================================================= constructors & destructors =================================================
@@ -303,6 +304,19 @@ State* Context<T>::handlePiece(int event_value) {
     return newState;
 }
 
+template <typename T>
+State* Context<T>::handleError(int event_value) {
+    State* newState = nullptr;
+    switch((Error_Enum) event_value) {
+        case Error_Enum::ERROR_W_LOST:
+            newState = state->error_w_lost();
+            break;
+        default:
+            break;
+    }
+    return newState;
+}
+
 
 //===================================================== public functions =====================================================
 template <typename T>
@@ -335,6 +349,9 @@ void Context<T>::handleEvent(_pulse event)
             break;
         case Topic::CHECK_PIECE:
             newState = handlePiece(event_value);
+            break;
+        case Topic::ERROR:
+            newState = handleError(event_value);
             break;
         case Topic::STOP_THREAD:
             state->exit();

@@ -78,8 +78,8 @@ enum class Topic : int8_t {
     MOTOR_STOP_FSM,
     MOTOR_SLOW,
     MOTOR_FAST,
-    DELETE_W_MOTOR
-    CHECK_PIECE
+    DELETE_W_MOTOR,
+    ERROR
 };
 
 enum class Internal_Enum : int {
@@ -158,7 +158,9 @@ enum class ScannedPiece : int {
     HOLE,
     UNKNOWN
 };
-
+enum class Error_Enum : int {
+    ERROR_W_LOST
+};
 
 
 

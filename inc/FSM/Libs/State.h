@@ -345,7 +345,11 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::is_switch);
     }
 
-
+    //================================================ error events ================================================
+    
+    virtual State* error_w_lost() {
+        return handle_event_using_function(&State::error_w_lost);
+    }
 
 
 
