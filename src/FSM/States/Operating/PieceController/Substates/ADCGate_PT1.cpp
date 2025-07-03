@@ -1,7 +1,7 @@
 #include "ADCGate_PT1.h"
 
 //================================================= constructors & destructors =================================================
-ADCGate_PT1::ADCGate_PT1(ContextData* data, LocalDataPT1 localdata) : State(data), localdata_(localdata_) {
+ADCGate_PT1::ADCGate_PT1(ContextData* data, LocalDataPT1 localdata) : State(data), localdata_(localdata) {
     //substate = new SubState(data);
 }
 
@@ -48,6 +48,7 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 	if(current_area == Area::GATE){
 		return new Gate_PT1(data, localdata_);
 	}
+	return nullptr;
 }
 
 State* ADCGate_PT1::metal_detected() {

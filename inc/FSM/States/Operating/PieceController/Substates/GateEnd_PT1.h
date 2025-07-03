@@ -4,6 +4,9 @@
 
 #include "State.h"
 #include "LocalDataPT1.h"
+#include "PendingTransferRequestNotAtEnd.h"
+#include "PendingTransferRequest_PT1.h"
+
 
 class GateEnd_PT1 : public State {
 public: //============================================ constructors & destructors ============================================
@@ -15,6 +18,10 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 	State* clone() override;
+
+	State* timer(TIMER_ID id) override;
+	State* laser_back_blocked() override;
+
     
 
 
