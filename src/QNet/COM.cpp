@@ -15,7 +15,7 @@ COM::~COM() {
     stop();
 }
 void COM::start() {
-    COUT("COM started.");
+    //COUT("COM started.");
     if(running)
         return;
 
@@ -41,7 +41,7 @@ void COM::stop() {
 }
 
 void COM::runDispatcher() {
-    COUT("Dispatcher handler started.");
+    //COUT("Dispatcher handler started.");
     while(running) {
         _pulse dispatcherMsg;
         if(_dispatcherRec->receive_event(&dispatcherMsg) == 0) {
@@ -164,7 +164,7 @@ void COM::runDispatcher() {
 }
 
 void COM::runClient() {
-    COUT("COM Client started.");
+    //COUT("COM Client started.");
     const int RETRY_DELAY_MS = 1000;
     while(running) {
 
@@ -198,7 +198,7 @@ void COM::checkQueues() {
     }
 
     while(!highPriorityQueue.empty()) {
-        COUT("Something in high prio received");
+        //COUT("Something in high prio received");
         auto msg = highPriorityQueue.front();
         highPriorityQueue.pop_front();
         lock.unlock();
@@ -208,7 +208,7 @@ void COM::checkQueues() {
 
     // Process low priority only when higher queues are empty
     while(!lowPriorityQueue.empty()) {
-        COUT("Something in low prio");
+        //COUT("Something in low prio");
 
         auto msg = lowPriorityQueue.front();
         lowPriorityQueue.pop_front();
@@ -244,7 +244,7 @@ void COM::sendToServer(const _pulse& msg, int priority) {
 
 // Server side implementation
 void COM::runServer() {
-    COUT("COM server started.");
+    //COUT("COM server started.");
     bool disconnected = true;
     while(running) {
         struct _pulse event;
@@ -279,7 +279,7 @@ void COM::runServer() {
                 int valueCom = (int) COM_Enum::COM_CONNECTED;
                 reconnectEvent.code = comCode;
                 reconnectEvent.value.sival_int = valueCom;
-                COUT("Sending COM_CONNECTED Notification; Server");
+                //COUT("Sending COM_CONNECTED Notification; Server");
                 sendToDispatcher(reconnectEvent, (int) EventPriority::FIRST_PRIO);
                 int reconnectValue;
                 _pulse rampEvent;
@@ -319,7 +319,7 @@ void COM::runServer() {
 
                 timeoutEvent.code = comCode;
                 timeoutEvent.value.sival_int = value;
-                COUT("Sending Timeout Notification; Server");
+                //COUT("Sending Timeout Notification; Server");
                 sendToDispatcher(timeoutEvent, (int) EventPriority::FIRST_PRIO);
             }
         }
@@ -353,14 +353,14 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
     int value = (int) COM_Enum::TIMEOUT_COM;
     switch(msg->code) {
         case _PULSE_CODE_DISCONNECT:
-            printf(" _PULSE_CODE_DISCONNECT\n");
+            //printf(" _PULSE_CODE_DISCONNECT\n");
             /* A client disconnected all its connections (called
              * name_close() for each name_open() of our name) or
              * terminated. */
 
             timeoutEvent.code = comCode;
             timeoutEvent.value.sival_int = value;
-            COUT("Sending Timeout Notification");
+            //COUT("Sending Timeout Notification");
             sendToDispatcher(timeoutEvent); // Andere Maschine disconeccted -> Timeout
             ConnectDetach(msg->scoid);
             break;
@@ -371,7 +371,7 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
              * reply now or later. */
             break;
         case 12:
-            printf(" Sending EOK, connect\n");
+            //printf(" Sending EOK, connect\n");
             MsgReply(rcvid, EOK, NULL, 0);
             break;
         default:
@@ -388,7 +388,7 @@ void COM::processMessage(const _pulse& msg) {
         // Process ES messages immediately Same priority goes to connection lost
         if(msg.value.sival_int == ((int) COM_Enum::BUTTON_ESTOP_PRESSED)) {
             sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
-            COUT("SENDING ESTOP TO DISPATCHER");
+            //COUT("SENDING ESTOP TO DISPATCHER");
         }
         else if (msg.value.sival_int == ((int)COM_Enum::BUTTON_RESET_PRESSED)){
         	sendToDispatcher(msg);

@@ -104,10 +104,9 @@ void Remote_Controller::init(bool reInit) {
     MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/yellow").c_str(), "off");
     MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/green").c_str(), "off");
     MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "notaus").c_str(), "false");
-    DEBUG(make_topic(RECEIVE_TOPIC, "q1").c_str());
-    DEBUG(make_topic(RECEIVE_TOPIC, "ampel/green/0.5").c_str());
-    std::string msg = std::string(ClientID) + " is connected";
-    MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+
+    std::string msgClient = std::string(ClientID)+": is connected ";
+    MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msgClient.c_str());
 
     RemConThreadRecive = std::thread(&Remote_Controller::threadFunctionRecive, this);
     RemConThreadSend = std::thread(&Remote_Controller::threadFunctionSend, this);
@@ -116,7 +115,7 @@ void Remote_Controller::init(bool reInit) {
         RemConThreadHeartBeat = std::thread(&Remote_Controller::threadFunctionHeartbeat, this);
     }
     int8_t RemConCode = (int8_t) Topic::REM_CON;
-    local_sender->send_event(RemConCode, (int) RemoteControl::MQTT_CONNECTED);
+    local_sender->send_event(RemConCode, (int) RemoteControlEnum::MQTT_CONNECTED);
 }
 
 void Remote_Controller::threadFunctionRecive(){
@@ -130,6 +129,8 @@ void Remote_Controller::threadFunctionRecive(){
             if(status == 0) {
                 ActuatorEnum actuator_event_value = (ActuatorEnum) event.value.sival_int;
                 InterruptEnum interrupt_event_value = (InterruptEnum) event.value.sival_int;
+                ErrorEnum Error_event_value = (ErrorEnum) event.value.sival_int;
+
                 Topic event_code = (Topic) event.code;
                 if(event_code == Topic::ACTUATOR){
                     switch(actuator_event_value) {
@@ -194,27 +195,27 @@ void Remote_Controller::threadFunctionRecive(){
                         case ActuatorEnum::LED_RESET_OFF:
                             MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "reset").c_str(), "0");
                             break;
-                        case ActuatorEnum::MOTOR_LEFT_START:
-                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor startet in Linkslauf");
-                            break;
-                        case ActuatorEnum::MOTOR_RIGHT_START:
-                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor startet in Rechtslauf");
-                            break;
-                        case ActuatorEnum::MOTOR_SLOW_OFF:
-                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor langsam start");
-                            break;
-                        case ActuatorEnum::MOTOR_SLOW_ON:
-                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor langsam stopp");
-                            break;
-                        case ActuatorEnum::MOTOR_STOP:
-                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Motor stopp");
-                            break;
-                        case ActuatorEnum::SORTING_OFF:
-                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Werkstück aussortieren");
-                            break;
-                        case ActuatorEnum::SORTING_ON:
-                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console","Werkstück einsortieren");
-                            break;
+//                        case ActuatorEnum::MOTOR_LEFT_START:
+//                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msgClient+"Motor startet in Linkslauf");
+//                            break;
+//                        case ActuatorEnum::MOTOR_RIGHT_START:
+//                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msgClient+"Motor startet in Rechtslauf");
+//                            break;
+//                        case ActuatorEnum::MOTOR_SLOW_OFF:
+//                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msgClient+"Motor langsam start");
+//                            break;
+//                        case ActuatorEnum::MOTOR_SLOW_ON:
+//                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msgClient+"Motor langsam stopp");
+//                            break;
+//                        case ActuatorEnum::MOTOR_STOP:
+//                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msgClient+"Motor stopp");
+//                            break;
+//                        case ActuatorEnum::SORTING_OFF:
+//                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msgClient+"Werkstück aussortieren");
+//                            break;
+//                        case ActuatorEnum::SORTING_ON:
+//                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msgClient+"Werkstück einsortieren");
+//                            break;
                     }
                 }
                 if(event_code == Topic::INTERRUPT){
@@ -225,10 +226,50 @@ void Remote_Controller::threadFunctionRecive(){
                         MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "notaus").c_str(),"false");
                     }
                 }
+                if(event_code == Topic::ERROR){
+                	std::string msg = "";
+                	switch(Error_event_value){
+                		case ErrorEnum::CANT_FIND_CALB_CONF:
+                			msg = std::string (ClientID)+"Es konnte keine Kalibrierungsdatei gefunden werden";
+                			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
+                		break;
+                		case ErrorEnum::CANT_FIND_REP_CONF:
+                			msg = std::string (ClientID)+"Es konnte keine Replaydatei gefunden werden!";
+                			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
+                		break;
+                		case ErrorEnum::ERROR_BOTH_R_FULL:
+                			msg = std::string (ClientID)+"Achtung beide Rampen Sind Voll bitte leeren!";
+                			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
+                		break;
+                		case ErrorEnum::ERROR_C_LOST_COM:
+                			msg = std::string (ClientID)+"Hat Keine Verbindung zur anderen Anlage!";
+                			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
+                		break;
+                		case ErrorEnum::ERROR_C_LOST_MQTT:
+                			msg = std::string (ClientID)+"MQTT Verbindung verloren!";
+                			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
+                		break;
+                		case ErrorEnum::ERROR_C_LOST_NR:
+                			msg = std::string (ClientID)+"?";
+							MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
+                		break;
+                		case ErrorEnum::ERROR_INVALID_MESURE:
+                			msg = std::string (ClientID)+"Ungültige Höhenmessung!";
+                			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
+                		break;
+                		case ErrorEnum::ERROR_W_LOST:
+                			msg = std::string (ClientID)+"Ein Werkstück ist verschwunden!";
+                			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
+						break;
+                	}
+                }
             }
         }
     }
 }
+
+
+
 
 void Remote_Controller::threadFunctionSend(){
     DEBUG("Remote Control Send Thread started.");
@@ -252,8 +293,8 @@ void Remote_Controller::threadFunctionSend(){
             case 4: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_STOP_RELEASED); break;
             case 5: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_RESET_PRESSED); break;
             case 6: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_RESET_RELEASED); break;
-            case 7: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_PRESSED); break;
-            case 8: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED); break;
+            case 7: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_PRESSED); break;//TODO: durch REMOTE_STOP ersetzen !
+            case 8: //local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED); break;
             case 9: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REC); break;
             case 10: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::STOP_REC); break;
             case 11: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REPLAY); break;
@@ -277,7 +318,7 @@ void Remote_Controller::threadFunctionHeartbeat() {
             if (RemConThreadSend.joinable()) RemConThreadSend.join();
 
             int8_t RemConCode = (int8_t) Topic::REM_CON;
-            local_sender->send_event(RemConCode, (int) RemoteControl::MQTT_DISCONNECTED);
+            local_sender->send_event(RemConCode, (int) RemoteControlEnum::MQTT_DISCONNECTED);
 
             MQTTClient_disconnect(MQTT_Utilities::client, 1000);
             MQTTClient_destroy(&MQTT_Utilities::client);
@@ -286,15 +327,18 @@ void Remote_Controller::threadFunctionHeartbeat() {
             DEBUG("Waiting for reconnect command ...\n");
             bool reconnect = false;
             while (!reconnect) {
-                _pulse event;
-                int status = local_receiver->receive_event(&event);
-                RemoteControl event_value = (RemoteControl) event.value.sival_int;
-                Topic event_code = (Topic) event.code;
-                if (status == 0 && event_code == Topic::REM_CON) {
-                    if(event_value == RemoteControl::RECONNECT)
-                        reconnect = true;
-                    DEBUG("Reconnect command received!\n");
-                }
+//                _pulse event;
+//                int status = local_receiver->receive_event(&event);
+//                RemoteControl event_value = (RemoteControl) event.value.sival_int;
+//                Topic event_code = (Topic) event.code;
+//                if (status == 0 && event_code == Topic::REM_CON) {
+//                    if(event_value == RemoteControl::RECONNECT)
+//                        reconnect = true;
+//                    DEBUG("Reconnect command received!\n");
+//                }
+            	//nur zum testen
+            	std::this_thread::sleep_for(std::chrono::seconds(3));
+            	reconnect = true;
             }
             MQTT_Utilities::connection_lost = false;
             dash_conn_lost = false;
@@ -316,7 +360,7 @@ static void on_command(const char* payload) {
     	printf("[MQTT-DEBUG] Warning: Received empty payload in on_command\n");
         return;
     }
-    printf("[MQTT-DEBUG] Payload empfangen: '%.*s'\n", (int)len, payload);
+    //printf("[MQTT-DEBUG] Payload empfangen: '%.*s'\n", (int)len, payload);
     int Last_Command = 0;
     if (strncmp(payload, "startPressed", len) == 0) {
         Last_Command = 1;
