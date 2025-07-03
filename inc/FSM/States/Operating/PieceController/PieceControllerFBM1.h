@@ -35,6 +35,8 @@ protected:
 	virtual State* laser_back_blocked() override;
 	virtual State* metal_detected() override;
 	virtual State* laser_sorting_gate_blocked() override;
+
+	virtual State* custom_handler_function(State* (State::* handler_function)());
 	
 };
 

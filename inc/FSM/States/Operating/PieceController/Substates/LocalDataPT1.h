@@ -8,7 +8,7 @@ class LocalDataPT1{
 public: 
 	int id = -1;
 	ScannedPiece ist_type = ScannedPiece::UNKNOWN;
-	int is_metal = -1;
+	int is_metal = false;
 	CheckPiece_Enum soll_type = CheckPiece_Enum::UNKNOWN;
 };
 

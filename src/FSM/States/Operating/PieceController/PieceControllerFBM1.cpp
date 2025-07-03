@@ -43,44 +43,47 @@ State* PieceControllerFBM1::new_piece() {
 	return nullptr;
 }
 
+State* PieceControllerFBM1::custom_handler_function(State* (State::* handler_function)()) {
+        for(auto it = substates.begin(); it != substates.end(); ) {
+            State*& current_substate = *it;  // Use reference to pointer
+            
+            State* newSubstate = (current_substate->*handler_function)();
+
+            if(newSubstate == State::EXIT_STATE) {
+				//TODO event is consumed to exit the state
+                // Handle exit case
+                current_substate->exit();
+                delete current_substate;
+                it = substates.erase(it);
+				//TODO event is consumed, result is exit state
+                return nullptr;
+            }
+
+            if(newSubstate != nullptr) {
+				//TODO event is consumed
+                // Handle state transition
+                current_substate->exit();
+                delete current_substate;
+                current_substate = newSubstate;
+                current_substate->entry();
+            }
+
+            ++it;  // Common increment for both remaining cases
+        }
+		//TODO event not consumed at all
+        return nullptr;
+    }
+
 //TODO check if the event is consumed or not here
 State* PieceControllerFBM1::laser_back_blocked() {
-	for(auto it = substates.begin(); it != substates.end();) {
-		State* current_substate = *it;
-		// if(current_substate == nullptr) {
-		// 	DEBUG("this substate is nullptr");
-		// 	return nullptr;
-		// }
-
-		State* newSubstate = current_substate->laser_back_blocked();
-		if(newSubstate == State::EXIT_STATE) {
-			//TODO despawn the state
-			// Handle substate exit
-			current_substate->exit();
-			delete current_substate;
-			current_substate = nullptr;
-			it = substates.erase(it);
-			//TODO event is consumed, result is exit state
-			return nullptr;
-		} else if(newSubstate != nullptr) {
-			// there is substate change, change only the substate
-			current_substate->exit();
-			delete current_substate;
-			current_substate = newSubstate;
-			current_substate->entry();
-			//TODO event is consumed, result is substate change
-		}
-		//event is not consumed
-		return nullptr;
-	}
-	return nullptr;
+	return custom_handler_function(&State::laser_back_blocked);
 }
 
 State* PieceControllerFBM1::metal_detected() {
-	return nullptr;
+	return custom_handler_function(&State::metal_detected);
 
 }
 
 State* PieceControllerFBM1::laser_sorting_gate_blocked() {
-	return nullptr;
+	return custom_handler_function(&State::laser_sorting_gate_blocked);
 }

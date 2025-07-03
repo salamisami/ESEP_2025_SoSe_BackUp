@@ -5,6 +5,7 @@
 #include "State.h"
 #include "LocalDataPT1.h"
 #include "SortingOut_PT1.h"
+#include "GateEnd_PT1.h"
 
 class Gate_PT1 : public State {
 public: //============================================ constructors & destructors ============================================

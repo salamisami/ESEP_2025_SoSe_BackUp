@@ -6,6 +6,7 @@
 #include "LocalDataPT1.h"
 #include "PieceMissing_PT1.h"
 #include "Gate_PT1.h"
+#include "IsMetal_PT1.h"
 
 class ADCGate_PT1 : public State {
 public: //============================================ constructors & destructors ============================================
