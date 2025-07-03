@@ -66,8 +66,10 @@ public:
         input_state->entry();
     }
 
-    void despawn_orthogonal_state(){
+    State* despawn_orthogonal_state(){
+        State* state_to_despawn = substates.front();
         substates.pop_front();
+        return state_to_despawn;
     }
 
     virtual std::string get_current_state() override {
@@ -83,7 +85,6 @@ public:
         return appended_string;
     }
 
-    //================================================ internal events ================================================
     virtual State* timer(TIMER_ID id) override {
         for(auto& current_substate : substates) {
             State* newSubstate = current_substate->timer(id);
@@ -121,20 +122,20 @@ protected:
     //================================================ protected ================================================
 protected:
 
+    virtual State* handle_event_using_function(State* (State::* handler_function)()) override {
+        for(auto it = substates.begin(); it != substates.end();) {
+            State* current_substate = *it;
+            // if(current_substate == nullptr) {
+            //     return nullptr;
+            // }
 
-    State* handle_event_using_function(State* (State::* handler_function)()) override {
-        for(auto& current_substate : substates) {
-            if(current_substate == nullptr) {
-                return nullptr;
-            }
             State* newSubstate = (current_substate->*handler_function)();
             if(newSubstate == State::EXIT_STATE) {
-                // Handle substate exit
+                //one of the substates exits.
                 current_substate->exit();
                 delete current_substate;
                 current_substate = nullptr;
-                // Return default exit state to parent
-                return default_exit_state_;
+                it = substates.erase(it);
             } else if(newSubstate != nullptr) {
                 // there is substate change, change only the substate
                 current_substate->exit();
@@ -145,7 +146,6 @@ protected:
         }
         return nullptr;
     }
-
 
 
 };

@@ -213,6 +213,14 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::laser_ramp_unblocked);
     }
 
+    virtual State* adc_new_piece(){
+        return handle_event_using_function(&State::adc_new_piece);
+    }
+
+    virtual State* adc_timeout(){
+        return handle_event_using_function(&State::adc_timeout);
+    }
+
     virtual State* adc_top_area_blocked() {
         return handle_event_using_function(&State::adc_top_area_blocked);
     }
@@ -227,6 +235,26 @@ public: //================================================ public functions ====
 
     virtual State* adc_side_area_unblocked() {
         return handle_event_using_function(&State::adc_side_area_unblocked);
+    }
+
+    virtual State* adc_wh_detect(){
+        return handle_event_using_function(&State::adc_wh_detect);
+    }
+
+    virtual State* adc_wf_detect(){
+        return handle_event_using_function(&State::adc_wf_detect);
+    }
+
+    virtual State* adc_wb_detect(){
+        return handle_event_using_function(&State::adc_wb_detect);
+    }
+
+    virtual State* adc_w_not_detect(){
+        return handle_event_using_function(&State::adc_w_not_detect);
+    }
+
+    virtual State* adc_invalid_measure(){
+        return handle_event_using_function(&State::adc_invalid_measure);
     }
 
     virtual State* com_button_estop_pressed() {

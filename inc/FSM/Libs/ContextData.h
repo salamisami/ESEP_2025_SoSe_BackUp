@@ -47,7 +47,8 @@ public:
     PieceTracker piece_tracker = PieceTracker(true);
     std::stack<State*>* modehandler_history;
     std::stack<State*>* estop_history;
-    std::unordered_map<int, Piece>* pieces_map;
+    
+    std::unordered_map<int, Piece*>* pieces_map;
     int available_id = 0;
     
     // int piece_id = 0;
@@ -62,6 +63,7 @@ public:
     I_Sender* sender;
     bool is_switch = false;
     bool is_ramp_full = false;
+    bool enough_space = false;
 
     bool workpieces = false;
     bool motor_slowed = false;

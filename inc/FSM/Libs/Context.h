@@ -76,17 +76,8 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::RESET_TO_TALL_W_METAL:
             newState = state->reset_to_tall_w_metal();
             break;
-        case Internal_Enum::DELETE_W_MOTOR:
-            newState = state->delete_w_motor();
-            break;
-        case Internal_Enum::MOTOR_FAST:
-            newState = state->motor_fast();
-            break;
-        case Internal_Enum::MOTOR_SLOW:
-            newState = state->motor_slow();
-            break;
-        case Internal_Enum::MOTOR_STOP_FSM:
-            newState = state->motor_stop_fsm();
+        case Internal_Enum::NEW_PIECE:
+            newState = state->new_piece();
             break;
         default:
             break;
@@ -99,16 +90,29 @@ State* Context<T>::handleADC(int event_value) {
     //TODO put newState = state->function() here
     State* newState = nullptr;
     switch((ADC_Enum) event_value) {
+        case ADC_Enum::ADC_TIMEOUT:
+            newState = state->adc_timeout();
+            break;
+        case ADC_Enum::ADC_NEW_PIECE:
+            newState = state->adc_new_piece();
+            break;
         case ADC_Enum::ADC_CALIBRATION_DONE:
             newState = state->adc_calibration_done();
             break;
         case ADC_Enum::ADC_W_B_DETECT:
+            newState = state->adc_wb_detect();
             break;
         case ADC_Enum::ADC_WF_DETECT:
+            newState = state->adc_wf_detect();
             break;
         case ADC_Enum::ADC_WH_DETECT:
+            newState = state->adc_wh_detect();
             break;
         case ADC_Enum::ADC_W_NOT_DETECT:
+            newState = state->adc_w_not_detect();
+            break;
+        case ADC_Enum::ADC_INVALID_MESURE:
+            newState = state->adc_invalid_measure();
             break;
         default:
             break;
