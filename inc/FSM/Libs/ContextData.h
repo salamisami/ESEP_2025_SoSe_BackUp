@@ -75,6 +75,9 @@ public:
     bool motor_slowed = false;
     bool motor_stopped = false;
     StateContainer workpieceList;
+
+    //PieceTrack -> PieceTrack
+    bool piece_near_adc = false;
 };
 
 #endif

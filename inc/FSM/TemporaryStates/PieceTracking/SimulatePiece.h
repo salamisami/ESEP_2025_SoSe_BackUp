@@ -3,7 +3,7 @@
 #pragma once
 
 #include "OrthState.h"
-#include "Fast.h"
+#include "FastTemp.h"
 #include "LetPieceThrough.h"
 #include "IdleTest.h"
 #include "TimeProfileManager.h"
