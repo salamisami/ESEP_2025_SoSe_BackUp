@@ -19,7 +19,8 @@
 
 class Modehandler : public OrthState{
 public:
-	Modehandler(ContextData* data) : OrthState(data, {new IdleIM}) {};
+	Modehandler(ContextData* data);
+	Modehandler(ContextData* data, std::vector<State*> substates);
 	virtual ~Modehandler(){ };
 
 	void entry() override;

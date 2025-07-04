@@ -7,6 +7,9 @@
 
 #include "Modehandler.h"
 
+Modehandler::Modehandler(ContextData* data) : OrthState(data, {new IdleIM(data)}){}
+Modehandler::Modehandler(ContextData* data, std::vector<State*> substates) : OrthState(data, substates){}
+
 void Modehandler::entry(){ }
 
 void Modehandler::exit() { }
