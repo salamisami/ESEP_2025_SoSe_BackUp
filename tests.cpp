@@ -168,7 +168,7 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED); 
     EXPECT_STATE("Red MotorDisable");
-
+}
 
 
 TEST_F(SubRealImplementationTesting, SortingOrderPositiveTest) {

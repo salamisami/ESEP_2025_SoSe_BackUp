@@ -137,9 +137,6 @@ State* Context<T>::handleADC(int event_value) {
             break;
         case ADC_Enum::ADC_MESURE:
             break;
-        case ADC_Enum::ADC_INVALID_MESURE:
-            newState = state->adc_invalid_measure();
-            break;
         case ADC_Enum::ADC_PREPARE:
             break;
         case ADC_Enum::ADC_NEW_PIECE:
@@ -198,8 +195,6 @@ State* Context<T>::handleCOM(int event_value) {
         case COM_Enum::RAMP_FULL:
             newState = state->com_ramp_full();
             break;
-        case COM_Enum::RAMP_NOT_FULL:
-            newState = state->com_ramp_not_full();
         case COM_Enum::FBM_2_READY:
             newState = state->fbm_2_ready();
             break;
@@ -248,7 +243,7 @@ State* Context<T>::handleCOM(int event_value) {
 template <typename T>
 State* Context<T>::handleError(int event_value) {
     State* newState = nullptr;
-    switch((Error) event_value) {
+    switch((Error_Enum) event_value) {
         //TODO is this true?
         case Error_Enum::ERROR_W_LOST:
             newState = state->error_w_lost();
@@ -381,7 +376,7 @@ State* Context<T>::handleInterrupt(int event_value) {
     return newState;
 }
 
-
+template<typename T>
 State* Context<T>::handlePiece(int event_value) {
     State* newState = nullptr;
     switch((PieceEnum) event_value) {

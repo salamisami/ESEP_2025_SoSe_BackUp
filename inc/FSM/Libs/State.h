@@ -137,19 +137,6 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::button_start_pressed);
     }
 
-    virtual State* delete_w_motor(){
-      return handle_event_using_function(&State::delete_w_motor);
-    } 
-    virtual State* motor_slow(){
-      return handle_event_using_function(&State::motor_slow);
-    } 
-    virtual State* motor_fast(){
-      return handle_event_using_function(&State::motor_fast);
-    }    
-    virtual State* motor_stop_fsm(){
-      return handle_event_using_function(&State::motor_stop_fsm);
-    }
-
     virtual State* button_start_released() {
         return handle_event_using_function(&State::button_start_released);
     }
@@ -335,12 +322,6 @@ public: //================================================ public functions ====
     }
 
     // Neue States
-    virtual State* ramp_full() {
-        return handle_event_using_function(&State::ramp_full);
-    }
-    virtual State* ramp_not_full() {
-        return handle_event_using_function(&State::ramp_not_full);
-    }
     virtual State* sorting_out() {
         return handle_event_using_function(&State::sorting_out);
     }
@@ -374,9 +355,6 @@ public: //================================================ public functions ====
     }
     virtual State* mqtt_connected() {
         return handle_event_using_function(&State::mqtt_connected);
-    }
-    virtual State* adc_invalid_measure() {
-        return handle_event_using_function(&State::adc_invalid_measure);
     }
     virtual State* cant_find_calb_conf() {
         return handle_event_using_function(&State::cant_find_calb_conf);
@@ -412,28 +390,11 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::pieces_too_close);
     }
 
-    virtual State* delete_w_motor(){
-      return handle_event_using_function(&State::delete_w_motor);
-    } 
-    virtual State* motor_slow(){
-      return handle_event_using_function(&State::motor_slow);
-    } 
-    virtual State* motor_fast(){
-      return handle_event_using_function(&State::motor_fast);
-    }    
-    virtual State* motor_stop_fsm(){
-      return handle_event_using_function(&State::motor_stop_fsm);
-    }
-
-
-
     //================================================ error events ================================================
     
     virtual State* error_w_lost() {
         return handle_event_using_function(&State::error_w_lost);
     }
-
-
 
 protected: //================================================ protected ================================================
     //classes, STL containers, and structs
@@ -446,8 +407,6 @@ protected: //================================================ protected ========
         return nullptr;
     }
 
-
-
 private: //================================================ private functions ================================================
     std::string demangle(const char* mangled) {
         int status;
@@ -456,7 +415,6 @@ private: //================================================ private functions ==
         free(demangled);
         return result;
     }
-
 };
 
 #endif
