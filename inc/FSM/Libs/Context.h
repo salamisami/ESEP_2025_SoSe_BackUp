@@ -393,20 +393,6 @@ State* Context<T>::handlePiece(int event_value) {
     return newState;
 }
 
-template <typename T>
-State* Context<T>::handleError(int event_value) {
-    State* newState = nullptr;
-    switch((Error_Enum) event_value) {
-        case Error_Enum::ERROR_W_LOST:
-            newState = state->error_w_lost();
-            break;
-        default:
-            break;
-    }
-    return newState;
-}
-
-
 //===================================================== public functions =====================================================
 template <typename T>
 std::string Context<T>::show_state() {

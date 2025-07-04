@@ -15,33 +15,27 @@
 #include "RampStatus.h"
 #include "SystemsRampStatus.h"
 
-class ErrorHandler : public OrthState {
+class ErrorHandler : public OrthState
+{
 public: //============================================ constructors & destructors ============================================
-    ErrorHandler(ContextData* data);
-	ErrorHandler(ContextData* data, std::vector<State*> initial_substates);
-    virtual ~ErrorHandler();
-	
+	ErrorHandler(ContextData *data);
+	ErrorHandler(ContextData *data, std::deque<State *> initial_substates);
+	virtual ~ErrorHandler();
 
 public: //================================================ public functions ================================================
-	State* clone() override;
-    void entry() override;
-    void exit() override;
+	State *clone() override;
+	void entry() override;
+	void exit() override;
 
-	//State* laser_ramp_blocked() override;
-    
-
+	// State* laser_ramp_blocked() override;
 
 private: //================================================ private variables ================================================
-	//classes, STL containers, and structs
-	//pointers
-	//primitive types
-	//bool and char
-   
-	
-
+		 // classes, STL containers, and structs
+		 // pointers
+		 // primitive types
+		 // bool and char
 private: //================================================ private functions ================================================
-	//void privateFunction();
-	
+		 // void privateFunction();
 };
 
 #endif

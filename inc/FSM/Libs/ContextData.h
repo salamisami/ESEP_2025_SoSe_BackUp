@@ -10,7 +10,7 @@
 #include "Stopwatch.h"
 #include "PieceTracker.h"
 #include "Piece.h"
-#include <vector>
+#include <deque>
 #include <stack>
 #include <queue>
 #include <unordered_map>
@@ -67,7 +67,7 @@ public:
 
     //rampStatus -> PieceTracker
     bool is_ramp_full = false;
-
+    bool piece_near_adc = false;
     bool workpieces = false;
     bool motor_slowed = false;
     bool motor_stopped = false;

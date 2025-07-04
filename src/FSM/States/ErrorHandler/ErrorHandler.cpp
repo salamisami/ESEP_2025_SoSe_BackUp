@@ -20,11 +20,7 @@ ErrorHandler::ErrorHandler(ContextData* data) : OrthState(data,
 	//substate = new SubState(data);
 }
 
-ErrorHandler::ErrorHandler(ContextData* data, std::vector<State*> initial_substates) : OrthState(data,
-	initial_substates
-) {
-	//substate = new SubState(data);
-}
+ErrorHandler::ErrorHandler(ContextData* data, std::deque<State*> cloned_substates) : OrthState(data, cloned_substates) {}
 
 ErrorHandler::~ErrorHandler() {}
 
