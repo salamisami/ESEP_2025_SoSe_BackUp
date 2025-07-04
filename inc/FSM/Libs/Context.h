@@ -139,8 +139,6 @@ State* Context<T>::handleADC(int event_value) {
             break;
         case ADC_Enum::ADC_PREPARE:
             break;
-        case ADC_Enum::ADC_NEW_PIECE:
-            break;
         case ADC_Enum::ADC_STOP:
             break;
         default:
@@ -191,9 +189,6 @@ State* Context<T>::handleCOM(int event_value) {
             break;
         case COM_Enum::RESET_TO_TALL_W_METAL:
             newState = state->reset_to_tall_w_metal();
-            break;
-        case COM_Enum::RAMP_FULL:
-            newState = state->com_ramp_full();
             break;
         case COM_Enum::FBM_2_READY:
             newState = state->fbm_2_ready();

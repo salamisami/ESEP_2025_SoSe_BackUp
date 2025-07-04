@@ -108,7 +108,6 @@ enum class COM_Enum : int {
     HEARTBEAT,
     TIMEOUT_COM,
     RECONNECT,
-    RAMP_NOT_FULL,
     RESET_TO_FLAT,
     RESET_TO_TALL,
     RESET_TO_TALL_W_METAL,

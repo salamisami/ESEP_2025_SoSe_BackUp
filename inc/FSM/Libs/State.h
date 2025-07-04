@@ -391,10 +391,6 @@ public: //================================================ public functions ====
     }
 
     //================================================ error events ================================================
-    
-    virtual State* error_w_lost() {
-        return handle_event_using_function(&State::error_w_lost);
-    }
 
 protected: //================================================ protected ================================================
     //classes, STL containers, and structs
