@@ -167,7 +167,7 @@ enum class PieceEnum : int {
     TALL_WITH_METAL
 };
 
-enum class Error: int{
+enum class Error_Enum: int{
     ERROR_W_LOST=1,
     ERROR_BOTH_R_FULL,
     ERROR_C_LOST_NR,
@@ -190,10 +190,6 @@ enum class ScannedPiece : int {
     FLAT,
     HOLE,
     UNKNOWN
-};
-
-enum class Error_Enum : int {
-    ERROR_W_LOST
 };
 
 

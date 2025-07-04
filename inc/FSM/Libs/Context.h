@@ -250,46 +250,46 @@ State* Context<T>::handleError(int event_value) {
     State* newState = nullptr;
     switch((Error) event_value) {
         //TODO is this true?
-        case Error::ERROR_W_LOST:
+        case Error_Enum::ERROR_W_LOST:
             newState = state->error_w_lost();
             break;
-        case Error::ERROR_BOTH_R_FULL:
+        case Error_Enum::ERROR_BOTH_R_FULL:
             newState = state->error_both_r_full();
             break;
-        case Error::ERROR_C_LOST_NR:
+        case Error_Enum::ERROR_C_LOST_NR:
             newState = state->error_c_lost_nr();
             break;
-        case Error::ERROR_C_LOST_MQTT:
+        case Error_Enum::ERROR_C_LOST_MQTT:
             newState = state->error_c_lost_mqtt();
             break;
-        case Error::ERROR_C_LOST_COM:
+        case Error_Enum::ERROR_C_LOST_COM:
             newState = state->error_c_lost_com();
             break;
-        case Error::ERROR_INVALID_MESURE:
+        case Error_Enum::ERROR_INVALID_MESURE:
             newState = state->adc_invalid_measure();
             break;
-        case Error::CANT_FIND_CALB_CONF:
+        case Error_Enum::CANT_FIND_CALB_CONF:
             newState = state->cant_find_calb_conf();
             break;
-        case Error::CANT_FIND_REP_CONF:
+        case Error_Enum::CANT_FIND_REP_CONF:
             newState = state->cant_find_rep_conf();
             break;
-        case Error::COM_ERROR_RESOLVED:
+        case Error_Enum::COM_ERROR_RESOLVED:
             newState = state->com_error_resolved();
             break;
-        case Error::RAMP_ERROR_RESOLVED:
+        case Error_Enum::RAMP_ERROR_RESOLVED:
             newState = state->ramp_error_resolved();
             break;
-        case Error::MQTT_ERROR_RESOLVED:
+        case Error_Enum::MQTT_ERROR_RESOLVED:
             newState = state->mqtt_error_resolved();
             break;
-        case Error::PIECE_APPEARED_RESOLVED:
+        case Error_Enum::PIECE_APPEARED_RESOLVED:
             newState = state->piece_appeared_resolved();
             break;
-        case Error::PIECE_LOST_RESOLVED:
+        case Error_Enum::PIECE_LOST_RESOLVED:
             newState = state->piece_lost_resolved();
             break;
-        case Error::PIECES_TOO_CLOSE:
+        case Error_Enum::PIECES_TOO_CLOSE:
             newState = state->pieces_too_close();
             break;
         default:
