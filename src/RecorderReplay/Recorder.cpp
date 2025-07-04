@@ -36,14 +36,9 @@ void Recorder::threadFunction() {
                     case RecReplayEnum::STOP_REPLAY: stop_replay(); break;
                 }
             }
-            if ((event_code == Topic::INTERRUPT || event_code == Topic::COM) && record_running){
-
-				Topic Inter_event_code = (Topic)event.code;
-				Topic OM_event_code = (Topic)event.code;
-
-				if (Inter_event_code == Topic::INTERRUPT) {
-
-					DEBUG("Recorder interruped erhalten");
+            if (record_running){
+            	if(event_code == Topic::INTERRUPT || event_code == Topic::COM){
+					DEBUG("Recorder Interrupt erhalten");
 					auto now = std::chrono::system_clock::now();
 					auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
 					{
@@ -51,11 +46,13 @@ void Recorder::threadFunction() {
 						event_queue.push({ms, event.code, event.value.sival_int});
 					}
 					queue_cv.notify_one();
-				}
+
+            	}
             }
         }
     }
 }
+
 
 void Recorder::start_record() {
 	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;

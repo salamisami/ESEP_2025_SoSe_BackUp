@@ -325,8 +325,7 @@ void Remote_Controller::threadFunctionHeartbeat() {
             RemCon_send_running = false;
             RemCon_recive_running = false;
 
-            int8_t AcuatorCode = (int8_t) Topic::ACTUATOR;
-            local_sender->send_event(AcuatorCode, (int) ActuatorEnum::WAKE_UP);
+            local_sender->send_event((int8_t) Topic::WAKE_UP,0);
             if (RemConThreadRecive.joinable()) RemConThreadRecive.join();
             queueCV.notify_all();
             if (RemConThreadSend.joinable()) RemConThreadSend.join();
