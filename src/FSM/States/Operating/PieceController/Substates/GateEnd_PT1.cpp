@@ -31,7 +31,24 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 	int current_position = piece->piece_tracker.getPosition();
 
 	if(current_area != Area::GATE_END) {
-		return new PieceMissing_PT1(data, localdata_);
+		//PieceMissing
+		data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
+		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
+		PieceEnum validated_piece = localdata_.validated_type;
+		switch(validated_piece) {
+			case PieceEnum::FLAT:
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_FLAT);
+				break;
+			case PieceEnum::TALL:
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL);
+				break;
+			case PieceEnum::TALL_WITH_METAL:
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL_W_METAL);
+				break;
+			default:
+				break;
+		}
+		return State::EXIT_STATE;
 	}
 
 	if(data->piece_near_adc) {
