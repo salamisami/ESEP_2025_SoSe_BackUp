@@ -34,7 +34,7 @@ void wait_for_enter() {
 
 int main() {
 
-	std::thread inputThread(wait_for_enter);
+	//std::thread inputThread(wait_for_enter);
 
     cout << "Starting Program..." << endl; // prints Hello World!!!
     system("slay gns");
@@ -70,10 +70,8 @@ int main() {
     externCommunication->start();
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
-    while(running) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    while(1) {
 	}
-    inputThread.join();
    
 
     delete hal;

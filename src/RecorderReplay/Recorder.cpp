@@ -36,10 +36,13 @@ void Recorder::threadFunction() {
                     case RecReplayEnum::STOP_REPLAY: stop_replay(); break;
                 }
             }
-            if (event_code == Topic::INTERRUPT && record_running){
+            if ((event_code == Topic::INTERRUPT || event_code == Topic::COM) && record_running){
 
 				Topic Inter_event_code = (Topic)event.code;
+				Topic OM_event_code = (Topic)event.code;
+
 				if (Inter_event_code == Topic::INTERRUPT) {
+
 					DEBUG("Recorder interruped erhalten");
 					auto now = std::chrono::system_clock::now();
 					auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
@@ -55,6 +58,8 @@ void Recorder::threadFunction() {
 }
 
 void Recorder::start_record() {
+	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
+	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_ON);
     std::lock_guard<std::mutex> lock(rec_mutex);
     if (record_running) {
         DEBUG("Record already running!");
@@ -69,6 +74,8 @@ void Recorder::start_record() {
 }
 
 void Recorder::stop_record() {
+	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
+	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_OFF);
     std::lock_guard<std::mutex> lock(rec_mutex);
     if (!record_running) return;
     record_running = false;
@@ -109,6 +116,9 @@ void Recorder::writer_loop() {
 }
 
 void Recorder::start_replay() {
+	int8_t ErrorCode = (int8_t) Topic::ERROR;
+	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
+	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_ON);
     std::lock_guard<std::mutex> lock(rep_mutex);
     if (replay_running) {
         DEBUG("Replay already running!");
@@ -119,7 +129,7 @@ void Recorder::start_replay() {
     replay_running = true;
 
     if (!FILE_EXISTS(RECORDER_CSV)) {
-    	//
+    	local_sender->send_event(ErrorCode, (int) ErrorEnum::CANT_FIND_REP_CONF);
         std::cerr << "Replay: Datei existiert nicht!\n";
         replay_running = false;
         return;
@@ -150,6 +160,8 @@ void Recorder::start_replay() {
 }
 
 void Recorder::stop_replay() {
+	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
+	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_OFF);
     std::lock_guard<std::mutex> lock(rep_mutex);
     if (!replay_running) return;
     replay_running = false;
