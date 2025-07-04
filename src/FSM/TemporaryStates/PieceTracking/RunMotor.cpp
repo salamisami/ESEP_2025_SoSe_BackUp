@@ -1,4 +1,4 @@
-#include "RunMotor.h"
+/*#include "RunMotor.h"
 
 //================================================= constructors & destructors =================================================
 RunMotor::RunMotor(ContextData* data) : State(data) {
@@ -23,4 +23,4 @@ void RunMotor::exit() {
 
 State* RunMotor::laser_front_unblocked() {
 	return new SimulatePiece(data);
-}
+}*/
