@@ -31,6 +31,7 @@ private:
     State* handleCOM(int event_value);
     State* handleADC(int event_value);
     State* handleInternal(int event_value);
+    State* handleError(int event_value);
 };
 
 //================================================= constructors & destructors =================================================
@@ -78,6 +79,15 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::RESET_TO_TALL_W_METAL:
             newState = state->reset_to_tall_w_metal();
             break;
+        case Internal_Enum::RAMP_FULL:
+            newState = state->ramp_full();
+            break;
+        case Internal_Enum::RAMP_NOT_FULL:
+            newState = state->ramp_not_full();
+            break;
+        case Internal_Enum::UNBLOCK_STARTING_AREA:
+            newState = state->unblock_starting_area();
+            break;
         case Internal_Enum::DELETE_W_MOTOR:
             newState = state->delete_w_motor();
             break;
@@ -96,6 +106,8 @@ State* Context<T>::handleInternal(int event_value) {
     return newState;
 }
 
+
+
 template<typename T>
 State* Context<T>::handleADC(int event_value) {
     //TODO put newState = state->function() here
@@ -112,12 +124,26 @@ State* Context<T>::handleADC(int event_value) {
             break;
         case ADC_Enum::ADC_W_NOT_DETECT:
             break;
+        case ADC_Enum::ADC_CALIBRATE:
+            break;
+        case ADC_Enum::ADC_MESURE:
+            break;
+        case ADC_Enum::ADC_INVALID_MESURE:
+            newState = state->adc_invalid_measure();
+            break;
+        case ADC_Enum::ADC_PREPARE:
+            break;
+        case ADC_Enum::ADC_NEW_PIECE:
+            break;
+        case ADC_Enum::ADC_STOP:
+            break;
         default:
             break;
     }
     return newState;
 
 }
+
 
 template <typename T>
 State* Context<T>::handleCOM(int event_value) {
@@ -138,6 +164,77 @@ State* Context<T>::handleCOM(int event_value) {
             break;
         case COM_Enum::RESET_TO_TALL_W_METAL:
             newState = state->reset_to_tall_w_metal();
+            break;
+        case COM_Enum::RAMP_FULL:
+            newState = state->com_ramp_full();
+            break;
+        case COM_Enum::RAMP_NOT_FULL:
+            newState = state->com_ramp_not_full();
+            break;
+        default:
+            break;
+    }
+    return newState;
+}
+
+/*
+    enum class Error: int{
+    ERROR_W_LOST=1,
+    ERROR_BOTH_R_FULL,
+    ERROR_C_LOST_NR,
+    ERROR_C_LOST_MQTT,
+    ERROR_C_LOST_COM,
+    ERROR_INVALID_MESURE,
+    CANT_FIND_CALB_CONF,
+    CANT_FIND_REP_CONF
+};
+*/
+template <typename T>
+State* Context<T>::handleError(int event_value) {
+    State* newState = nullptr;
+    switch((Error) event_value) {
+        //TODO is this true?
+        case Error::ERROR_W_LOST:
+            newState = state->error_w_lost();
+            break;
+        case Error::ERROR_BOTH_R_FULL:
+            newState = state->error_both_r_full();
+            break;
+        case Error::ERROR_C_LOST_NR:
+            newState = state->error_c_lost_nr();
+            break;
+        case Error::ERROR_C_LOST_MQTT:
+            newState = state->error_c_lost_mqtt();
+            break;
+        case Error::ERROR_C_LOST_COM:
+            newState = state->error_c_lost_com();
+            break;
+        case Error::ERROR_INVALID_MESURE:
+            newState = state->adc_invalid_measure();
+            break;
+        case Error::CANT_FIND_CALB_CONF:
+            newState = state->cant_find_calb_conf();
+            break;
+        case Error::CANT_FIND_REP_CONF:
+            newState = state->cant_find_rep_conf();
+            break;
+        case Error::COM_ERROR_RESOLVED:
+            newState = state->com_error_resolved();
+            break;
+        case Error::RAMP_ERROR_RESOLVED:
+            newState = state->ramp_error_resolved();
+            break;
+        case Error::MQTT_ERROR_RESOLVED:
+            newState = state->mqtt_error_resolved();
+            break;
+        case Error::PIECE_APPEARED_RESOLVED:
+            newState = state->piece_appeared_resolved();
+            break;
+        case Error::PIECE_LOST_RESOLVED:
+            newState = state->piece_lost_resolved();
+            break;
+        case Error::PIECES_TOO_CLOSE:
+            newState = state->pieces_too_close();
             break;
         default:
             break;
@@ -260,6 +357,9 @@ void Context<T>::handleEvent(_pulse event)
             break;
         case Topic::COM:
             newState = handleCOM(event_value);
+            break;
+        case Topic::ERROR:
+            newState = handleError(event_value);
             break;
         case Topic::STOP_THREAD:
             state->exit();
