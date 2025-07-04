@@ -1,4 +1,4 @@
-#include "IdleTest.h"
+/*#include "IdleTest.h"
 
 //================================================= constructors & destructors =================================================
 IdleTest::IdleTest(ContextData* data) : State(data) {
@@ -22,4 +22,4 @@ void IdleTest::exit() {
 
 State* IdleTest::laser_front_blocked() {
 	return new RunMotor(data);
-}
+}*/

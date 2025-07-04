@@ -1,4 +1,4 @@
-#include "SimulatePiece.h"
+/*#include "SimulatePiece.h"
 
 //================================================= constructors & destructors =================================================
 SimulatePiece::SimulatePiece(ContextData* data) : OrthState(data, std::vector<State*>({
@@ -39,4 +39,4 @@ void SimulatePiece::exit(){
 
 State* SimulatePiece::laser_back_blocked(){
 	return new IdleTest(data);
-}
+}*/

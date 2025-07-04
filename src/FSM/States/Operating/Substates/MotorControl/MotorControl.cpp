@@ -2,13 +2,8 @@
 
 
 //================================================= constructors & destructors =================================================
-MotorControl::MotorControl(ContextData* data) : OrthState(data,
-	std::vector<State*>({
-		new Idle(data)
-		})
-) {
-	//substate = new SubState(data);
-}
+MotorControl::MotorControl(ContextData* data) : HState(data, new Idle(data)){}
+MotorControl::MotorControl(ContextData* data, State* initial_state) : HState(data, initial_state) {}
 
 MotorControl::~MotorControl() {}
 
@@ -19,10 +14,14 @@ MotorControl::~MotorControl() {}
 void MotorControl::entry() {
 	PRINT_STATE;
 	
-	OrthState::entry();
+	HState::entry();
 }
 
 void MotorControl::exit() {
-	OrthState::exit();
+	HState::exit();
 	PRINT_STATE;
+}
+
+State* MotorControl::clone(){
+  return new MotorControl(data, substate->clone());
 }

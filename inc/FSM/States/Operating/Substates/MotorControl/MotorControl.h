@@ -2,18 +2,20 @@
 #define MOTORCONTROL_H
 #pragma once
 
-#include "OrthState.h"
+#include "HState.h"
 #include "Idle.h"
 
-class MotorControl : public OrthState{
+class MotorControl : public HState{
 public: //============================================ constructors & destructors ============================================
     MotorControl(ContextData* data) ;
+    MotorControl(ContextData* data, State* initial_substate);
     virtual ~MotorControl();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+    State* clone() override;
     
 
 
