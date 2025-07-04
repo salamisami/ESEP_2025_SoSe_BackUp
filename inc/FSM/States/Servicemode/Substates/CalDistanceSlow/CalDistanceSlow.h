@@ -17,7 +17,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	State* laser_back_blocked() override;
+	//State* laser_back_blocked() override;
     
 
 

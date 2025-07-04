@@ -13,7 +13,7 @@ PieceAtADCCDS::~PieceAtADCCDS() {}
 //===================================================== public functions =====================================================
 void PieceAtADCCDS::entry(){
 	PRINT_STATE;
-	data->timeprofile_slow.timestamp[(int)Timestamp::ADC_BLOCKED] = data->stopwatch.peek_time();
+	data->timeprofile.slow_timestamps[(int)Timestamp::ADC_BLOCKED] = data->stopwatch.peek_time();
 }
 
 void PieceAtADCCDS::exit(){

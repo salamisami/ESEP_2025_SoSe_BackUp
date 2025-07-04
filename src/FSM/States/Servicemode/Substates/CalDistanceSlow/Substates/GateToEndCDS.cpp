@@ -13,14 +13,15 @@ GateToEndCDS::~GateToEndCDS() {}
 //===================================================== public functions =====================================================
 void GateToEndCDS::entry(){
 	PRINT_STATE;
-    data->timeprofile_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] = data->stopwatch.peek_time();
+    data->timeprofile.slow_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED] = data->stopwatch.peek_time();
 }
 
 void GateToEndCDS::exit(){
     PRINT_STATE;
-    data->timeprofile_slow.timestamp[(int) Timestamp::END] = data->stopwatch.peek_time();
+    data->timeprofile.slow_timestamps[(int) Timestamp::END] = data->stopwatch.peek_time();
 }
 
 State* GateToEndCDS::laser_back_blocked(){
-    return new CalRampSlow(data);
+    //return new CalRampSlow(data);
+    return State::EXIT_STATE;
 }

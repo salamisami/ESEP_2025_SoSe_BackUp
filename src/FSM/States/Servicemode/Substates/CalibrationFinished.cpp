@@ -15,14 +15,15 @@ CalibrationFinished::~CalibrationFinished() {}
 //===================================================== public functions =====================================================
 void CalibrationFinished::entry(){
 	PRINT_STATE;
-	for(auto& current : data->timeprofile_fast.timestamp){
+	for(auto& current : data->timeprofile.fast_timestamps){
 		std::cout << "Timestamp fast: " << current << std::endl;
 	}
 
-	for(auto& current : data->timeprofile_slow.timestamp){
+	for(auto& current : data->timeprofile.slow_timestamps){
 		std::cout << "Timestamp slow: " << current << std::endl;
 	}
-	TimeProfileManager::save_profile(data->timeprofile_fast, data->timeprofile_slow, SAVE_LOCATION_TIMEPROFILE);
+	TimeProfileManager::save_profile(data->timeprofile, SAVE_LOCATION_TIMEPROFILE);
+	TimeProfileManager::convert_to_deadlines(&data->timeprofile);
 }
 
 void CalibrationFinished::exit(){

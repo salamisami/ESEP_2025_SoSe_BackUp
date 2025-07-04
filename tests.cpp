@@ -7,6 +7,8 @@
 #include "ModeHandler.h"
 #include "Timer.h"
 #include "Logic.h"
+#include "SortingOrder.h"
+#include "SimulatePiece.h"
 #include <gtest/gtest.h>
 
 #define EXPECT_STATE(expected_state) \
@@ -68,6 +70,13 @@ protected:
     }
 };
 
+class SubRealImplementationTesting : public LogicBaseTest<SortingOrder> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<SortingOrder>::SetUp();
+    }
+};
+
 // Test fixture with IdleMode as initial state
 class DeepHistorySetup : public LogicBaseTest<IdleMock> {
 protected:
@@ -83,6 +92,51 @@ protected:
         LogicBaseTest<MotorControl>::SetUp();
     }
 };
+
+class PieceTrackingSetup : public LogicBaseTest<SimulatePiece> {
+protected:
+    void SetUp() override {
+        // Initialize time profiles
+        TimeProfile both_profiles;
+
+        // Set fast timestamps
+        long fast_profile[TIMESTAMP_LENGTH] = { 2000, 2100, 3600, 4000, 6000, 3800 };
+        for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
+            both_profiles.fast_timestamps[i] = fast_profile[i];
+        }
+
+        // Set slow timestamps
+        long slow_profile[TIMESTAMP_LENGTH] = { 6060, 7183, 10309, 11780, 17207, 10552 };
+        for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
+            both_profiles.slow_timestamps[i] = slow_profile[i];
+        }
+
+        // Save the profile
+        TimeProfileManager::save_profile(both_profiles, SAVE_LOCATION_TIMEPROFILE);
+        TimeProfileManager::convert_to_deadlines(&both_profiles);
+        
+        // Call base class setup
+        LogicBaseTest<SimulatePiece>::SetUp();
+    }
+};
+
+TEST_F(PieceTrackingSetup, PieceTrackingTest) {
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    WAIT(100);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+    WAIT(1500);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(400);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);    
+    WAIT(1000);
+    EXPECT_EQ(data->piece_tracker.getArea(), Area::GATE_END);
+    EXPECT_EQ(data->piece_tracker.getPosition(), 100);
+}
 
 TEST_F(DeepHistorySetup, DeepHistoryTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
@@ -112,69 +166,53 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED); 
     EXPECT_STATE("Red MotorDisable");
 
 
 
-// TEST_F(RealImplementationTesting, SortingOrderPositiveTest) {
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(10);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-//     EXPECT_STATE("PieceFlat");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::FLAT;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTall");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::TALL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTallWithMetal");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::TALL_WITH_METAL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
-// }
+TEST_F(SubRealImplementationTesting, SortingOrderPositiveTest) {
+    EXPECT_STATE("PieceFlat");
+    data->is_ramp_full = false;
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::FLAT);
+    EXPECT_STATE("PieceTall");
+    data->is_ramp_full = false;
 
-// TEST_F(RealImplementationTesting, SortingOrderNegativeTest) {
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(10);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL);
+    EXPECT_STATE("PieceTallWithMetal");
+    data->is_ramp_full = false;
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL_WITH_METAL);
+    EXPECT_STATE("PieceFlat");
+}
 
-//     //test PieceFlat
-//     EXPECT_STATE("PieceFlat");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
+TEST_F(SubRealImplementationTesting, SortingOrderNegativeTest) {
+    //test PieceFlat
+    EXPECT_STATE("PieceFlat");
+    data->is_ramp_full = false;
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
+    EXPECT_STATE("PieceFlat");
 
-//     //change state to tall
-//     data->actual_piece = Piece::FLAT;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTall");
-//     //test PieceTall
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTall");
+    //change state to tall
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::FLAT);
+    EXPECT_STATE("PieceTall");
+    //test PieceTall
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
+    EXPECT_STATE("PieceTall");
 
-//     //change state to tall metal
-//     data->actual_piece = Piece::TALL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTallWithMetal");
-//     //test PieceWithMetal
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTallWithMetal");
+    //change state to tall metal
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL);
+    EXPECT_STATE("PieceTallWithMetal");
+    //test PieceWithMetal
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
+    EXPECT_STATE("PieceTallWithMetal");
 
-//     //change state to flat
-//     data->actual_piece = Piece::TALL_WITH_METAL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
-//     //test PieceWithMetal
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
-// }
+    //change state to flat
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL_WITH_METAL);
+    EXPECT_STATE("PieceFlat");
+    //test PieceWithMetal
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
+    EXPECT_STATE("PieceFlat");
+}
 
 
 /**

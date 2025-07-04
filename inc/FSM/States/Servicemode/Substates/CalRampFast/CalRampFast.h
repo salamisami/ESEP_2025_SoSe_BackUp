@@ -5,6 +5,7 @@
 #include "OrthState.h"
 #include "EndToGateCRF.h"
 #include "PusherIdleCRF.h"
+#include "ReadyForCDS.h"
 
 class CalRampFast : public OrthState {
 public: //============================================ constructors & destructors ============================================
@@ -16,7 +17,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	State* laser_ramp_blocked() override;
+	//State* laser_ramp_blocked() override;
     
 
 

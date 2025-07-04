@@ -21,5 +21,5 @@ void CalibrationDoneSMSR::exit(){
 
 //explicit exit 
 State* CalibrationDoneSMSR::laser_ramp_blocked(){
-    return new ReadyForCDF(data);
+    return State::EXIT_STATE;
 }
