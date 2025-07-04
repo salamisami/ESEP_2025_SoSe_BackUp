@@ -3,7 +3,7 @@
 #pragma once
 
 #include "State.h"
-#include "Slow.h"
+#include "SlowTemp.h"
 
 class FastTemp : public State
 {
