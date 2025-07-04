@@ -5,6 +5,7 @@
 
 #include "Timer.h"
 #include "QNet.h"
+#include "StateContainer.h"
 //#include "State.h"
 #include "Stopwatch.h"
 #include "PieceTracker.h"
@@ -34,6 +35,7 @@ public:
 
 //================================================ private variables ================================================
 public:
+    int event_payload;
     Stopwatch stopwatch;
     TimeProfile timeprofile_fast;
     TimeProfile timeprofile_slow;
@@ -47,7 +49,10 @@ public:
     bool is_switch = false;
     bool is_ramp_full = false;
 
-
+    bool workpieces = false;
+    bool motor_slowed = false;
+    bool motor_stopped = false;
+    StateContainer workpieceList;
 };
 
 #endif

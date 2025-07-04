@@ -1,14 +1,14 @@
-#ifndef SLOW_H
-#define SLOW_H
+#ifndef SLOWTEMP_H
+#define SLOWTEMP_H
 #pragma once
 
 #include "State.h"
-#include "Fast.h"
+#include "FastTemp.h"
 
-class Slow : public State {
+class SlowTemp : public State {
 public: //============================================ constructors & destructors ============================================
-    Slow(ContextData* data) ;
-    virtual ~Slow();
+    SlowTemp(ContextData* data) ;
+    virtual ~SlowTemp();
 	
 
 public: //================================================ public functions ================================================

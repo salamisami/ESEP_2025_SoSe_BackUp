@@ -1,8 +1,8 @@
-#include "SimulatePiece.h"
+/*#include "SimulatePiece.h"
 
 //================================================= constructors & destructors =================================================
 SimulatePiece::SimulatePiece(ContextData* data) : OrthState(data, std::vector<State*>({
-	new Fast(data),
+	new FastTemp(data),
 	new LetPieceThrough(data, OPEN_GATE_FAST_DURATION)
 })) {
     //substate = new SubState(data);
@@ -39,4 +39,4 @@ void SimulatePiece::exit(){
 
 State* SimulatePiece::laser_back_blocked(){
 	return new IdleTest(data);
-}
+}*/

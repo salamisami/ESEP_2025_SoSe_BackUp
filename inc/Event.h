@@ -74,7 +74,11 @@ enum class Topic : int8_t {
     ADC,
     STOP_THREAD,
     TIMER,
-    INTERNAL
+    INTERNAL,
+    MOTOR_STOP_FSM,
+    MOTOR_SLOW,
+    MOTOR_FAST,
+    DELETE_W_MOTOR
 };
 
 enum class Internal_Enum: int{
@@ -84,7 +88,11 @@ enum class Internal_Enum: int{
     CHECK_PIECE,
     RESET_TO_FLAT,
     RESET_TO_TALL,
-    RESET_TO_TALL_W_METAL
+    RESET_TO_TALL_W_METAL,
+    DELETE_W_MOTOR ,
+    MOTOR_FAST,
+    MOTOR_SLOW,
+    MOTOR_STOP_FSM
 };
 
 enum class COM_Enum: int{

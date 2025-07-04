@@ -1,21 +1,27 @@
-#include "SortingOrder.h"
+#include "MotorControl.h"
+
 
 //================================================= constructors & destructors =================================================
-SortingOrder::SortingOrder(ContextData* data) : HState(data, new PieceFlat(data)) {
-    //substate = new SubState(data);
-}
+MotorControl::MotorControl(ContextData* data) : HState(data, new Idle(data)){}
+MotorControl::MotorControl(ContextData* data, State* initial_state) : HState(data, initial_state) {}
 
-SortingOrder::~SortingOrder() {}
+MotorControl::~MotorControl() {}
 
 //===================================================== private functions =====================================================
 
+
 //===================================================== public functions =====================================================
-void SortingOrder::entry(){
+void MotorControl::entry() {
 	PRINT_STATE;
+	
 	HState::entry();
 }
 
-void SortingOrder::exit(){
+void MotorControl::exit() {
 	HState::exit();
 	PRINT_STATE;
+}
+
+State* MotorControl::clone(){
+  return new MotorControl(data, substate->clone());
 }
