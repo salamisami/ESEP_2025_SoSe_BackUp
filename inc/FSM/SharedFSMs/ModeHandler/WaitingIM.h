@@ -1,28 +1,26 @@
-#ifndef ESTOPRELEASED_H
-#define ESTOPRELEASED_H
+#ifndef WAITINGIM_H
+#define WAITINGIM_H
+
 #pragma once
 
 #include "State.h"
-#include "EStopViaLocal.h"
-#include "EStopViaNeighbor.h"
-#include "WaitingForLocalReset.h"
-#include "WaitingForComReset.h"
+#include "Timer.h"
+#include "TimerReceivedIM.h"
+#include "Operating.h"
 
-class EStopReleased : public State {
+
+class WaitingIM : public State {
 public: //============================================ constructors & destructors ============================================
-    EStopReleased(ContextData* data);
-    virtual ~EStopReleased();
+    WaitingIM(ContextData* data);
+    virtual ~WaitingIM();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
-	State* clone() override;
+    void entry() override;
+    void exit() override;
 
-	State* button_reset_pressed() override;
-	State* com_button_reset_pressed() override;
-	State* button_estop_pressed() override;
-	State* com_button_estop_pressed() override;
+	State* button_start_released() override;
+	State* timer(TIMER_ID id) override;
     
 
 

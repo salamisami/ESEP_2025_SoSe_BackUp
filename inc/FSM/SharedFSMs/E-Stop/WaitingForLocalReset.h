@@ -8,10 +8,13 @@
 #ifndef INC_FSM_SHAREDFSMS_E_STOP_WAITINGFORLOCALRESET_H_
 #define INC_FSM_SHAREDFSMS_E_STOP_WAITINGFORLOCALRESET_H_
 
+#include "State.h"
+#include "ContextData.h"
+
 class WaitingForLocalReset : public State {
 public:
-	WaitingForLocalReset(data) : State(data){};
-	virtual ~WaitingForLocalReset() : ~State(){};
+	WaitingForLocalReset(ContextData* data) : State(data){};
+	virtual ~WaitingForLocalReset(){};
 
 	void entry() override;
 	void exit() override;

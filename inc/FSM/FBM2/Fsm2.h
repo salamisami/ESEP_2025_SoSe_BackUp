@@ -8,8 +8,9 @@
 #ifndef SRC_FSM2_FSM2_H_
 #define SRC_FSM2_FSM2_H_
 
-#include "../FBM2/Libs/OrthState.h"
-#include "../FBM2/Top_level_Fsm/Boot.h"
+#include "OrthState.h"
+#include "ContextData.h"
+#include "Boot.h"
 
 class Fsm2 : public OrthState{
 public:

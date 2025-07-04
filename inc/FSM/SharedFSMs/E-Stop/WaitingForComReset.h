@@ -12,7 +12,7 @@
 class WaitingForComReset : public State{
 public:
 	WaitingForComReset(ContextData* data) : State(data){};
-	virtual ~WaitingForComReset() : ~State(){};
+	virtual ~WaitingForComReset(){};
 
 	void entry() override;
 	void exit() override;

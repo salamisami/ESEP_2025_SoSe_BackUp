@@ -1,28 +1,24 @@
-#ifndef ESTOPRELEASED_H
-#define ESTOPRELEASED_H
+#ifndef FBM2_BOOT_H
+#define FBM2_BOOT_H
+
 #pragma once
 
-#include "State.h"
-#include "EStopViaLocal.h"
-#include "EStopViaNeighbor.h"
-#include "WaitingForLocalReset.h"
-#include "WaitingForComReset.h"
+#include "../../Libs/State.h"
+#include "ContextData.h"
+#include "Modehandler.h"
 
-class EStopReleased : public State {
+class Boot : public State {
 public: //============================================ constructors & destructors ============================================
-    EStopReleased(ContextData* data);
-    virtual ~EStopReleased();
+    Boot(ContextData* data);
+    virtual ~Boot();
 	
 
 public: //================================================ public functions ================================================
 	void entry() override;
 	void exit() override;
-	State* clone() override;
 
-	State* button_reset_pressed() override;
-	State* com_button_reset_pressed() override;
-	State* button_estop_pressed() override;
-	State* com_button_estop_pressed() override;
+	State* is_switch() override;
+	State* is_pusher() override;
     
 
 

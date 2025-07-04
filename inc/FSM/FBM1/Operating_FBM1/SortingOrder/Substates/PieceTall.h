@@ -1,28 +1,26 @@
-#ifndef ESTOPRELEASED_H
-#define ESTOPRELEASED_H
+#ifndef PIECETALL_H
+#define PIECETALL_H
+
 #pragma once
 
 #include "State.h"
-#include "EStopViaLocal.h"
-#include "EStopViaNeighbor.h"
-#include "WaitingForLocalReset.h"
-#include "WaitingForComReset.h"
+#include "../../../Operating_FBM1/SortingOrder/Substates/PieceFlat.h"
+#include "../../../Operating_FBM1/SortingOrder/Substates/PieceTallWithMetal.h"
 
-class EStopReleased : public State {
+class PieceTall : public State {
 public: //============================================ constructors & destructors ============================================
-    EStopReleased(ContextData* data);
-    virtual ~EStopReleased();
+    PieceTall(ContextData* data) ;
+    virtual ~PieceTall();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
+    void entry() override;
+    void exit() override;
 	State* clone() override;
+	State* check_piece() override;
+	State* reset_to_flat() override;
+	State* reset_to_tall_w_metal() override;
 
-	State* button_reset_pressed() override;
-	State* com_button_reset_pressed() override;
-	State* button_estop_pressed() override;
-	State* com_button_estop_pressed() override;
     
 
 

@@ -13,12 +13,12 @@ EStopReleased::~EStopReleased() {}
 
 void EStopReleased::entry(){
     PRINT_STATE;
-	data->sender->send_event(Topic::ACTUATOR, ActuatorEnum::TRAFFIC_RED_ON);
-	data->sender->send_event(Topic::ACTUATOR, ActuatorEnum::TRAFFIC_YELLOW_OFF);
+	data->sender->send_event(Topic::ACTUATOR, ActuatorEnum::TRAFFIC_RED_ON, EventPriority::DEFAULT);
+	data->sender->send_event(Topic::ACTUATOR, ActuatorEnum::TRAFFIC_YELLOW_OFF, EventPriority::DEFAULT);
 }
 
 void EStopReleased::exit(){
-	data->sender->send_event(Topic::ACTUATOR, ActuatorEnum::TRAFFIC_RED_OFF);
+	data->sender->send_event(Topic::ACTUATOR, ActuatorEnum::TRAFFIC_RED_OFF,EventPriority::DEFAULT);
     PRINT_STATE;
 }
 

@@ -47,6 +47,8 @@ public:
     PieceTracker* piece_tracker;
     bool is_switch = false;
     bool is_ramp_full = false;
+    bool is_estop = false;
+    bool no_error_or_warning = false;
 
 
 };

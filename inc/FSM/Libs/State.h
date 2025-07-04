@@ -220,6 +220,18 @@ public: //================================================ public functions ====
     	return handle_event_using_function(&State::remote_stop);
     }
 
+    virtual State* transfer_start_tall(){
+        	return handle_event_using_function(&State::transfer_start_tall);
+        }
+
+    virtual State* transfer_start_flat(){
+        	return handle_event_using_function(&State::transfer_start_flat);
+        }
+
+    virtual State* transfer_start_tall_w_metall(){
+        	return handle_event_using_function(&State::transfer_start_tall_w_metall);
+        }
+
 protected: //================================================ protected ================================================
     //classes, STL containers, and structs
     //pointers

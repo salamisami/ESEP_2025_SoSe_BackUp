@@ -1,29 +1,23 @@
-#ifndef ESTOPRELEASED_H
-#define ESTOPRELEASED_H
+#ifndef IDLEIM_H
+#define IDLEIM_H
 #pragma once
 
 #include "State.h"
-#include "EStopViaLocal.h"
-#include "EStopViaNeighbor.h"
-#include "WaitingForLocalReset.h"
-#include "WaitingForComReset.h"
+#include "WaitingIM.h"
+#include "ContextData.h"
 
-class EStopReleased : public State {
+class IdleIM : public State {
 public: //============================================ constructors & destructors ============================================
-    EStopReleased(ContextData* data);
-    virtual ~EStopReleased();
-	
+	IdleIM(ContextData* data) : State(data){};
+	virtual ~IdleIM() {};
+
 
 public: //================================================ public functions ================================================
 	void entry() override;
 	void exit() override;
-	State* clone() override;
 
-	State* button_reset_pressed() override;
-	State* com_button_reset_pressed() override;
-	State* button_estop_pressed() override;
-	State* com_button_estop_pressed() override;
-    
+	State* button_start_pressed() override;
+
 
 
 private: //================================================ private variables ================================================
@@ -31,12 +25,12 @@ private: //================================================ private variables ==
 	//pointers
 	//primitive types
 	//bool and char
-   
-	
+
+
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
-	
+
 };
 
 #endif

@@ -1,28 +1,24 @@
-#ifndef ESTOPRELEASED_H
-#define ESTOPRELEASED_H
+#ifndef SERVICEMODE_H
+#define SERVICEMODE_H
 #pragma once
 
-#include "State.h"
-#include "EStopViaLocal.h"
-#include "EStopViaNeighbor.h"
-#include "WaitingForLocalReset.h"
-#include "WaitingForComReset.h"
+#include "HState.h"
+#include "IdleIM.h"
+#include "IdleSM.h"
+#include "ReadyForCDS.h"
 
-class EStopReleased : public State {
+
+class Servicemode : public HState{
 public: //============================================ constructors & destructors ============================================
-    EStopReleased(ContextData* data);
-    virtual ~EStopReleased();
+    Servicemode(ContextData* data);
+    virtual ~Servicemode();
 	
 
 public: //================================================ public functions ================================================
 	void entry() override;
 	void exit() override;
-	State* clone() override;
 
-	State* button_reset_pressed() override;
-	State* com_button_reset_pressed() override;
-	State* button_estop_pressed() override;
-	State* com_button_estop_pressed() override;
+	State* button_stop_pressed() override;
     
 
 

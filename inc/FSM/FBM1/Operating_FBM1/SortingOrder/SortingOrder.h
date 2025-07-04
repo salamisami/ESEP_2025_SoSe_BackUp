@@ -1,28 +1,20 @@
-#ifndef ESTOPRELEASED_H
-#define ESTOPRELEASED_H
+#ifndef SORTINGORDER_H
+#define SORTINGORDER_H
+
 #pragma once
 
-#include "State.h"
-#include "EStopViaLocal.h"
-#include "EStopViaNeighbor.h"
-#include "WaitingForLocalReset.h"
-#include "WaitingForComReset.h"
+#include "HState.h"
+#include "../../Operating_FBM1/SortingOrder/Substates/PieceFlat.h"
 
-class EStopReleased : public State {
+class SortingOrder : public HState {
 public: //============================================ constructors & destructors ============================================
-    EStopReleased(ContextData* data);
-    virtual ~EStopReleased();
+    SortingOrder(ContextData* data) ;
+    virtual ~SortingOrder();
 	
 
 public: //================================================ public functions ================================================
-	void entry() override;
-	void exit() override;
-	State* clone() override;
-
-	State* button_reset_pressed() override;
-	State* com_button_reset_pressed() override;
-	State* button_estop_pressed() override;
-	State* com_button_estop_pressed() override;
+    void entry() override;
+    void exit() override;
     
 
 
