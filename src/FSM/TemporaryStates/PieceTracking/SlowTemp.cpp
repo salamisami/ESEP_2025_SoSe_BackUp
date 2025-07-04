@@ -1,27 +1,27 @@
-#include "Slow.h"
+#include "SlowTemp.h"
 
 //================================================= constructors & destructors =================================================
-Slow::Slow(ContextData* data) : State(data) {
+SlowTemp::SlowTemp(ContextData* data) : State(data) {
     //substate = new SubState(data);
 }
 
-Slow::~Slow() {}
+SlowTemp::~SlowTemp() {}
 
 //===================================================== private functions =====================================================
 
 
 //===================================================== public functions =====================================================
-void Slow::entry(){
+void SlowTemp::entry(){
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON);
 	data->piece_tracker->slow();
 
 }
 
-void Slow::exit(){
+void SlowTemp::exit(){
 	PRINT_STATE;
 }
 
-State* Slow::button_reset_released(){
-	return new Fast(data);
+State* SlowTemp::button_reset_released(){
+	return new FastTemp(data);
 }

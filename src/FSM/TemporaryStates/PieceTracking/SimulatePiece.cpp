@@ -2,7 +2,7 @@
 
 //================================================= constructors & destructors =================================================
 SimulatePiece::SimulatePiece(ContextData* data) : OrthState(data, std::vector<State*>({
-	new Fast(data),
+	new FastTemp(data),
 	new LetPieceThrough(data, OPEN_GATE_FAST_DURATION)
 })) {
     //substate = new SubState(data);
