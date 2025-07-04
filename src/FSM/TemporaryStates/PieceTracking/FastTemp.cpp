@@ -22,4 +22,3 @@ void FastTemp::exit() {
 
 State* FastTemp::button_reset_pressed() {
 	return new SlowTemp(data);
-}
