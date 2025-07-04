@@ -13,7 +13,7 @@ PieceAtGateCDS::~PieceAtGateCDS() {}
 //===================================================== public functions =====================================================
 void PieceAtGateCDS::entry(){
 	PRINT_STATE;
-	data->timeprofile_slow.timestamp[(int)Timestamp::LASER_GATE_BLOCKED] = data->stopwatch.peek_time();
+	data->timeprofile.slow_timestamps[(int)Timestamp::LASER_GATE_BLOCKED] = data->stopwatch.peek_time();
 
 }
 

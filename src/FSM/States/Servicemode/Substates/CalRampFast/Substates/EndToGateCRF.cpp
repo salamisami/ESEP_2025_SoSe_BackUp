@@ -15,7 +15,7 @@ EndToGateCRF::~EndToGateCRF() {}
 void EndToGateCRF::entry(){
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_LEFT_START);
-	int time_required = data->timeprofile_fast.timestamp[(int) Timestamp::END] - data->timeprofile_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
+	int time_required = data->timeprofile.fast_timestamps[(int) Timestamp::END] - data->timeprofile.fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED];
 	time_required *= ENDTOGATE_MULTIPLIER;
 	data->timer->start_timer(time_required, TIMER_ID::CAL_GATE_RAMP1);
 }

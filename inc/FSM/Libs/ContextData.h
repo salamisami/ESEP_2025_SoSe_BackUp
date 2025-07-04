@@ -9,12 +9,18 @@
 //#include "State.h"
 #include "Stopwatch.h"
 #include "PieceTracker.h"
+#include "Piece.h"
 #include <vector>
 #include <stack>
 #include <queue>
+#include <unordered_map>
 
 //forward declaration
 class State;
+
+
+
+
 
 class ContextData {
     //============================================ constructors & destructors ============================================
@@ -37,16 +43,29 @@ public:
 public:
     int event_payload;
     Stopwatch stopwatch;
-    TimeProfile timeprofile_fast;
-    TimeProfile timeprofile_slow;
-    Piece actual_piece = Piece::UNKNOWN;
-    //TODO implement a safe stack here, that returns nullptr if no elements left in the stack
-    std::stack<State*>* stateStack;
+    TimeProfile timeprofile;
+    PieceTracker piece_tracker = PieceTracker(true);
+    std::stack<State*>* modehandler_history;
+    std::stack<State*>* estop_history;
+    
+    std::unordered_map<int, Piece*>* pieces_map;
+    int available_id = 0;
+    
+    // int piece_id = 0;
+    // PieceEnum ist_type = PieceEnum::UNKNOWN;
+    // PieceEnum soll_type = PieceEnum::UNKNOWN;
+    // long sorting_time = 0;
+    // PieceTracker* piece_tracker;
+
+
     I_Sender* timer_sender;
     Timer* timer;
     I_Sender* sender;
-    PieceTracker* piece_tracker;
+
+    //adc -> boot
     bool is_switch = false;
+
+    //rampStatus -> PieceTracker
     bool is_ramp_full = false;
 
     bool workpieces = false;

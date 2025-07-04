@@ -6,7 +6,7 @@
 #include "ContextData.h"
 #include "State.h"
 
-#include <vector>
+#include <deque>
 #include <iostream>
 
 
@@ -19,7 +19,7 @@ public:
      * @param initial_substate the initial substates inside this state
      * @param default_exit_next_state the next state to go, after the substate has reached the default exit.
      */
-    OrthState(ContextData* data, std::vector<State*> initial_substates, State* default_exit_state = nullptr)
+    OrthState(ContextData* data, std::deque<State*> initial_substates, State* default_exit_state = nullptr)
         : State(data)
         , substates(initial_substates)
         , default_exit_state_(default_exit_state) {
@@ -45,7 +45,7 @@ public:
     virtual void exit() override {
         //PRINT_STATE;
         for(auto& current_substate : substates) {
-            if(current_substate != nullptr){
+            if(current_substate != nullptr) {
                 current_substate->exit();
             }
         }
@@ -66,6 +66,12 @@ public:
         input_state->entry();
     }
 
+    State* despawn_orthogonal_state() {
+        State* state_to_despawn = substates.front();
+        substates.pop_front();
+        return state_to_despawn;
+    }
+
     virtual std::string get_current_state() override {
         std::string appended_string;
         bool first = true; // To avoid leading space
@@ -79,7 +85,6 @@ public:
         return appended_string;
     }
 
-    //================================================ internal events ================================================
     virtual State* timer(TIMER_ID id) override {
         for(auto& current_substate : substates) {
             State* newSubstate = current_substate->timer(id);
@@ -104,10 +109,10 @@ public:
 
     //================================================ private variables ================================================
 protected:
-    std::vector<State*> substates;
+    std::deque<State*> substates;
     State* default_exit_state_;
-    std::vector<State*> clone_substates() {
-        std::vector<State*> cloned_substates;
+    std::deque<State*> clone_substates() {
+        std::deque<State*> cloned_substates;
         for(auto& current_substate : substates) {
             cloned_substates.push_back(current_substate->clone());
         }
@@ -117,31 +122,32 @@ protected:
     //================================================ protected ================================================
 protected:
 
-
-    State* handle_event_using_function(State* (State::* handler_function)()) override {
-        for(auto& current_substate : substates) {
-            if(current_substate == nullptr) {
-                return nullptr;
-            }
+    virtual State* handle_event_using_function(State* (State::* handler_function)()) override {
+        for(auto it = substates.begin(); it != substates.end(); ) {
+            State*& current_substate = *it;  // Use reference to pointer
+            
             State* newSubstate = (current_substate->*handler_function)();
+
             if(newSubstate == State::EXIT_STATE) {
-                // Handle substate exit
+                // Handle exit case
                 current_substate->exit();
                 delete current_substate;
-                current_substate = nullptr;
-                // Return default exit state to parent
+                it = substates.erase(it);
                 return default_exit_state_;
-            } else if(newSubstate != nullptr) {
-                // there is substate change, change only the substate
+            }
+
+            if(newSubstate != nullptr) {
+                // Handle state transition
                 current_substate->exit();
                 delete current_substate;
                 current_substate = newSubstate;
                 current_substate->entry();
             }
+
+            ++it;  // Common increment for both remaining cases
         }
         return nullptr;
     }
-
 
 
 };
