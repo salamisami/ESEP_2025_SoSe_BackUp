@@ -4,7 +4,6 @@
 
 #include "State.h"
 #include "LocalDataPT1.h"
-#include "PieceMissing_PT1.h"
 #include "Gate_PT1.h"
 #include "IsMetal_PT1.h"
 
