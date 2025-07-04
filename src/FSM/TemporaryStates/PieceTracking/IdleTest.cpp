@@ -1,4 +1,4 @@
-/*#include "IdleTest.h"
+#include "IdleTest.h"
 
 //================================================= constructors & destructors =================================================
 IdleTest::IdleTest(ContextData* data) : State(data) {
