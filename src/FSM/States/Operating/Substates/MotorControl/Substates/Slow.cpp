@@ -41,15 +41,16 @@ State* Slow::motor_stop_fsm(){
 
 State *Slow::delete_w_motor()
 {
-    if (data->workpieces)
+  updateData(MotorPieceState::DELETE_W_MOTOR);
+  if (data->workpieces)
     {
-        return new Slow(data);
+      return new Slow(data);
     }
-    else
+  else
     {
-        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
-        updateData(MotorPieceState::DELETE_W_MOTOR);
-        return new Idle(data);
+      data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+        
+      return new Idle(data);
     }
 }
 State* Slow::motor_slow(){
@@ -63,6 +64,7 @@ void Slow::updateData(MotorPieceState motorPieceState) {
         // Remove the ID from the list if it exists
         if (data->workpieceList.contains(id)) {
             data->workpieceList.remove(id);
+            data->workpieces = data->workpieceList.isEmpty();
         } else {
             printf("Warning: Trying to delete ID %d that doesn't exist in workpiece list\n", id);
         }
