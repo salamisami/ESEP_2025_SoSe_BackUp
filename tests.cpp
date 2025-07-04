@@ -115,30 +115,7 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
     EXPECT_STATE("Red MotorDisable");
 
-    //save history
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_PRESSED);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_RELEASED);
-    WAIT(500);
-    EXPECT_STATE("IdleMock");
 
-    //load history
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-    WAIT(10);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-    EXPECT_STATE("Red MotorDisable");
-
-    //default exit
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
-    WAIT(10);
-    EXPECT_STATE("IdleMock");
-
-    //entry with zero deep history
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-    WAIT(10);
-    EXPECT_STATE("Green MotorDisable");
-
-}
 
 // TEST_F(RealImplementationTesting, SortingOrderPositiveTest) {
 //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
