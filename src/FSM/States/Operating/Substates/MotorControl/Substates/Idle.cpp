@@ -39,12 +39,12 @@ void Idle::updateData(MotorPieceState motorPieceState) {
             printf("Warning: Trying to delete ID %d that doesn't exist in workpiece list\n", id);
         }
     } else {
-        // Normal update/add logic
-        if (data->workpieceList.contains(id)) {
-            data->workpieceList.updateState(id, motorPieceState);
-        } else {
+        // Add the ID if it doesn't exist, then update ALL workpieces to new state
+        if (!data->workpieceList.contains(id)) {
             data->workpieceList.add(id, motorPieceState);
         }
+        data->workpieceList.updateStateAll(motorPieceState);
+        data->workpieces = data->workpieceList.isEmpty();
     }
 }
 
