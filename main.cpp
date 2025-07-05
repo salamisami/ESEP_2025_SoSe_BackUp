@@ -14,6 +14,8 @@
 #include <thread>
 #include <chrono>
 #include <unistd.h>
+#include <csignal>
+#include <atomic>
 
 #include "inc/MQTT/MQTT_Utilities.h"
 #define ONE_MILLISECOND 1000
@@ -21,7 +23,13 @@
 using namespace std;
 
 
+
+
+
 int main() {
+
+	//std::thread inputThread(wait_for_enter);
+
     cout << "Starting Program..." << endl; // prints Hello World!!!
     system("slay gns");
     #ifdef FBM_1
@@ -35,10 +43,10 @@ int main() {
 
     Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_N_FSM);
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
-    //Thread_COM::Receiver* recorder_receiver = new Thread_COM::Receiver(FBM_N_RECORDER); //comment this to test without recorder
+    Thread_COM::Receiver* recorder_receiver = new Thread_COM::Receiver(FBM_N_RECORDER); //comment this to test without recorder
     Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
-//    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
+    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
     Thread_COM::Sender* RemCon_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 //    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
     Thread_COM::Sender* RemCon_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
@@ -52,36 +60,36 @@ int main() {
 
 
     auto logic = new Logic<Boot>(fsm_receiver, fsm_sender);
-    //Recorder* rec = new Recorder(recorder_receiver, recorder_sender);
-    //Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
-    //Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
+    Recorder* rec = new Recorder(recorder_receiver, recorder_sender);
+    Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
     COM* externCommunication = new COM(com_external_receiver, FBM_N_COM_EXT, com_receiver_local, com_sender_local);
     externCommunication->start();
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
-   while(1){
-
-   }
+    while(Remote_Controller::Main_running) {
+    	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
    
+delete hal;
+delete rec;
+delete logic;
+delete externCommunication;
+delete remcon;
 
-    delete hal;
-    delete externCommunication;
-    //delete remcon;
-//	 delete rec;
-    delete logic;
 
 
-//	 	delete RemCon_receiver;
-	 	delete RemCon_sender;
-//   	delete recorder_receiver;
-     delete recorder_sender;
-     delete hal_sender;
-     delete fsm_sender;
-     delete fsm_receiver;
-     delete hal_receiver;
 
-    cout << "Program Finished." << endl;
-    return 0;
+delete RemCon_receiver;
+delete RemCon_sender;
+delete recorder_receiver;
+delete recorder_sender;
+delete hal_sender;
+delete fsm_sender;
+delete fsm_receiver;
+delete hal_receiver;
+
+cout << "Program Finished." << endl;
+return 0;
 
 
 }

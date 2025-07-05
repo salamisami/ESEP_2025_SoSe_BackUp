@@ -9,6 +9,7 @@
 
 #include <cstdint>
 
+
 enum class InterruptEnum : int
 {
     LASER_FRONT_BLOCKED = 1, // the rest will continue (-2, -3)
@@ -65,8 +66,8 @@ enum class ActuatorEnum : int
     LED_Q1_ON,
     LED_Q1_OFF,
     LED_Q2_ON,
-    LED_Q2_OFF,
-	WAKE_UP
+    LED_Q2_OFF
+
 };
 
 enum class Topic : int8_t
@@ -80,7 +81,8 @@ enum class Topic : int8_t
     REC_REPLAY,
 	REM_CON,
     INTERNAL,
-	ERROR
+	ERROR,
+	WAKE_UP
 };
 
 

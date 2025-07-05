@@ -15,6 +15,7 @@
 #include "QNet.h"
 #include "PulseMsg.h"
 
+
 #include <thread>
 #include <iostream>
 #include <unistd.h>
@@ -24,7 +25,7 @@
 #include <mutex>
 #include <condition_variable>
 
-#define HEARTBEAT_TIMEOUT_MS 2500
+#define HEARTBEAT_TIMEOUT_MS 3000
 //typedef int MQTTClient_deliveryToken;
 
 class Remote_Controller {
@@ -40,7 +41,7 @@ class Remote_Controller {
 
 	public: //================================================ public functions ================================================
 
-
+		static std::atomic<bool> Main_running;
 
 	private: //================================================ private variables ================================================
 		//classes, STL containers, and structs
@@ -59,9 +60,9 @@ class Remote_Controller {
 		int RemCon_rcvid;
 		int dispatcher_mock_rcvid;
 		//bool and char
-		volatile bool RemCon_recive_running;
-		volatile bool RemCon_send_running;
-		volatile bool RemCon_HeartCheck_running;
+		bool RemCon_recive_running;
+		bool RemCon_send_running;
+		bool RemCon_HeartCheck_running;
 		bool detached;
 
 
