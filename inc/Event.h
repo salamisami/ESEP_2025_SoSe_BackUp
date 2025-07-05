@@ -116,9 +116,7 @@ enum class ADC_Enum : int {
 };
 
 enum class COM_Enum : int {
-    NEW_PIECE_TO_SORT = 1,
-    NEW_PIECE_NOT_TO_SORT,
-    BUTTON_ESTOP_PRESSED,
+    BUTTON_ESTOP_PRESSED = 1,
     BUTTON_ESTOP_RELEASED,
     HEARTBEAT,
     TIMEOUT_COM,
