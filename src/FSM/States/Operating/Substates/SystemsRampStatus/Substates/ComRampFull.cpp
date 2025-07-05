@@ -32,3 +32,7 @@ State* ComRampFull::ramp_full()
 {
     return new BothRampsFull(data);
 }
+
+State* ComRampFull::clone() {
+    return new ComRampFull(data);
+}

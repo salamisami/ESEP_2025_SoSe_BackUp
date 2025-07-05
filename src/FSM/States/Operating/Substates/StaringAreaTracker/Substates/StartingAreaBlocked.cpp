@@ -39,3 +39,7 @@ State* StartingAreaBlocked::timer(TIMER_ID id) {
     return nullptr;
 }
 
+State* StartingAreaBlocked::clone() {
+    return new StartingAreaBlocked(data);
+}
+

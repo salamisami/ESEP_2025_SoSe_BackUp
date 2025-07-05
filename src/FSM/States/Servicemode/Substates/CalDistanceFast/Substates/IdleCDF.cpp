@@ -22,3 +22,7 @@ void IdleCDF::exit(){
 State* IdleCDF::laser_front_unblocked(){
     return new StartCDF(data);
 }
+
+State* IdleCDF::clone() {
+    return new IdleCDF(data);
+}

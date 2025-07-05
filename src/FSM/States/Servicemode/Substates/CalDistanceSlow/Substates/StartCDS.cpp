@@ -23,3 +23,7 @@ void StartCDS::exit(){
 State* StartCDS::adc_top_area_blocked(){
     return new PieceAtADCCDS(data);
 }
+
+State* StartCDS::clone() {
+    return new StartCDS(data);
+}

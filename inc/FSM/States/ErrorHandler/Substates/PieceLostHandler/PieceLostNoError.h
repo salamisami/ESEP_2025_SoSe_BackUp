@@ -15,6 +15,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
+	State* clone() override;
+
 	State* error_w_lost() override;
     
 

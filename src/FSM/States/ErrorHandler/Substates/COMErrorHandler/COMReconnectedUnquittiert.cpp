@@ -31,3 +31,7 @@ State* COMReconnectedUnquittiert::button_reset_released()
 {
     return new COMNoError(data);
 }
+
+State* COMReconnectedUnquittiert::clone() {
+    return new COMReconnectedUnquittiert(data);
+}

@@ -28,3 +28,7 @@ State* PieceLostFehlerUnquittiert::button_reset_released()
 {
     return new PieceLostFehlerQuittiert(data);
 }
+
+State* PieceLostFehlerUnquittiert::clone() {
+    return new PieceLostFehlerUnquittiert(data);
+}

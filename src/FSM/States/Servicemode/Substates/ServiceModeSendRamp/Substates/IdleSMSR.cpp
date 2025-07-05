@@ -22,3 +22,7 @@ void IdleSMSR::exit(){
 State* IdleSMSR::adc_calibration_done(){
     return new CalibrationDoneSMSR(data);
 }
+
+State* IdleSMSR::clone() {
+    return new IdleSMSR(data);
+}

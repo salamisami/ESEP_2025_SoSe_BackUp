@@ -16,6 +16,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
+	State* clone() override;
+
 	State* ramp_not_full() override;
 	State* com_ramp_not_full() override;
 	State* button_reset_released() override;

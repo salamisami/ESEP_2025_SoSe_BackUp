@@ -29,3 +29,7 @@ State* PiecesTooClose::error_pieces_too_close_fixed()
 {
     return new StartingAreaBlocked(data);
 }
+
+State* PiecesTooClose::clone() {
+    return new PiecesTooClose(data);
+}

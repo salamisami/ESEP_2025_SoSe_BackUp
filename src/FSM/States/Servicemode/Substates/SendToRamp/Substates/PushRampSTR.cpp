@@ -28,3 +28,7 @@ State* PushRampSTR::timer(TIMER_ID id){
     }
     return nullptr;
 }
+
+State* PushRampSTR::clone() {
+    return new PushRampSTR(data);
+}

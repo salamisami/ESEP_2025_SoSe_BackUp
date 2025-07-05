@@ -23,3 +23,7 @@ void StartCDF::exit(){
 State* StartCDF::adc_top_area_blocked(){
     return new PieceAtADCCDF(data);
 }
+
+State* StartCDF::clone() {
+    return new StartCDF(data);
+}

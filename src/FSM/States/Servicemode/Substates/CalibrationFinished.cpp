@@ -29,3 +29,7 @@ void CalibrationFinished::entry(){
 void CalibrationFinished::exit(){
 	PRINT_STATE;
 }
+
+State* CalibrationFinished::clone() {
+	return new CalibrationFinished(data);
+}

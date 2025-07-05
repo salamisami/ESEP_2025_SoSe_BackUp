@@ -24,3 +24,7 @@ void ADCToGateCDS::exit(){
 State* ADCToGateCDS::laser_sorting_gate_blocked(){
 	return new PieceAtGateCDS(data);
 }
+
+State* ADCToGateCDS::clone() {
+	return new ADCToGateCDS(data);
+}

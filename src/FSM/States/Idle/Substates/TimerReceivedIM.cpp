@@ -24,3 +24,7 @@ void TimerReceivedIM::exit(){
 State* TimerReceivedIM::button_start_released(){
     return new Servicemode(data);
 }
+
+State* TimerReceivedIM::clone() {
+    return new TimerReceivedIM(data);
+}

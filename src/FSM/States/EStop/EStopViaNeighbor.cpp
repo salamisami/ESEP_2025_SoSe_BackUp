@@ -31,3 +31,7 @@ State* EStopViaNeighbor::button_estop_pressed(){
 State* EStopViaNeighbor::com_button_estop_released(){
     return new EStopReleased(data);
 }
+
+State* EStopViaNeighbor::clone() {
+    return new EStopViaNeighbor(data);
+}

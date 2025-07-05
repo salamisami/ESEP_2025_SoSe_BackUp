@@ -15,6 +15,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
+	State* clone() override;
+
 	State* com_connected() override;
     
 

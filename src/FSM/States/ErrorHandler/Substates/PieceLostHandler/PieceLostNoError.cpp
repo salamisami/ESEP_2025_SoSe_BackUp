@@ -26,3 +26,7 @@ State* PieceLostNoError::error_w_lost()
 {
     return new PieceLostFehlerUnquittiert(data);
 }
+
+State* PieceLostNoError::clone() {
+    return new PieceLostNoError(data);
+}

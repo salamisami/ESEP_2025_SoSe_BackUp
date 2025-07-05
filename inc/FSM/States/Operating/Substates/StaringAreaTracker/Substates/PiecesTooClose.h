@@ -15,6 +15,8 @@ public: //============================================ constructors & destructor
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
     
 	State* error_pieces_too_close_fixed() override;
 

@@ -25,3 +25,7 @@ State* RampNoError::error_both_r_full()
 {
     return new RampErrorUnquittiert(data);
 }
+
+State* RampNoError::clone() {
+    return new RampNoError(data);
+}

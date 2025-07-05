@@ -26,3 +26,7 @@ State* PieceAppearedNoError::error_w_appear()
 {
     return new PieceAppearedFehlerUnquittiert(data);
 }
+
+State* PieceAppearedNoError::clone() {
+    return new PieceAppearedNoError(data);
+}

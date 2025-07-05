@@ -31,3 +31,7 @@ State* MeasureFehlerUnquittiert::adc_top_area_unblocked() {
 State* MeasureFehlerUnquittiert::button_reset_released() {
     return new ValidMeasure(data);
 }
+
+State* MeasureFehlerUnquittiert::clone() {
+    return new MeasureFehlerUnquittiert(data);
+}

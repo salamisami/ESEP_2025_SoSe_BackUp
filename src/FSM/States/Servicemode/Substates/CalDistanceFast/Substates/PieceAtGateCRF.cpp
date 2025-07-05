@@ -22,3 +22,7 @@ void PieceAtGateCRF::exit(){
 State* PieceAtGateCRF::adc_top_area_blocked(){
 	return new PieceAtADCCRF(data)
 ;}
+
+State* PieceAtGateCRF::clone() {
+	return new PieceAtGateCRF(data);
+}

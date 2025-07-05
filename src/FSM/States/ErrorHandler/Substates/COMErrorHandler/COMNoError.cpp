@@ -22,6 +22,10 @@ void COMNoError::exit(){
 	PRINT_STATE;
 }
 
+State* COMNoError::clone() {
+    return new COMNoError(data);
+}
+
 State* COMNoError::error_c_lost_com()
 {
     return new COMFehlerUnquittiert(data);

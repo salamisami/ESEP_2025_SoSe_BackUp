@@ -31,3 +31,7 @@ State* MQTTReconnectedUnquittiert::button_reset_released()
 {
     return new MQTTNoError(data);
 }
+
+State* MQTTReconnectedUnquittiert::clone() {
+    return new MQTTReconnectedUnquittiert(data);
+}

@@ -22,3 +22,7 @@ void PusherIdleCRF::exit(){
 State* PusherIdleCRF::adc_top_area_blocked(){
 	return new SendToRamp(data);
 }
+
+State* PusherIdleCRF::clone() {
+	return new PusherIdleCRF(data);
+}

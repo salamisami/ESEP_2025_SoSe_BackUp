@@ -29,3 +29,7 @@ State* OpenGateLPT::timer(TIMER_ID id){
     }
     return nullptr;
 }
+
+State* OpenGateLPT::clone() {
+    return new OpenGateLPT(data, duration);
+}

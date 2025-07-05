@@ -26,3 +26,7 @@ State* CalibNoWarning::cant_find_calb_conf()
 {
     return new CalibWarning(data);
 }
+
+State* CalibNoWarning::clone() {
+    return new CalibNoWarning(data);
+}

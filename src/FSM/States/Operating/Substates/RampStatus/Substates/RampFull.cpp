@@ -27,3 +27,7 @@ State* RampFull::laser_ramp_unblocked()
 {
     return new RampNotFull(data);
 }
+
+State* RampFull::clone() {
+    return new RampFull(data);
+}

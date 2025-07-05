@@ -25,3 +25,7 @@ State* IdleSTR::laser_sorting_gate_blocked(){
     }
     return nullptr;
 }
+
+State* IdleSTR::clone() {
+    return new IdleSTR(data);
+}

@@ -15,6 +15,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
+	State* clone() override;
+
 	State* cant_find_calb_conf() override;
     
 

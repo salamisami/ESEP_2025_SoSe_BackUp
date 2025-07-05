@@ -24,3 +24,7 @@ void PieceAtADCCRS::exit(){
 State* PieceAtADCCRS::laser_sorting_gate_blocked(){
 	return new GateToRampCRS(data);
 }
+
+State* PieceAtADCCRS::clone() {
+	return new PieceAtADCCRS(data);
+}

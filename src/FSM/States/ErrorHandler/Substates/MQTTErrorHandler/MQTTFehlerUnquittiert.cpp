@@ -33,3 +33,7 @@ State* MQTTFehlerUnquittiert::mqtt_connected()
 {
     return new MQTTReconnectedUnquittiert(data);
 }
+
+State* MQTTFehlerUnquittiert::clone() {
+    return new MQTTFehlerUnquittiert(data);
+}

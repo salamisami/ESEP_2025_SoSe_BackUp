@@ -31,3 +31,7 @@ State* EndToGateCRS::timer(TIMER_ID id){
 	}
 	return nullptr;
 }
+
+State* EndToGateCRS::clone() {
+	return new EndToGateCRS(data);
+}

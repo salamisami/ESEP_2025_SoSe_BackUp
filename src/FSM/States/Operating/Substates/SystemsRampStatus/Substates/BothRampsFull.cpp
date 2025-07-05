@@ -43,3 +43,7 @@ State* BothRampsFull::sorting_out()
 {
     return new BothRampsFull(data);
 } */
+
+State* BothRampsFull::clone() {
+    return new BothRampsFull(data);
+}

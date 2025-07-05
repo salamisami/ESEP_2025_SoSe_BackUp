@@ -30,3 +30,7 @@ State* GateToRampCRF::laser_ramp_blocked(){
 	//return new ReadyForCDS(data);
 	return EXIT_STATE;
 }
+
+State* GateToRampCRF::clone() {
+	return new GateToRampCRF(data);
+}

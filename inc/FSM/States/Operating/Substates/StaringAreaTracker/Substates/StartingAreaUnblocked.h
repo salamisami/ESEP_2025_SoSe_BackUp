@@ -15,6 +15,8 @@ public: //============================================ constructors & destructor
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
     
 	State* laser_front_blocked() override;
 
