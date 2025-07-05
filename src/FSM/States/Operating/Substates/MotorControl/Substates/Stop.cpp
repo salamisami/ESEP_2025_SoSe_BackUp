@@ -83,8 +83,8 @@ void Stop::updateData(MotorPieceState motorPieceState) {
             data->workpieceList.add(id, motorPieceState);
         }
         data->workpieceList.updateStateAll(motorPieceState);
-        data->workpieces = !data->workpieceList.isEmpty();
     }
+    data->workpieces = !data->workpieceList.isEmpty();
 }
 
 State* Stop::clone() {
