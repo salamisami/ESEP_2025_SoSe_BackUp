@@ -46,7 +46,7 @@ enum class Area : uint8_t {
 
 class PieceTracker {
 public: //============================================ constructors & destructors ============================================
-	PieceTracker(bool debug = false);
+	PieceTracker(bool debug = true);
 	virtual ~PieceTracker();
 
 
@@ -104,6 +104,7 @@ private: //================================================ private variables ==
 	double current_position = 0;
 	uint8_t current_mode = 0;
 	bool debug = false;
+	bool log = false;
 
 
 

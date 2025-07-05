@@ -138,9 +138,11 @@ long PieceTracker::area_pos_to_timestamp(const Area& input_area, const double& i
 
 void PieceTracker::debug_function() {
     while(running) {
-        update();
-        std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
-        WAIT(100);
+        if(log) {
+            update();
+            std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
+        }
+        WAIT(1000);
     }
 }
 //===================================================== public functions =====================================================
@@ -170,18 +172,21 @@ void PieceTracker::update() {
 
 
 void PieceTracker::fast() {
+    log = true;
     DEBUG("Piece_Fast_called!");
     update();
     current_mode = 2;
 }
 
 void PieceTracker::slow() {
+    log = true;
     DEBUG("Piece_slow_called!");
     update();
     current_mode = 1;
 }
 
 void PieceTracker::stop() {
+    log = false;
     update();
     current_mode = 0;
 }
