@@ -44,10 +44,11 @@ enum class Area : uint8_t {
  */
 
 
-class PieceTracker {
+class DistanceTracker {
 public: //============================================ constructors & destructors ============================================
-	PieceTracker(bool debug = false);
-	virtual ~PieceTracker();
+	//TODO set debug to false once the update issue is fixed
+	DistanceTracker(bool debug = true);
+	virtual ~DistanceTracker();
 
 
 public: //================================================ public functions ================================================
