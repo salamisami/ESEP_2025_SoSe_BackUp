@@ -5,7 +5,9 @@
 Operating::Operating(ContextData* data): OrthState(data,{
     new PieceControllerFBM1(data),
     new MotorControl(data),
-    new SortingOrder(data)
+    new SortingOrder(data),
+    new StartingAreaTracker(data),
+    new ErrorHandler(data)
 }) {
 }
 
@@ -34,6 +36,7 @@ void Operating::exit() {
     PRINT_STATE;
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
 }
+
 
 State* Operating::button_stop_pressed() {
     return new IdleMode(data);
