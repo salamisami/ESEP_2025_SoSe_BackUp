@@ -17,9 +17,11 @@ PieceControllerFBM1::~PieceControllerFBM1() {}
 //===================================================== public functions =====================================================
 void PieceControllerFBM1::entry() {
 	PRINT_STATE;
+	OrthState::entry();
 }
 
 void PieceControllerFBM1::exit() {
+	OrthState::exit();
 	PRINT_STATE;
 }
 

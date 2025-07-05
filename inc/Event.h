@@ -96,8 +96,8 @@ enum class Internal_Enum : int {
     DELETE_W_MOTOR ,
     MOTOR_FAST,
     MOTOR_SLOW,
-    MOTOR_STOP_FSM
-
+    MOTOR_STOP_FSM,
+    NEW_PIECE
 };
 
 enum class COM_Enum : int {
