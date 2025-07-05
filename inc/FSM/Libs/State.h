@@ -326,7 +326,14 @@ public: //================================================ public functions ====
     virtual State* com_ramp_not_full() {
         return handle_event_using_function(&State::com_ramp_not_full);
     }
+    
+    virtual State* com_mqtt_connected() {
+        return handle_event_using_function(&State::com_mqtt_connected);
+    }
 
+    virtual State* com_mqtt_disconnected() {
+        return handle_event_using_function(&State::com_mqtt_disconnected);
+    }
     // States für ErrorHandler
     virtual State* error_c_lost_com() {
         return handle_event_using_function(&State::error_c_lost_com);
