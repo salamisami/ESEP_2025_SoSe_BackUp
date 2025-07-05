@@ -44,7 +44,7 @@ public:
     int event_payload;
     Stopwatch stopwatch;
     TimeProfile timeprofile;
-    PieceTracker piece_tracker = PieceTracker(true);
+    PieceTracker piece_tracker; // = PieceTracker(true);
     std::stack<State*>* modehandler_history;
     std::stack<State*>* estop_history;
     

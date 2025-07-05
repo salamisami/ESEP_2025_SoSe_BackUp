@@ -6,7 +6,6 @@
 #include "Macros.h"
 #include "Stopwatch.h"
 #include "TimeProfileManager.h"
-#include <condition_variable>
 #include <cstdint>
 #include <thread>
 //#include <sys/neutrino.h>
@@ -92,9 +91,6 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
-	
-
-	std::condition_variable cv_occupied;
 	std::thread piece_thread;
 	std::thread debug_thread;
 	//Timer timer;
