@@ -1,35 +1,29 @@
-#ifndef SLOW_H
-#define SLOW_H
+#ifndef FASTTEMP_H
+#define FASTTEMP_H
 #pragma once
 
 #include "State.h"
-#include "Fast.h"
+#include "SlowTemp.h"
 
-class Slow : public State {
+class FastTemp : public State
+{
 public: //============================================ constructors & destructors ============================================
-    Slow(ContextData* data) ;
-    virtual ~Slow();
-	
+	FastTemp(ContextData *data);
+	virtual ~FastTemp();
 
 public: //================================================ public functions ================================================
-    void entry() override;
-    void exit() override;
+	void entry() override;
+	void exit() override;
 
-	State* button_reset_released() override;
-    
-
+	State *button_reset_pressed() override;
 
 private: //================================================ private variables ================================================
-	//classes, STL containers, and structs
-	//pointers
-	//primitive types
-	//bool and char
-   
-	
-
+		 // classes, STL containers, and structs
+		 // pointers
+		 // primitive types
+		 // bool and char
 private: //================================================ private functions ================================================
-	//void privateFunction();
-	
+		 // void privateFunction();
 };
 
 #endif

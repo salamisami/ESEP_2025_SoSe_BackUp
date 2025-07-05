@@ -82,9 +82,52 @@ enum class Topic : int8_t
 	REM_CON,
     INTERNAL,
 	ERROR,
-	WAKE_UP
+	WAKE_UP,
+    CHECK_PIECE,
+    MOTOR_STOP_FSM,
+    MOTOR_SLOW,
+    MOTOR_FAST,
+    DELETE_W_MOTOR
 };
 
+enum class Internal_Enum : int {
+    SORT_OUT,
+    SORT_OUT_FBM2,
+    LET_THROUGH,
+    RESET_TO_FLAT,
+    RESET_TO_TALL,
+    RESET_TO_TALL_W_METAL,
+    DELETE_W_MOTOR,
+    MOTOR_FAST,
+    MOTOR_SLOW,
+    MOTOR_STOP_FSM,
+    NEW_PIECE,
+    UNBLOCK_STARTING_AREA
+};
+
+// enum class COM_Enum : int {
+//     NEW_PIECE_TO_SORT = 1,
+//     NEW_PIECE_NOT_TO_SORT,
+//     BUTTON_ESTOP_PRESSED,
+//     BUTTON_ESTOP_RELEASED,
+//     HEARTBEAT,
+//     TIMEOUT_COM,
+//     RECONNECT,
+//     RAMP_FULL,
+//     RAMP_NOT_FULL,
+//     RESET_TO_FLAT,
+//     RESET_TO_TALL,
+//     RESET_TO_TALL_W_METAL,
+//     FBM_2_READY,
+//     FBM_2_BUSY,
+//     REQUEST_TRANSFER,
+//     TRANSFER_DONE,
+//     TRANSFER_FAILED,
+//     TRANSFER_START_TALL,
+//     TRANSFER_START_TALL_W_METAL,
+//     TRANSFER_START_FLAT,
+//     TRANSFER_START_OTHER
+// };
 
 enum class ADC_Enum : int
 {
@@ -99,7 +142,7 @@ enum class ADC_Enum : int
     ADC_STOP,
 	ADC_RESET,
     ADC_NEW_PIECE,
-	ADC_TIMEOUT
+    ADC_TIMEOUT
 };
 
 enum class COM_Enum : int
@@ -142,17 +185,22 @@ enum class Internal_Enum : int
 	REQUEST_TRANSFER
 };
 
-enum class TIMER_ID : int
-{
+enum class TIMER_ID : int {
     WAITING_IM = 1,
     OPENGATE_CDS,
     OPENGATE_LPT,
     PUSHRAMP_STR,
     CAL_GATE_RAMP2,
-    CAL_GATE_RAMP1
+    CAL_GATE_RAMP1,
+    STARTADC_PT1,
+    ADCGATE_PT1,
+    SORTINGOUT_PT1,
+    GATEEND_PT1,
+    PENDINGTRANSFERREQUESTNOTATEND,
+    PENDINGTRANSFERREQUEST_PT1
 };
 
-enum class Piece: int{
+enum class PieceEnum : int {
     UNKNOWN = 0,
     FLAT,
     TALL,
@@ -164,6 +212,13 @@ enum class RecReplayEnum: int {
     STOP_REC,
     START_REPLAY,
 	STOP_REPLAY
+};
+
+enum class ScannedPiece : int {
+    TALL,
+    FLAT,
+    HOLE,
+    UNKNOWN
 };
 
 enum class RemoteControlEnum: int {
@@ -184,4 +239,3 @@ enum class ErrorEnum: int{
 
 
 #endif
-

@@ -3,13 +3,12 @@
 
 //================================================= constructors & destructors =================================================
 CalDistanceFast::CalDistanceFast(ContextData* data) : OrthState(data,
-	std::vector<State*>({
+	{
 		new IdleCDF(data),
 		new LetPieceThrough(data, OPEN_GATE_FAST_DURATION)
-		})
-) {
-	//substate = new SubState(data);
-}
+		}
+		, new CalRampFast(data)
+) {}
 
 CalDistanceFast::~CalDistanceFast() {}
 
@@ -31,12 +30,12 @@ void CalDistanceFast::exit() {
 }
 
 //explicit exit
-State* CalDistanceFast::laser_back_blocked() {
-    for(auto& current_substate : substates) {
-        State* newSubstate = current_substate->laser_back_blocked();
-        if(newSubstate != nullptr) {
-            return newSubstate;
-        }
-    }
-    return nullptr;
-}
+// State* CalDistanceFast::laser_back_blocked() {
+//     for(auto& current_substate : substates) {
+//         State* newSubstate = current_substate->laser_back_blocked();
+//         if(newSubstate != nullptr) {
+//             return newSubstate;
+//         }
+//     }
+//     return nullptr;
+// }

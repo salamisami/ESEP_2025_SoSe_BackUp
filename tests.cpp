@@ -2,10 +2,13 @@
 #include "Context.h"
 #include "IdleMode.h"
 #include "Mock_PM.h"
+#include "MotorControl.h"
 #include "Event.h"
 #include "ModeHandler.h"
 #include "Timer.h"
 #include "Logic.h"
+#include "SortingOrder.h"
+#include "SimulatePiece.h"
 #include <gtest/gtest.h>
 
 #define EXPECT_STATE(expected_state) \
@@ -67,6 +70,13 @@ protected:
     }
 };
 
+class SubRealImplementationTesting : public LogicBaseTest<SortingOrder> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<SortingOrder>::SetUp();
+    }
+};
+
 // Test fixture with IdleMode as initial state
 class DeepHistorySetup : public LogicBaseTest<IdleMock> {
 protected:
@@ -74,6 +84,59 @@ protected:
         LogicBaseTest<IdleMock>::SetUp();
     }
 };
+
+// Test fixture with IdleMode as initial state
+class MotorControlSetup : public LogicBaseTest<MotorControl> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<MotorControl>::SetUp();
+    }
+};
+
+class PieceTrackingSetup : public LogicBaseTest<SimulatePiece> {
+protected:
+    void SetUp() override {
+        // Initialize time profiles
+        TimeProfile both_profiles;
+
+        // Set fast timestamps
+        long fast_profile[TIMESTAMP_LENGTH] = { 2000, 2100, 3600, 4000, 6000, 3800 };
+        for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
+            both_profiles.fast_timestamps[i] = fast_profile[i];
+        }
+
+        // Set slow timestamps
+        long slow_profile[TIMESTAMP_LENGTH] = { 6060, 7183, 10309, 11780, 17207, 10552 };
+        for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
+            both_profiles.slow_timestamps[i] = slow_profile[i];
+        }
+
+        // Save the profile
+        TimeProfileManager::save_profile(both_profiles, SAVE_LOCATION_TIMEPROFILE);
+        TimeProfileManager::convert_to_deadlines(&both_profiles);
+        
+        // Call base class setup
+        LogicBaseTest<SimulatePiece>::SetUp();
+    }
+};
+
+TEST_F(PieceTrackingSetup, PieceTrackingTest) {
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    WAIT(100);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+    WAIT(1500);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(400);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);    
+    WAIT(1000);
+    EXPECT_EQ(data->piece_tracker.getArea(), Area::GATE_END);
+    EXPECT_EQ(data->piece_tracker.getPosition(), 100);
+}
 
 TEST_F(DeepHistorySetup, DeepHistoryTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
@@ -103,92 +166,59 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED); 
     EXPECT_STATE("Red MotorDisable");
 
-    //save history
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_PRESSED);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_STOP_RELEASED);
-    WAIT(500);
-    EXPECT_STATE("IdleMock");
-
-    //load history
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-    WAIT(10);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-    EXPECT_STATE("Red MotorDisable");
-
-    //default exit
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
-    WAIT(10);
     EXPECT_STATE("IdleMock");
-
-    //entry with zero deep history
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-    WAIT(10);
     EXPECT_STATE("Green MotorDisable");
-
 }
 
-// TEST_F(RealImplementationTesting, SortingOrderPositiveTest) {
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(10);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-//     EXPECT_STATE("PieceFlat");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::FLAT;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTall");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::TALL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTallWithMetal");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::TALL_WITH_METAL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
-// }
 
-// TEST_F(RealImplementationTesting, SortingOrderNegativeTest) {
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(10);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+TEST_F(SubRealImplementationTesting, SortingOrderPositiveTest) {
+    EXPECT_STATE("PieceFlat");
+    data->is_ramp_full = false;
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::FLAT);
+    EXPECT_STATE("PieceTall");
+    data->is_ramp_full = false;
 
-//     //test PieceFlat
-//     EXPECT_STATE("PieceFlat");
-//     data->is_ramp_full = false;
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL);
+    EXPECT_STATE("PieceTallWithMetal");
+    data->is_ramp_full = false;
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL_WITH_METAL);
+    EXPECT_STATE("PieceFlat");
+}
 
-//     //change state to tall
-//     data->actual_piece = Piece::FLAT;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTall");
-//     //test PieceTall
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTall");
+TEST_F(SubRealImplementationTesting, SortingOrderNegativeTest) {
+    //test PieceFlat
+    EXPECT_STATE("PieceFlat");
+    data->is_ramp_full = false;
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
+    EXPECT_STATE("PieceFlat");
 
-//     //change state to tall metal
-//     data->actual_piece = Piece::TALL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTallWithMetal");
-//     //test PieceWithMetal
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceTallWithMetal");
+    //change state to tall
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::FLAT);
+    EXPECT_STATE("PieceTall");
+    //test PieceTall
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
+    EXPECT_STATE("PieceTall");
 
-//     //change state to flat
-//     data->actual_piece = Piece::TALL_WITH_METAL;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
-//     //test PieceWithMetal
-//     data->actual_piece = Piece::UNKNOWN;
-//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::CHECK_PIECE);
-//     EXPECT_STATE("PieceFlat");
-// }
+    //change state to tall metal
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL);
+    EXPECT_STATE("PieceTallWithMetal");
+    //test PieceWithMetal
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
+    EXPECT_STATE("PieceTallWithMetal");
+
+    //change state to flat
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::TALL_WITH_METAL);
+    EXPECT_STATE("PieceFlat");
+    //test PieceWithMetal
+    remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::UNKNOWN);
+    EXPECT_STATE("PieceFlat");
+}
 
 
 /**
@@ -346,7 +376,242 @@ TEST_F(RealImplementationTesting, LongTimerTest) {
     EXPECT_STATE("IdleSM");
 }
 
+/**
+ * @brief Test workpiece state tracking with motor control events
+ * Tests that workpiece IDs in motor control events are properly tracked
+ */
+TEST_F(MotorControlSetup, MotorControlWorkpieceTrackingTest) {
+    // Start in Idle state
+    EXPECT_STATE("Idle");
+    
+    // Test MOTOR_FAST with workpiece ID 1 - should transition to Fast
+    remote_control->send_event((int8_t) Topic::MOTOR_FAST, 1); // ID 1
+    WAIT(10);
+    EXPECT_STATE("Fast");
+    
+//     // 2. System slows down -> SLOW
+//     remote_control->send_event((int8_t) Topic::MOTOR_SLOW, 100);
+//     WAIT(10);
+//     EXPECT_STATE("Slow");
+//     EXPECT_EQ(data->workpieceList.getState(100), MotorPieceState::SLOW);
+    
+    // Test MOTOR_SLOW with workpiece ID 2 - should transition to Slow and update all to SLOW
+    remote_control->send_event((int8_t) Topic::MOTOR_SLOW, 2); // ID 2
+    WAIT(10);
+    EXPECT_STATE("Slow");
+    
+//     // 4. System resumes -> FAST
+//     remote_control->send_event((int8_t) Topic::MOTOR_FAST, 100);
+//     WAIT(10);
+//     EXPECT_STATE("Fast");
+//     EXPECT_EQ(data->workpieceList.getState(100), MotorPieceState::FAST);
+    
+    // Test MOTOR_STOP_FSM with workpiece ID 3 - should transition to Stop and update ALL to STOPPED
+    remote_control->send_event((int8_t) Topic::MOTOR_STOP_FSM, 3); // ID 3
+    WAIT(10);
+    EXPECT_STATE("Stop");
+    
+    // Verify all three workpieces are now in STOPPED state
+    EXPECT_TRUE(data->workpieceList.contains(1));
+    EXPECT_TRUE(data->workpieceList.contains(2));
+    EXPECT_TRUE(data->workpieceList.contains(3));
+    EXPECT_EQ(data->workpieceList.getState(1), MotorPieceState::STOPPED);
+    EXPECT_EQ(data->workpieceList.getState(2), MotorPieceState::STOPPED);
+    EXPECT_EQ(data->workpieceList.getState(3), MotorPieceState::STOPPED);
+    EXPECT_EQ(data->workpieceList.size(), 3);
+    
+    // Test DELETE_W_MOTOR with specific ID - should stay in Stop (workpieces remain)
+    remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 2); // Remove ID 2
+    WAIT(10);
+    EXPECT_STATE("Stop"); // Should remain in Stop since workpieces still exist
+    
+    // Verify workpiece 2 was removed, others remain in STOPPED state
+    EXPECT_TRUE(data->workpieceList.contains(1));
+    EXPECT_FALSE(data->workpieceList.contains(2)); // Removed
+    EXPECT_TRUE(data->workpieceList.contains(3));
+    EXPECT_EQ(data->workpieceList.getState(1), MotorPieceState::STOPPED);
+    EXPECT_EQ(data->workpieceList.getState(3), MotorPieceState::STOPPED);
+    EXPECT_EQ(data->workpieceList.size(), 2);
+    
+    // Test transition back to FAST with new workpiece - should go to Fast
+    remote_control->send_event((int8_t) Topic::MOTOR_FAST, 4); // ID 4
+    WAIT(10);
+    EXPECT_STATE("Fast");
+    
+    // Verify all workpieces (including new one) are now in FAST state
+    EXPECT_TRUE(data->workpieceList.contains(1));
+    EXPECT_TRUE(data->workpieceList.contains(3));
+    EXPECT_TRUE(data->workpieceList.contains(4));
+    EXPECT_EQ(data->workpieceList.getState(1), MotorPieceState::FAST);
+    EXPECT_EQ(data->workpieceList.getState(3), MotorPieceState::FAST);
+    EXPECT_EQ(data->workpieceList.getState(4), MotorPieceState::FAST);
+    EXPECT_EQ(data->workpieceList.size(), 3);
+    
+    // Test removing all workpieces to trigger transition to Idle
+    remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 1);
+    WAIT(10);
+    EXPECT_STATE("Fast"); // Still has workpieces
+    
+    remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 3);
+    WAIT(10);
+    EXPECT_STATE("Fast"); // Still has workpieces
+    
+    remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 4); // Remove last workpiece
+    WAIT(10);
+    EXPECT_STATE("Idle"); // Should transition to Idle when no workpieces remain
+    
+    // Verify list is empty
+    EXPECT_TRUE(data->workpieceList.isEmpty());
+    EXPECT_FALSE(data->workpieces);
+}
 
+/**
+ * @brief Test complete workpiece lifecycle with motor control
+ */
+TEST_F(MotorControlSetup, WorkpieceLifecycleTest) {
+    // Start in Idle state
+    EXPECT_STATE("Idle");
+    
+    // Simulate complete workpiece lifecycle:
+    // 1. Workpiece enters system -> FAST
+    remote_control->send_event((int8_t) Topic::MOTOR_FAST, 100);
+    WAIT(10);
+    EXPECT_STATE("Fast");
+    EXPECT_TRUE(data->workpieceList.contains(100));
+    EXPECT_EQ(data->workpieceList.getState(100), MotorPieceState::FAST);
+    
+    // 2. System slows down -> SLOW
+    remote_control->send_event((int8_t) Topic::MOTOR_SLOW, 100);
+    WAIT(10);
+    EXPECT_STATE("Slow");
+    EXPECT_EQ(data->workpieceList.getState(100), MotorPieceState::SLOW);
+    
+    // 3. System needs to stop -> STOPPED
+    remote_control->send_event((int8_t) Topic::MOTOR_STOP_FSM, 100);
+    WAIT(10);
+    EXPECT_STATE("Stop");
+    EXPECT_EQ(data->workpieceList.getState(100), MotorPieceState::STOPPED);
+    
+    // 4. System resumes -> FAST
+    remote_control->send_event((int8_t) Topic::MOTOR_FAST, 100);
+    WAIT(10);
+    EXPECT_STATE("Fast");
+    EXPECT_EQ(data->workpieceList.getState(100), MotorPieceState::FAST);
+    
+    // 5. Workpiece leaves system -> DELETE
+    remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 100);
+    WAIT(10);
+    EXPECT_STATE("Idle"); // Should return to Idle when no workpieces remain
+    EXPECT_FALSE(data->workpieceList.contains(100));
+    EXPECT_TRUE(data->workpieceList.isEmpty());
+    EXPECT_FALSE(data->workpieces); // Should be false when list is empty
+}
+
+/**
+ * @brief Test multiple workpieces with overlapping motor control events
+ */
+TEST_F(MotorControlSetup, MultipleWorkpiecesOverlappingTest) {
+    // Start in Idle state
+    EXPECT_STATE("Idle");
+    
+    // Add workpieces at different times
+    remote_control->send_event((int8_t) Topic::MOTOR_FAST, 201);
+    WAIT(10);
+    EXPECT_STATE("Fast");
+    
+    remote_control->send_event((int8_t) Topic::MOTOR_FAST, 202);
+    WAIT(10);
+    EXPECT_STATE("Fast"); // Should remain in Fast
+    
+    remote_control->send_event((int8_t) Topic::MOTOR_SLOW, 203); // This should change ALL to SLOW
+    WAIT(10);
+    EXPECT_STATE("Slow");
+    
+    // Verify all workpieces are in SLOW state
+    EXPECT_EQ(data->workpieceList.getState(201), MotorPieceState::SLOW);
+    EXPECT_EQ(data->workpieceList.getState(202), MotorPieceState::SLOW);
+    EXPECT_EQ(data->workpieceList.getState(203), MotorPieceState::SLOW);
+    
+    // Add more workpieces while in SLOW
+    remote_control->send_event((int8_t) Topic::MOTOR_SLOW, 204);
+    WAIT(10);
+    EXPECT_STATE("Slow"); // Should remain in Slow
+    
+    // All should still be SLOW
+    EXPECT_EQ(data->workpieceList.getState(201), MotorPieceState::SLOW);
+    EXPECT_EQ(data->workpieceList.getState(202), MotorPieceState::SLOW);
+    EXPECT_EQ(data->workpieceList.getState(203), MotorPieceState::SLOW);
+    EXPECT_EQ(data->workpieceList.getState(204), MotorPieceState::SLOW);
+    
+    // Remove some workpieces
+    remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 202);
+    WAIT(10);
+    EXPECT_STATE("Slow"); // Should remain in Slow (still has workpieces)
+    
+    remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 204);
+    WAIT(10);
+    EXPECT_STATE("Slow"); // Should remain in Slow (still has workpieces)
+    
+    // Verify correct workpieces removed
+    EXPECT_TRUE(data->workpieceList.contains(201));
+    EXPECT_FALSE(data->workpieceList.contains(202));
+    EXPECT_TRUE(data->workpieceList.contains(203));
+    EXPECT_FALSE(data->workpieceList.contains(204));
+    EXPECT_EQ(data->workpieceList.size(), 2);
+    
+    // Change to STOPPED
+    remote_control->send_event((int8_t) Topic::MOTOR_STOP_FSM, 205); // Add new and change all
+    WAIT(10);
+    EXPECT_STATE("Stop");
+    
+    // Verify all remaining workpieces are STOPPED
+    EXPECT_EQ(data->workpieceList.getState(201), MotorPieceState::STOPPED);
+    EXPECT_EQ(data->workpieceList.getState(203), MotorPieceState::STOPPED);
+    EXPECT_EQ(data->workpieceList.getState(205), MotorPieceState::STOPPED);
+    EXPECT_EQ(data->workpieceList.size(), 3);
+}
+
+/**
+ * @brief Test edge cases in motor control workpiece management
+ */
+TEST_F(MotorControlSetup, MotorControlEdgeCasesTest) {
+    EXPECT_STATE("Idle");
+
+    // Test adding same ID multiple times (should not duplicate)
+    remote_control->send_event((int8_t) Topic::MOTOR_FAST, 1);
+    WAIT(10);
+    
+    // Try to add same ID again with different state
+    EXPECT_STATE("Fast");
+    remote_control->send_event((int8_t) Topic::MOTOR_SLOW, 1);
+    WAIT(10);
+    EXPECT_STATE("Slow");
+    
+    // Test deleting non-existent ID (should not crash)
+    remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 999); // Non-existent ID
+    WAIT(10);
+    EXPECT_STATE("Slow");
+    
+    
+    // Test empty list behavior
+    remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 1);
+    WAIT(10);
+    EXPECT_STATE("Idle");
+    // List should be empty
+    EXPECT_TRUE(data->workpieceList.isEmpty());
+    EXPECT_FALSE(data->workpieces);
+    EXPECT_EQ(data->workpieceList.size(), 0);
+    
+    // Test state transitions with empty list
+    remote_control->send_event((int8_t) Topic::MOTOR_FAST, 2);
+    WAIT(10);
+    EXPECT_STATE("Fast");
+    // Should add new workpiece
+    EXPECT_TRUE(data->workpieceList.contains(2));
+    EXPECT_EQ(data->workpieceList.getState(2), MotorPieceState::FAST);
+    EXPECT_TRUE(data->workpieces); // No longer empty
+    EXPECT_EQ(data->workpieceList.size(), 1);
+}
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

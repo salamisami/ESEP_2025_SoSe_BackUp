@@ -1,16 +1,17 @@
 #include "PieceTracker.h"
 
 //================================================= constructors & destructors =================================================
-PieceTracker::PieceTracker(TimeProfile input_profile_fast, TimeProfile input_profile_slow) {
-    convert_to_deadlines(input_profile_slow, input_profile_fast);
+
+
+PieceTracker::PieceTracker(bool debug) {
+    TimeProfileManager::load_profile(&time_profile, SAVE_LOCATION_TIMEPROFILE);
     running = true;
-    std::copy(std::begin(input_profile_fast.timestamp), std::end(input_profile_fast.timestamp), std::begin(fast_timestamps));
-    std::copy(std::begin(input_profile_slow.timestamp), std::end(input_profile_slow.timestamp), std::begin(slow_timestamps));
-    //piece_thread = std::thread(&PieceTracker::thread_function, this);
-    //set_thread_priority(piece_thread.native_handle(), 255);  // Higher priority for main thread
-    //piece_thread.detach();
+    this->debug = debug;
     stop();
-    debug_thread = std::thread(&PieceTracker::debug_function, this);
+    if(debug) {
+        debug_thread = std::thread(&PieceTracker::debug_function, this);
+    }
+
     //debug_thread.detach();
 }
 
@@ -19,7 +20,7 @@ PieceTracker::~PieceTracker() {
     running = false;  // Signal threads to stop
 
     // Wake up threads if they're waiting
-    if(debug_thread.joinable()) {
+    if(debug) {
         debug_thread.join();
     }
 }
@@ -34,6 +35,10 @@ PieceTracker::~PieceTracker() {
 // Timestamp: 5612
 // Timestamp: 4857
 
+
+//piece_thread = std::thread(&PieceTracker::thread_function, this);
+//set_thread_priority(piece_thread.native_handle(), 255);  // Higher priority for main thread
+//piece_thread.detach();
 // void PieceTracker::set_thread_priority(pthread_t thread, int priority) {
 //     struct sched_param param;
 //     param.sched_priority = priority;
@@ -61,11 +66,11 @@ std::pair<Area, double> PieceTracker::timestamp_to_area_pos(const long& timestam
             return std::make_pair(Area::START_ADC, 0);
         case 1:
             //slow
-            selected_timestamps = slow_timestamps;
+            selected_timestamps = time_profile.slow_timestamps;
             break;
         case 2:
             //fast
-            selected_timestamps = fast_timestamps;
+            selected_timestamps = time_profile.fast_timestamps;
             break;
         default:
             THROW("Wrong mode");
@@ -76,7 +81,7 @@ std::pair<Area, double> PieceTracker::timestamp_to_area_pos(const long& timestam
     if(timestamp < selected_timestamps[0]) {
         area = (Area) 0;
         position = (double) timestamp / selected_timestamps[0] * 100;
-       //printf("position: %d, timestamp: %d, selected_timestamp: %d\n", (int) position, (int) timestamp, (int) selected_timestamps[0]);
+        //printf("position: %d, timestamp: %d, selected_timestamp: %d\n", (int) position, (int) timestamp, (int) selected_timestamps[0]);
         return std::make_pair(area, position);
     }
     for(int i = 1; i < TIMESTAMP_LENGTH - 1; i++) {
@@ -102,13 +107,13 @@ long PieceTracker::area_pos_to_timestamp(const Area& input_area, const double& i
             return 0;
         case 1:
             //slow
-            selected_timestamps = slow_timestamps;
-            selected_deadlines = slow_deadlines;
+            selected_timestamps = time_profile.slow_timestamps;
+            selected_deadlines = time_profile.slow_deadlines;
             break;
         case 2:
             //fast
-            selected_timestamps = fast_timestamps;
-            selected_deadlines = fast_deadlines;
+            selected_timestamps = time_profile.fast_timestamps;
+            selected_deadlines = time_profile.fast_deadlines;
             break;
         default:
             THROW("Wrong mode");
@@ -130,28 +135,14 @@ long PieceTracker::area_pos_to_timestamp(const Area& input_area, const double& i
     // return (long) (current_position * (end - start) + start ) / 100;
 }
 
-void PieceTracker::convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast) {
-    slow_deadlines[0] = input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
-    slow_deadlines[1] = input_timetable_slow.timestamp[(int) Timestamp::ADC_UNBLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::ADC_BLOCKED];
-    slow_deadlines[2] = input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::ADC_UNBLOCKED];
-    slow_deadlines[3] = input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-    slow_deadlines[4] = input_timetable_slow.timestamp[(int) Timestamp::END] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
-    slow_deadlines[5] = input_timetable_slow.timestamp[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable_slow.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-
-    fast_deadlines[0] = input_timetable_fast.timestamp[(int) Timestamp::ADC_BLOCKED];
-    fast_deadlines[1] = input_timetable_fast.timestamp[(int) Timestamp::ADC_UNBLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::ADC_BLOCKED];
-    fast_deadlines[2] = input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::ADC_UNBLOCKED];
-    fast_deadlines[3] = input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-    fast_deadlines[4] = input_timetable_fast.timestamp[(int) Timestamp::END] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_UNBLOCKED];
-    fast_deadlines[5] = input_timetable_fast.timestamp[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable_fast.timestamp[(int) Timestamp::LASER_GATE_BLOCKED];
-}
-
 
 void PieceTracker::debug_function() {
     while(running) {
-        update();
-        std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
-        WAIT(100);
+        if(log) {
+            update();
+            std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
+        }
+        WAIT(1000);
     }
 }
 //===================================================== public functions =====================================================
@@ -160,7 +151,7 @@ void PieceTracker::debug_function() {
 
 //updates area and pos from the last time.
 std::pair<Area, double> PieceTracker::calculate_area_pos(const Area& last_area, const double& last_pos, const uint8_t& mode) {
-    if(mode == (int) 0){
+    if(mode == (int) 0) {
         return std::make_pair(last_area, last_pos);
     }
     //TODO continue here
@@ -168,7 +159,7 @@ std::pair<Area, double> PieceTracker::calculate_area_pos(const Area& last_area, 
     long current_position_in_ms = stopwatch.peek_time() + last_position_in_ms;
     stopwatch.reset();
     stopwatch.start();
-    return timestamp_to_area_pos(current_position_in_ms,mode);
+    return timestamp_to_area_pos(current_position_in_ms, mode);
 }
 
 void PieceTracker::update() {
@@ -181,24 +172,28 @@ void PieceTracker::update() {
 
 
 void PieceTracker::fast() {
+    log = true;
     DEBUG("Piece_Fast_called!");
     update();
     current_mode = 2;
 }
 
 void PieceTracker::slow() {
+    log = true;
     DEBUG("Piece_slow_called!");
     update();
     current_mode = 1;
 }
 
 void PieceTracker::stop() {
+    log = false;
     update();
     current_mode = 0;
 }
 
 
 void PieceTracker::reset() {
+    stop();
     stopwatch.reset();
     current_mode = 0;
     current_area = Area::START_ADC;

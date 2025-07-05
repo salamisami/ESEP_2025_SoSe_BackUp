@@ -5,6 +5,7 @@
 #include "OrthState.h"
 #include "IdleSMSR.h"
 #include "SendToRamp.h"
+#include "ReadyForCDF.h"
 
 
 class ServiceModeSendRamp : public OrthState {
@@ -17,7 +18,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	State* laser_ramp_blocked() override;
+	//State* laser_ramp_blocked() override;
     
 
 

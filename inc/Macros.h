@@ -37,3 +37,5 @@
 #else
 #define PRINT_STATE
 #endif
+
+#define DISTANCE_BETWEEN_PIECES 50

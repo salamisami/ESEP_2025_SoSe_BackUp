@@ -4,7 +4,7 @@
 
 #include "Macros.h"
 #include "Stopwatch.h"
-#include <condition_variable>
+#include "TimeProfileManager.h"
 #include <cstdint>
 #include <thread>
 //#include <sys/neutrino.h>
@@ -24,14 +24,6 @@ enum class Area : uint8_t {
 	GATE_RAMP
 };
 
-enum class Timestamp : uint8_t {
-	ADC_BLOCKED = 0,
-	ADC_UNBLOCKED,
-	LASER_GATE_BLOCKED,
-	LASER_GATE_UNBLOCKED,
-	END,
-	LASER_RAMP_BLOCKED
-};
 
 //  AREA:
 // 	START_ADC = 0
@@ -49,17 +41,11 @@ enum class Timestamp : uint8_t {
  * 4: END
  * 5: LASER_RAMP_BLOCKED
  */
-typedef struct {
-	long timestamp[TIMESTAMP_LENGTH];
-} TimeProfile;
+
 
 class PieceTracker {
 public: //============================================ constructors & destructors ============================================
-	/**
-	 * @brief Creates a piece, by inserting time profile.
-	 * @param input_profile the calibration profile of time stamps, which we got from the calibration in Servicemode
-	 */
-	PieceTracker(TimeProfile input_profile_fast, TimeProfile input_profile_slow);
+	PieceTracker(bool debug = true);
 	virtual ~PieceTracker();
 
 
@@ -104,25 +90,20 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
-	long fast_deadlines[6];
-	long slow_deadlines[6];
-
-	long fast_timestamps[6];
-	long slow_timestamps[6];
-
-	std::condition_variable cv_occupied;
 	std::thread piece_thread;
 	std::thread debug_thread;
 	//Timer timer;
 	//pointers
 	//primitive types
 	Stopwatch stopwatch;
+	TimeProfile time_profile;
 	//bool and char
-	bool running = false;
+	volatile bool running = false;
 	Area current_area = Area::START_ADC;
 	double current_position = 0;
 	uint8_t current_mode = 0;
-	bool debug = true;
+	bool debug = false;
+	bool log = false;
 
 
 
@@ -130,7 +111,6 @@ private: //================================================ private variables ==
 private: //================================================ private functions ================================================
 	std::pair<Area, double> timestamp_to_area_pos(const long& timestamp, const uint8_t& mode);
 	long area_pos_to_timestamp(const Area& input_area, const double& position, const uint8_t mode);
-	void convert_to_deadlines(const TimeProfile& input_timetable_slow, const TimeProfile& input_timetable_fast);
 	void debug_function();
 	//void set_thread_priority(pthread_t thread, int priority);
 	std::pair<Area, double> calculate_area_pos(const Area& input_area, const double& position, const uint8_t& mode);

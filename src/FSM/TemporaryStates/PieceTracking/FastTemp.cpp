@@ -1,26 +1,25 @@
-#include "Fast.h"
+#include "FastTemp.h"
 
 //================================================= constructors & destructors =================================================
-Fast::Fast(ContextData* data) : State(data) {
-    //substate = new SubState(data);
+FastTemp::FastTemp(ContextData* data) : State(data) {
+	// substate = new SubState(data);
 }
 
-Fast::~Fast() {}
+FastTemp::~FastTemp() {}
 
 //===================================================== private functions =====================================================
 
-
 //===================================================== public functions =====================================================
-void Fast::entry(){
+void FastTemp::entry() {
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
-	data->piece_tracker->fast();
+	data->piece_tracker.fast();
 	PRINT_STATE;
 }
 
-void Fast::exit(){
+void FastTemp::exit() {
 	PRINT_STATE;
 }
 
-State* Fast::button_reset_pressed(){
-	return new Slow(data);
+State* FastTemp::button_reset_pressed() {
+	return new SlowTemp(data);
 }

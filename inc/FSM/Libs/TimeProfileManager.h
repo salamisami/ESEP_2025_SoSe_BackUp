@@ -2,7 +2,7 @@
 #define TIMEPROFILEMANAGER_H
 #pragma once
 
-#include "PieceTracker.h"
+#include "TimeProfile.h"
 
 #include <iostream>
 #include <fstream>
@@ -12,26 +12,23 @@
 
 
 
-
 class TimeProfileManager {
 public:
-	// Saves time profiles to a file (overwrites if file exists)
-	static void save_profile(const TimeProfile& timeprofile_fast, const TimeProfile& timeprofile_slow, const std::string& save_location) {
+	static void save_profile(const TimeProfile& timeprofile, const std::string& save_location) {
 		std::ofstream file;
 		file.open(save_location, std::ios::out);
 		if(!file.is_open()) {
-			THROW("Recorder: Datei konnte nicht geöffnet werden!");
+			throw std::runtime_error("TimeProfileManager: Datei konnte nicht geöffnet werden!");
 		}
 		file << "Fast, Slow\n";  // CSV-Header
-		for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
-			file << timeprofile_fast.timestamp[i] << "," << timeprofile_slow.timestamp[i] << "\n";
+		for(int i = 0; i < 6; i++) {
+			file << timeprofile.fast_timestamps[i] << "," << timeprofile.slow_timestamps[i] << "\n";
 		}
 		file.flush();
 		file.close();
 	}
 
-	// Loads time profiles from a file (throws if file doesn't exist)
-	static void load_profile(TimeProfile* timeprofile_fast_out, TimeProfile* timeprofile_slow_out, const std::string& load_location) {
+	static void load_profile(TimeProfile* time_profile, const std::string& load_location) {
 		std::ifstream in_file(load_location);
 		if(!in_file.is_open()) {
 			std::cerr << "TimeProfile: Datei konnte nicht geöffnet werden!\n";
@@ -45,7 +42,7 @@ public:
 			return;
 		}
 
-		for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
+		for(int i = 0; i < 6; i++) {
 			if(!std::getline(in_file, line)) {
 				std::cerr << "Error: File has fewer lines than TIMESTAMP_LENGTH\n";
 				break;
@@ -61,17 +58,33 @@ public:
 			}
 
 			try {
-				timeprofile_fast_out->timestamp[i] = std::stol(fast_str);
-				timeprofile_slow_out->timestamp[i] = std::stol(slow_str);
+				time_profile->fast_timestamps[i] = std::stol(fast_str);
+				time_profile->slow_timestamps[i] = std::stol(slow_str);
 			} catch(const std::invalid_argument& e) {
 				std::cerr << "Error: Invalid number format at line " << i + 2 << "\n";
 				break;
 			}
 		}
 		in_file.close();
+		convert_to_deadlines(time_profile);
 	}
-private:
 
+public:
+	static void convert_to_deadlines(TimeProfile* input_timetable) {
+		input_timetable->slow_deadlines[0] = input_timetable->slow_timestamps[(int) Timestamp::ADC_BLOCKED];
+		input_timetable->slow_deadlines[1] = input_timetable->slow_timestamps[(int) Timestamp::ADC_UNBLOCKED] - input_timetable->slow_timestamps[(int) Timestamp::ADC_BLOCKED];
+		input_timetable->slow_deadlines[2] = input_timetable->slow_timestamps[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable->slow_timestamps[(int) Timestamp::ADC_UNBLOCKED];
+		input_timetable->slow_deadlines[3] = input_timetable->slow_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable->slow_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
+		input_timetable->slow_deadlines[4] = input_timetable->slow_timestamps[(int) Timestamp::END] - input_timetable->slow_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED];
+		input_timetable->slow_deadlines[5] = input_timetable->slow_timestamps[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable->slow_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
+
+		input_timetable->fast_deadlines[0] = input_timetable->fast_timestamps[(int) Timestamp::ADC_BLOCKED];
+		input_timetable->fast_deadlines[1] = input_timetable->fast_timestamps[(int) Timestamp::ADC_UNBLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::ADC_BLOCKED];
+		input_timetable->fast_deadlines[2] = input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::ADC_UNBLOCKED];
+		input_timetable->fast_deadlines[3] = input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
+		input_timetable->fast_deadlines[4] = input_timetable->fast_timestamps[(int) Timestamp::END] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED];
+		input_timetable->fast_deadlines[5] = input_timetable->fast_timestamps[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
+	}
 };
 
 #endif
