@@ -24,23 +24,16 @@ public: //================================================ public functions ====
     /**
      * @brief Enters the state. This function must be overidden by the child state.
      */
-    virtual void entry() {
-        DEBUG("Warning, function of abstract class entry() is called.");
-    }
+    virtual void entry() = 0;
     /**
      * @brief Exits the state. This function must be overidden by the child state.
      */
-    virtual void exit() {
-        DEBUG("Warning, function of abstract class exit() is called.");
-    }
+    virtual void exit() = 0;
     /**
      * @brief Clones the current state.
      * @return Cloned state, which is already allocated to heap
      */
-    virtual State* clone() {
-        DEBUG("Warning, function of abstract class State::clone() is called.");
-        return nullptr;
-    }
+    virtual State* clone() = 0;
     /**
      * @brief Returns the name of the current state.
      * @return The name of current state as string
