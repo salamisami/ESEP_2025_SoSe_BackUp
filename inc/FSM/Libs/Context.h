@@ -205,6 +205,12 @@ State* Context<T>::handleCOM(int event_value) {
         case COM_Enum::TRANSFER_START_OTHER:
             newState = state->transfer_start_other();
             break;
+        case COM_Enum::COM_MQTT_CONNECTED:
+            newState = state->com_mqtt_connected();
+            break;
+        case COM_Enum::COM_MQTT_DISCONNECTED:
+            newState = state->com_mqtt_disconnected();
+            break;
         default:
             break;
     }
