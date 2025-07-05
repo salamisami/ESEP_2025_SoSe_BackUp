@@ -88,18 +88,6 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::UNBLOCK_STARTING_AREA:
             newState = state->unblock_starting_area();
             break;
-        case Internal_Enum::DELETE_W_MOTOR:
-            newState = state->delete_w_motor();
-            break;
-        case Internal_Enum::MOTOR_FAST:
-            newState = state->motor_fast();
-            break;
-        case Internal_Enum::MOTOR_SLOW:
-            newState = state->motor_slow();
-            break;
-        case Internal_Enum::MOTOR_STOP_FSM:
-            newState = state->motor_stop_fsm();
-            break;
         default:
             break;
     }
@@ -141,8 +129,6 @@ State* Context<T>::handleADC(int event_value) {
             break;
         case ADC_Enum::ADC_MESURE:
             break;
-        case ADC_Enum::ADC_PREPARE:
-            break;
         case ADC_Enum::ADC_STOP:
             newState = state->adc_w_not_detect();
             break;
@@ -159,12 +145,6 @@ State* Context<T>::handleCOM(int event_value) {
     State* newState = nullptr;
     switch((COM_Enum) event_value) {
         //TODO is this true?
-        case COM_Enum::NEW_PIECE_TO_SORT:
-            newState = state->new_piece_to_sort();
-            break;
-        case COM_Enum::NEW_PIECE_NOT_TO_SORT:
-            newState = state->new_piece_not_to_sort();
-            break;
         case COM_Enum::BUTTON_ESTOP_PRESSED:
             newState = state->com_button_estop_pressed();
             break;

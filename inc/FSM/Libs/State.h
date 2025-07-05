@@ -241,14 +241,6 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::com_button_reset_pressed);
     }
 
-    virtual State* new_piece_to_sort() {
-        return handle_event_using_function(&State::new_piece_to_sort);
-    }
-
-    virtual State* new_piece_not_to_sort() {
-        return handle_event_using_function(&State::new_piece_not_to_sort);
-    }
-
     virtual State* heartbeat() {
         return handle_event_using_function(&State::heartbeat);
     }
