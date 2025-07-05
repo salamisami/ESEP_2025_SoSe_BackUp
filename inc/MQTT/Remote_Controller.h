@@ -60,9 +60,9 @@ class Remote_Controller {
 		int RemCon_rcvid;
 		int dispatcher_mock_rcvid;
 		//bool and char
-		volatile bool RemCon_recive_running;
-		volatile bool RemCon_send_running;
-		volatile bool RemCon_HeartCheck_running;
+		bool RemCon_recive_running;
+		bool RemCon_send_running;
+		bool RemCon_HeartCheck_running;
 		bool detached;
 
 

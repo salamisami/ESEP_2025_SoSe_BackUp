@@ -34,6 +34,7 @@ void COM::stop()
 
     running = false;
     queueCV.notify_all();
+    //dispatcherSen->send_event((int8_t)Topic::WAKE_UP,0);
 
     if (clientThread.joinable())
         clientThread.join();

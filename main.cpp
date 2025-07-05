@@ -75,6 +75,7 @@ delete logic;
 delete rec;
 delete hal;
 
+
 delete RemCon_receiver;
 delete RemCon_sender;
 delete recorder_receiver;

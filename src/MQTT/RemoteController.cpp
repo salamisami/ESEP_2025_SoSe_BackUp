@@ -46,22 +46,19 @@ Remote_Controller::~Remote_Controller() {
 	    RemCon_HeartCheck_running = false;
 	    MQTT_Utilities::connection_lost = true;
 
-	    // 2. Threads ggf. aufwecken
-	    queueCV.notify_all();
-//	    int8_t AcuatorCode = (int8_t) Topic::ACTUATOR;
-	    local_sender->send_event((int8_t)Topic::WAKE_UP,0);
-
-	    // 3. Stop-Event schicken
-//	    if (mock_dispatcher_sender)
-//	        mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
+//	    local_sender->send_event((int8_t) Topic::WAKE_UP,0);
+//		if (RemConThreadRecive.joinable()) RemConThreadRecive.join();
+//		queueCV.notify_all();
+//		if (RemConThreadSend.joinable()) RemConThreadSend.join();
+//		if (RemConThreadHeartBeat.joinable()) RemConThreadHeartBeat.join();
 
 	    // 4. Threads joinen (warten bis sie beendet sind)
-	    if (RemConThreadRecive.joinable())
-	        RemConThreadRecive.join();
-	    if (RemConThreadSend.joinable())
-	        RemConThreadSend.join();
-	    if (RemConThreadHeartBeat.joinable())
-	        RemConThreadHeartBeat.join();
+//	    if (RemConThreadRecive.joinable())
+//	        RemConThreadRecive.join();
+//	    if (RemConThreadSend.joinable())
+//	        RemConThreadSend.join();
+//	    if (RemConThreadHeartBeat.joinable())
+//	        RemConThreadHeartBeat.join();
 
 	    // 5. Ressourcen freigeben
 	    if(detached) {
@@ -74,7 +71,7 @@ Remote_Controller::~Remote_Controller() {
 	    }
 
 	    // 6. MQTT aufräumen
-	    MQTT_Utilities::mqtt_festo_cleanup();
+	    //MQTT_Utilities::mqtt_festo_cleanup();
 }
 
 void Remote_Controller::init(bool reInit) {
@@ -281,7 +278,7 @@ void Remote_Controller::threadFunctionSend(){
         int command = 0;
         std::unique_lock<std::mutex> lock(queueMutex);
         queueCV.wait(lock, []{
-            return !commandQueue.empty() || MQTT_Utilities::connection_lost || dash_conn_lost ;
+            return !commandQueue.empty() || MQTT_Utilities::connection_lost || dash_conn_lost;
         });
         if (MQTT_Utilities::connection_lost || dash_conn_lost) break;
         if (commandQueue.empty()) continue;
@@ -332,7 +329,7 @@ void Remote_Controller::threadFunctionHeartbeat() {
             if (RemConThreadSend.joinable()) RemConThreadSend.join();
 
             int8_t RemConCode = (int8_t) Topic::REM_CON;
-            local_sender->send_event(RemConCode, (int) RemoteControlEnum::MQTT_DISCONNECTED);
+            //local_sender->send_event(RemConCode, (int) RemoteControlEnum::MQTT_DISCONNECTED);
 
             MQTTClient_disconnect(MQTT_Utilities::client, 1000);
             MQTTClient_destroy(&MQTT_Utilities::client);
