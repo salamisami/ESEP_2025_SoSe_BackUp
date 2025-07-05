@@ -14,8 +14,10 @@ ADC_Class::ADC_Class(I_Sender* sender)
 }
 
 ADC_Class::~ADC_Class() {
-    adcStopped = false;
-    running = false;
+	adcStopped = false;
+	running = false;
+	if (adc_thread.joinable())
+	adc_thread.join();
     //adc_thread.join();
 }
 

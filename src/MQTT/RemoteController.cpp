@@ -57,8 +57,8 @@ Remote_Controller::~Remote_Controller() {
 //	        RemConThreadRecive.join();
 //	    if (RemConThreadSend.joinable())
 //	        RemConThreadSend.join();
-//	    if (RemConThreadHeartBeat.joinable())
-//	        RemConThreadHeartBeat.join();
+	    if (RemConThreadHeartBeat.joinable())
+	        RemConThreadHeartBeat.join();
 
 	    // 5. Ressourcen freigeben
 	    if(detached) {
@@ -353,7 +353,9 @@ void Remote_Controller::threadFunctionHeartbeat() {
             }
             MQTT_Utilities::connection_lost = false;
             dash_conn_lost = false;
-            init(true);
+            if(RemCon_HeartCheck_running){
+            	init(true);
+            }
         } else {
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }

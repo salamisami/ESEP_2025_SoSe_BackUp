@@ -65,15 +65,16 @@ int main() {
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
     while(Remote_Controller::Main_running) {
-    	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
    
-
+delete hal;
+delete rec;
+delete logic;
 delete externCommunication;
 delete remcon;
-delete logic;
-delete rec;
-delete hal;
+
+
 
 
 delete RemCon_receiver;
