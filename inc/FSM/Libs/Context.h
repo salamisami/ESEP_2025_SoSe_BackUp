@@ -58,7 +58,9 @@ template <typename T>
 State* Context<T>::handleInternal(int event_value) {
     State* newState = nullptr;
     switch((Internal_Enum) event_value) {
-        //TODO is this true?
+        case Internal_Enum::NEW_PIECE:
+            newState = state->new_piece();
+            break;
         case Internal_Enum::SORT_OUT:
             newState = state->sort_out();
             break;

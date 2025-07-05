@@ -97,8 +97,7 @@ enum class Internal_Enum : int {
     UNBLOCK_STARTING_AREA,
     NEW_PIECE,
     RAMP_FULL,
-    RAMP_NOT_FULL,
-    REQUEST_TRANSFER
+    RAMP_NOT_FULL
 };
 
 enum class ADC_Enum : int {
@@ -113,8 +112,7 @@ enum class ADC_Enum : int {
     ADC_STOP,
     ADC_RESET,
     ADC_NEW_PIECE,
-    ADC_TIMEOUT,
-    MOTOR_STOP_FSM
+    ADC_TIMEOUT
 };
 
 enum class COM_Enum : int {

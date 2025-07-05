@@ -18,6 +18,7 @@ void StartingAreaBlocked::entry(){
     //TODO CODE
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_Q2_OFF);
     data->timer->start_timer(2000,TIMER_ID::STARTING_AREA_TIMER);
+    data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::NEW_PIECE);
 }
 
 void StartingAreaBlocked::exit(){

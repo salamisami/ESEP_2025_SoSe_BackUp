@@ -417,12 +417,6 @@ void COM::handleInternalTopic(int originalValue, _pulse &dispatcherMsg)
         lowPriorityQueue.push_back(dispatcherMsg);
         rampfull = true;
         break;
-    case Internal_Enum::REQUEST_TRANSFER:
-        dispatcherMsg.code = static_cast<int>(Topic::COM);
-        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::REQUEST_TRANSFER);
-        lowPriorityQueue.push_back(dispatcherMsg);
-        rampfull = true;
-        break;
     default:
         break;
     }
