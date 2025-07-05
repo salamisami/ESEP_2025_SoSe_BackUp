@@ -128,7 +128,7 @@ void Remote_Controller::threadFunctionRecive(){
             if(status == 0) {
                 ActuatorEnum actuator_event_value = (ActuatorEnum) event.value.sival_int;
                 InterruptEnum interrupt_event_value = (InterruptEnum) event.value.sival_int;
-                ErrorEnum Error_event_value = (ErrorEnum) event.value.sival_int;
+                Error_Enum Error_event_value = (Error_Enum) event.value.sival_int;
 
                 Topic event_code = (Topic) event.code;
                 if(event_code == Topic::ACTUATOR){
@@ -227,35 +227,35 @@ void Remote_Controller::threadFunctionRecive(){
                 if(event_code == Topic::ERROR){
                 	std::string msg = "";
                 	switch(Error_event_value){
-                		case ErrorEnum::CANT_FIND_CALB_CONF:
+                		case Error_Enum::CANT_FIND_CALB_CONF:
                 			msg = std::string (ClientID)+"Es konnte keine Kalibrierungsdatei gefunden werden";
                 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
                 		break;
-                		case ErrorEnum::CANT_FIND_REP_CONF:
+                		case Error_Enum::CANT_FIND_REP_CONF:
                 			msg = std::string (ClientID)+"Es konnte keine Replaydatei gefunden werden!";
                 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
                 		break;
-                		case ErrorEnum::ERROR_BOTH_R_FULL:
+                		case Error_Enum::ERROR_BOTH_R_FULL:
                 			msg = std::string (ClientID)+"Achtung beide Rampen Sind Voll bitte leeren!";
                 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
                 		break;
-                		case ErrorEnum::ERROR_C_LOST_COM:
+                		case Error_Enum::ERROR_C_LOST_COM:
                 			msg = std::string (ClientID)+"Hat Keine Verbindung zur anderen Anlage!";
                 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
                 		break;
-                		case ErrorEnum::ERROR_C_LOST_MQTT:
+                		case Error_Enum::ERROR_C_LOST_MQTT:
                 			msg = std::string (ClientID)+"MQTT Verbindung verloren!";
                 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
                 		break;
-                		case ErrorEnum::ERROR_C_LOST_NR:
+                		case Error_Enum::ERROR_C_LOST_NR:
                 			msg = std::string (ClientID)+"?";
 							MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
                 		break;
-                		case ErrorEnum::ERROR_INVALID_MESURE:
+                		case Error_Enum::ERROR_INVALID_MESURE:
                 			msg = std::string (ClientID)+"Ungültige Höhenmessung!";
                 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
                 		break;
-                		case ErrorEnum::ERROR_W_LOST:
+                		case Error_Enum::ERROR_W_LOST:
                 			msg = std::string (ClientID)+"Ein Werkstück ist verschwunden!";
                 			MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console",msg.c_str());
 						break;

@@ -10,8 +10,7 @@
 #include <cstdint>
 
 
-enum class InterruptEnum : int
-{
+enum class InterruptEnum : int {
     LASER_FRONT_BLOCKED = 1, // the rest will continue (-2, -3)
     LASER_FRONT_UNBLOCKED,
     LASER_BACK_BLOCKED,
@@ -36,10 +35,9 @@ enum class InterruptEnum : int
     ADC_SIDE_AREA_UNBLOCKED,
     IS_SWITCH,
     IS_PUSHER,
-	REMOTE_STOP
+    REMOTE_STOP
 };
-enum class ActuatorEnum : int
-{
+enum class ActuatorEnum : int {
     MOTOR_RIGHT_START = 1,
     MOTOR_LEFT_START,
     MOTOR_SLOW_ON,
@@ -70,8 +68,7 @@ enum class ActuatorEnum : int
 
 };
 
-enum class Topic : int8_t
-{
+enum class Topic : int8_t {
     INTERRUPT = 1,
     ACTUATOR,
     COM,
@@ -79,10 +76,10 @@ enum class Topic : int8_t
     STOP_THREAD,
     TIMER,
     REC_REPLAY,
-	REM_CON,
+    REM_CON,
     INTERNAL,
-	ERROR,
-	WAKE_UP,
+    ERROR,
+    WAKE_UP,
     CHECK_PIECE,
     MOTOR_STOP_FSM,
     MOTOR_SLOW,
@@ -102,35 +99,13 @@ enum class Internal_Enum : int {
     MOTOR_SLOW,
     MOTOR_STOP_FSM,
     NEW_PIECE,
-    UNBLOCK_STARTING_AREA
+    UNBLOCK_STARTING_AREA,
+    RAMP_FULL,
+    RAMP_NOT_FULL,
+    REQUEST_TRANSFER
 };
 
-// enum class COM_Enum : int {
-//     NEW_PIECE_TO_SORT = 1,
-//     NEW_PIECE_NOT_TO_SORT,
-//     BUTTON_ESTOP_PRESSED,
-//     BUTTON_ESTOP_RELEASED,
-//     HEARTBEAT,
-//     TIMEOUT_COM,
-//     RECONNECT,
-//     RAMP_FULL,
-//     RAMP_NOT_FULL,
-//     RESET_TO_FLAT,
-//     RESET_TO_TALL,
-//     RESET_TO_TALL_W_METAL,
-//     FBM_2_READY,
-//     FBM_2_BUSY,
-//     REQUEST_TRANSFER,
-//     TRANSFER_DONE,
-//     TRANSFER_FAILED,
-//     TRANSFER_START_TALL,
-//     TRANSFER_START_TALL_W_METAL,
-//     TRANSFER_START_FLAT,
-//     TRANSFER_START_OTHER
-// };
-
-enum class ADC_Enum : int
-{
+enum class ADC_Enum : int {
     ADC_WH_DETECT = 0xFFA0,
     ADC_WF_DETECT,
     ADC_W_B_DETECT,
@@ -140,13 +115,12 @@ enum class ADC_Enum : int
     ADC_INVALID_MESURE,
     ADC_CALIBRATION_DONE,
     ADC_STOP,
-	ADC_RESET,
+    ADC_RESET,
     ADC_NEW_PIECE,
     ADC_TIMEOUT
 };
 
-enum class COM_Enum : int
-{
+enum class COM_Enum : int {
     NEW_PIECE_TO_SORT = 1,
     NEW_PIECE_NOT_TO_SORT,
     BUTTON_ESTOP_PRESSED,
@@ -168,22 +142,10 @@ enum class COM_Enum : int
     TRANSFER_START_FLAT,
     TRANSFER_START_OTHER,
     COM_CONNECTED,
-	BUTTON_RESET_PRESSED
+    BUTTON_RESET_PRESSED
 };
 
-enum class Internal_Enum : int
-{
-    SORT_OUT = 1,
-    SORT_OUT_FBM2,
-    LET_THROUGH,
-    CHECK_PIECE,
-    RESET_TO_FLAT,
-    RESET_TO_TALL,
-    RESET_TO_TALL_W_METAL,
-	RAMP_FULL,
-	RAMP_NOT_FULL,
-	REQUEST_TRANSFER
-};
+
 
 enum class TIMER_ID : int {
     WAITING_IM = 1,
@@ -207,11 +169,11 @@ enum class PieceEnum : int {
     TALL_WITH_METAL
 };
 
-enum class RecReplayEnum: int {
+enum class RecReplayEnum : int {
     START_REC = 1,
     STOP_REC,
     START_REPLAY,
-	STOP_REPLAY
+    STOP_REPLAY
 };
 
 enum class ScannedPiece : int {
@@ -221,13 +183,13 @@ enum class ScannedPiece : int {
     UNKNOWN
 };
 
-enum class RemoteControlEnum: int {
-	MQTT_DISCONNECTED,
-	MQTT_CONNECTED,
-	RECONNECT
+enum class RemoteControlEnum : int {
+    MQTT_DISCONNECTED,
+    MQTT_CONNECTED,
+    RECONNECT
 };
-enum class ErrorEnum: int{
-    ERROR_W_LOST=1,
+enum class Error_Enum : int {
+    ERROR_W_LOST = 1,
     ERROR_BOTH_R_FULL,
     ERROR_C_LOST_NR,
     ERROR_C_LOST_MQTT,

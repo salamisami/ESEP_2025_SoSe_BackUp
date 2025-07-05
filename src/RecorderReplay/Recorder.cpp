@@ -130,7 +130,7 @@ void Recorder::start_replay() {
     replay_running = true;
 
     if (!FILE_EXISTS(RECORDER_CSV)) {
-    	local_sender->send_event(ErrorCode, (int) ErrorEnum::CANT_FIND_REP_CONF);
+    	local_sender->send_event(ErrorCode, (int) Error_Enum::CANT_FIND_REP_CONF);
         std::cerr << "Replay: Datei existiert nicht!\n";
         replay_running = false;
         return;
