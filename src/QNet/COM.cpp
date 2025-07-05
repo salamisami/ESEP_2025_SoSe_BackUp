@@ -464,9 +464,16 @@ void COM::handleRemConTopic(int originalValue, _pulse &dispatcherMsg)
     {
     case static_cast<int>(RemoteControlEnum::MQTT_CONNECTED):
         mqttConnected = true;
+        dispatcherMsg.code = static_cast<int>(Topic::COM);
+        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_MQTT_CONNECTED);
+        lowPriorityQueue.push_back(dispatcherMsg);
+ 
         break;
     case static_cast<int>(RemoteControlEnum::MQTT_DISCONNECTED):
         mqttConnected = false;
+        dispatcherMsg.code = static_cast<int>(Topic::COM);
+        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_MQTT_DISCONNECTED);
+        lowPriorityQueue.push_back(dispatcherMsg);
         break;
     default:
         break;
