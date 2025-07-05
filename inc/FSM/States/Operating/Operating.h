@@ -2,20 +2,27 @@
 #define OPERATING_H
 #pragma once
 
-#include "HState.h"
+#include "OrthState.h"
 #include "IdleMode.h"
 #include "PseudoState.h"
 
-class Operating : public HState {
+#include "MotorControl.h"
+#include "PieceControllerFBM1.h"
+#include "SortingOrder.h"
+
+class Operating : public OrthState {
 //============================================ constructors & destructors ============================================
 public:
     Operating(ContextData* data);
+    Operating(ContextData* data, std::deque<State*> initial_substates);
     virtual ~Operating();
 	
 //================================================ public functions ================================================
 public:
     void entry() override;
     void exit() override;
+
+    State* clone() override;
     
     State* button_stop_pressed() override;
     
