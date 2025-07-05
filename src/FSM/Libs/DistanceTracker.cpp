@@ -1,21 +1,19 @@
-#include "PieceTracker.h"
+#include "DistanceTracker.h"
 
 //================================================= constructors & destructors =================================================
 
 
-PieceTracker::PieceTracker(bool debug) {
+DistanceTracker::DistanceTracker(bool debug) {
     TimeProfileManager::load_profile(&time_profile, SAVE_LOCATION_TIMEPROFILE);
     running = true;
     this->debug = debug;
     stop();
-    if(debug) {
-        debug_thread = std::thread(&PieceTracker::debug_function, this);
-    }
+    debug_thread = std::thread(&DistanceTracker::debug_function, this);
 
     //debug_thread.detach();
 }
 
-PieceTracker::~PieceTracker() {
+DistanceTracker::~DistanceTracker() {
     stopwatch.stop();
     running = false;  // Signal threads to stop
 
@@ -36,10 +34,10 @@ PieceTracker::~PieceTracker() {
 // Timestamp: 4857
 
 
-//piece_thread = std::thread(&PieceTracker::thread_function, this);
+//piece_thread = std::thread(&DistanceTracker::thread_function, this);
 //set_thread_priority(piece_thread.native_handle(), 255);  // Higher priority for main thread
 //piece_thread.detach();
-// void PieceTracker::set_thread_priority(pthread_t thread, int priority) {
+// void DistanceTracker::set_thread_priority(pthread_t thread, int priority) {
 //     struct sched_param param;
 //     param.sched_priority = priority;
 
@@ -56,7 +54,7 @@ PieceTracker::~PieceTracker() {
 // }
 
 
-std::pair<Area, double> PieceTracker::timestamp_to_area_pos(const long& timestamp, const uint8_t& mode) {
+std::pair<Area, double> DistanceTracker::timestamp_to_area_pos(const long& timestamp, const uint8_t& mode) {
     //TODO handle ramp?
     long* selected_timestamps;
     switch(mode) {
@@ -97,7 +95,7 @@ std::pair<Area, double> PieceTracker::timestamp_to_area_pos(const long& timestam
     return std::make_pair(area, position);
 }
 
-long PieceTracker::area_pos_to_timestamp(const Area& input_area, const double& input_pos, const uint8_t mode) {
+long DistanceTracker::area_pos_to_timestamp(const Area& input_area, const double& input_pos, const uint8_t mode) {
     long* selected_timestamps;
     long* selected_deadlines;
     switch(mode) {
@@ -136,7 +134,7 @@ long PieceTracker::area_pos_to_timestamp(const Area& input_area, const double& i
 }
 
 
-void PieceTracker::debug_function() {
+void DistanceTracker::debug_function() {
     while(running) {
         if(log) {
             update();
@@ -150,7 +148,7 @@ void PieceTracker::debug_function() {
 //TODO send piece to ramps
 
 //updates area and pos from the last time.
-std::pair<Area, double> PieceTracker::calculate_area_pos(const Area& last_area, const double& last_pos, const uint8_t& mode) {
+std::pair<Area, double> DistanceTracker::calculate_area_pos(const Area& last_area, const double& last_pos, const uint8_t& mode) {
     if(mode == (int) 0) {
         return std::make_pair(last_area, last_pos);
     }
@@ -162,7 +160,7 @@ std::pair<Area, double> PieceTracker::calculate_area_pos(const Area& last_area, 
     return timestamp_to_area_pos(current_position_in_ms, mode);
 }
 
-void PieceTracker::update() {
+void DistanceTracker::update() {
     auto result = calculate_area_pos(current_area, current_position, current_mode);
     //TODO on speed change, stopwatch must be re-calculated
     //stopwatch.start();
@@ -171,28 +169,28 @@ void PieceTracker::update() {
 }
 
 
-void PieceTracker::fast() {
+void DistanceTracker::fast() {
     log = true;
     DEBUG("Piece_Fast_called!");
     update();
     current_mode = 2;
 }
 
-void PieceTracker::slow() {
+void DistanceTracker::slow() {
     log = true;
     DEBUG("Piece_slow_called!");
     update();
     current_mode = 1;
 }
 
-void PieceTracker::stop() {
+void DistanceTracker::stop() {
     log = false;
     update();
     current_mode = 0;
 }
 
 
-void PieceTracker::reset() {
+void DistanceTracker::reset() {
     stop();
     stopwatch.reset();
     current_mode = 0;
@@ -200,11 +198,17 @@ void PieceTracker::reset() {
     current_position = 0;
 }
 
-void PieceTracker::debug_mode(bool debug) {
-    this->debug = debug;
-}
+// Area DistanceTracker::getArea() {
+//     update();
+//     return current_area;
+// }
 
-Area PieceTracker::getArea() {
+// double DistanceTracker::getPosition() {
+//     update();
+//     return current_position;
+// }
+
+std::pair<Area, double> DistanceTracker::get_distance() {
     update();
     return current_area;
 }
@@ -214,11 +218,10 @@ double PieceTracker::getPosition() {
     return current_position;
 }
 
-bool PieceTracker::send_to_ramp() {
+bool DistanceTracker::send_to_ramp() {
     if(current_area == Area::GATE) {
         current_area = Area::GATE_RAMP;
         current_position = 0;
         return true;
     }
     return false;
-}

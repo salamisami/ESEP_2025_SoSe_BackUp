@@ -63,14 +63,14 @@ protected:
 };
 
 // Test fixture with Boot as initial state
-class RealImplementationTesting : public LogicBaseTest<Boot> {
+class RealImplementationSetup : public LogicBaseTest<Boot> {
 protected:
     void SetUp() override {
         LogicBaseTest<Boot>::SetUp();
     }
 };
 
-class SubRealImplementationTesting : public LogicBaseTest<SortingOrder> {
+class SortingOrderSetup : public LogicBaseTest<SortingOrder> {
 protected:
     void SetUp() override {
         LogicBaseTest<SortingOrder>::SetUp();
@@ -176,8 +176,41 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
     EXPECT_STATE("Green MotorDisable");
 }
 
+TEST_F(RealImplementationSetup, PutNewPiece){
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
 
-TEST_F(SubRealImplementationTesting, SortingOrderPositiveTest) {
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    EXPECT_STATE("Start_PT1 Fast PieceFlat StartingAreaBlocked");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+    EXPECT_STATE("StartADC_PT1 Fast PieceFlat StartingAreaBlocked");
+    WAIT(2100);
+    EXPECT_STATE("ADC_PT1 Slow PieceFlat StartingAreaUnblocked");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
+    WAIT(1123);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_WF_DETECT);
+    EXPECT_STATE("ADCGate_PT1 Fast PieceFlat StartingAreaUnblocked");
+    
+    WAIT(1400);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    EXPECT_STATE("GateEnd_PT1 Fast PieceTall StartingAreaUnblocked");
+    WAIT(400);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);   
+    EXPECT_STATE("PendingTransferRequest_PT1 Fast PieceTall StartingAreaUnblocked"); 
+    WAIT(1000);
+    auto distance = data->piece_tracker.get_distance();
+    EXPECT_EQ(distance.first, Area::GATE_END);
+    EXPECT_GT(distance.second, 95);
+
+
+}
+
+
+TEST_F(SortingOrderSetup, SortingOrderPositiveTest) {
     EXPECT_STATE("PieceFlat");
     data->is_ramp_full = false;
     remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::FLAT);
@@ -191,7 +224,7 @@ TEST_F(SubRealImplementationTesting, SortingOrderPositiveTest) {
     EXPECT_STATE("PieceFlat");
 }
 
-TEST_F(SubRealImplementationTesting, SortingOrderNegativeTest) {
+TEST_F(SortingOrderSetup, SortingOrderNegativeTest) {
     //test PieceFlat
     EXPECT_STATE("PieceFlat");
     data->is_ramp_full = false;
@@ -322,7 +355,7 @@ TEST_F(RealImplementationTesting, ServiceModeFullTest) {
 /**
  * @brief enter adc calibration mode, then estop
  */
-TEST_F(RealImplementationTesting, AdcCalibrationThenEstop) {
+TEST_F(RealImplementationSetup, AdcCalibrationThenEstop) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     WAIT(2100);
@@ -354,7 +387,7 @@ TEST_F(RealImplementationTesting, AdcCalibrationThenEstop) {
 /**
  * @brief enter operating mode, by pressing start button shortly
  */
-TEST_F(RealImplementationTesting, ShortTimerTest) {
+TEST_F(RealImplementationSetup, ShortTimerTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     EXPECT_STATE("WaitingIM");
@@ -366,7 +399,7 @@ TEST_F(RealImplementationTesting, ShortTimerTest) {
 /**
  * @brief enter adc calibration mode, by long pressing start button
  */
-TEST_F(RealImplementationTesting, LongTimerTest) {
+TEST_F(RealImplementationSetup, LongTimerTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     EXPECT_STATE("WaitingIM");
