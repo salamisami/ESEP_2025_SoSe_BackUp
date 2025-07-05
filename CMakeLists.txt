@@ -41,6 +41,7 @@ target_compile_options(Project PRIVATE
 
 # Conditional optimizations
 if(USE_SANITIZERS)
+    # Apply sanitizers to both Project and tests
     target_compile_options(Project PRIVATE 
         $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
     )
@@ -67,7 +68,6 @@ target_precompile_headers(ProjectLib PRIVATE
     <unordered_map>
 )
 
-
 target_link_libraries(Project PRIVATE ProjectLib pthread)
 
 # Tests
@@ -75,4 +75,13 @@ find_package(GTest REQUIRED)
 add_executable(tests tests.cpp)
 target_link_libraries(tests PRIVATE ProjectLib GTest::GTest GTest::Main)
 target_precompile_headers(tests PRIVATE <gtest/gtest.h>)
+
+# Apply the same sanitizer options to tests
+if(USE_SANITIZERS)
+    target_compile_options(tests PRIVATE 
+        $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
+    )
+    target_link_options(tests PRIVATE -fsanitize=address)
+endif()
+
 gtest_discover_tests(tests)
