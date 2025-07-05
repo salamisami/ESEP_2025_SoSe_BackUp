@@ -30,14 +30,14 @@ State* StartingAreaBlocked::unblock_starting_area() {
     return new StartingAreaBlocked(data);
 }
 
-State* StartingAreaBlocked::laser_front_blocked() {
-    return new PiecesTooClose(data);
-}
+//TODO uncomment this code
+// State* StartingAreaBlocked::laser_front_blocked() {
+//     return new PiecesTooClose(data);
+// }
 
-State* StartingAreaBlocked::timer(TIMER_ID id) {
-    if(id == TIMER_ID::STARTING_AREA_TIMER) {
-        return new StartingAreaUnblocked(data);
-    }
-    return nullptr;
-}
-
+// State* StartingAreaBlocked::timer(TIMER_ID id) {
+//     if(id == TIMER_ID::STARTING_AREA_TIMER) {
+//         return new StartingAreaUnblocked(data);
+//     }
+//     return nullptr;
+// }

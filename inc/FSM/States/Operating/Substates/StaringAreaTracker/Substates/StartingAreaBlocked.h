@@ -17,8 +17,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
     
-	State* laser_front_blocked() override;
-	State* timer(TIMER_ID id) override;
+	//State* laser_front_blocked() override;
+	//State* timer(TIMER_ID id) override;
 
 	State* unblock_starting_area() override;
 
