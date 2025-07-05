@@ -37,18 +37,31 @@ State *Fast::delete_w_motor()
 State *Fast::motor_slow()
 {
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON);
+    for (auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second;  // pair.second is the value (Piece*)
+    piece->piece_tracker.slow();               // Call fast() on the Piece*
+}
     updateData(MotorPieceState::SLOW);
+
     return new Slow(data);
 }
 State *Fast::motor_fast()
 {
   updateData(MotorPieceState::FAST);  
+    for (auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second;  // pair.second is the value (Piece*)
+    piece->piece_tracker.fast();               // Call fast() on the Piece*
+}
   return new Fast(data);
 }
 
 State *Fast::motor_stop_fsm()
 {
   updateData(MotorPieceState::STOPPED);
+    for (auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second;  // pair.second is the value (Piece*)
+    piece->piece_tracker.stop();               // Call fast() on the Piece*
+}
   data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
   return new Stop(data);
 }
@@ -60,7 +73,6 @@ void Fast::updateData(MotorPieceState motorPieceState) {
         // Remove the ID from the list if it exists
         if (data->workpieceList.contains(id)) {
             data->workpieceList.remove(id);
-            data->workpieces = data->workpieceList.isEmpty();
         } else {
             printf("Warning: Trying to delete ID %d that doesn't exist in workpiece list\n", id);
         }
@@ -70,8 +82,8 @@ void Fast::updateData(MotorPieceState motorPieceState) {
             data->workpieceList.add(id, motorPieceState);
         }
         data->workpieceList.updateStateAll(motorPieceState);
-        data->workpieces = data->workpieceList.isEmpty();
     }
+    data->workpieces = !data->workpieceList.isEmpty();
 }
 
 
