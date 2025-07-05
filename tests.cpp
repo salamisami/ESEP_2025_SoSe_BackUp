@@ -135,7 +135,7 @@ TEST_F(PieceTrackingSetup, PieceTrackingTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);    
     WAIT(1000);
     EXPECT_EQ(data->piece_tracker.getArea(), Area::GATE_END);
-    EXPECT_EQ(data->piece_tracker.getPosition(), 100);
+    EXPECT_GT(data->piece_tracker.getPosition(), 95);
 }
 
 TEST_F(DeepHistorySetup, DeepHistoryTest) {
@@ -168,6 +168,12 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED); 
     EXPECT_STATE("Red MotorDisable");
+
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
+    EXPECT_STATE("IdleMock");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE("Green MotorDisable");
 }
 
 

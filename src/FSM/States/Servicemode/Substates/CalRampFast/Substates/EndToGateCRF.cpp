@@ -24,6 +24,10 @@ void EndToGateCRF::exit(){
 	PRINT_STATE;
 }
 
+State* EndToGateCRF::clone() {
+	return new EndToGateCRF(data);
+}
+
 State* EndToGateCRF::timer(TIMER_ID id){
 	if(id == TIMER_ID::CAL_GATE_RAMP1){
 		return new OpenGateCRF(data);

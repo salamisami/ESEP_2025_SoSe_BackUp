@@ -34,6 +34,16 @@ add_compile_definitions(VERBOSE_STATES)
 # Executables
 add_executable(Project main.cpp)
 
+# Platform-specific settings
+if(APPLE)
+    # macOS-specific settings
+    find_library(CORESERVICES CoreServices)
+    find_library(FOUNDATION Foundation)
+    set(PLATFORM_LIBS ${CORESERVICES} ${FOUNDATION})
+else()
+    set(PLATFORM_LIBS "")
+endif()
+
 # Compiler options and definitions
 target_compile_options(Project PRIVATE 
     $<$<COMPILE_LANGUAGE:CXX>:-Wall>
@@ -41,11 +51,18 @@ target_compile_options(Project PRIVATE
 
 # Conditional optimizations
 if(USE_SANITIZERS)
-    # Apply sanitizers to both Project and tests
-    target_compile_options(Project PRIVATE 
-        $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
-    )
-    target_link_options(Project PRIVATE -fsanitize=address)
+    # AddressSanitizer works differently on macOS
+    if(APPLE)
+        target_compile_options(Project PRIVATE 
+            $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer>
+        )
+        target_link_options(Project PRIVATE -fsanitize=address)
+    else()
+        target_compile_options(Project PRIVATE 
+            $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
+        )
+        target_link_options(Project PRIVATE -fsanitize=address)
+    endif()
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
@@ -54,7 +71,7 @@ else()
     target_compile_options(Project PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-O0 -g>)
 endif()
 
-# Precompiled headers (fixed duplicate <typeinfo>)
+# Precompiled headers
 target_precompile_headers(ProjectLib PRIVATE 
     <vector>
     <string>
@@ -68,20 +85,27 @@ target_precompile_headers(ProjectLib PRIVATE
     <unordered_map>
 )
 
-target_link_libraries(Project PRIVATE ProjectLib pthread)
+target_link_libraries(Project PRIVATE ProjectLib pthread ${PLATFORM_LIBS})
 
 # Tests
 find_package(GTest REQUIRED)
 add_executable(tests tests.cpp)
-target_link_libraries(tests PRIVATE ProjectLib GTest::GTest GTest::Main)
+target_link_libraries(tests PRIVATE ProjectLib GTest::GTest GTest::Main ${PLATFORM_LIBS})
 target_precompile_headers(tests PRIVATE <gtest/gtest.h>)
 
-# Apply the same sanitizer options to tests
+# Apply sanitizers to tests
 if(USE_SANITIZERS)
-    target_compile_options(tests PRIVATE 
-        $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
-    )
-    target_link_options(tests PRIVATE -fsanitize=address)
+    if(APPLE)
+        target_compile_options(tests PRIVATE 
+            $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer>
+        )
+        target_link_options(tests PRIVATE -fsanitize=address)
+    else()
+        target_compile_options(tests PRIVATE 
+            $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
+        )
+        target_link_options(tests PRIVATE -fsanitize=address)
+    endif()
 endif()
 
 gtest_discover_tests(tests)

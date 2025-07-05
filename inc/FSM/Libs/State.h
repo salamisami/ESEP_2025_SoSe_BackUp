@@ -25,20 +25,20 @@ public: //================================================ public functions ====
      * @brief Enters the state. This function must be overidden by the child state.
      */
     virtual void entry() {
-        DEBUG("Warning, function of abstract class entry() is called.");
+        throw std::runtime_error("function of abstract class entry is called: " + get_current_state());
     }
     /**
      * @brief Exits the state. This function must be overidden by the child state.
      */
     virtual void exit() {
-        DEBUG("Warning, function of abstract class exit() is called.");
+        throw std::runtime_error("function of abstract class exit is called: " + get_current_state());
     }
     /**
      * @brief Clones the current state.
      * @return Cloned state, which is already allocated to heap
      */
     virtual State* clone() {
-        DEBUG("Warning, function of abstract class State::clone() is called.");
+        throw std::runtime_error("function of abstract class State::clone() is called: " + get_current_state());
         return nullptr;
     }
     /**

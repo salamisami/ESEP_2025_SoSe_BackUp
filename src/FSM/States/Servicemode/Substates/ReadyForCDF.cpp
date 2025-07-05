@@ -20,6 +20,10 @@ void ReadyForCDF::exit(){
     PRINT_STATE;
 }
 
+State* ReadyForCDF::clone() {
+    return new ReadyForCDF(data);
+}
+
 State* ReadyForCDF::laser_front_blocked(){
     return new CalDistanceFast(data);
 }
