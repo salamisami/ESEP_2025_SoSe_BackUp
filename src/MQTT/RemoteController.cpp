@@ -16,6 +16,7 @@ std::mutex heartbeatMutex;
 std::condition_variable queueCV;
 static void on_command(const char* payload);
 std::chrono::steady_clock::time_point last_dashboard_heartbeat;
+std::atomic<bool> Remote_Controller::Main_running(true);
 
 // Helper zum Zusammenbauen der Topics
 inline std::string make_topic(const char* prefix, const char* suffix) {
@@ -48,11 +49,11 @@ Remote_Controller::~Remote_Controller() {
 	    // 2. Threads ggf. aufwecken
 	    queueCV.notify_all();
 //	    int8_t AcuatorCode = (int8_t) Topic::ACTUATOR;
-//	    local_sender->send_event(AcuatorCode, (int) ActuatorEnum::WAKE_UP);
+	    local_sender->send_event((int8_t)Topic::WAKE_UP,0);
 
 	    // 3. Stop-Event schicken
-	    if (mock_dispatcher_sender)
-	        mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
+//	    if (mock_dispatcher_sender)
+//	        mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
 
 	    // 4. Threads joinen (warten bis sie beendet sind)
 	    if (RemConThreadRecive.joinable())
@@ -158,7 +159,6 @@ void Remote_Controller::threadFunctionRecive(){
                             break;
                         case ActuatorEnum::TRAFFIC_GREEN_ON_SLOW:
                             MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/green/0.5").c_str(), "on");
-
                             break;
                         case ActuatorEnum::TRAFFIC_YELLOW_ON:
                             MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "ampel/yellow").c_str(), "on");
@@ -295,12 +295,13 @@ void Remote_Controller::threadFunctionSend(){
             case 5: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_RESET_PRESSED); break;
             case 6: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_RESET_RELEASED); break;
             case 7: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_PRESSED); break;//TODO: durch REMOTE_STOP ersetzen !
-            case 8: //local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED); break;
-            		break;
+//            case 8: //local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED); break;
+//            		break;
             case 9: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REC); break;
             case 10: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::STOP_REC); break;
             case 11: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REPLAY); break;
             case 12: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::STOP_REPLAY); break;
+            case 13: Remote_Controller::Main_running = false; break;
         }
     }
 }
@@ -398,6 +399,8 @@ static void on_command(const char* payload) {
         Last_Command = 11;
     } else if (strncmp(payload, "RepStop", len) == 0) {
         Last_Command = 12;
+    } else if (strncmp(payload, "softstop", len) == 0) {
+        Last_Command = 13;
     } else if (strncmp(payload, "HeartBeat", len) == 0) {
         last_dashboard_heartbeat = std::chrono::steady_clock::now();
         dash_conn_lost = false; // Optional, wenn du sicher bist, dass wieder Kontakt besteht.

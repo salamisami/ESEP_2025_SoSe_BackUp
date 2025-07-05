@@ -9,6 +9,7 @@
 
 #include <cstdint>
 
+
 enum class InterruptEnum : int
 {
     LASER_FRONT_BLOCKED = 1, // the rest will continue (-2, -3)

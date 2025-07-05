@@ -23,12 +23,6 @@
 using namespace std;
 
 
-std::atomic<bool> running(true);
-
-void wait_for_enter() {
-    std::cin.get();
-    running = false;
-}
 
 
 
@@ -70,28 +64,28 @@ int main() {
     externCommunication->start();
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
-    while(1) {
+    while(Remote_Controller::Main_running) {
+    	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
    
 
-    delete hal;
-    delete externCommunication;
-    delete remcon;
-	delete rec;
-    delete logic;
+delete externCommunication;
+delete remcon;
+delete logic;
+delete rec;
+delete hal;
 
+delete RemCon_receiver;
+delete RemCon_sender;
+delete recorder_receiver;
+delete recorder_sender;
+delete hal_sender;
+delete fsm_sender;
+delete fsm_receiver;
+delete hal_receiver;
 
-	 delete RemCon_receiver;
-	 delete RemCon_sender;
-   	 delete recorder_receiver;
-     delete recorder_sender;
-     delete hal_sender;
-     delete fsm_sender;
-     delete fsm_receiver;
-     delete hal_receiver;
-
-    cout << "Program Finished." << endl;
-    return 0;
+cout << "Program Finished." << endl;
+return 0;
 
 
 }

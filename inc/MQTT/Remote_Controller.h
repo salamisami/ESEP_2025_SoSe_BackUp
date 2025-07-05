@@ -15,6 +15,7 @@
 #include "QNet.h"
 #include "PulseMsg.h"
 
+
 #include <thread>
 #include <iostream>
 #include <unistd.h>
@@ -40,7 +41,7 @@ class Remote_Controller {
 
 	public: //================================================ public functions ================================================
 
-
+		static std::atomic<bool> Main_running;
 
 	private: //================================================ private variables ================================================
 		//classes, STL containers, and structs
