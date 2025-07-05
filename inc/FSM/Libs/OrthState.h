@@ -56,7 +56,7 @@ public:
 
     //TODO make virtual
     virtual State* clone() override {
-        DEBUG("Warning, function of abstract class OrthState::clone() is called.");
+        throw std::runtime_error("function of abstract class HState::clone() is called: " + get_current_state());
         return nullptr;
     }
 
@@ -97,7 +97,10 @@ public:
                 delete current_substate;
                 current_substate = nullptr;
                 // Return default exit state to parent
-                return default_exit_state_->clone();
+                 if(default_exit_state_ != nullptr){
+                    return default_exit_state_->clone();
+                }
+                return nullptr;
             } else if(newSubstate != nullptr) {
                 // there is substate change, change only the substate
                 current_substate->exit();
@@ -136,7 +139,10 @@ protected:
                 current_substate->exit();
                 delete current_substate;
                 it = substates.erase(it);
-                return default_exit_state_->clone();
+                if(default_exit_state_ != nullptr){
+                    return default_exit_state_->clone();
+                }
+                return nullptr;
             }
 
             if(newSubstate != nullptr) {

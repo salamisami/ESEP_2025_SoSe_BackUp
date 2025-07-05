@@ -137,8 +137,11 @@ long DistanceTracker::area_pos_to_timestamp(const Area& input_area, const double
 
 void DistanceTracker::debug_function() {
     while(running) {
-        update();
-        std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
+        if(log) {
+            update();
+            std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
+        }
+
         WAIT(1000);
     }
 }
@@ -169,18 +172,21 @@ void DistanceTracker::update() {
 
 
 void DistanceTracker::fast() {
+    log = true;
     DEBUG("Piece_Fast_called!");
     update();
     current_mode = 2;
 }
 
 void DistanceTracker::slow() {
+    log = true;
     DEBUG("Piece_slow_called!");
     update();
     current_mode = 1;
 }
 
 void DistanceTracker::stop() {
+    log = false;
     update();
     current_mode = 0;
 }

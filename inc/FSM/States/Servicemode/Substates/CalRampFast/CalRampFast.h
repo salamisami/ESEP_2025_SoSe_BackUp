@@ -9,13 +9,16 @@
 
 class CalRampFast : public OrthState {
 public: //============================================ constructors & destructors ============================================
-    CalRampFast(ContextData* data) ;
+    CalRampFast(ContextData* data);
+	CalRampFast(ContextData* data, std::deque<State*> initial_substates);
     virtual ~CalRampFast();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
 
 	//State* laser_ramp_blocked() override;
     
