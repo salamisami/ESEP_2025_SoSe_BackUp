@@ -27,5 +27,5 @@ void PiecesTooClose::exit(){
 
 State* PiecesTooClose::error_pieces_too_close_fixed()
 {
-    return new StartingAreaBlocked(data);
+    return new StartingAreaUnblocked(data);
 }

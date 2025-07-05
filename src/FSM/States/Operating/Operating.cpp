@@ -6,8 +6,8 @@ Operating::Operating(ContextData* data): OrthState(data,{
     new PieceControllerFBM1(data),
     new MotorControl(data),
     new SortingOrder(data),
-    new StartingAreaTracker(data),
-    new ErrorHandler(data)
+    new StartingAreaTracker(data)//,
+    //new ErrorHandler(data)
 }) {
 }
 

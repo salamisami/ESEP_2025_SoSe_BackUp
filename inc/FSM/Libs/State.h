@@ -406,9 +406,6 @@ protected: //================================================ protected ========
         return nullptr;
     }
 
-
-
-private: //================================================ private functions ================================================
     std::string demangle(const char* mangled) {
         int status;
         char* demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
@@ -416,6 +413,11 @@ private: //================================================ private functions ==
         free(demangled);
         return result;
     }
+
+
+
+private: //================================================ private functions ================================================
+    
 
 };
 

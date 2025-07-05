@@ -49,7 +49,7 @@ int main() {
 
 
 
-    auto logic = new Logic<SimulatePiece>(logic_receiver, logic_sender, to_self_sender);
+    auto logic = new Logic<SimulatePiece>(logic_receiver, to_self_sender);
     //boot
     WAIT(500);
     //remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);

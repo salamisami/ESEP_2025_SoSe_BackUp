@@ -3,7 +3,7 @@
 #pragma once
 
 #include "State.h"
-#include "StartingAreaBlocked.h"
+#include "StartingAreaUnblocked.h"
 
 
 class PiecesTooClose : public State {

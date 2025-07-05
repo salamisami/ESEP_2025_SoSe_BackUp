@@ -26,7 +26,7 @@ void PieceControllerFBM1::exit() {
 }
 
 State* PieceControllerFBM1::clone() {
-	return new PieceControllerFBM1(data);
+	return new PieceControllerFBM1(data, clone_substates());
 }
 
 State* PieceControllerFBM1::new_piece() {
