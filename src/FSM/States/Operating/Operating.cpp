@@ -9,6 +9,10 @@ Operating::Operating(ContextData* data): OrthState(data,{
 }) {
 }
 
+Operating::Operating(ContextData* data, std::deque<State*> initial_substates): OrthState(data, initial_substates) {
+    
+}
+
 Operating::~Operating() {
 }
 
