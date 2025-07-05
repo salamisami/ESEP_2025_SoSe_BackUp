@@ -26,8 +26,8 @@ State* MovingToEnd_PT1::clone(){
 
 State* MovingToEnd_PT1::laser_back_blocked(){
 	auto piece = data->pieces_map->at(localdata_.id);
-	Area current_area = piece->piece_tracker.getArea();
-	int current_position = piece->piece_tracker.getPosition();
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
 
 	if(current_area == Area::GATE_END){ 
 		return new Transfer_PT1(data, localdata_);

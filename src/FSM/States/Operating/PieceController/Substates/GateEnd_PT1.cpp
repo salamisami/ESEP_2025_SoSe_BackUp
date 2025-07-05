@@ -27,8 +27,8 @@ State* GateEnd_PT1::clone() {
 
 State* GateEnd_PT1::timer(TIMER_ID id) {
 	auto piece = data->pieces_map->at(localdata_.id);
-	Area current_area = piece->piece_tracker.getArea();
-	int current_position = piece->piece_tracker.getPosition();
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
 
 	if(current_area != Area::GATE_END) {
 		//PieceMissing
@@ -60,8 +60,8 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 
 State* GateEnd_PT1::laser_back_blocked() {
 	auto piece = data->pieces_map->at(localdata_.id);
-	Area current_area = piece->piece_tracker.getArea();
-	int current_position = piece->piece_tracker.getPosition();
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
 
 	if(current_area == Area::GATE_END) {
 		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.id);

@@ -18,6 +18,7 @@ void Measuring_PT1::entry(){
 
 void Measuring_PT1::exit(){
 	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.id);
 }
 
 State* Measuring_PT1::clone(){
@@ -26,8 +27,8 @@ State* Measuring_PT1::clone(){
 
 State* Measuring_PT1::laser_sorting_gate_blocked() {
 	auto piece = data->pieces_map->at(localdata_.id);
-	Area current_area = piece->piece_tracker.getArea();
-	int current_position = piece->piece_tracker.getPosition();
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
 
 	if(current_area == Area::GATE){
 		DEBUG("Typisierung schief gelaufen");

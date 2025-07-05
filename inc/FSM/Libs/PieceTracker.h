@@ -68,24 +68,26 @@ public: //================================================ public functions ====
 
 
 
-	void debug_mode(bool debug);
-
 	/**
 	 * @brief attempts to send the piece to the ramp
 	 * @retval true if the send is valid
 	 * @retval false if the send is not valid
 	 */
 	bool send_to_ramp();
-	/**
-	 * @brief returns current area of this piece
-	 * @return the area, in which the piece is currently located
-	 */
-	Area getArea();
-	/**
-	 * @brief returns current position of current area. If the value is 50, means the piece is located exactly at the center of current area.
-	 * @return the current position inside current area. The range of value is from 0 till 100
-	 */
-	double getPosition();
+	// /**
+	//  * @brief returns current area of this piece
+	//  * @return the area, in which the piece is currently located
+	//  */
+	// Area getArea();
+	// /**
+	//  * @brief returns current position of current area. If the value is 50, means the piece is located exactly at the center of current area.
+	//  * @return the current position inside current area. The range of value is from 0 till 100
+	//  */
+	// double getPosition();
+
+	std::pair<Area, double> get_distance();
+
+	bool debug = false;
 
 
 
@@ -103,7 +105,7 @@ private: //================================================ private variables ==
 	Area current_area = Area::START_ADC;
 	double current_position = 0;
 	uint8_t current_mode = 0;
-	bool debug = false;
+	
 	bool log = false;
 
 

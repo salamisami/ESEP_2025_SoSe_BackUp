@@ -8,9 +8,7 @@ PieceTracker::PieceTracker(bool debug) {
     running = true;
     this->debug = debug;
     stop();
-    if(debug) {
-        debug_thread = std::thread(&PieceTracker::debug_function, this);
-    }
+    debug_thread = std::thread(&PieceTracker::debug_function, this);
 
     //debug_thread.detach();
 }
@@ -20,9 +18,7 @@ PieceTracker::~PieceTracker() {
     running = false;  // Signal threads to stop
 
     // Wake up threads if they're waiting
-    if(debug) {
-        debug_thread.join();
-    }
+    debug_thread.join();
 }
 
 //===================================================== private functions =====================================================
@@ -138,11 +134,14 @@ long PieceTracker::area_pos_to_timestamp(const Area& input_area, const double& i
 
 void PieceTracker::debug_function() {
     while(running) {
-        if(log) {
-            update();
-            std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
+        while(debug) {
+            if(log) {
+                update();
+                std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
+            }
+            WAIT(1000);
         }
-        WAIT(1000);
+
     }
 }
 //===================================================== public functions =====================================================
@@ -200,18 +199,19 @@ void PieceTracker::reset() {
     current_position = 0;
 }
 
-void PieceTracker::debug_mode(bool debug) {
-    this->debug = debug;
-}
+// Area PieceTracker::getArea() {
+//     update();
+//     return current_area;
+// }
 
-Area PieceTracker::getArea() {
-    update();
-    return current_area;
-}
+// double PieceTracker::getPosition() {
+//     update();
+//     return current_position;
+// }
 
-double PieceTracker::getPosition() {
+std::pair<Area, double> PieceTracker::get_distance() {
     update();
-    return current_position;
+    return std::make_pair(current_area, current_position);
 }
 
 bool PieceTracker::send_to_ramp() {

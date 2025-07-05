@@ -13,7 +13,6 @@ ADCGate_PT1::~ADCGate_PT1() {}
 //===================================================== public functions =====================================================
 void ADCGate_PT1::entry() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.id);
 	data->timer->start_timer(100, TIMER_ID::ADCGATE_PT1);
 }
 
@@ -30,8 +29,8 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 		return nullptr;
 	}
 	auto piece = data->pieces_map->at(localdata_.id);
-	Area current_area = piece->piece_tracker.getArea();
-	int current_position = piece->piece_tracker.getPosition();
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
 
 	if(current_area != Area::ADC_GATE) {
 		//PieceMissing
@@ -59,8 +58,8 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 
 State* ADCGate_PT1::laser_sorting_gate_blocked() {
 	auto piece = data->pieces_map->at(localdata_.id);
-	Area current_area = piece->piece_tracker.getArea();
-	int current_position = piece->piece_tracker.getPosition();
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
 
 	if(current_area == Area::GATE) {
 		return new Gate_PT1(data, localdata_);
@@ -70,8 +69,8 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 
 State* ADCGate_PT1::metal_detected() {
 	auto piece = data->pieces_map->at(localdata_.id);
-	Area current_area = piece->piece_tracker.getArea();
-	int current_position = piece->piece_tracker.getPosition();
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
 
 	if(current_area == Area::GATE) {
 		return new IsMetal_PT1(data, localdata_);

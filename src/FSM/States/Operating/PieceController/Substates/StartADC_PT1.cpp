@@ -31,8 +31,9 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 	}
 	Piece* piece = data->pieces_map->at(localdata_.id);
 
-	Area current_area = piece->piece_tracker.getArea();
-	int current_position = piece->piece_tracker.getPosition();
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
+	auto current_position = distance.second;
 
 	if(current_area != Area::START_ADC){
 		return new ADC_PT1(data, localdata_);
@@ -40,6 +41,7 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 
 	//TODO calibrate here
 	if(current_position > DISTANCE_BETWEEN_PIECES){
+		std::cout << "current pos: " << current_position <<std::endl;
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
 	}
 	return new StartADC_PT1(data, localdata_);
