@@ -31,6 +31,9 @@ public:
         if(substate != nullptr) {
             delete substate;
         }
+        if(default_exit_state_ != nullptr){
+            delete default_exit_state_;
+        }
     }
 
     //================================================ public functions ================================================
@@ -67,7 +70,7 @@ public:
             substate = nullptr;
 
             // Return default exit state to parent
-            return default_exit_state_;
+            return default_exit_state_->clone();
         } else if(newSubstate != nullptr) {
             // there is substate change, change only the substate
             substate->exit();
@@ -99,7 +102,7 @@ protected:
             substate = nullptr;
 
             // Return default exit state to parent
-            return default_exit_state_;
+            return default_exit_state_->clone();
         } else if(newSubstate) {
             // Normal state transition
             substate->exit();
