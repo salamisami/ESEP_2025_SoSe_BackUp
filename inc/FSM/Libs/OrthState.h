@@ -32,6 +32,9 @@ public:
         for(auto& current_substate : substates) {
             delete current_substate;
         }
+        if(default_exit_state_ != nullptr){
+            delete default_exit_state_;
+        }
     }
 
     //================================================ public functions ================================================
@@ -94,7 +97,7 @@ public:
                 delete current_substate;
                 current_substate = nullptr;
                 // Return default exit state to parent
-                return default_exit_state_;
+                return default_exit_state_->clone();
             } else if(newSubstate != nullptr) {
                 // there is substate change, change only the substate
                 current_substate->exit();
@@ -133,7 +136,7 @@ protected:
                 current_substate->exit();
                 delete current_substate;
                 it = substates.erase(it);
-                return default_exit_state_;
+                return default_exit_state_->clone();
             }
 
             if(newSubstate != nullptr) {
