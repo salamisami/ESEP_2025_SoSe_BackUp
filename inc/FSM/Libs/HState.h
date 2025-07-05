@@ -31,7 +31,7 @@ public:
         if(substate != nullptr) {
             delete substate;
         }
-        if(default_exit_state_ != nullptr){
+        if(default_exit_state_ != nullptr) {
             delete default_exit_state_;
         }
     }
@@ -49,7 +49,7 @@ public:
 
     //TODO make virtual
     virtual State* clone() override {
-        DEBUG("Warning, function of abstract class HState::clone() is called.");
+        throw std::runtime_error("function of abstract class HState::clone() is called: " + get_current_state());
         return nullptr;
     }
     virtual std::string get_current_state() override {
@@ -70,7 +70,10 @@ public:
             substate = nullptr;
 
             // Return default exit state to parent
-            return default_exit_state_->clone();
+            if(default_exit_state_ != nullptr) {
+                return default_exit_state_->clone();
+            }
+            return nullptr;
         } else if(newSubstate != nullptr) {
             // there is substate change, change only the substate
             substate->exit();
@@ -102,7 +105,10 @@ protected:
             substate = nullptr;
 
             // Return default exit state to parent
-            return default_exit_state_->clone();
+            if(default_exit_state_ != nullptr) {
+                return default_exit_state_->clone();
+            }
+            return nullptr;
         } else if(newSubstate) {
             // Normal state transition
             substate->exit();

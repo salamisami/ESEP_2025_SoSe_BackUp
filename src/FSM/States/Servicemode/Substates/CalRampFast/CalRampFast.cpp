@@ -12,6 +12,10 @@ CalRampFast::CalRampFast(ContextData* data) : OrthState(data,
     //substate = new SubState(data);
 }
 
+CalRampFast::CalRampFast(ContextData* data, std::deque<State*> initial_substates): OrthState(data, initial_substates) {
+    
+}
+
 CalRampFast::~CalRampFast() {}
 
 //===================================================== private functions =====================================================
@@ -26,6 +30,10 @@ void CalRampFast::entry() {
 void CalRampFast::exit() {
     OrthState::exit();
     PRINT_STATE;
+}
+
+State* CalRampFast::clone() {
+    return new CalRampFast(data, clone_substates());
 }
 
 

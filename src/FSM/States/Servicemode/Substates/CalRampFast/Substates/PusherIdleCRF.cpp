@@ -19,6 +19,10 @@ void PusherIdleCRF::exit(){
 	PRINT_STATE;
 }
 
+State* PusherIdleCRF::clone() {
+	return new PusherIdleCRF(data);
+}
+
 State* PusherIdleCRF::adc_top_area_blocked(){
 	return new SendToRamp(data);
 }

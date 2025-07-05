@@ -1,5 +1,5 @@
-#ifndef PIECETRACKER_H
-#define PIECETRACKER_H
+#ifndef DISTANCETRACKER_H
+#define DISTANCETRACKER_H
 #pragma once
 
 
@@ -105,6 +105,7 @@ private: //================================================ private variables ==
 	double current_position = 0;
 	uint8_t current_mode = 0;
 	bool debug = false;
+	bool log = false;
 
 
 

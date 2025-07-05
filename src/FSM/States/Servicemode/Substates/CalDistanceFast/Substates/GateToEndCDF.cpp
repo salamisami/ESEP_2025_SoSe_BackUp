@@ -21,6 +21,10 @@ void GateToEndCDF::exit(){
     data->timeprofile.fast_timestamps[(int) Timestamp::END] = data->stopwatch.peek_time();
 }
 
+State* GateToEndCDF::clone() {
+    return new GateToEndCDF(data);
+}
+
 State* GateToEndCDF::laser_back_blocked(){
     //return new CalRampFast(data);
     return State::EXIT_STATE;
