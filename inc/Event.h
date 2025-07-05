@@ -137,20 +137,6 @@ enum class COM_Enum : int {
     COM_MQTT_DISCONNECTED
 };
 
-enum class ADC_Enum : int {
-    ADC_WH_DETECT = 0xFFA0,
-    ADC_WF_DETECT,
-    ADC_W_B_DETECT,
-    ADC_W_NOT_DETECT,
-    ADC_CALIBRATE,
-    ADC_MESURE,
-    ADC_INVALID_MESURE,
-    ADC_CALIBRATION_DONE,
-    ADC_PREPARE,
-    ADC_NEW_PIECE,
-    ADC_STOP,
-    ADC_TIMEOUT
-};
 
 
 
