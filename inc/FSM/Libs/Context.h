@@ -77,25 +77,22 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::RESET_TO_TALL_W_METAL:
             newState = state->reset_to_tall_w_metal();
             break;
-        case Internal_Enum::DELETE_W_MOTOR:
-            newState = state->delete_w_motor();
+        case Internal_Enum::RAMP_FULL:
+            newState = state->ramp_full();
             break;
-        case Internal_Enum::MOTOR_FAST:
-            newState = state->motor_fast();
+        case Internal_Enum::RAMP_NOT_FULL:
+            newState = state->ramp_not_full();
             break;
-        case Internal_Enum::MOTOR_SLOW:
-            newState = state->motor_slow();
-            break;
-        case Internal_Enum::MOTOR_STOP_FSM:
-            newState = state->motor_stop_fsm();
-        case Internal_Enum::NEW_PIECE:
-            newState = state->new_piece();
+        case Internal_Enum::UNBLOCK_STARTING_AREA:
+            newState = state->unblock_starting_area();
             break;
         default:
             break;
     }
     return newState;
 }
+
+
 
 template<typename T>
 State* Context<T>::handleADC(int event_value) {
@@ -126,12 +123,20 @@ State* Context<T>::handleADC(int event_value) {
         case ADC_Enum::ADC_INVALID_MESURE:
             newState = state->adc_invalid_measure();
             break;
+        case ADC_Enum::ADC_CALIBRATE:
+            break;
+        case ADC_Enum::ADC_MESURE:
+            break;
+        case ADC_Enum::ADC_STOP:
+            newState = state->adc_w_not_detect();
+            break;
         default:
             break;
     }
     return newState;
 
 }
+
 
 template <typename T>
 State* Context<T>::handleCOM(int event_value) {
