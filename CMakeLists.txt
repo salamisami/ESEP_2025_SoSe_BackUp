@@ -1,30 +1,78 @@
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.16)
 project(Project VERSION 0.1.0 LANGUAGES CXX)
+
+# Options for development
+option(UNITY_BUILD "Enable unity builds for faster compilation" OFF)
+option(USE_SANITIZERS "Enable address sanitizers" ON)
 
 enable_testing()
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -DMOCK -DVERBOSE_STATES -fsanitize=address -fno-omit-frame-pointer -fno-inline")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -lpthread")
+if(UNITY_BUILD)
+    set(CMAKE_UNITY_BUILD ON)
+    set(CMAKE_UNITY_BUILD_BATCH_SIZE 10)
+endif()
 
-file(GLOB_RECURSE MAIN_SRC CONFIGURE_DEPENDS "src/*.cpp")
-file(GLOB_RECURSE MAIN_INC CONFIGURE_DEPENDS "inc/*.h")
+# Use file globbing carefully
+file(GLOB_RECURSE MAIN_SRC LIST_DIRECTORIES false CONFIGURE_DEPENDS "src/[A-Za-z]*.cpp")
+file(GLOB_RECURSE MAIN_INC LIST_DIRECTORIES false CONFIGURE_DEPENDS "inc/[A-Za-z]*.h")
 
-
-set (GLOB_INC_DIRS "")
-foreach (_headerFile ${MAIN_INC})
-    get_filename_component(_dir ${_headerFile} PATH)
-    list (APPEND GLOB_INC_DIRS ${_dir})
+# Get include directories
+set(GLOB_INC_DIRS "")
+foreach(_headerFile ${MAIN_INC})
+    get_filename_component(_dir ${_headerFile} DIRECTORY)
+    list(APPEND GLOB_INC_DIRS ${_dir})
 endforeach()
+list(REMOVE_DUPLICATES GLOB_INC_DIRS)
 
-list (REMOVE_DUPLICATES GLOB_INC_DIRS)
-include_directories(${GLOB_INC_DIRS})
-add_executable(Project main.cpp ${MAIN_SRC})
+# Create a library
+add_library(ProjectLib STATIC ${MAIN_SRC})
+target_include_directories(ProjectLib PUBLIC ${GLOB_INC_DIRS})
 
-# Find GTest
+add_compile_definitions(MOCK)
+add_compile_definitions(VERBOSE_STATES)
+
+# Executables
+add_executable(Project main.cpp)
+
+# Compiler options and definitions
+target_compile_options(Project PRIVATE 
+    $<$<COMPILE_LANGUAGE:CXX>:-Wall>
+)
+
+# Conditional optimizations
+if(USE_SANITIZERS)
+    target_compile_options(Project PRIVATE 
+        $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
+    )
+    target_link_options(Project PRIVATE -fsanitize=address)
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(Project PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-O2>)
+else()
+    target_compile_options(Project PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-O0 -g>)
+endif()
+
+# Precompiled headers (fixed duplicate <typeinfo>)
+target_precompile_headers(ProjectLib PRIVATE 
+    <vector>
+    <string>
+    <memory>
+    <deque>
+    <iostream>
+    <typeinfo>
+    <stack>
+    <cxxabi.h>
+    <cstdint>
+    <unordered_map>
+)
+
+
+target_link_libraries(Project PRIVATE ProjectLib pthread)
+
+# Tests
 find_package(GTest REQUIRED)
-include(GoogleTest)
-include_directories(${GLOB_INC_DIRS})
-add_executable(tests tests.cpp ${MAIN_SRC})
-target_link_libraries(tests PRIVATE GTest::GTest GTest::Main)
+add_executable(tests tests.cpp)
+target_link_libraries(tests PRIVATE ProjectLib GTest::GTest GTest::Main)
+target_precompile_headers(tests PRIVATE <gtest/gtest.h>)
 gtest_discover_tests(tests)

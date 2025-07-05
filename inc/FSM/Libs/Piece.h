@@ -15,7 +15,7 @@ public: //================================================ public functions ====
     int id = 0;
     PieceEnum type = PieceEnum::UNKNOWN;
     long sorting_time = 0;
-    PieceTracker piece_tracker;
+    DistanceTracker piece_tracker;
 };
 
 
