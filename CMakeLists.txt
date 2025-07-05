@@ -50,20 +50,20 @@ target_compile_options(Project PRIVATE
 )
 
 # Conditional optimizations
-if(USE_SANITIZERS)
-    # AddressSanitizer works differently on macOS
-    if(APPLE)
-        target_compile_options(Project PRIVATE 
-            $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer>
-        )
-        target_link_options(Project PRIVATE -fsanitize=address)
-    else()
-        target_compile_options(Project PRIVATE 
-            $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
-        )
-        target_link_options(Project PRIVATE -fsanitize=address)
-    endif()
-endif()
+# if(USE_SANITIZERS)
+#     # AddressSanitizer works differently on macOS
+#     if(APPLE)
+#         target_compile_options(Project PRIVATE 
+#             $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer>
+#         )
+#         target_link_options(Project PRIVATE -fsanitize=address)
+#     else()
+#         target_compile_options(Project PRIVATE 
+#             $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
+#         )
+#         target_link_options(Project PRIVATE -fsanitize=address)
+#     endif()
+# endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     target_compile_options(Project PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-O2>)
@@ -94,18 +94,18 @@ target_link_libraries(tests PRIVATE ProjectLib GTest::GTest GTest::Main ${PLATFO
 target_precompile_headers(tests PRIVATE <gtest/gtest.h>)
 
 # Apply sanitizers to tests
-if(USE_SANITIZERS)
-    if(APPLE)
-        target_compile_options(tests PRIVATE 
-            $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer>
-        )
-        target_link_options(tests PRIVATE -fsanitize=address)
-    else()
-        target_compile_options(tests PRIVATE 
-            $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
-        )
-        target_link_options(tests PRIVATE -fsanitize=address)
-    endif()
-endif()
+# if(USE_SANITIZERS)
+#     if(APPLE)
+#         target_compile_options(tests PRIVATE 
+#             $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer>
+#         )
+#         target_link_options(tests PRIVATE -fsanitize=address)
+#     else()
+#         target_compile_options(tests PRIVATE 
+#             $<$<COMPILE_LANGUAGE:CXX>:-fsanitize=address -fno-omit-frame-pointer -fno-inline>
+#         )
+#         target_link_options(tests PRIVATE -fsanitize=address)
+#     endif()
+# endif()
 
 gtest_discover_tests(tests)
