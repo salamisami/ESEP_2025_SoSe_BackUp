@@ -3,6 +3,7 @@
 #include "IdleMode.h"
 #include "Mock_PM.h"
 #include "MotorControl.h"
+#include "PieceControllerFBM1.h"
 #include "Event.h"
 #include "ModeHandler.h"
 #include "Timer.h"
@@ -74,6 +75,13 @@ class SubRealImplementationTesting : public LogicBaseTest<SortingOrder> {
 protected:
     void SetUp() override {
         LogicBaseTest<SortingOrder>::SetUp();
+    }
+};
+
+class PieceTrackingFBM1Setup : public LogicBaseTest<Start_PT1> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<Start_PT1>::SetUp();
     }
 };
 
@@ -625,6 +633,119 @@ TEST_F(MotorControlSetup, MotorControlEdgeCasesTest) {
     EXPECT_FALSE(data->workpieces); // No longer empty
     EXPECT_EQ(data->workpieceList.size(), 1);
 }
+
+// TEST_F(PieceControllerSetup, PieceTrackingFBM1){
+//     EXPECT_STATE("PieceTracking");
+//     //1. Test multiple new pieces.
+//     //new_piece should transition to PieceTracking
+//     remote_control->send_event((int) Internal_Enum::NEW_PIECE, 1);
+//     WAIT(10);
+//     EXPECT_STATE("PieceTracking");
+// }
+
+TEST_F(PieceTrackingFBM1Setup, FlatPieceSortoutFBM1) {
+    // Start state
+    EXPECT_STATE("Start_PT1");
+    
+    // Laser front unblocked
+    remote_control->send_event((int)InterruptEnum::LASER_FRONT_UNBLOCKED, 1);
+    EXPECT_STATE("StartADC_PT1");
+    
+    // After 100ms
+    WAIT(100);
+    EXPECT_STATE("ADC_PT1");
+    
+    // ADC detects new piece
+    remote_control->send_event((int8_t)ADC_Enum::ADC_NEW_PIECE, 1);
+    EXPECT_STATE("Measuring_PT1");
+    
+    // ADC detects flat piece
+    remote_control->send_event((int8_t)ADC_Enum::ADC_WF_DETECT, 1);
+    EXPECT_STATE("ADCGate_PT1");
+    
+    // After 100ms
+    WAIT(100);
+    // Should stay in ADCGate_PT1 as we need to check gate status
+    
+    // Sorting gate blocked (expected)
+    remote_control->send_event((int)InterruptEnum::LASER_SORTING_GATE_BLOCKED, 1);
+    EXPECT_STATE("Gate_PT1");
+    
+    // Check piece type (flat)
+    // This should trigger SORT_OUT transition
+    remote_control->send_event((int)Topic::CHECK_PIECE, (int)PieceEnum::FLAT);
+    EXPECT_STATE("SortingOut_PT1");
+    
+    // Laser ramp blocked (piece sorted out)
+    remote_control->send_event((int)InterruptEnum::LASER_RAMP_BLOCKED, 1);
+    // Should transition to end state
+}
+
+TEST_F(PieceTrackingFBM1Setup, PieceMissingAfterADC) {
+    EXPECT_STATE("Start_PT1");
+    
+    remote_control->send_event((int)InterruptEnum::LASER_FRONT_UNBLOCKED, 1);
+    EXPECT_STATE("StartADC_PT1");
+    
+    WAIT(100);
+    EXPECT_STATE("ADC_PT1");
+    
+    // ADC timeout occurs
+    remote_control->send_event((int8_t)ADC_Enum::ADC_TIMEOUT, 1);
+    EXPECT_STATE("PieceMissing_PT1");
+    
+    // Verify error handling and state reset
+    // Should transition to end state after handling
+}
+
+// TEST_F(PieceTrackingFBM1Setup, MetalPieceDetection) {
+//     EXPECT_STATE("Start_PT1");
+    
+//     remote_control->send_event((int)InterruptEnum::LASER_FRONT_UNBLOCKED, 1);
+//     EXPECT_STATE("StartADC_PT1");
+    
+//     WAIT(100);
+//     EXPECT_STATE("ADC_PT1");
+    
+//     remote_control->send_event((int8_t)ADC_Enum::ADC_NEW_PIECE, 1);
+//     EXPECT_STATE("Measuring_PT1");
+    
+//     // Metal detected
+//     remote_control->send_event((int8_t)ADC_Enum::ADC_WH_DETECT, 1);
+//     EXPECT_STATE("ADCGate_PT1");
+    
+//     WAIT(100);
+    
+//     // Metal detection confirmed
+//     remote_control->send_event((int)InterruptEnum::METAL_DETECTED, 1);
+//     EXPECT_STATE("IsMetal_PT1");
+    
+//     // Continue with sorting...
+// }
+
+// TEST_F(PieceTrackingFBM1Setup, TransferToFBM2Flow) {
+//     // ... (previous steps to reach Gate_PT1)
+    
+//     // Let through to FBM2
+//     remote_control->send_event((int)Internal_Enum::LET_THROUGH, 1);
+//     EXPECT_STATE("GateEnd_PT1");
+    
+//     // After 100ms
+//     WAIT(100);
+//     // Should check position
+    
+//     // Laser back blocked (expected)
+//     remote_control->send_event((int)InterruptEnum::LASER_BACK_BLOCKED, 1);
+//     EXPECT_STATE("PendingTransferRequest_PT1");
+    
+//     // FBM2 ready
+//     remote_control->send_event((int)COM_Enum::FBM_2_READY, 1);
+//     EXPECT_STATE("Transfer_PT1");
+    
+//     // Transfer done
+//     remote_control->send_event((int)COM_Enum::TRANSFER_DONE, 1);
+//     // Should reach end state
+// }
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
