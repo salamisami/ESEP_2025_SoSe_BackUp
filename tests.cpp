@@ -63,14 +63,14 @@ protected:
 };
 
 // Test fixture with Boot as initial state
-class RealImplementationTesting : public LogicBaseTest<Boot> {
+class RealImplementationSetup : public LogicBaseTest<Boot> {
 protected:
     void SetUp() override {
         LogicBaseTest<Boot>::SetUp();
     }
 };
 
-class SubRealImplementationTesting : public LogicBaseTest<SortingOrder> {
+class SortingOrderSetup : public LogicBaseTest<SortingOrder> {
 protected:
     void SetUp() override {
         LogicBaseTest<SortingOrder>::SetUp();
@@ -193,7 +193,7 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
     EXPECT_STATE("Green MotorDisable");
 }
 
-TEST_F(RealImplementationTesting, PutNewPiece){
+TEST_F(RealImplementationSetup, PutNewPiece){
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
 
@@ -227,7 +227,7 @@ TEST_F(RealImplementationTesting, PutNewPiece){
 }
 
 
-TEST_F(SubRealImplementationTesting, SortingOrderPositiveTest) {
+TEST_F(SortingOrderSetup, SortingOrderPositiveTest) {
     EXPECT_STATE("PieceFlat");
     data->is_ramp_full = false;
     remote_control->send_event((int8_t) Topic::CHECK_PIECE, (int) PieceEnum::FLAT);
@@ -241,7 +241,7 @@ TEST_F(SubRealImplementationTesting, SortingOrderPositiveTest) {
     EXPECT_STATE("PieceFlat");
 }
 
-TEST_F(SubRealImplementationTesting, SortingOrderNegativeTest) {
+TEST_F(SortingOrderSetup, SortingOrderNegativeTest) {
     //test PieceFlat
     EXPECT_STATE("PieceFlat");
     data->is_ramp_full = false;
@@ -274,7 +274,7 @@ TEST_F(SubRealImplementationTesting, SortingOrderNegativeTest) {
 /**
  * @brief enter service mode
  */
-// TEST_F(RealImplementationTesting, ServiceModeFullTest) {
+// TEST_F(RealImplementationSetup, ServiceModeFullTest) {
 //     //go to service mode
 //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
 //     WAIT(2100);
@@ -372,7 +372,7 @@ TEST_F(SubRealImplementationTesting, SortingOrderNegativeTest) {
 /**
  * @brief enter adc calibration mode, then estop
  */
-TEST_F(RealImplementationTesting, AdcCalibrationThenEstop) {
+TEST_F(RealImplementationSetup, AdcCalibrationThenEstop) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     WAIT(2100);
@@ -404,7 +404,7 @@ TEST_F(RealImplementationTesting, AdcCalibrationThenEstop) {
 /**
  * @brief enter operating mode, by pressing start button shortly
  */
-TEST_F(RealImplementationTesting, ShortTimerTest) {
+TEST_F(RealImplementationSetup, ShortTimerTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     EXPECT_STATE("WaitingIM");
@@ -416,7 +416,7 @@ TEST_F(RealImplementationTesting, ShortTimerTest) {
 /**
  * @brief enter adc calibration mode, by long pressing start button
  */
-TEST_F(RealImplementationTesting, LongTimerTest) {
+TEST_F(RealImplementationSetup, LongTimerTest) {
     //go to service mode
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     EXPECT_STATE("WaitingIM");

@@ -1,5 +1,5 @@
-#ifndef PIECETRACKER_H
-#define PIECETRACKER_H
+#ifndef DISTANCETRACKER_H
+#define DISTANCETRACKER_H
 #pragma once
 
 
@@ -44,10 +44,10 @@ enum class Area : uint8_t {
  */
 
 
-class PieceTracker {
+class DistanceTracker {
 public: //============================================ constructors & destructors ============================================
-	PieceTracker(bool debug = false);
-	virtual ~PieceTracker();
+	DistanceTracker(bool debug = false);
+	virtual ~DistanceTracker();
 
 
 public: //================================================ public functions ================================================

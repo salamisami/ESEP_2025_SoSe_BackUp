@@ -8,7 +8,7 @@
 #include "StateContainer.h"
 //#include "State.h"
 #include "Stopwatch.h"
-#include "PieceTracker.h"
+#include "DistanceTracker.h"
 #include "Piece.h"
 #include <vector>
 #include <stack>
@@ -43,7 +43,7 @@ public:
     int event_payload;
     Stopwatch stopwatch;
     TimeProfile timeprofile;
-    PieceTracker piece_tracker; // = PieceTracker(true);
+    DistanceTracker piece_tracker; // = DistanceTracker(true);
     std::stack<State*>* modehandler_history;
     std::stack<State*>* estop_history;
     
@@ -54,7 +54,7 @@ public:
     // PieceEnum ist_type = PieceEnum::UNKNOWN;
     // PieceEnum soll_type = PieceEnum::UNKNOWN;
     // long sorting_time = 0;
-    // PieceTracker* piece_tracker;
+    // DistanceTracker* piece_tracker;
 
 
     I_Sender* timer_sender;
@@ -64,7 +64,7 @@ public:
     //adc -> boot
     bool is_switch = false;
 
-    //rampStatus -> PieceTracker
+    //rampStatus -> DistanceTracker
     bool is_ramp_full = false;
 
     bool workpieces = false;
