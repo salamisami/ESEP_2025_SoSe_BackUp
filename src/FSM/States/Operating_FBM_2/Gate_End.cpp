@@ -19,6 +19,8 @@ Gate_End::~Gate_End() {}
 //===================================================== public functions =====================================================
 void Gate_End::entry(){
 	PRINT_STATE;
+
+  //TODO:TIMER 100 ms 
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -36,3 +38,25 @@ State* Gate_End::clone(){
 	//return new Gate_End(data, substates_clone()); //for OrthState
 	return new Gate_End(data);
 }
+State* Gate_End::request_transfer(){
+  data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
+  return nullptr;
+}
+State* Gate_End::timer(TIMER_ID id){
+
+	if(id == TIMER_ID::GATE_END){
+    //TODO:getPosition && get Area() false -> missing werkstück true-> selbstransition
+	}
+	return nullptr;
+}
+
+State* Gate_End::laser_back_blocked(){
+	auto piece = data->pieces_map->at(data->event_payload);
+	Area current_area = piece->piece_tracker.getArea();
+	int current_position = piece->piece_tracker.getPosition();
+  if(current_area == AREA::GATE_END){
+    return new End(Data);
+  }
+  return nullptr;
+}
+

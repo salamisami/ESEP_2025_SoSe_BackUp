@@ -3,6 +3,8 @@
 #pragma once
  
 #include "State.h"
+#include "PieceTracker.h"
+#include "End.h"
  
 class Gate_End : public State {
 public: //============================================ constructors & destructors ============================================
