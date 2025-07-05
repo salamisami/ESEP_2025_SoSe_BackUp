@@ -20,6 +20,8 @@ public: //================================================ public functions ====
 	State* laser_front_blocked() override;
 	State* timer(TIMER_ID id) override;
 
+	State* unblock_starting_area() override;
+
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
