@@ -229,10 +229,6 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::adc_w_not_detect);
     }
 
-    virtual State* adc_invalid_measure(){
-        return handle_event_using_function(&State::adc_invalid_measure);
-    }
-
     virtual State* com_button_estop_pressed() {
         return handle_event_using_function(&State::com_button_estop_pressed);
     }
@@ -320,12 +316,83 @@ public: //================================================ public functions ====
     virtual State* is_switch() {
         return handle_event_using_function(&State::is_switch);
     }
-
-    //================================================ error events ================================================
     
+    virtual State* sorting_out() {
+        return handle_event_using_function(&State::sorting_out);
+    }
+    virtual State* error_pieces_too_close_fixed() {
+        return handle_event_using_function(&State::error_pieces_too_close_fixed);
+    }
+    virtual State* unblock_starting_area() {
+        return handle_event_using_function(&State::unblock_starting_area);
+    }
+
+    // Neue COM States
+    virtual State* com_ramp_full() {
+        return handle_event_using_function(&State::com_ramp_full);
+    }
+    virtual State* com_ramp_not_full() {
+        return handle_event_using_function(&State::com_ramp_not_full);
+    }
+
+    // States für ErrorHandler
+    virtual State* error_c_lost_com() {
+        return handle_event_using_function(&State::error_c_lost_com);
+    }
+    virtual State* error_c_lost_nr() {
+        return handle_event_using_function(&State::error_c_lost_nr);
+    }
+    virtual State* error_c_lost_mqtt() {
+        return handle_event_using_function(&State::error_c_lost_mqtt);
+    }
+    virtual State* com_connected() {
+        return handle_event_using_function(&State::com_connected);
+    }
+    virtual State* mqtt_connected() {
+        return handle_event_using_function(&State::mqtt_connected);
+    }
+    virtual State* adc_invalid_measure() {
+        return handle_event_using_function(&State::adc_invalid_measure);
+    }
+    virtual State* cant_find_calb_conf() {
+        return handle_event_using_function(&State::cant_find_calb_conf);
+    }
+    virtual State* cant_find_rep_conf() {
+        return handle_event_using_function(&State::cant_find_rep_conf);
+    }
     virtual State* error_w_lost() {
         return handle_event_using_function(&State::error_w_lost);
     }
+    virtual State* error_w_appear() {
+        return handle_event_using_function(&State::error_w_appear);
+    }
+    virtual State* error_both_r_full() {
+        return handle_event_using_function(&State::error_both_r_full);
+    }
+    virtual State* com_error_resolved() {
+        return handle_event_using_function(&State::com_error_resolved);
+    }
+    virtual State* ramp_error_resolved() {
+        return handle_event_using_function(&State::ramp_error_resolved);
+    }
+    virtual State* mqtt_error_resolved() {
+        return handle_event_using_function(&State::mqtt_error_resolved);
+    }
+    virtual State* piece_appeared_resolved() {
+        return handle_event_using_function(&State::piece_appeared_resolved);
+    }
+    virtual State* piece_lost_resolved() {
+        return handle_event_using_function(&State::piece_lost_resolved);
+    }
+    virtual State* pieces_too_close() {
+        return handle_event_using_function(&State::pieces_too_close);
+    } 
+    virtual State* error_invalid_meassure_resolved(){
+      return handle_event_using_function(&State::error_invalid_meassure_resolved);
+    }
+
+
+
 
 
 

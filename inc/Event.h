@@ -75,12 +75,12 @@ enum class Topic : int8_t {
     STOP_THREAD,
     TIMER,
     INTERNAL,
+    ERROR,
     CHECK_PIECE,
     MOTOR_STOP_FSM,
     MOTOR_SLOW,
     MOTOR_FAST,
-    DELETE_W_MOTOR,
-    ERROR
+    DELETE_W_MOTOR
 };
 
 enum class Internal_Enum : int {
@@ -90,12 +90,14 @@ enum class Internal_Enum : int {
     RESET_TO_FLAT,
     RESET_TO_TALL,
     RESET_TO_TALL_W_METAL,
-    DELETE_W_MOTOR,
+    RAMP_FULL,
+    RAMP_NOT_FULL,
+    UNBLOCK_STARTING_AREA,
+    DELETE_W_MOTOR ,
     MOTOR_FAST,
     MOTOR_SLOW,
-    MOTOR_STOP_FSM,
-    NEW_PIECE,
-    UNBLOCK_STARTING_AREA
+    MOTOR_STOP_FSM
+
 };
 
 enum class COM_Enum : int {
@@ -146,6 +148,8 @@ enum class TIMER_ID : int {
     PUSHRAMP_STR,
     CAL_GATE_RAMP2,
     CAL_GATE_RAMP1,
+    RAMP_TIMER,
+    STARTING_AREA_TIMER,
     STARTADC_PT1,
     ADCGATE_PT1,
     SORTINGOUT_PT1,
@@ -161,6 +165,7 @@ enum class PieceEnum : int {
     TALL_WITH_METAL
 };
 
+
 enum class ScannedPiece : int {
     TALL,
     FLAT,
@@ -168,7 +173,22 @@ enum class ScannedPiece : int {
     UNKNOWN
 };
 enum class Error_Enum : int {
-    ERROR_W_LOST
+    ERROR_W_LOST=1,
+    ERROR_BOTH_R_FULL,
+    ERROR_C_LOST_NR,
+    ERROR_C_LOST_MQTT,
+    ERROR_C_LOST_COM,
+    ERROR_INVALID_MESURE,
+    CANT_FIND_CALB_CONF,
+    CANT_FIND_REP_CONF,
+    //NEUE ERROR STATES
+    COM_ERROR_RESOLVED,
+    RAMP_ERROR_RESOLVED,
+    MQTT_ERROR_RESOLVED,
+    PIECE_APPEARED_RESOLVED,
+    PIECE_LOST_RESOLVED,
+    PIECES_TOO_CLOSE,
+    ERROR_INVALID_MEASURE_RESOLVED
 };
 
 
