@@ -37,18 +37,31 @@ State *Fast::delete_w_motor()
 State *Fast::motor_slow()
 {
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON);
+    for (auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second;  // pair.second is the value (Piece*)
+    piece->piece_tracker.slow();               // Call fast() on the Piece*
+}
     updateData(MotorPieceState::SLOW);
+
     return new Slow(data);
 }
 State *Fast::motor_fast()
 {
   updateData(MotorPieceState::FAST);  
+    for (auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second;  // pair.second is the value (Piece*)
+    piece->piece_tracker.fast();               // Call fast() on the Piece*
+}
   return new Fast(data);
 }
 
 State *Fast::motor_stop_fsm()
 {
   updateData(MotorPieceState::STOPPED);
+    for (auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second;  // pair.second is the value (Piece*)
+    piece->piece_tracker.stop();               // Call fast() on the Piece*
+}
   data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
   return new Stop(data);
 }

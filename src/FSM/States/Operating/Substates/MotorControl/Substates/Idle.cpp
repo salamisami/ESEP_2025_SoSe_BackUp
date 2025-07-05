@@ -23,6 +23,10 @@ void Idle::exit(){
 
 State* Idle::motor_fast(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
+    for (auto& pair : *data->pieces_map) {
+      Piece* piece = pair.second;  // pair.second is the value (Piece*)
+      piece->piece_tracker.fast();               // Call fast() on the Piece*
+    }
     updateData(MotorPieceState::FAST);
     return new Fast(data);
 }
