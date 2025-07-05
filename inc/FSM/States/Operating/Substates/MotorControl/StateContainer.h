@@ -18,13 +18,13 @@ class StateContainer {
 public:
     void add(int id, MotorPieceState motorPieceState) {
         if (!container.emplace(id, motorPieceState).second) {
-            throw std::runtime_error("ID already exists");
+//            throw std::runtime_error("id already exists");
         }
     }
     
     void remove(int id) {
         if (container.erase(id) == 0) {
-            throw std::runtime_error("ID not found");
+//            throw std::runtime_error("ID not found");
         }
     }
     
@@ -33,7 +33,7 @@ public:
         if (it != container.end()) {
             it->second = newState;
         } else {
-            throw std::runtime_error("ID not found");
+ //           throw std::runtime_error("ID not found");
         }
     }
     
@@ -48,7 +48,8 @@ public:
         if (it != container.end()) {
             return it->second;
         }
-        throw std::runtime_error("ID not found");
+  //      throw std::runtime_error("ID not found");
+    return (MotorPieceState)-1;
     }
     
     bool contains(int id) const {

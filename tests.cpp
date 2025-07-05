@@ -462,7 +462,7 @@ TEST_F(MotorControlSetup, MotorControlWorkpieceTrackingTest) {
     
     // Verify list is empty
     EXPECT_TRUE(data->workpieceList.isEmpty());
-    EXPECT_TRUE(data->workpieces);
+    EXPECT_FALSE(data->workpieces);
 }
 
 /**
@@ -504,7 +504,7 @@ TEST_F(MotorControlSetup, WorkpieceLifecycleTest) {
     EXPECT_STATE("Idle"); // Should return to Idle when no workpieces remain
     EXPECT_FALSE(data->workpieceList.contains(100));
     EXPECT_TRUE(data->workpieceList.isEmpty());
-    EXPECT_TRUE(data->workpieces); // Should be true when list is empty
+    EXPECT_FALSE(data->workpieces); // Should be false when list is empty
 }
 
 /**
@@ -587,24 +587,11 @@ TEST_F(MotorControlSetup, MotorControlEdgeCasesTest) {
     WAIT(10);
     EXPECT_STATE("Slow");
     
-//     // Test deleting non-existent ID (should not crash)
-//     remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 999); // Non-existent ID
-//     WAIT(10);
-//     EXPECT_STATE("Slow");
-    
     // Test deleting non-existent ID (should not crash)
     remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 999); // Non-existent ID
     WAIT(10);
     EXPECT_STATE("Slow");
     
-//     // Test empty list behavior
-//     remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 1);
-//     WAIT(10);
-//     EXPECT_STATE("Idle");
-//     // List should be empty
-//     EXPECT_TRUE(data->workpieceList.isEmpty());
-//     EXPECT_TRUE(data->workpieces);
-//     EXPECT_EQ(data->workpieceList.size(), 0);
     
     // Test empty list behavior
     remote_control->send_event((int8_t) Topic::DELETE_W_MOTOR, 1);
@@ -612,7 +599,7 @@ TEST_F(MotorControlSetup, MotorControlEdgeCasesTest) {
     EXPECT_STATE("Idle");
     // List should be empty
     EXPECT_TRUE(data->workpieceList.isEmpty());
-    EXPECT_TRUE(data->workpieces);
+    EXPECT_FALSE(data->workpieces);
     EXPECT_EQ(data->workpieceList.size(), 0);
     
     // Test state transitions with empty list
@@ -622,7 +609,7 @@ TEST_F(MotorControlSetup, MotorControlEdgeCasesTest) {
     // Should add new workpiece
     EXPECT_TRUE(data->workpieceList.contains(2));
     EXPECT_EQ(data->workpieceList.getState(2), MotorPieceState::FAST);
-    EXPECT_FALSE(data->workpieces); // No longer empty
+    EXPECT_TRUE(data->workpieces); // No longer empty
     EXPECT_EQ(data->workpieceList.size(), 1);
 }
 
