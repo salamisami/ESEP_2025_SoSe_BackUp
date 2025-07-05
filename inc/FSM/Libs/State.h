@@ -289,6 +289,9 @@ public: //================================================ public functions ====
     }    
     virtual State* motor_stop_fsm(){
       return handle_event_using_function(&State::motor_stop_fsm);
+    }    
+    virtual State* error_invalid_meassure_resolved(){
+      return handle_event_using_function(&State::error_invalid_meassure_resolved);
     }
 
 

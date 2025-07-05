@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "MeasureFehlerUnquittiert.h"
 
 class ValidMeasure : public State {
 public: //============================================ constructors & destructors ============================================

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "ADCFrei.h"
 
 class MeasureFehlerQuittiert : public State {
 public: //============================================ constructors & destructors ============================================
@@ -14,7 +15,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
-	State* adc_top_area_blocked() override;
+	State* adc_top_area_unblocked() override;
     
 
 

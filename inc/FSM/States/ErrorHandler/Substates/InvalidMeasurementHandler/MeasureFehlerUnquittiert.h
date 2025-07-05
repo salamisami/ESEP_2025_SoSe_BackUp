@@ -3,6 +3,8 @@
 #pragma once
 
 #include "State.h"
+#include "MeasureFehlerQuittiert.h"
+#include "ADCFreiUnquittiert.h"
 
 class MeasureFehlerUnquittiert : public State {
 public: //============================================ constructors & destructors ============================================

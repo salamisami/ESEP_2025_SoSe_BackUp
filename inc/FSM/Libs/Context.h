@@ -232,6 +232,9 @@ State* Context<T>::handleError(int event_value) {
         case Error::PIECES_TOO_CLOSE:
             newState = state->pieces_too_close();
             break;
+        case Error::ERROR_INVALID_MEASURE_RESOLVED:
+            newState = state->error_invalid_meassure_resolved();
+            break;
         default:
             break;
     }

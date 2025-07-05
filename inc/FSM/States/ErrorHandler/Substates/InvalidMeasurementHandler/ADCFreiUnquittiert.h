@@ -3,6 +3,7 @@
 #pragma once
 
 #include "State.h"
+#include "ValidMeasure.h"
 
 class ADCFreiUnquittiert : public State {
 public: //============================================ constructors & destructors ============================================
