@@ -9,6 +9,8 @@
 #include "MotorControl.h"
 #include "PieceControllerFBM1.h"
 #include "SortingOrder.h"
+#include "StartingAreaTracker.h"
+#include "ErrorHandler.h"
 
 class Operating : public OrthState {
 //============================================ constructors & destructors ============================================
