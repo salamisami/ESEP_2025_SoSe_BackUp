@@ -51,11 +51,6 @@ public:
         }
     }
 
-    //TODO make virtual
-    virtual State* clone() override {
-        DEBUG("Warning, function of abstract class OrthState::clone() is called.");
-        return nullptr;
-    }
 
     /**
      * @brief adds one substate to run parallel among with other existing substates. This function will also call the entry() of the new added substate.
@@ -73,6 +68,11 @@ public:
     }
 
     virtual std::string get_current_state() override {
+        if(substates.empty()) {
+            const char* state_name = typeid(*this).name();
+            return demangle(state_name);
+        }
+        
         std::string appended_string;
         bool first = true; // To avoid leading space
         for(auto& current_substate : substates) {
@@ -125,7 +125,7 @@ protected:
     virtual State* handle_event_using_function(State* (State::* handler_function)()) override {
         for(auto it = substates.begin(); it != substates.end(); ) {
             State*& current_substate = *it;  // Use reference to pointer
-            
+
             State* newSubstate = (current_substate->*handler_function)();
 
             if(newSubstate == State::EXIT_STATE) {

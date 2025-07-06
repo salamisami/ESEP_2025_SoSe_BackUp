@@ -1,9 +1,8 @@
 #include "Timer.h"
 #include "Context.h"
-#include "IdleMode.h"
 #include "Mock_PM.h"
 #include "Event.h"
-#include "ModeHandler.h"
+#include "Modehandler.h"
 
 #include "Timer.h"
 #include "Logic.h"
@@ -15,6 +14,8 @@
 #define ONE_MILLISECOND 1000
 
 using namespace std;
+
+
 
 
 
@@ -49,7 +50,7 @@ int main() {
 
 
 
-    auto logic = new Logic<SimulatePiece>(logic_receiver, logic_sender, to_self_sender);
+    auto logic = new Logic<SimulatePiece>(logic_receiver, to_self_sender);
     //boot
     WAIT(500);
     //remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
