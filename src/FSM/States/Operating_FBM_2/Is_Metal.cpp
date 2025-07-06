@@ -19,6 +19,7 @@ Is_Metal::~Is_Metal() {}
 //===================================================== public functions =====================================================
 void Is_Metal::entry(){
 	PRINT_STATE;
+  data->piece_FBM2_measured.type= PieceEnum::TALL_WITH_METAL;
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -38,27 +39,41 @@ State* Is_Metal::clone(){
 }
 
 State* Is_Metal::request_transfer() {
-
+  data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
+  return nullptr;
   }
 
   State* Is_Metal::laser_sorting_gate_blocked() {
+if (data->piece_FBM2->pieceTracker.get_Position() >= WAY_TO_AREA 
+            && data->piece_FBM2->pieceTracker.getArea() == Area::GATE_END) {
+			return new Gate(data);
+		} else {
+			return new PieceAppeared(data);
+		}
 
   }
 
-  State* Is_Metal::timer() {
-
+  State* Is_Metal::timer(TIMER ID id) {
+if (id==TIMER_ID::IS_METAL){
+  if (data->piece_FBM2->pieceTracker.get_Position() >= WAY_TO_AREA 
+      && data->piece_FBM2->pieceTracker.getArea() == Area::GATE) {
+			data->timer->start_timer(100,TIMER_ID::IS_METAL);
+		} else {
+			return new Piece_Missing(data);
+		}
+return nullptr;
   }
 
   State* Is_Metal::laser_ramp_blocked() {
-
+    return new PieceAppeared(data); 
   }
 
   State* Is_Metal::laser_back_blocked() {
-
+    return new PieceAppeared(data);
   }
 
   State* Is_Metal::laser_front_blocked() {
-
+    return new PieceAppeared(data);
   }
 
 /
