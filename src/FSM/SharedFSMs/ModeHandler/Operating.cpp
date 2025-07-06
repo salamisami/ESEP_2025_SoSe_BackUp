@@ -8,10 +8,6 @@ Operating::Operating(ContextData* data): OrthState(data, {new PseudoState(data)}
 #ifdef FBM2
 Operating::Operating(ContextData* data): OrthState(data, {new PseudoState(data)}) {
 }
-
-#else
-Operating::Operating(ContextData* data) : OrthState(data, {new PseudoState(data)}){
-}
 #endif
 #endif
 

@@ -12,14 +12,14 @@
 #include "ContextData.h"
 #include "Boot.h"
 
-class Fsm2 : public OrthState{
+class Fsm : public OrthState{
 public:
 	void entry() override;
 	void exit() override;
 
-	Fsm2(ContextData* data) : OrthState(data,{new Boot(data)}){};
-	Fsm2(ContextData* data, std::vector<State*> initial_substates) : OrthState(data, initial_substates){};
-	virtual ~Fsm2();
+	Fsm(ContextData* data) : OrthState(data,{new Boot(data)}){};
+	Fsm(ContextData* data, std::vector<State*> initial_substates) : OrthState(data, initial_substates){};
+	virtual ~Fsm();
 };
 
 #endif /* SRC_FSM2_FSM2_H_ */
