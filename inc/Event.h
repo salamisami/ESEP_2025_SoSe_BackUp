@@ -75,12 +75,12 @@ enum class Topic : int8_t {
     STOP_THREAD,
     TIMER,
     INTERNAL,
+    ERROR,
     CHECK_PIECE,
     MOTOR_STOP_FSM,
     MOTOR_SLOW,
     MOTOR_FAST,
-    DELETE_W_MOTOR,
-    ERROR
+    DELETE_W_MOTOR
 };
 
 enum class Internal_Enum : int {
@@ -90,18 +90,29 @@ enum class Internal_Enum : int {
     RESET_TO_FLAT,
     RESET_TO_TALL,
     RESET_TO_TALL_W_METAL,
-    DELETE_W_MOTOR,
-    MOTOR_FAST,
-    MOTOR_SLOW,
-    MOTOR_STOP_FSM,
+    UNBLOCK_STARTING_AREA,
     NEW_PIECE,
-    UNBLOCK_STARTING_AREA
+    RAMP_FULL,
+    RAMP_NOT_FULL
+};
+
+enum class ADC_Enum : int {
+    ADC_WH_DETECT = 0xFFA0,
+    ADC_WF_DETECT,
+    ADC_W_B_DETECT,
+    ADC_W_NOT_DETECT,
+    ADC_CALIBRATE,
+    ADC_MESURE,
+    ADC_INVALID_MESURE,
+    ADC_CALIBRATION_DONE,
+    ADC_STOP,
+    ADC_RESET,
+    ADC_NEW_PIECE,
+    ADC_TIMEOUT
 };
 
 enum class COM_Enum : int {
-    NEW_PIECE_TO_SORT = 1,
-    NEW_PIECE_NOT_TO_SORT,
-    BUTTON_ESTOP_PRESSED,
+    BUTTON_ESTOP_PRESSED = 1,
     BUTTON_ESTOP_RELEASED,
     HEARTBEAT,
     TIMEOUT_COM,
@@ -119,23 +130,13 @@ enum class COM_Enum : int {
     TRANSFER_START_TALL,
     TRANSFER_START_TALL_W_METAL,
     TRANSFER_START_FLAT,
-    TRANSFER_START_OTHER
+    TRANSFER_START_OTHER,
+    COM_CONNECTED,
+    BUTTON_RESET_PRESSED,
+    COM_MQTT_CONNECTED,
+    COM_MQTT_DISCONNECTED
 };
 
-enum class ADC_Enum : int {
-    ADC_WH_DETECT = 0xFFA0,
-    ADC_WF_DETECT,
-    ADC_W_B_DETECT,
-    ADC_W_NOT_DETECT,
-    ADC_CALIBRATE,
-    ADC_MESURE,
-    ADC_INVALID_MESURE,
-    ADC_CALIBRATION_DONE,
-    ADC_PREPARE,
-    ADC_NEW_PIECE,
-    ADC_STOP,
-    ADC_TIMEOUT
-};
 
 
 
@@ -146,6 +147,8 @@ enum class TIMER_ID : int {
     PUSHRAMP_STR,
     CAL_GATE_RAMP2,
     CAL_GATE_RAMP1,
+    RAMP_TIMER,
+    STARTING_AREA_TIMER,
     STARTADC_PT1,
     ADCGATE_PT1,
     SORTINGOUT_PT1,
@@ -161,6 +164,7 @@ enum class PieceEnum : int {
     TALL_WITH_METAL
 };
 
+
 enum class ScannedPiece : int {
     TALL,
     FLAT,
@@ -168,10 +172,23 @@ enum class ScannedPiece : int {
     UNKNOWN
 };
 enum class Error_Enum : int {
-    ERROR_W_LOST
+    ERROR_W_LOST=1,
+    ERROR_BOTH_R_FULL,
+    ERROR_C_LOST_NR,
+    ERROR_C_LOST_MQTT,
+    ERROR_C_LOST_COM,
+    ERROR_INVALID_MESURE,
+    CANT_FIND_CALB_CONF,
+    CANT_FIND_REP_CONF,
+    //NEUE ERROR STATES
+    COM_ERROR_RESOLVED,
+    RAMP_ERROR_RESOLVED,
+    MQTT_ERROR_RESOLVED,
+    PIECE_APPEARED_RESOLVED,
+    PIECE_LOST_RESOLVED,
+    PIECES_TOO_CLOSE,
+    ERROR_INVALID_MEASURE_RESOLVED
 };
-
-
 
 
 #endif
