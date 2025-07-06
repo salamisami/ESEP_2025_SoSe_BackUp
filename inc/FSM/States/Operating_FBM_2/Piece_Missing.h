@@ -18,7 +18,7 @@ public: //================================================ public functions ====
 	State* clone() override;
 
 	State* request_transfer() override;
-	State* error_w_lost_fixed() override;
+	State* piece_lost_resolved() override;
 
  
  

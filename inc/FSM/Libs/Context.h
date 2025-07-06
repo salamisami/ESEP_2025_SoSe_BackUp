@@ -356,13 +356,13 @@ State* Context<T>::handleError(int event_value) {
             newState = state->error_w_lost();
             break;
         case Error_Enum::ERROR_W_APPEARED:
-            newState = state->error_w_appeared();
+            newState = state->error_w_appear();
             break;
         case Error_Enum::PIECE_APPEARED_RESOLVED,
-            newState = state->error_w_appeared_fixed()
+            newState = state->piece_appeared_resolved()
             break;
         case Error_Enum::ERROR_W_LOST_RESOLVED:
-            newState = state->error_w_lost_fixed();
+            newState = state->piece_lost_resolved() ;
             break;
         default:
             break;

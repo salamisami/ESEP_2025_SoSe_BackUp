@@ -38,6 +38,6 @@ State* PieceAppeared::clone(){
 	return new PieceAppeared(data);
 }
 
-State*  PieceAppeared::error_w_appeared_fixed(){
+State*  PieceAppeared::piece_appeared_resolved(){
 	return new ReadyForPiece(data);
 }
