@@ -24,22 +24,17 @@ public: //================================================ public functions ====
     /**
      * @brief Enters the state. This function must be overidden by the child state.
      */
-    virtual void entry() {
-        DEBUG("Warning, function of abstract class entry() is called.");
-    }
+    virtual void entry() = 0;
     /**
      * @brief Exits the state. This function must be overidden by the child state.
      */
-    virtual void exit() {
-        DEBUG("Warning, function of abstract class exit() is called.");
-    }
+    virtual void exit() = 0;
     /**
      * @brief Clones the current state.
      * @return Cloned state, which is already allocated to heap
      */
     virtual State* clone() {
-        DEBUG("Warning, function of abstract class State::clone() is called.");
-        return nullptr;
+        throw std::runtime_error("Error, the clone of following state is called due to history, but not implemented: " + get_current_state());
     }
     /**
      * @brief Returns the name of the current state.
@@ -57,7 +52,7 @@ public: //================================================ public functions ====
 
     static State* EXIT_STATE;
 
-    virtual State* new_piece(){
+    virtual State* new_piece() {
         return handle_event_using_function(&State::new_piece);
     }
 
@@ -194,11 +189,11 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::laser_ramp_unblocked);
     }
 
-    virtual State* adc_new_piece(){
+    virtual State* adc_new_piece() {
         return handle_event_using_function(&State::adc_new_piece);
     }
 
-    virtual State* adc_timeout(){
+    virtual State* adc_timeout() {
         return handle_event_using_function(&State::adc_timeout);
     }
 
@@ -218,11 +213,11 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::adc_side_area_unblocked);
     }
 
-    virtual State* adc_wh_detect(){
+    virtual State* adc_wh_detect() {
         return handle_event_using_function(&State::adc_wh_detect);
     }
 
-    virtual State* adc_wf_detect(){
+    virtual State* adc_wf_detect() {
         return handle_event_using_function(&State::adc_wf_detect);
     }
 
@@ -230,7 +225,7 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::adc_w_b_detect);
     }
 
-    virtual State* adc_w_not_detect(){
+    virtual State* adc_w_not_detect() {
         return handle_event_using_function(&State::adc_w_not_detect);
     }
 
@@ -244,14 +239,6 @@ public: //================================================ public functions ====
 
     virtual State* com_button_reset_pressed() {
         return handle_event_using_function(&State::com_button_reset_pressed);
-    }
-
-    virtual State* new_piece_to_sort() {
-        return handle_event_using_function(&State::new_piece_to_sort);
-    }
-
-    virtual State* new_piece_not_to_sort() {
-        return handle_event_using_function(&State::new_piece_not_to_sort);
     }
 
     virtual State* heartbeat() {
@@ -330,7 +317,7 @@ public: //================================================ public functions ====
     virtual State* is_switch() {
         return handle_event_using_function(&State::is_switch);
     }
-    
+
     virtual State* sorting_out() {
         return handle_event_using_function(&State::sorting_out);
     }
@@ -349,6 +336,13 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::com_ramp_not_full);
     }
 
+    virtual State* com_mqtt_connected() {
+        return handle_event_using_function(&State::com_mqtt_connected);
+    }
+
+    virtual State* com_mqtt_disconnected() {
+        return handle_event_using_function(&State::com_mqtt_disconnected);
+    }
     // States für ErrorHandler
     virtual State* error_c_lost_com() {
         return handle_event_using_function(&State::error_c_lost_com);
@@ -400,10 +394,27 @@ public: //================================================ public functions ====
     }
     virtual State* pieces_too_close() {
         return handle_event_using_function(&State::pieces_too_close);
-    } 
-    virtual State* error_invalid_meassure_resolved(){
-      return handle_event_using_function(&State::error_invalid_meassure_resolved);
     }
+    virtual State* error_invalid_meassure_resolved() {
+        return handle_event_using_function(&State::error_invalid_meassure_resolved);
+    }
+
+    virtual State* error_c_lost_mqtt_fixed() {
+        return handle_event_using_function(&State::error_c_lost_mqtt_fixed);
+    }
+
+    virtual State* error_c_lost_com_fixed() {
+        return handle_event_using_function(&State::error_c_lost_com_fixed);
+    }
+
+    virtual State* sorted() {
+        return handle_event_using_function(&State::sorted);
+    }
+
+    virtual State* remote_stop() {
+        return handle_event_using_function(&State::remote_stop);
+    }
+
 
 
     //Fehlende States für Operating_FBM_2 
@@ -441,9 +452,6 @@ protected: //================================================ protected ========
         return nullptr;
     }
 
-
-
-private: //================================================ private functions ================================================
     std::string demangle(const char* mangled) {
         int status;
         char* demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
@@ -451,6 +459,11 @@ private: //================================================ private functions ==
         free(demangled);
         return result;
     }
+
+
+
+private: //================================================ private functions ================================================
+
 
 };
 

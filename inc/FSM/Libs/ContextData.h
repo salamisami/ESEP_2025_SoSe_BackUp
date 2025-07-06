@@ -8,7 +8,7 @@
 #include "StateContainer.h"
 //#include "State.h"
 #include "Stopwatch.h"
-#include "PieceTracker.h"
+#include "DistanceTracker.h"
 #include "Piece.h"
 #include <vector>
 #include <stack>
@@ -28,9 +28,8 @@ public:
     /**
      * @brief Creates a context data by injecting the sender interface
      * @param sender to send events out
-     * @param to_self_sender to send events to self
      */
-    ContextData(I_Sender* sender, I_Sender* to_self_sender);
+    ContextData(I_Sender* sender);
     ContextData();
     virtual ~ContextData();
 
@@ -39,15 +38,15 @@ public:
 
 
 
-//================================================ private variables ================================================
+    //================================================ private variables ================================================
 public:
     int event_payload;
     Stopwatch stopwatch;
     TimeProfile timeprofile;
-    PieceTracker piece_tracker; // = PieceTracker(true);
+    DistanceTracker piece_tracker; // = DistanceTracker(true);
     std::stack<State*>* modehandler_history;
     std::stack<State*>* estop_history;
-    
+
     std::unordered_map<int, Piece*>* pieces_map;
     int available_id = 0;
     Piece* piece_FBM2 = nullptr;
@@ -57,7 +56,7 @@ public:
     // PieceEnum ist_type = PieceEnum::UNKNOWN;
     // PieceEnum soll_type = PieceEnum::UNKNOWN;
     // long sorting_time = 0;
-    // PieceTracker* piece_tracker;
+    // DistanceTracker* piece_tracker;
 
 
     I_Sender* timer_sender;
@@ -67,12 +66,14 @@ public:
     //adc -> boot
     bool is_switch = false;
 
-    //rampStatus -> PieceTracker
+    //rampStatus -> DistanceTracker
     bool is_ramp_full = false;
 
     bool workpieces = false;
     bool motor_slowed = false;
     bool motor_stopped = false;
+    bool no_error_or_warning = false;
+    bool is_estop = false;
     StateContainer workpieceList;
 
     //PieceTrack -> PieceTrack
