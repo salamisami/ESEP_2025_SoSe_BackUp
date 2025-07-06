@@ -51,11 +51,6 @@ public:
         }
     }
 
-    //TODO make virtual
-    virtual State* clone() override {
-        DEBUG("Warning, function of abstract class OrthState::clone() is called.");
-        return nullptr;
-    }
 
     /**
      * @brief adds one substate to run parallel among with other existing substates. This function will also call the entry() of the new added substate.

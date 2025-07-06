@@ -38,3 +38,36 @@
 #define PIECE_TRANSITION_TOLERANCE 25
 #define TIMESTAMP_FACTOR 1
 #define DEADLINE_FACTOR 1.1
+
+#define FBM_1
+// Configuration for FBM Module 1
+#ifdef FBM_1
+	#define FBM					1
+	#define FBM_N_HAL       	"Hal_1"
+	#define FBM_N_FSM       	"Fsm_1"
+	#define FBM_N_COM       	"Com_1"
+	#define FBM_N_COM_EXT		"Com_2"
+	#define FBM_N_COM_RECEIVER	"Com_receiver_1"
+	#define FBM_N_RECORDER  	"Rec_1"
+	#define FBM_N_REMOTE    	"Rem_1"
+	#define FBM_N_DISPATCHER 	"Dis_1"
+	#define RECEIVE_TOPIC		"festo/anlage1/status/"
+	#define COMMAND_TOPIC		"festo/anlage1/command"
+	#define MQTT_CLIENT			"Festo_FBM1"
+#endif
+
+#ifdef FBM_2
+	// Default to FBM Module 2
+	#define FBM					2
+	#define FBM_N_HAL       	"Hal_2"
+	#define FBM_N_FSM       	"Fsm_2"
+	#define FBM_N_COM       	"Com_2"
+	#define FBM_N_COM_EXT		"Com_1"
+	#define FBM_N_COM_RECEIVER 	"Com_receiver_2"
+	#define FBM_N_RECORDER  	"Rec_2"
+	#define FBM_N_REMOTE   		"Rem_2"
+	#define FBM_N_DISPATCHER 	"Dis_2"
+	#define RECEIVE_TOPIC		"festo/anlage2/status/"
+	#define COMMAND_TOPIC		"festo/anlage2/command"
+	#define MQTT_CLIENT			"Festo_FBM2"
+#endif

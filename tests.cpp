@@ -1,14 +1,14 @@
 #include "Timer.h"
 #include "Context.h"
-#include "IdleMode.h"
 #include "Mock_PM.h"
 #include "MotorControl.h"
 #include "Event.h"
-#include "ModeHandler.h"
+#include "Modehandler.h"
 #include "Timer.h"
 #include "Logic.h"
 #include "SortingOrder.h"
 #include "SimulatePiece.h"
+#include "IdleMock.h"
 #include <gtest/gtest.h>
 
 #define EXPECT_STATE(expected_state) \

@@ -25,3 +25,7 @@ void SlowTemp::exit(){
 State* SlowTemp::button_reset_released(){
 	return new FastTemp(data);
 }
+
+State* SlowTemp::clone() {
+	return new SlowTemp(data);
+}
