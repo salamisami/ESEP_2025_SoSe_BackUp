@@ -9,6 +9,14 @@
 #include "Logic.h"
 #include "SortingOrder.h"
 #include "SimulatePiece.h"
+#include "CalibNoWarning.h"
+#include "COMNoError.h"
+#include "ValidMeasure.h"
+#include "MQTTNoError.h"
+#include "PieceAppearedNoError.h"
+#include "PieceLostNoError.h"
+#include "RampNoError.h"
+#include "ReplayNoWarning.h"
 #include <gtest/gtest.h>
 
 #define EXPECT_STATE(expected_state) \
@@ -124,6 +132,63 @@ protected:
         
         // Call base class setup
         LogicBaseTest<SimulatePiece>::SetUp();
+    }
+};
+
+//Tests-Setups für ErrorHandler
+class CalibrationFileWarningHandlerSetup : public LogicBaseTest<CalibNoWarning> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<CalibNoWarning>::SetUp();
+    }
+};
+
+class COMErrorHandlerSetup : public LogicBaseTest<COMNoError> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<COMNoError>::SetUp();
+    }
+};
+
+class InvalidMeasurementHandlerSetup : public LogicBaseTest<ValidMeasure> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<ValidMeasure>::SetUp();
+    }
+};
+
+class MQTTErrorHandlerSetup : public LogicBaseTest<MQTTNoError> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<MQTTNoError>::SetUp();
+    }
+};
+
+class PieceAppearedHandlerSetup : public LogicBaseTest<PieceAppearedNoError> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<PieceAppearedNoError>::SetUp();
+    }
+};
+
+class PieceLostHandlerSetup : public LogicBaseTest<PieceLostNoError> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<PieceLostNoError>::SetUp();
+    }
+};
+
+class RampErrorHandlerSetup : public LogicBaseTest<RampNoError> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<RampNoError>::SetUp();
+    }
+}; 
+
+class ReplayFileWarningHandlerSetup : public LogicBaseTest<ReplayNoWarning> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<ReplayNoWarning>::SetUp();
     }
 };
 
@@ -661,6 +726,19 @@ TEST_F(MotorControlSetup, MotorControlEdgeCasesTest) {
     EXPECT_EQ(data->workpieceList.getState(2), MotorPieceState::FAST);
     EXPECT_TRUE(data->workpieces); // No longer empty
     EXPECT_EQ(data->workpieceList.size(), 1);
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "CalibrationFileWarningHandler"
+ */
+TEST_F(CalibrationFileWarningHandlerSetup, LongTimerTest) {
+    //go to service mode
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    EXPECT_STATE("WaitingIM");
+    WAIT(5000);
+    EXPECT_STATE("TimerReceivedIM");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE("IdleSM");
 }
 
 int main(int argc, char** argv) {
