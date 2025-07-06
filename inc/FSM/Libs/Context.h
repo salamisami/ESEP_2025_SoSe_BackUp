@@ -88,6 +88,7 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::UNBLOCK_STARTING_AREA:
             newState = state->unblock_starting_area();
             break;
+        case Internal_Enum::REMOTE_STOP
         default:
             break;
     }

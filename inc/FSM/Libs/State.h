@@ -33,7 +33,9 @@ public: //================================================ public functions ====
      * @brief Clones the current state.
      * @return Cloned state, which is already allocated to heap
      */
-    virtual State* clone() = 0;
+    virtual State* clone() {
+        throw std::runtime_error("Error, the clone of following state is called due to history, but not implemented: " + get_current_state());
+    }
     /**
      * @brief Returns the name of the current state.
      * @return The name of current state as string
@@ -50,7 +52,7 @@ public: //================================================ public functions ====
 
     static State* EXIT_STATE;
 
-    virtual State* new_piece(){
+    virtual State* new_piece() {
         return handle_event_using_function(&State::new_piece);
     }
 
@@ -182,11 +184,11 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::laser_ramp_unblocked);
     }
 
-    virtual State* adc_new_piece(){
+    virtual State* adc_new_piece() {
         return handle_event_using_function(&State::adc_new_piece);
     }
 
-    virtual State* adc_timeout(){
+    virtual State* adc_timeout() {
         return handle_event_using_function(&State::adc_timeout);
     }
 
@@ -206,19 +208,19 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::adc_side_area_unblocked);
     }
 
-    virtual State* adc_wh_detect(){
+    virtual State* adc_wh_detect() {
         return handle_event_using_function(&State::adc_wh_detect);
     }
 
-    virtual State* adc_wf_detect(){
+    virtual State* adc_wf_detect() {
         return handle_event_using_function(&State::adc_wf_detect);
     }
 
-    virtual State* adc_wb_detect(){
+    virtual State* adc_wb_detect() {
         return handle_event_using_function(&State::adc_wb_detect);
     }
 
-    virtual State* adc_w_not_detect(){
+    virtual State* adc_w_not_detect() {
         return handle_event_using_function(&State::adc_w_not_detect);
     }
 
@@ -301,7 +303,7 @@ public: //================================================ public functions ====
     virtual State* is_switch() {
         return handle_event_using_function(&State::is_switch);
     }
-    
+
     virtual State* sorting_out() {
         return handle_event_using_function(&State::sorting_out);
     }
@@ -319,7 +321,7 @@ public: //================================================ public functions ====
     virtual State* com_ramp_not_full() {
         return handle_event_using_function(&State::com_ramp_not_full);
     }
-    
+
     virtual State* com_mqtt_connected() {
         return handle_event_using_function(&State::com_mqtt_connected);
     }
@@ -378,10 +380,27 @@ public: //================================================ public functions ====
     }
     virtual State* pieces_too_close() {
         return handle_event_using_function(&State::pieces_too_close);
-    } 
-    virtual State* error_invalid_meassure_resolved(){
-      return handle_event_using_function(&State::error_invalid_meassure_resolved);
     }
+    virtual State* error_invalid_meassure_resolved() {
+        return handle_event_using_function(&State::error_invalid_meassure_resolved);
+    }
+
+    virtual State* error_c_lost_mqtt_fixed() {
+        return handle_event_using_function(&State::error_c_lost_mqtt_fixed);
+    }
+
+    virtual State* error_c_lost_com_fixed() {
+        return handle_event_using_function(&State::error_c_lost_com_fixed);
+    }
+
+    virtual State* sorted() {
+        return handle_event_using_function(&State::sorted);
+    }
+
+    virtual State* remote_stop() {
+        return handle_event_using_function(&State::remote_stop);
+    }
+
 
 
 
@@ -410,7 +429,7 @@ protected: //================================================ protected ========
 
 
 private: //================================================ private functions ================================================
-    
+
 
 };
 

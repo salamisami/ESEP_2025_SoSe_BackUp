@@ -38,7 +38,7 @@ public:
 
 
 
-//================================================ private variables ================================================
+    //================================================ private variables ================================================
 public:
     int event_payload;
     Stopwatch stopwatch;
@@ -46,10 +46,10 @@ public:
     DistanceTracker piece_tracker; // = DistanceTracker(true);
     std::stack<State*>* modehandler_history;
     std::stack<State*>* estop_history;
-    
+
     std::unordered_map<int, Piece*>* pieces_map;
     int available_id = 0;
-    
+
     // int piece_id = 0;
     // PieceEnum ist_type = PieceEnum::UNKNOWN;
     // PieceEnum soll_type = PieceEnum::UNKNOWN;
@@ -70,6 +70,8 @@ public:
     bool workpieces = false;
     bool motor_slowed = false;
     bool motor_stopped = false;
+    bool no_error_or_warning = false;
+    bool is_estop = false;
     StateContainer workpieceList;
 
     //PieceTrack -> PieceTrack
