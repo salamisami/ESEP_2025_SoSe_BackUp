@@ -45,9 +45,30 @@ State* Gate_End::request_transfer(){
 State* Gate_End::timer(TIMER_ID id){
 
 	if(id == TIMER_ID::GATE_END){
-    //TODO:getPosition && get Area() false -> missing werkstück true-> selbstransition
+	  auto piece = data->pieces_map->at(data->event_payload);
+	  Area current_area = piece->piece_tracker.getArea();
+	  int current_position = piece->piece_tracker.getPosition();
+    if(current_area == AREA::GATE_END){
+	    data->timer->start_timer(100, TIMER_ID::GATE_END);
+    }
+    /*TODO:After Distrance Tracker/Piece tracker patch 
+    else if(current_area == AREA::UNKNOWN){
+      return new Piece_Missing(data);
+    }*/
 	}
 	return nullptr;
+}
+
+State* Gate_End::laser_front_blocked(){
+  return new PieceAppeared(data);
+}
+
+State* Gate_End::laser_sorting_gate_blocked(){
+  return new PieceAppeared(data);
+}
+
+State* Gate_End::laser_ramp_blocked(){
+  return new PieceAppeared(data);
 }
 
 State* Gate_End::laser_back_blocked(){
