@@ -24,9 +24,8 @@ PieceEnum Gate_PT1::validate_piece(const ScannedPiece& scanned_piece, const bool
 			case ScannedPiece::FLAT:
 				predicted_piece = PieceEnum::FLAT;
 				break;
-			case ScannedPiece::TALL:
+			case ScannedPiece::HOLE:
 				predicted_piece = PieceEnum::TALL;
-				break;
 			default:
 				break;
 		}
