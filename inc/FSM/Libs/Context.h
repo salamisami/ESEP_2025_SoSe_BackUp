@@ -362,7 +362,11 @@ State* Context<T>::handleError(int event_value) {
             newState = state->piece_appeared_resolved()
             break;
         case Error_Enum::ERROR_W_LOST_RESOLVED:
+<<<<<<< Updated upstream
             newState = state->piece_lost_resolved() ;
+=======
+            newState = state->piece_lost_resolved();
+>>>>>>> Stashed changes
             break;
         default:
             break;

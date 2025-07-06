@@ -38,7 +38,11 @@ State* Piece_appeared::clone(){
 	return new Piece_appeared(data);
 }
 
+<<<<<<< Updated upstream:src/FSM/States/Operating_FBM_2/Pieceappeared.cpp
 State*  Piece_appeared::piece_appeared_resolved(){
+=======
+State*  PieceAppeared::piece_appeared_resolved(){
+>>>>>>> Stashed changes:src/FSM/States/Operating_FBM_2/PieceAppeared.cpp
 	return new ReadyForPiece(data);
 }
 State*  Piece_appeared::request_transfer(){

@@ -43,5 +43,10 @@ State* Piece_Missing::request_transfer() {
 }
 
 State* piece_lost_resolved(){
+<<<<<<< Updated upstream
 	return new ReadyForPiece(data);
 }
+=======
+	return new ready_for_piece(data);
+}
+>>>>>>> Stashed changes

@@ -9,6 +9,7 @@
 #include "Logic.h"
 #include "SortingOrder.h"
 #include "SimulatePiece.h"
+#include "ReadyForPiece.h"
 #include <gtest/gtest.h>
 
 #define EXPECT_STATE(expected_state) \
@@ -117,6 +118,14 @@ protected:
         
         // Call base class setup
         LogicBaseTest<SimulatePiece>::SetUp();
+    }
+};
+
+// Test FBM2-Setup
+class FBM2Setup : public LogicBaseTest<ReadyForPiece> {
+protected:
+    void SetUp() override {
+        LogicBaseTest<ReadyForPiece>::SetUp();
     }
 };
 
@@ -611,6 +620,23 @@ TEST_F(MotorControlSetup, MotorControlEdgeCasesTest) {
     EXPECT_EQ(data->workpieceList.getState(2), MotorPieceState::FAST);
     EXPECT_TRUE(data->workpieces); // No longer empty
     EXPECT_EQ(data->workpieceList.size(), 1);
+}
+
+/**
+ * @brief testing state-transitions for FBM2 with tall piece
+ */
+TEST_F(FBM2Setup, FBM2Test) {
+    
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::REQUEST_TRANSFER);
+    EXPECT_STATE("WaitingForTransferStart");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_START_TALL);
+    EXPECT_STATE("Transfer");
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    EXPECT_STATE("TransferDone");
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+    EXPECT_STATE("Start_ADC");
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    EXPECT_STATE("Gate");
 }
 
 int main(int argc, char** argv) {
