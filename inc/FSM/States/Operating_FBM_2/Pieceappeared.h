@@ -19,8 +19,11 @@ public: //================================================ public functions ====
 	State* clone() override;
 
 	State*  piece_appeared_resolved() override;
+<<<<<<< Updated upstream:inc/FSM/States/Operating_FBM_2/Pieceappeared.h
 
 	State* request_transfer() override;
+=======
+>>>>>>> Stashed changes:inc/FSM/States/Operating_FBM_2/PieceAppeared.h
  
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
