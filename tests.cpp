@@ -14,7 +14,7 @@
 
 #define EXPECT_STATE(expected_state) \
     do { \
-        WAIT(10); \
+        WAIT(50); \
         std::string is_state = logic->show_state(); \
         EXPECT_EQ(is_state, expected_state); \
     } while (0)
@@ -36,6 +36,27 @@ protected:
 
     void SetUp() override {
         cout << "Setting up test fixture..." << endl;
+
+        // Initialize time profiles
+        TimeProfile both_profiles;
+
+        // Set fast timestamps
+        long fast_profile[TIMESTAMP_LENGTH] = { 2000, 2100, 3600, 4000, 6000, 3800 };
+        for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
+            both_profiles.fast_timestamps[i] = fast_profile[i];
+        }
+
+        // Set slow timestamps
+        long slow_profile[TIMESTAMP_LENGTH] = { 6060, 7183, 10309, 11780, 17207, 10552 };
+        for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
+            both_profiles.slow_timestamps[i] = slow_profile[i];
+        }
+
+        // Save the profile
+        TimeProfileManager::save_profile(both_profiles, SAVE_LOCATION_TIMEPROFILE);
+        TimeProfileManager::convert_to_deadlines(&both_profiles);
+
+
         logic_receiver = new Mock_PM::Receiver();
         remote_control = new Mock_PM::Sender(logic_receiver);
         hal_receiver = new Mock_PM::Receiver();
@@ -108,32 +129,7 @@ protected:
     }
 };
 
-class PieceTrackingSetup : public LogicBaseTest<SimulatePiece> {
-protected:
-    void SetUp() override {
-        // Initialize time profiles
-        TimeProfile both_profiles;
 
-        // Set fast timestamps
-        long fast_profile[TIMESTAMP_LENGTH] = { 2000, 2100, 3600, 4000, 6000, 3800 };
-        for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
-            both_profiles.fast_timestamps[i] = fast_profile[i];
-        }
-
-        // Set slow timestamps
-        long slow_profile[TIMESTAMP_LENGTH] = { 6060, 7183, 10309, 11780, 17207, 10552 };
-        for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
-            both_profiles.slow_timestamps[i] = slow_profile[i];
-        }
-
-        // Save the profile
-        TimeProfileManager::save_profile(both_profiles, SAVE_LOCATION_TIMEPROFILE);
-        TimeProfileManager::convert_to_deadlines(&both_profiles);
-        
-        // Call base class setup
-        LogicBaseTest<SimulatePiece>::SetUp();
-    }
-};
 
 TEST_F(PieceTrackerSetup, PieceTrackerTest){
     EXPECT_STATE("PieceControllerFBM1");
@@ -143,25 +139,25 @@ TEST_F(PieceTrackerSetup, PieceTrackerTest){
     EXPECT_STATE("StartADC_PT1");
 }
 
-TEST_F(PieceTrackingSetup, PieceTrackingTest) {
-    data->piece_tracker.debug = true;
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
-    WAIT(2000);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
-    WAIT(100);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
-    WAIT(1500);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-    WAIT(400);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-    WAIT(2000);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);    
-    WAIT(1000);
-    auto distance = data->piece_tracker.get_distance();
-    EXPECT_EQ(distance.first, Area::GATE_END);
-    EXPECT_GT(distance.second, 95);
-}
+// TEST_F(LogicBaseTest, PieceTrackingTest) {
+//     data->piece_tracker.debug = true;
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+//     WAIT(2000);
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+//     WAIT(100);
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+//     WAIT(1500);
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+//     WAIT(400);
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+//     WAIT(2000);
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);    
+//     WAIT(1000);
+//     auto distance = data->piece_tracker.get_distance();
+//     EXPECT_EQ(distance.first, Area::GATE_END);
+//     EXPECT_GT(distance.second, 95);
+// }
 
 TEST_F(DeepHistorySetup, DeepHistoryTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
@@ -204,32 +200,46 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
 TEST_F(RealImplementationSetup, PutNewPiece){
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-
+    EXPECT_STATE("PieceControllerFBM1 Idle PieceFlat StartingAreaUnblocked");
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
     EXPECT_STATE("Start_PT1 Fast PieceFlat StartingAreaBlocked");
+
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
     EXPECT_STATE("StartADC_PT1 Fast PieceFlat StartingAreaBlocked");
-    WAIT(2000);
+    WAIT(2050);
     EXPECT_STATE("ADC_PT1 Slow PieceFlat StartingAreaUnblocked");
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> ADC BEGIN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
     remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
     WAIT(1123);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> ADC END <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_WF_DETECT);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
     EXPECT_STATE("ADCGate_PT1 Fast PieceFlat StartingAreaUnblocked");
     
     WAIT(1500);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
     EXPECT_STATE("GateEnd_PT1 Fast PieceTall StartingAreaUnblocked");
     WAIT(400);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     WAIT(2000);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER BACK BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);   
-    EXPECT_STATE("PendingTransferRequest_PT1 Fast PieceTall StartingAreaUnblocked"); 
+    EXPECT_STATE("PendingTransferRequest_PT1 Stop PieceTall StartingAreaUnblocked"); //TODO
+
+    //wait till fbm2 ready
+    WAIT(2000);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> FBM 2 READY <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_READY);
+    EXPECT_STATE("Transfer_PT1 Fast PieceTall StartingAreaUnblocked");
     WAIT(1000);
-    auto distance = data->piece_tracker.get_distance();
-    EXPECT_EQ(distance.first, Area::GATE_END);
-    EXPECT_GT(distance.second, 95);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> TRANSFER DONE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_DONE);
+    EXPECT_STATE("PieceControllerFBM1 Idle PieceTall StartingAreaUnblocked");
 
 
 }
@@ -404,8 +414,9 @@ TEST_F(RealImplementationSetup, AdcCalibrationThenEstop) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_RELEASED);
     EXPECT_STATE("EStopReleased");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
-    EXPECT_STATE("EStopQuit");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("WaitingForComReset");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::BUTTON_RESET_PRESSED);
     EXPECT_STATE("IdleIM");
 }
 

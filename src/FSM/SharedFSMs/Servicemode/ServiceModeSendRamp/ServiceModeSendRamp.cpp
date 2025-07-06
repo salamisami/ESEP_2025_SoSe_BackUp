@@ -9,6 +9,8 @@ ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data) : OrthState(data,
 , new ReadyForCDF(data)
 ){}
 
+ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data, std::deque<State*> initial_substates):OrthState(data, initial_substates) {}
+
 ServiceModeSendRamp::~ServiceModeSendRamp() {}
 
 //===================================================== private functions =====================================================
@@ -31,6 +33,9 @@ void ServiceModeSendRamp::exit() {
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 
+State* ServiceModeSendRamp::clone() {
+	return new ServiceModeSendRamp(data,clone_substates());
+}
 
 // State* ServiceModeSendRamp::laser_ramp_blocked(){
 // 	for(auto& current_substate: substates){

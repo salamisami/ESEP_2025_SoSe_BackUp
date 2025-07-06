@@ -10,6 +10,7 @@ public:
 	ScannedPiece ist_type = ScannedPiece::UNKNOWN;
 	int is_metal = false;
 	PieceEnum validated_type = PieceEnum::UNKNOWN;
+	bool unblock_signal_has_been_sent = false;
 };
 
 #endif

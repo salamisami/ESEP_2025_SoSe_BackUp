@@ -48,7 +48,8 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 		default:
 			break;
 	}
-	//PieceMissing
+	DEBUG("PieceMissing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+	std::cout << std::string(__PRETTY_FUNCTION__) << std::endl;
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
 	PieceEnum validated_piece = localdata_.validated_type;
@@ -68,36 +69,34 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 	return State::EXIT_STATE;
 }
 
-	State* ADCGate_PT1::laser_sorting_gate_blocked() {
-		auto piece = data->pieces_map->at(localdata_.id);
-		auto distance = piece->piece_tracker.get_distance();
-		Area current_area = distance.first;
-		auto current_pos = distance.second;
+State* ADCGate_PT1::laser_sorting_gate_blocked() {
+	auto piece = data->pieces_map->at(localdata_.id);
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
+	auto current_pos = distance.second;
 
-		if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)){
-			//piece->piece_tracker.update_distance_force(Area::GATE, 0);
-			return new Gate_PT1(data, localdata_);
-		}
-
-		if(current_area == Area::GATE) {
-			return new Gate_PT1(data, localdata_);
-		}
-		return nullptr;
+	if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE_GATE)) {
+		return new Gate_PT1(data, localdata_);
 	}
 
-	State* ADCGate_PT1::metal_detected() {
-		auto piece = data->pieces_map->at(localdata_.id);
-		auto distance = piece->piece_tracker.get_distance();
-		Area current_area = distance.first;
-		auto current_pos = distance.second;
-
-		if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)){
-			//piece->piece_tracker.update_distance_force(Area::GATE, 0);
-			return new IsMetal_PT1(data, localdata_);
-		}
-
-		if(current_area == Area::GATE) {
-			return new IsMetal_PT1(data, localdata_);
-		}
-		return nullptr;
+	if(current_area == Area::GATE) {
+		return new Gate_PT1(data, localdata_);
 	}
+	return nullptr;
+}
+
+State* ADCGate_PT1::metal_detected() {
+	auto piece = data->pieces_map->at(localdata_.id);
+	auto distance = piece->piece_tracker.get_distance();
+	Area current_area = distance.first;
+	auto current_pos = distance.second;
+
+	if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE_GATE)) {
+		return new IsMetal_PT1(data, localdata_);
+	}
+
+	if(current_area == Area::GATE) {
+		return new IsMetal_PT1(data, localdata_);
+	}
+	return nullptr;
+}

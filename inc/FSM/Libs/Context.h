@@ -145,7 +145,9 @@ template <typename T>
 State* Context<T>::handleCOM(int event_value) {
     State* newState = nullptr;
     switch((COM_Enum) event_value) {
-        //TODO is this true?
+        case COM_Enum::BUTTON_RESET_PRESSED:
+            newState = state->com_button_reset_pressed();
+            break;
         case COM_Enum::BUTTON_ESTOP_PRESSED:
             newState = state->com_button_estop_pressed();
             break;
