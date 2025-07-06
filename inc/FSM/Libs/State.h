@@ -356,6 +356,9 @@ public: //================================================ public functions ====
     virtual State* com_connected() {
         return handle_event_using_function(&State::com_connected);
     }
+    virtual State* mqtt_disconnected() {
+        return handle_event_using_function(&State::mqtt_disconnected);
+    }
     virtual State* mqtt_connected() {
         return handle_event_using_function(&State::mqtt_connected);
     }
@@ -405,10 +408,6 @@ public: //================================================ public functions ====
 
     virtual State* error_c_lost_com_fixed() {
         return handle_event_using_function(&State::error_c_lost_com_fixed);
-    }
-
-    virtual State* sorted() {
-        return handle_event_using_function(&State::sorted);
     }
 
     virtual State* remote_stop() {

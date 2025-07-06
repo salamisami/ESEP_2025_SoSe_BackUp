@@ -211,8 +211,7 @@ void DistanceTracker::reset() {
 }
 
 // Area DistanceTracker::getArea() {
-//     update();
-//     return current_area;
+//     return get_distance().first;
 // }
 
 // double DistanceTracker::getPosition() {

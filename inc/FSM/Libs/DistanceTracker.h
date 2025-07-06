@@ -80,7 +80,7 @@ public: //================================================ public functions ====
 	//  * @brief returns current area of this piece
 	//  * @return the area, in which the piece is currently located
 	//  */
-	// Area getArea();
+	//Area getArea();
 	// /**
 	//  * @brief returns current position of current area. If the value is 50, means the piece is located exactly at the center of current area.
 	//  * @return the current position inside current area. The range of value is from 0 till 100

@@ -4,7 +4,7 @@
 #pragma once
  
 #include "State.h"
-#include "PieceTracker.h"
+#include "DistanceTracker.h"
 #include "ReadyForPiece.h"
 #include "Pieceappeared.h"
 #include "Measuring.h"

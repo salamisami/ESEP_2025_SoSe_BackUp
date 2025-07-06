@@ -30,5 +30,5 @@ State* COMFehlerQuittiert::clone() {
 
 State* COMFehlerQuittiert::com_connected()
 {
-    return new COMNoError(data);
+    return new COMReconnected(data);
 }

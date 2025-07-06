@@ -4,7 +4,7 @@
 #pragma once
  
 #include "State.h"
-#include "PieceTracker.h"
+#include "DistanceTracker.h"
 #include "End.h"
 #include "Pieceappeared.h" 
 class Gate_End : public State {

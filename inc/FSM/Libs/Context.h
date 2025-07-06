@@ -33,6 +33,7 @@ private:
     State* handleInternal(int event_value);
     State* handlePiece(int event_value);
     State* handleError(int event_value);
+    State* handleRemote(int event_value);
 };
 
 //================================================= constructors & destructors =================================================
@@ -218,6 +219,9 @@ State* Context<T>::handleCOM(int event_value) {
         case COM_Enum::TRANSFER_START_FLAT_SORT_OUT:
             newState = state->transfer_start_flat_sort_out();
             break;  
+        case COM_Enum::COM_CONNECTED:
+            newState = state->com_connected();
+            break;
         case COM_Enum::COM_MQTT_CONNECTED:
             newState = state->com_mqtt_connected();
             break;
@@ -339,20 +343,79 @@ State* Context<T>::handlePiece(int event_value) {
 }
 
 template <typename T>
+State* Context<T>::handleRemote(int event_value) {
+    State* newState = nullptr;
+    switch((RemoteControlEnum) event_value) {
+        case RemoteControlEnum::MQTT_DISCONNECTED:
+            newState = state->mqtt_disconnected();
+            break;
+        case RemoteControlEnum::MQTT_CONNECTED:
+            newState = state->mqtt_connected();
+            break;
+        case RemoteControlEnum::RECONNECT:
+            newState = state->reconnect();
+            break;
+        default:
+            break;
+    }
+    return newState;
+}
+
+template <typename T>
 State* Context<T>::handleError(int event_value) {
     State* newState = nullptr;
     switch((Error_Enum) event_value) {
+        //TODO is this true?
         case Error_Enum::ERROR_W_LOST:
             newState = state->error_w_lost();
             break;
         case Error_Enum::ERROR_W_APPEARED:
             newState = state->error_w_appear();
             break;
+        case Error_Enum::ERROR_W_LOST_RESOLVED:
+            newState = state->piece_lost_resolved();
+            break;
+        case Error_Enum::ERROR_BOTH_R_FULL:
+            newState = state->error_both_r_full();
+            break;
+        case Error_Enum::ERROR_C_LOST_NR:
+            newState = state->error_c_lost_nr();
+            break;
+        case Error_Enum::ERROR_C_LOST_MQTT:
+            newState = state->error_c_lost_mqtt();
+            break;
+        case Error_Enum::ERROR_C_LOST_COM:
+            newState = state->error_c_lost_com();
+            break;
+        case Error_Enum::ERROR_INVALID_MESURE:
+            newState = state->adc_invalid_measure();
+            break;
+        case Error_Enum::CANT_FIND_CALB_CONF:
+            newState = state->cant_find_calb_conf();
+            break;
+        case Error_Enum::CANT_FIND_REP_CONF:
+            newState = state->cant_find_rep_conf();
+            break;
+        case Error_Enum::COM_ERROR_RESOLVED:
+            newState = state->com_error_resolved();
+            break;
+        case Error_Enum::RAMP_ERROR_RESOLVED:
+            newState = state->ramp_error_resolved();
+            break;
+        case Error_Enum::MQTT_ERROR_RESOLVED:
+            newState = state->mqtt_error_resolved();
+            break;
         case Error_Enum::PIECE_APPEARED_RESOLVED:
             newState = state->piece_appeared_resolved();
             break;
-        case Error_Enum::ERROR_W_LOST_RESOLVED:
+        case Error_Enum::PIECE_LOST_RESOLVED:
             newState = state->piece_lost_resolved();
+            break;
+        case Error_Enum::PIECES_TOO_CLOSE:
+            newState = state->pieces_too_close();
+            break;
+        case Error_Enum::ERROR_INVALID_MEASURE_RESOLVED:
+            newState = state->error_invalid_meassure_resolved();
             break;
         default:
             break;
@@ -392,6 +455,9 @@ void Context<T>::handleEvent(_pulse event)
             break;
         case Topic::CHECK_PIECE:
             newState = handlePiece(event_value);
+            break;
+        case Topic::REM_CON:
+            newState = handleRemote(event_value);
             break;
         case Topic::ERROR:
             newState = handleError(event_value);

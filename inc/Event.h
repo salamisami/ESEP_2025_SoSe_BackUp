@@ -80,7 +80,8 @@ enum class Topic : int8_t {
     MOTOR_STOP_FSM,
     MOTOR_SLOW,
     MOTOR_FAST,
-    DELETE_W_MOTOR
+    DELETE_W_MOTOR,
+	REM_CON
 };
 
 enum class Internal_Enum : int {
@@ -185,6 +186,13 @@ enum class ScannedPiece : int {
     HOLE,
     UNKNOWN
 };
+
+enum class RemoteControlEnum: int {
+	MQTT_DISCONNECTED,
+	MQTT_CONNECTED,
+	RECONNECT
+};
+
 enum class Error_Enum : int {
     ERROR_W_LOST=1,
     ERROR_W_APPEARED,
