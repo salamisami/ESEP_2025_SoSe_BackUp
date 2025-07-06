@@ -66,9 +66,8 @@ State* Gate_End::laser_ramp_blocked(){
   return new Pieceappeared(data);
 }
 
-State* Gate_End::laser_back_blocked(){
-  //TODO:fix area tracking only 1 piece no piece_map
-	auto piece = data->pieces_map->at(data->event_payload);
+State* Gate_End::laser_back_blocked(){ 
+	auto piece = data->piece_FBM2;
 	Area current_area = piece->piece_tracker.getArea();
 	int current_position = piece->piece_tracker.getPosition();
   if(current_area == Area::GATE_END){
