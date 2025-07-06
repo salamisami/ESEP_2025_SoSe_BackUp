@@ -173,6 +173,7 @@ enum class ScannedPiece : int {
 };
 enum class Error_Enum : int {
     ERROR_W_LOST=1,
+    ERROR_W_APPEARED,
     ERROR_BOTH_R_FULL,
     ERROR_C_LOST_NR,
     ERROR_C_LOST_MQTT,

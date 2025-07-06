@@ -330,6 +330,9 @@ State* Context<T>::handleError(int event_value) {
         case Error_Enum::ERROR_W_LOST:
             newState = state->error_w_lost();
             break;
+        case Error_Enum::ERROR_W_APPEARED:
+            newState = state->error_w_appear();
+            break;
         case Error_Enum::ERROR_BOTH_R_FULL:
             newState = state->error_both_r_full();
             break;
