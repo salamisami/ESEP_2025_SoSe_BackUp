@@ -19,7 +19,6 @@ Start_ADC::~Start_ADC() {}
 //===================================================== public functions =====================================================
 void Start_ADC::entry(){
 	PRINT_STATE;
-	data->timer->start_timer(1000,TIMER_ID::START_ADC);
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -40,7 +39,7 @@ State* Start_ADC::clone(){
 
 State* Start_ADC::timer(TIMER_ID id) {
     if(id == TIMER_ID::START_ADC) {
-        if (data->pieceTracker.get_Position() >= WAY_TO_ADC) {
+        if (data->piece_FBM2->pieceTracker.get_Position() >= WAY_TO_ADC && data->piece_FBM2->pieceTracker.getArea() == Area::START_ADC) {
 			return new ADC(data);
 		} else {
 			return new Start_ADC(data);
@@ -50,7 +49,7 @@ State* Start_ADC::timer(TIMER_ID id) {
 }
 
 State* Start_ADC::request_transfer(){
-	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_READY);
+	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
 	return new WaitingForTransferStart(data);
 }
 
