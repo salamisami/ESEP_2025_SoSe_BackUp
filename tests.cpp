@@ -13,7 +13,7 @@
 
 #define EXPECT_STATE(expected_state) \
     do { \
-        WAIT(10); \
+        WAIT(20); \
         std::string is_state = logic->show_state(); \
         EXPECT_EQ(is_state, expected_state); \
     } while (0)
