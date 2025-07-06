@@ -18,23 +18,14 @@ public: //============================================ constructors & destructor
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-<<<<<<< Updated upstream
-	State* clone() override;
-  State* request_transfer() override;
-  State* laser_sorting_gate_blocked() override;
-  //State* timer() override;
-  State* laser_ramp_blocked() override;
-  State* laser_back_blocked() override;
-  State* laser_front_blocked() override;
-=======
+
     State* clone() override;
     State* request_transfer() override;
     State* laser_sorting_gate_blocked() override;
-    State* timer() override;
+    State* timer(TIMER_ID id) override;
     State* laser_ramp_blocked() override;
     State* laser_back_blocked() override;
     State* laser_front_blocked() override;
->>>>>>> Stashed changes
 // 
 
 //REQUEST_TARNSFER /FBM_2_BUSY   laser_sorting_gate_blocked
