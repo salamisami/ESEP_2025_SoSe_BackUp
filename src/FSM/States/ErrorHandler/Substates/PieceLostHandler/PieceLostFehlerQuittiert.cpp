@@ -19,7 +19,7 @@ void PieceLostFehlerQuittiert::entry(){
 }
 
 void PieceLostFehlerQuittiert::exit(){
-    data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) Error_Enum::ERROR_BOTH_R_FULL);   
+    data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) Error_Enum::ERROR_W_LOST);   
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::PIECE_LOST_RESOLVED);
     //TODO CODE
