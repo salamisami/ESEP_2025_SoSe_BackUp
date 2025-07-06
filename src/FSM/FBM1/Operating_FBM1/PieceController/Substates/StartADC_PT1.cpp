@@ -13,7 +13,7 @@ StartADC_PT1::~StartADC_PT1() {}
 //===================================================== public functions =====================================================
 void StartADC_PT1::entry() {
 	PRINT_STATE;
-	data->timer->start_timer(100, TIMER_ID::STARTADC_PT1);
+	data->timer->start_timer(UPDATE_PIECE_INTERVAL, TIMER_ID::STARTADC_PT1);
 	data->piece_near_adc = true;
 }
 
@@ -26,7 +26,7 @@ State* StartADC_PT1::clone() {
 }
 
 State* StartADC_PT1::timer(TIMER_ID id) {
-	if(id != TIMER_ID::STARTADC_PT1){
+	if(id != TIMER_ID::STARTADC_PT1) {
 		return nullptr;
 	}
 	Piece* piece = data->pieces_map->at(localdata_.id);
@@ -35,13 +35,13 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 	Area current_area = distance.first;
 	auto current_position = distance.second;
 
-	if(current_area != Area::START_ADC){
+	if(current_area == Area::START_ADC && current_position > (100 - PIECE_TRANSITION_TOLERANCE)) {
 		return new ADC_PT1(data, localdata_);
-	} 
+	}
 
 	//TODO calibrate here
-	if(current_position > DISTANCE_BETWEEN_PIECES){
-		if(!localdata_.unblock_signal_has_been_sent){
+	if(current_position > DISTANCE_BETWEEN_PIECES) {
+		if(!localdata_.unblock_signal_has_been_sent) {
 			localdata_.unblock_signal_has_been_sent = true;
 			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
 		}
