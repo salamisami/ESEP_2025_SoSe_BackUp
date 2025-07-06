@@ -22,8 +22,6 @@ public: //================================================ public functions ====
 	State* timer(TIMER_ID id) override;
 	State* laser_back_blocked() override;
 
-	State* let_through() override;
-	State* sort_out_fbm2() override;
 
     
 

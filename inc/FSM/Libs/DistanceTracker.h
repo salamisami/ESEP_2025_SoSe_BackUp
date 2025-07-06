@@ -19,9 +19,9 @@ enum class Area : uint8_t {
 	START_ADC = 0,
 	ADC,
 	ADC_GATE,
-
 	GATE,
 	GATE_END,
+	OUT_OF_RANGE,
 	GATE_RAMP
 };
 
@@ -66,6 +66,8 @@ public: //================================================ public functions ====
 
 	void reset();
 
+	void update_distance_force(const Area& area, const double& position);
+
 
 
 	void debug_mode(bool debug);
@@ -76,16 +78,21 @@ public: //================================================ public functions ====
 	 * @retval false if the send is not valid
 	 */
 	bool send_to_ramp();
-	/**
-	 * @brief returns current area of this piece
-	 * @return the area, in which the piece is currently located
-	 */
-	Area getArea();
-	/**
-	 * @brief returns current position of current area. If the value is 50, means the piece is located exactly at the center of current area.
-	 * @return the current position inside current area. The range of value is from 0 till 100
-	 */
-	double getPosition();
+	// /**
+	//  * @brief returns current area of this piece
+	//  * @return the area, in which the piece is currently located
+	//  */
+	// Area getArea();
+	// /**
+	//  * @brief returns current position of current area. If the value is 50, means the piece is located exactly at the center of current area.
+	//  * @return the current position inside current area. The range of value is from 0 till 100
+	//  */
+	// double getPosition();
+
+	std::pair<Area, double> get_distance();
+	void print_distance();
+
+	bool debug = false;
 
 
 
