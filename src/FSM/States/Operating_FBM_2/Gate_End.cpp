@@ -19,11 +19,6 @@ Gate_End::~Gate_End() {}
 //===================================================== public functions =====================================================
 void Gate_End::entry(){
 	PRINT_STATE;
-
-  //TODO:TIMER 100 ms 
-	//Action here
-	//HState::entry() //for HState
-	//OrthState::entry() //for OrthState
 }
  
 void Gate_End::exit(){
@@ -42,7 +37,7 @@ State* Gate_End::request_transfer(){
   data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
   return nullptr;
 }
-State* Gate_End::timer(TIMER_ID id){
+State* Gate_End::timer(TIMER_ID id){ 
 
 	if(id == TIMER_ID::GATE_END){
 	  auto piece = data->pieces_map->at(data->event_payload);

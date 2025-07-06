@@ -30,7 +30,7 @@ State* End::clone(){
 	//return new Gate_End(data, substate->clone()); //for HState
 	//return new Gate_End(data, substates_clone()); //for OrthState
 	return new End(data);
-}
+} 
 State* End::request_transfer(){
   data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
   return new End(data);
