@@ -100,6 +100,11 @@ public: //================================================ public functions ====
     virtual State* reset_to_tall_w_metal() {
         return handle_event_using_function(&State::reset_to_tall_w_metal);
     }
+
+    virtual State* sorted(){
+      return handle_event_using_function(&State::sorted);
+    }
+
     //====================================================MotorPiece======================================================
     virtual State* delete_w_motor() {
         return handle_event_using_function(&State::delete_w_motor);
