@@ -78,10 +78,10 @@ protected:
     }
 };
 
-class PieceTrackingFBM1Setup : public LogicBaseTest<Start_PT1> {
+class PieceTrackingFBM1Setup : public LogicBaseTest<PieceControllerFBM1> {
 protected:
     void SetUp() override {
-        LogicBaseTest<Start_PT1>::SetUp();
+        LogicBaseTest<PieceControllerFBM1>::SetUp();
     }
 };
 
