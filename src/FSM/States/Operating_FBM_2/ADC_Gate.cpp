@@ -19,6 +19,9 @@ ADC_Gate::~ADC_Gate() {}
 //===================================================== public functions =====================================================
 void ADC_Gate::entry(){
 	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_ON);
+	data->piece_tracker.fast();
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState

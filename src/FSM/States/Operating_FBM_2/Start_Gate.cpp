@@ -36,3 +36,24 @@ State* Start_Gate::clone(){
 	//return new Start_Gate(data, substates_clone()); //for OrthState
 	return new Start_Gate(data);
 }
+
+State* request_transfer(){
+	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_READY);
+	return new Start_Gate(data);
+}
+State* Start_Gate::laser_sorting_gate_blocked(){
+	if (data->piece_tracker.get_Position() >= WAY_TO_GATE && data->piece_tracker.getArea() == Area::ADC_GATE) {
+		return new Gate(data);
+	} else {
+		return new PieceAppeared(data);
+	}
+}
+State* Start_Gate::laser_back_blocked(){
+	return new PieceAppeared(data);
+}
+State* laser_front_blocked(){
+	return new PieceAppeared(data);
+}
+State* laser_ramp_blocked(){
+	return new PieceAppeared(data);
+}

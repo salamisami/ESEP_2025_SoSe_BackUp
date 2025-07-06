@@ -50,6 +50,8 @@ public:
     
     std::unordered_map<int, Piece*>* pieces_map;
     int available_id = 0;
+    Piece* piece_FBM2 = nullptr;
+    Piece* piece_FBM2_measured = nullptr;
     
     // int piece_id = 0;
     // PieceEnum ist_type = PieceEnum::UNKNOWN;

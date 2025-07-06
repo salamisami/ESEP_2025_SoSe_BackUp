@@ -36,3 +36,20 @@ State* TransferDone::clone(){
 	//return new TransferDone(data, substates_clone()); //for OrthState
 	return new TransferDone(data);
 }
+
+State* request_transfer(){
+	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
+	return new WaitingForTransferStart(data);	
+}
+State* laser_front_unblocked(){
+	if(data->)
+}
+State* laser_sorting_gate_blocked(){
+	return new PieceAppeared(data);	
+}
+State* laser_ramp_blocked(){
+	return new PieceAppeared(data);
+}
+State* laser_back_blocked(){
+	return new PieceAppeared(data);
+}

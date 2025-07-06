@@ -36,3 +36,26 @@ State* ReadyForPiece::clone(){
 	//return new ReadyForPiece(data, substates_clone()); //for OrthState
 	return new ReadyForPiece(data);
 }
+
+State* ReadyForPiece::laser_front_blocked() {
+	return new piece_appeared(data);
+	
+}
+State* ReadyForPiece::laser_sorting_gate_blocked() {
+	return new piece_appeared(data);
+	
+}
+
+State* ReadyForPiece::laser_ramp_blocked() {
+	return new piece_appeared(data);
+	
+}
+State* ReadyForPiece::laser_back_blocked() {
+	return new piece_appeared(data);
+	
+}
+State* ReadyForPiece::request_transfer() {
+	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_READY);
+	return new WaitingForTransferStart(data);
+	
+}

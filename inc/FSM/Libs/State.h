@@ -304,6 +304,15 @@ public: //================================================ public functions ====
     virtual State* transfer_start_other() {
         return handle_event_using_function(&State::transfer_start_other);
     }
+    virtual State* transfer_start_tall_sort_out() {
+        return handle_event_using_function(&State::transfer_start_tall_sort_out);
+    }
+    virtual State* transfer_start_tall_w_metal_sort_out() {
+        return handle_event_using_function(&State::transfer_start_tall_w_metal_sort_out);
+    }
+    virtual State* transfer_start_flat_sort_out() {
+        return handle_event_using_function(&State::transfer_start_flat_sort_out);
+    }
 
     virtual State* adc_calibration_done() {
         return handle_event_using_function(&State::adc_calibration_done);

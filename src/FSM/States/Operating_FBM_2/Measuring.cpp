@@ -36,3 +36,41 @@ State* Measuring::clone(){
 	//return new Measuring(data, substates_clone()); //for OrthState
 	return new Measuring(data);
 }
+
+State* Measuring::request_transfer(){
+	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
+	return new request_transfer(data);
+}
+State* Measuring::laser_back_blocked(){
+	return new piece_appeared(data);
+}
+State* Measuring::laser_front_blocked(){
+	return new piece_appeared(data);
+}
+State* Measuring::laser_sorting_gate_blocked(){
+	return new piece_appeared(data);
+}
+State* Measuring::laser_ramp_blocked(){
+	return new piece_appeared(data);
+}
+
+State* Measuring::adc_wh_detect(){
+	data->piece_FBM2_measured = new Piece();
+	data->piece_FBM2_measured->type = PieceEnum::UNKNOWN;
+	return new ADC_Gate(data);
+}
+State* Measuring::adc_wf_detect(){
+	ata->piece_FBM2_measured = new Piece();
+	data->piece_FBM2_measured->type = PieceEnum::FLAT;
+	return new ADC_Gate(data);
+}
+State* Measuring::adc_wb_detect(){
+	ata->piece_FBM2_measured = new Piece();
+	data->piece_FBM2_measured->type = PieceEnum::TALL;
+	return new ADC_Gate(data);
+}
+State* Measuring::adc_w_not_detect(){
+	ata->piece_FBM2_measured = new Piece();
+	data->piece_FBM2_measured->type = PieceEnum::UNKNOWN;
+	return new ADC_Gate(data);
+}

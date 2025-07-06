@@ -222,6 +222,15 @@ State* Context<T>::handleCOM(int event_value) {
         case COM_Enum::TRANSFER_START_OTHER:
             newState = state->transfer_start_other();
             break;
+        case COM_Enum::TRANSFER_START_TALL_SORT_OUT:
+            newState = state->transfer_start_tall_sort_out();
+            break; 
+        case COM_Enum::TRANSFER_START_TALL_W_METAL_SORT_OUT:
+            newState = state->transfer_start_tall_w_metal_sort_out();   
+            break;
+        case COM_Enum::TRANSFER_START_FLAT_SORT_OUT:
+            newState = state->transfer_start_flat_sort_out();
+            break;  
         default:
             break;
     }

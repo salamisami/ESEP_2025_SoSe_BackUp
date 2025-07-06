@@ -19,6 +19,9 @@ ADC::~ADC() {}
 //===================================================== public functions =====================================================
 void ADC::entry(){
 	PRINT_STATE;
+	daTA->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON);
+	data->piece_tracker.slow();
+
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -35,4 +38,28 @@ State* ADC::clone(){
 	//return new ADC(data, substate->clone()); //for HState
 	//return new ADC(data, substates_clone()); //for OrthState
 	return new ADC(data);
+}
+
+State* ADC::request_transfer(){
+	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_READY);
+	return new ADC(data);
+}
+State* ADC::laser_back_blocked(){
+	return new piece_appeared(data);
+}
+State* ADC::laser_front_blocked(){
+	return new piece_appeared(data);
+}
+State* ADC::laser_sorting_gate_blocked(){
+	return new piece_appeared(data);
+}
+State* ADC::laser_ramp_blocked(){
+	return new piece_appeared(data);
+}
+
+State* ADC::ADC_Timeout(){
+	return new Piece_Missing(data);
+}
+State* ADC::ADC_new_piece(){
+	return new Measuring(data);
 }

@@ -19,6 +19,10 @@ Transfer::~Transfer() {}
 //===================================================== public functions =====================================================
 void Transfer::entry(){
 	PRINT_STATE;
+	daTA->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
+	data->piece_tracker.fast();
+	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -35,4 +39,30 @@ State* Transfer::clone(){
 	//return new Transfer(data, substate->clone()); //for HState
 	//return new Transfer(data, substates_clone()); //for OrthState
 	return new Transfer(data);
+}
+
+
+State* Transfer::timer(TIMER_ID id) {
+    if(id == TIMER_ID::TRANSFER_FAILED) {
+        return new Piece_Missing(data);
+    }
+    return nullptr;
+}
+State* Transfer::request_transfer(){
+	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
+	return new WaitingForTransferStart(data);
+}
+
+State* Transfer::laser_back_unblocked(){
+	return new PieceAppeard(data);
+}
+State* Transfer::laser_sorting_gate_blocked(){
+	return new PieceAppeard(data);
+}
+State* Transfer::laser_ramp_blocked(){
+	return new PieceAppeard(data);	
+}
+State* Transfer::laser_front_blocked(){
+	data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_DONE);
+	return new TransferDone(data);
 }

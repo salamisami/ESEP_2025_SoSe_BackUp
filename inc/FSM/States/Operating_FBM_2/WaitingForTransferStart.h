@@ -17,6 +17,19 @@ public: //================================================ public functions ====
     void exit() override;
 	State* clone() override;
 
+	State* request_transfer() override;
+
+	State* laser_back_blocked() override;
+	State* laser_front_blocked() override;
+	State* laser_sorting_gate_blocked() override;
+	State* laser_ramp_blocked() override;
+
+	State* transfer_start_other() override;
+	State* transfer_start_tall() override;
+	State* transfer_start_flat() override;
+	State* transfer_start_tall_w_metal() override;
+
+
  
  
 private: //================================================ private variables ================================================

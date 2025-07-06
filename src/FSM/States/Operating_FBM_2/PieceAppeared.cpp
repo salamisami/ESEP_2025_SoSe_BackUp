@@ -19,6 +19,7 @@ PieceAppeared::~PieceAppeared() {}
 //===================================================== public functions =====================================================
 void PieceAppeared::entry(){
 	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::ERROR_W_APPEARED, (int) Error_Enum::ERROR_W_APPEARED);
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -35,4 +36,8 @@ State* PieceAppeared::clone(){
 	//return new PieceAppeared(data, substate->clone()); //for HState
 	//return new PieceAppeared(data, substates_clone()); //for OrthState
 	return new PieceAppeared(data);
+}
+
+State*  PieceAppeared::error_w_appeared_fixed(){
+	return new ReadyForPiece(data);
 }

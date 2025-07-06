@@ -17,7 +17,16 @@ public: //================================================ public functions ====
     void exit() override;
 	State* clone() override;
 
- 
+	State* request_transfer() override;
+	State* laser_back_blocked() override
+	State* laser_front_blocked() override;
+	State* laser_sorting_gate_blocked() override;
+	State* laser_ramp_blocked() override;
+
+	State* adc_wh_detected() override;
+	State* adc_wf_detected() override;
+	State* adc_w_b_detected() override;
+	State* adc_w_not_detected() override;
  
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

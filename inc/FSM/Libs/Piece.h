@@ -9,7 +9,7 @@
 
 class Piece{
 public: //================================================ public functions ================================================
-    Piece(int id): id(id){};
+    Piece(int id = -1): id(id){};
     virtual ~Piece() = default;
 
     int id = 0;
