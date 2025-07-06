@@ -61,7 +61,7 @@ State* Gate::check_piece(){
     return new Sorting_out(data);
   }
   if(data->piece_FBM2_measured.type>=PieceEnum::TALL_SORT_OUT
-      && data->piece_FBM2_measured.type <= FLAT_SORT_OUT){
+      && data->piece_FBM2_measured.type <= PieceEnum::FLAT_SORT_OUT){
     return new Sorting_out(data);
     }
   data->timer->start_timer(100, TIMER_ID::GATE_END);

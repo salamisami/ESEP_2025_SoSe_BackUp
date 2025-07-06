@@ -56,8 +56,8 @@ State* ADC_Gate::laser_ramp_blocked() {
 	return new Piece_appeared(data);
 }
 State* ADC_Gate::laser_sorting_gate_blocked() {
-	if 	((data->piece_FBM2->piece_tracker.getPosition()() >= WAY_TO_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::ADC_GATE) ||
-		(data->piece_FBM2->piece_tracker.getPosition()() <= OVER_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::GATE)) {
+	if 	((data->piece_FBM2->piece_tracker.getPosition() >= WAY_TO_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::ADC_GATE) ||
+		(data->piece_FBM2->piece_tracker.getPosition() <= OVER_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::GATE)) {
 		return new Gate(data);
 	} else {
 		return new Piece_appeared(data);
@@ -66,7 +66,7 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 
 State* ADC_Gate::timer(TIMER_ID id) {
 	if(id == TIMER_ID::ADC_GATE) {
-		if (data->piece_FBM2->piece_tracker.getPosition()() >= OVER_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::GATE) {
+		if (data->piece_FBM2->piece_tracker.getPosition() >= OVER_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::GATE) {
 			return new Piece_Missing(data);
 		} else {
 			return new ADC_Gate(data);

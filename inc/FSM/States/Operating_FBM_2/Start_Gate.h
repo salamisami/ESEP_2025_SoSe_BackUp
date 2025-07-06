@@ -3,7 +3,7 @@
 #pragma once
  
 #include "State.h"
-#include "Piece_appeared.h"
+#include "Pieceappeared.h"
 #include "Gate.h"
  
 class Start_Gate : public State {

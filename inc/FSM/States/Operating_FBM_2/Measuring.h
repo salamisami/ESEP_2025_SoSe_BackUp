@@ -4,7 +4,7 @@
  
 #include "State.h"
 #include "ADC_Gate.h"
-#include "Piece_appeared.h"
+#include "Pieceappeared.h"
  
 class Measuring : public State {
 public: //============================================ constructors & destructors ============================================
@@ -20,7 +20,7 @@ public: //================================================ public functions ====
 	State* clone() override;
 
 	State* request_transfer() override;
-	State* laser_back_blocked() override
+	State* laser_back_blocked() override;
 	State* laser_front_blocked() override;
 	State* laser_sorting_gate_blocked() override;
 	State* laser_ramp_blocked() override;

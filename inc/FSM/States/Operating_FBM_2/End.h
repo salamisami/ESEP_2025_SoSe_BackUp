@@ -7,6 +7,7 @@
 #include "PieceTracker.h"
 #include "ReadyForPiece.h"
 #include "Pieceappeared.h"
+#include "Measuring.h"
 
 class End : public State { 
 public: //============================================ constructors & destructors ============================================
