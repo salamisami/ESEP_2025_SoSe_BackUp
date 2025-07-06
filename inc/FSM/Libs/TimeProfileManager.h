@@ -12,6 +12,7 @@
 
 
 
+
 class TimeProfileManager {
 public:
 	static void save_profile(const TimeProfile& timeprofile, const std::string& save_location) {
