@@ -39,7 +39,7 @@ State* Gate_End::request_transfer(){
 }
 State* Gate_End::timer(TIMER_ID id){ 
 
-	if(id == TIMER_ID::GATE_END){
+	if(id == TIMER_ID::GATE_END){ 
 	  auto piece = data->pieces_map->at(data->event_payload);
 	  Area current_area = piece->piece_tracker.getArea();
 	  int current_position = piece->piece_tracker.getPosition();
@@ -67,6 +67,7 @@ State* Gate_End::laser_ramp_blocked(){
 }
 
 State* Gate_End::laser_back_blocked(){
+  //TODO:fix area tracking only 1 piece no piece_map
 	auto piece = data->pieces_map->at(data->event_payload);
 	Area current_area = piece->piece_tracker.getArea();
 	int current_position = piece->piece_tracker.getPosition();
