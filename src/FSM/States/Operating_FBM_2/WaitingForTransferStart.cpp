@@ -43,20 +43,20 @@ State* WaitingForTransferStart::request_transfer() {
 }
 
 tate* WaitingForTransferStart::laser_front_blocked() {
-	return new piece_appeared(data);
+	return new Piece_appeared(data);
 	
 }
 State* WaitingForTransferStart::laser_sorting_gate_blocked() {
-	return new piece_appeared(data);
+	return new Piece_appeared(data);
 	
 }
 
 State* WaitingForTransferStart::laser_ramp_blocked() {
-	return new piece_appeared(data);
+	return new Piece_appeared(data);
 	
 }
 State* WaitingForTransferStart::laser_back_blocked() {
-	return new piece_appeared(data);
+	return new Piece_appeared(data);
 	
 }
 

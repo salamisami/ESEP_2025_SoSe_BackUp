@@ -1,11 +1,12 @@
 #ifndef GATE_END_H
 #define GATE_END_H
+
 #pragma once
  
 #include "State.h"
 #include "PieceTracker.h"
 #include "End.h"
-#include "PieceAppeared.h" 
+#include "Pieceappeared.h" 
 class Gate_End : public State {
 public: //============================================ constructors & destructors ============================================
     Gate_End(ContextData* data); //for all types of states

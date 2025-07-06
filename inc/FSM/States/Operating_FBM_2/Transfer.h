@@ -3,6 +3,11 @@
 #pragma once
  
 #include "State.h"
+#include "Piece_Missing.h"
+#include "TransferDone.h"
+
+
+
  
 class Transfer : public State {
 public: //============================================ constructors & destructors ============================================

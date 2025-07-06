@@ -51,7 +51,7 @@ State* Transfer::timer(TIMER_ID id) {
 }
 State* Transfer::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new WaitingForTransferStart(data);
+	return new Transfer(data);
 }
 
 State* Transfer::laser_back_unblocked(){

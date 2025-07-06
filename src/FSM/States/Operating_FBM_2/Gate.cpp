@@ -38,15 +38,15 @@ State* Gate::clone(){
 }
 
 State* Gate::laser_front_blocked(){
-  return new PieceAppeared(data);
+  return new Piece_appeared(data);
 }
 
   State* Gate::laser_back_blocked(){
-  return new PieceAppeared(data);
+  return new Piece_appeared(data);
 }
 
 State* Gate::laser_ramp_blocked(){
-  return new PieceAppeared(data);
+  return new Piece_appeared(data);
 }
 
 

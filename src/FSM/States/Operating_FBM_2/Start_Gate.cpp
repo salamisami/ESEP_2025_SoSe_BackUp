@@ -42,18 +42,18 @@ State* request_transfer(){
 	return new Start_Gate(data);
 }
 State* Start_Gate::laser_sorting_gate_blocked(){
-	if (data->piece_FBM2->piece_tracker.get_Position() >= WAY_TO_AREA && piece_FBM2->piece_tracker.getArea() == Area::ADC_GATE) {
+	if (data->piece_FBM2->piece_tracker.getPosition()() >= WAY_TO_AREA && piece_FBM2->piece_tracker.getArea() == Area::ADC_GATE) {
 		return new Gate(data);
 	} else {
-		return new PieceAppeared(data);
+		return new Piece_appeared(data);
 	}
 }
 State* Start_Gate::laser_back_blocked(){
-	return new PieceAppeared(data);
+	return new Piece_appeared(data);
 }
 State* Start_Gate::laser_front_blocked(){
-	return new PieceAppeared(data);
+	return new Piece_appeared(data);
 }
 State* Start_Gate::laser_ramp_blocked(){
-	return new PieceAppeared(data);
+	return new Piece_appeared(data);
 }

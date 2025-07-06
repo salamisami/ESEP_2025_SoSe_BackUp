@@ -20,7 +20,7 @@ ADC_Gate::~ADC_Gate() {}
 void ADC_Gate::entry(){
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_ON);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
 	data->piece_FBM2->piece_tracker.fast();
 	data->timer->start_timer(100,TIMER_ID::ADC_GATE);
 	//Action here
@@ -43,29 +43,29 @@ State* ADC_Gate::clone(){
 
 State* ADC_Gate::request_transfer() {
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new WaitingForTransferStart(data);
+	return new ADC_Gate(data);
 }
 State* ADC_Gate::laser_back_blocked() {
-	return new PieceAppeared(data);
+	return new Piece_appeared(data);
 }
 State* ADC_Gate::laser_front_blocked() {
-	return new PieceAppeared(data);
+	return new Piece_appeared(data);
 }
 State* ADC_Gate::laser_ramp_blocked() {
-	return new PieceAppeared(data);
+	return new Piece_appeared(data);
 }
 State* ADC_Gate::laser_sorting_gate_blocked() {
-	if 	((data->piece_FBM2->piece_tracker.get_Position() >= WAY_TO_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::ADC_GATE) ||
-		(data->piece_FBM2->piece_tracker.get_Position() <= OVER_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::GATE)) {
+	if 	((data->piece_FBM2->piece_tracker.getPosition()() >= WAY_TO_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::ADC_GATE) ||
+		(data->piece_FBM2->piece_tracker.getPosition()() <= OVER_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::GATE)) {
 		return new Gate(data);
 	} else {
-		return new PieceAppeared(data);
+		return new Piece_appeared(data);
 	}
 }
 
 State* ADC_Gate::timer(TIMER_ID id) {
 	if(id == TIMER_ID::ADC_GATE) {
-		if (data->piece_FBM2->piece_tracker.get_Position() >= OVER_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::GATE) {
+		if (data->piece_FBM2->piece_tracker.getPosition()() >= OVER_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::GATE) {
 			return new Piece_Missing(data);
 		} else {
 			return new ADC_Gate(data);
@@ -74,5 +74,5 @@ State* ADC_Gate::timer(TIMER_ID id) {
 }
 
 State *ADC_Gate::metal_detected(){
-	return new MetalDetected(data);
+	return new Is_Metal(data);
 }

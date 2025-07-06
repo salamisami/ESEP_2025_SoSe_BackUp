@@ -3,6 +3,11 @@
 #pragma once
  
 #include "State.h"
+#include "Piece_appeared.h"
+#include "ADC.h"
+#include "Is_Metal.h"
+#include "Gate.h"
+
  
 class ADC_Gate : public State {
 public: //============================================ constructors & destructors ============================================

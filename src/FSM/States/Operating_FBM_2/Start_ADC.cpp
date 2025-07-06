@@ -51,7 +51,7 @@ State* Start_ADC::timer(TIMER_ID id) {
 
 State* Start_ADC::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new WaitingForTransferStart(data);
+	return new Start_ADC(data);
 }
 
 State* Start_ADC::laser_back_blocked(){

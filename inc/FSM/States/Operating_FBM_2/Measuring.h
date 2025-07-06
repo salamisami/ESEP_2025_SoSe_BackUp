@@ -3,6 +3,8 @@
 #pragma once
  
 #include "State.h"
+#include "ADC_Gate.h"
+#include "Piece_appeared.h"
  
 class Measuring : public State {
 public: //============================================ constructors & destructors ============================================

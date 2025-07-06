@@ -18,7 +18,7 @@ public: //================================================ public functions ====
 	State* clone() override;
   State* request_transfer() override;
   State* laser_sorting_gate_blocked() override;
-  State* timer() override;
+  //State* timer() override;
   State* laser_ramp_blocked() override;
   State* laser_back_blocked() override;
   State* laser_front_blocked() override;

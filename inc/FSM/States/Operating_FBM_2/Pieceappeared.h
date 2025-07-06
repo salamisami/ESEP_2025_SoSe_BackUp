@@ -3,13 +3,14 @@
 #pragma once
  
 #include "State.h"
+#include "ReadyForPiece.h"
  
-class PieceAppeared : public State {
+class Piece_appeared : public State {
 public: //============================================ constructors & destructors ============================================
-    PieceAppeared(ContextData* data); //for all types of states
+    Piece_appeared(ContextData* data); //for all types of states
 	//PieceAppeared(ContextData* data, State* initial_substate); //for HState
 	//PieceAppeared(ContextData* data, std::deque<State*> initial_substates); //for OrthState
-    virtual ~PieceAppeared();
+    virtual ~Piece_appeared();
 
  
 public: //================================================ public functions ================================================
@@ -18,6 +19,8 @@ public: //================================================ public functions ====
 	State* clone() override;
 
 	State*  piece_appeared_resolved() override;
+
+	State* request_transfer() override;
  
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

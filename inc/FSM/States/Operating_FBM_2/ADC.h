@@ -1,9 +1,10 @@
 #ifndef ADC_H
 #define ADC_H
+
 #pragma once
  
 #include "State.h"
-#include "PieceAppeared.h"
+#include "Pieceappeared.h"
 #include "Piece_Missing.h" 
 class ADC : public State {
 public: //============================================ constructors & destructors ============================================

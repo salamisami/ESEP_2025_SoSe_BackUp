@@ -39,7 +39,7 @@ State* Measuring::clone(){
 
 State* Measuring::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new request_transfer(data);
+	return new Measuring(data);
 }
 State* Measuring::laser_back_blocked(){
 	return new piece_appeared(data);

@@ -39,9 +39,9 @@ State* TransferDone::clone(){
 
 State* TransferDone::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new WaitingForTransferStart(data);	
+	return new TransferDone(data);	
 }
-State* TransferDone::laser_front_unblocked(){}
+State* TransferDone::laser_front_unblocked(){
 	if(data->piece_FBM2->type == PieceEnum::FLAT_SORT_OUT ||
 		data->piece_FBM2->type == PieceEnum::TALL_SORT_OUT ||
 		data->piece_FBM2->type == PieceEnum::TALL_WITH_METAL_SORT_OUT ||
@@ -55,13 +55,14 @@ State* TransferDone::laser_front_unblocked(){}
 		return new Start_ADC(data);
 	} else {
 		return nullptr; // Handle unexpected piece type
+	}
 }
 State* TransferDone::laser_sorting_gate_blocked(){
-	return new PieceAppeared(data);	
+	return new Piece_appeared(data);	
 }
 State* TransferDone::laser_ramp_blocked(){
-	return new PieceAppeared(data);
+	return new Piece_appeared(data);
 }
 State* TransferDone::laser_back_blocked(){
-	return new PieceAppeared(data);
+	return new Piece_appeared(data);
 }

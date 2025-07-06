@@ -19,7 +19,7 @@ Piece_Missing::~Piece_Missing() {}
 //===================================================== public functions =====================================================
 void Piece_Missing::entry(){
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic:ERROR, (int) Error_Enum::ERROR_W_LOST);
+	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -42,6 +42,6 @@ State* Piece_Missing::request_transfer() {
 	return new Piece_Missing(data);
 }
 
-State* error_w_lost_fixed(){
-	return new ready_for_piece(data);
+State* piece_lost_resolved(){
+	return new ReadyForPiece(data);
 }

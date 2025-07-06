@@ -1,11 +1,12 @@
 #ifndef END_H
 #define END_H
+
 #pragma once
  
 #include "State.h"
 #include "PieceTracker.h"
 #include "ReadyForPiece.h"
-#include "PieceAppeared.h"
+#include "Pieceappeared.h"
 
 class End : public State { 
 public: //============================================ constructors & destructors ============================================

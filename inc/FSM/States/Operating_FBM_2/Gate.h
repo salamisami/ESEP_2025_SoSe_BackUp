@@ -1,10 +1,11 @@
 #ifndef GATE_H
 #define GATE_H
+
 #pragma once
  
 #include "State.h"
 #include "Sorting_out.h"
-#include "PieceAppeared.h"
+#include "Pieceappeared.h"
 #include "Gate_End.h"
 
 class Gate : public State {

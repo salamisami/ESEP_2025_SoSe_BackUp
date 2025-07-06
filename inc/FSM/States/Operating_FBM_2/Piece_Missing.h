@@ -3,6 +3,7 @@
 #pragma once
  
 #include "State.h"
+#include "ReadyForPiece.h"
  
 class Piece_Missing : public State {
 public: //============================================ constructors & destructors ============================================

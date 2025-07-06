@@ -3,6 +3,9 @@
 #pragma once
  
 #include "State.h"
+#include "Piece_appeared.h"
+#include "WaitingForTransferStart.h"
+
  
 class ReadyForPiece : public State {
 public: //============================================ constructors & destructors ============================================
