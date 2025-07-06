@@ -12,6 +12,7 @@
 
 
 
+
 class TimeProfileManager {
 public:
 	static void save_profile(const TimeProfile& timeprofile, const std::string& save_location) {
@@ -58,8 +59,8 @@ public:
 			}
 
 			try {
-				time_profile->fast_timestamps[i] = std::stol(fast_str);
-				time_profile->slow_timestamps[i] = std::stol(slow_str);
+				time_profile->fast_timestamps[i] = (double) std::stol(fast_str) * TIMESTAMP_FACTOR;
+				time_profile->slow_timestamps[i] = (double) std::stol(slow_str) * TIMESTAMP_FACTOR; //TODO here also additional timestamp factor?
 			} catch(const std::invalid_argument& e) {
 				std::cerr << "Error: Invalid number format at line " << i + 2 << "\n";
 				break;
@@ -84,6 +85,16 @@ public:
 		input_timetable->fast_deadlines[3] = input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
 		input_timetable->fast_deadlines[4] = input_timetable->fast_timestamps[(int) Timestamp::END] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED];
 		input_timetable->fast_deadlines[5] = input_timetable->fast_timestamps[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
+
+		for(auto& current_deadline: input_timetable->fast_deadlines){
+			current_deadline *= DEADLINE_FACTOR;
+			//std::cout << "Fast deadline: " << current_deadline << std::endl;
+		}
+
+		for(auto& current_deadline: input_timetable->slow_deadlines){
+			current_deadline *= DEADLINE_FACTOR;
+			//std::cout << "Slow deadline: " << current_deadline << std::endl;
+		}
 	}
 };
 

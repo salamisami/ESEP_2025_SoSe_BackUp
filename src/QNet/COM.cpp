@@ -212,7 +212,7 @@ void COM::runServer()
                 rampEvent.value.sival_int = rampfull ? static_cast<int>(COM_Enum::RAMP_FULL)
                                                      : static_cast<int>(COM_Enum::RAMP_NOT_FULL);
                 _pulse mqttEvent;
-                mqttEvent.code = static_cast<int8_t>(Topic::COM_Enum);
+                mqttEvent.code = static_cast<int8_t>(Topic::COM);
                 mqttEvent.value.sival_int = mqttConnected ? static_cast<int>(COM_Enum::COM_MQTT_CONNECTED)
                                                           : static_cast<int>(COM_Enum::COM_MQTT_DISCONNECTED);
                 {
