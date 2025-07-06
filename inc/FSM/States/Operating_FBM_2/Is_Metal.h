@@ -3,6 +3,9 @@
 #pragma once
  
 #include "State.h"
+#include "PieceAppeared.h"
+#include "Piece_Missing.h"
+#include "Gate.h"
  
 class Is_Metal : public State {
 public: //============================================ constructors & destructors ============================================
