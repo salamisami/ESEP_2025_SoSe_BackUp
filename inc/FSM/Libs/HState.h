@@ -44,11 +44,8 @@ public:
         substate->exit();
     }
 
-    //TODO make virtual
-    virtual State* clone() override {
-        DEBUG("Warning, function of abstract class HState::clone() is called.");
-        return nullptr;
-    }
+    //virtual State* clone() override = 0;
+
     virtual std::string get_current_state() override {
         std::string substate_name = substate->get_current_state();
         return substate_name;

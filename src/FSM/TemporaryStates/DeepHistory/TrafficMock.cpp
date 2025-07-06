@@ -25,3 +25,7 @@ void TrafficMock::exit() {
 State* TrafficMock::clone() {
 	return new TrafficMock(data, substate->clone());
 }
+
+State* TrafficMock::laser_front_blocked() {
+	return State::EXIT_STATE;
+}

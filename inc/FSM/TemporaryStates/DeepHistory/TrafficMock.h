@@ -17,6 +17,7 @@ public: //================================================ public functions ====
     void exit() override;
 	State* clone() override;
     
+	State* laser_front_blocked() override;
 
 
 private: //================================================ private variables ================================================

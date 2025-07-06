@@ -23,3 +23,7 @@ void FastTemp::exit() {
 State* FastTemp::button_reset_pressed() {
 	return new SlowTemp(data);
 }
+
+State* FastTemp::clone() {
+	return new FastTemp(data);
+}

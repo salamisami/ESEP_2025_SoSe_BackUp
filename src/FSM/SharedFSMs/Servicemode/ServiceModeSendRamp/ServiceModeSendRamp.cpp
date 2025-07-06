@@ -1,0 +1,50 @@
+#include "ServiceModeSendRamp.h"
+
+//================================================= constructors & destructors =================================================
+ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data) : OrthState(data,
+	{
+		new IdleSMSR(data),
+		new SendToRamp(data)
+	}
+	, new ReadyForCDF(data)
+	, true
+) {
+}
+
+ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data, std::deque<State*> initial_substates) :OrthState(data, initial_substates) {}
+
+ServiceModeSendRamp::~ServiceModeSendRamp() {}
+
+//===================================================== private functions =====================================================
+
+
+//===================================================== public functions =====================================================
+void ServiceModeSendRamp::entry() {
+	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
+	data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATE);
+	OrthState::entry();
+}
+
+void ServiceModeSendRamp::exit() {
+	OrthState::exit();
+	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
+}
+
+State* ServiceModeSendRamp::clone() {
+	return new ServiceModeSendRamp(data, clone_substates());
+}
+
+// State* ServiceModeSendRamp::laser_ramp_blocked(){
+// 	for(auto& current_substate: substates){
+// 		State* newSubstate = current_substate->laser_ramp_blocked();
+// 		if(newSubstate != nullptr){
+// 			return newSubstate;
+// 		}
+// 	}
+// 	return nullptr;
+// }
