@@ -48,7 +48,7 @@ State* Gate_End::timer(TIMER_ID id){
 	  auto piece = data->pieces_map->at(data->event_payload);
 	  Area current_area = piece->piece_tracker.getArea();
 	  int current_position = piece->piece_tracker.getPosition();
-    if(current_area == AREA::GATE_END){
+    if(current_area == Area::GATE_END){
 	    data->timer->start_timer(100, TIMER_ID::GATE_END);
     }
     /*TODO:After Distrance Tracker/Piece tracker patch 
@@ -75,8 +75,8 @@ State* Gate_End::laser_back_blocked(){
 	auto piece = data->pieces_map->at(data->event_payload);
 	Area current_area = piece->piece_tracker.getArea();
 	int current_position = piece->piece_tracker.getPosition();
-  if(current_area == AREA::GATE_END){
-    return new End(Data);
+  if(current_area == Area::GATE_END){
+    return new End(data);
   }
   return nullptr;
 }

@@ -100,6 +100,9 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::MOTOR_STOP_FSM:
             newState = state->motor_stop_fsm();
             break;
+        case Internal_Enum::SORTED:
+            newState = state->sorted();
+            break;
         default:
             break;
     }

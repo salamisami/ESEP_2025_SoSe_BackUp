@@ -97,7 +97,8 @@ enum class Internal_Enum : int {
     MOTOR_FAST,
     MOTOR_SLOW,
     MOTOR_STOP_FSM,
-    NEW_PIECE
+    NEW_PIECE,
+    SORTED
 };
 
 enum class COM_Enum : int {
@@ -155,7 +156,8 @@ enum class TIMER_ID : int {
     SORTINGOUT_PT1,
     GATEEND_PT1,
     PENDINGTRANSFERREQUESTNOTATEND,
-    PENDINGTRANSFERREQUEST_PT1
+    PENDINGTRANSFERREQUEST_PT1,
+    GATE_END
 };
 
 enum class PieceEnum : int {
