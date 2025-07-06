@@ -15,6 +15,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
+	State* clone() override;
+
 	State* adc_invalid_measure() override;
     
 

@@ -23,3 +23,7 @@ void RampErrorResolvedUnquittiert::exit(){
 State* RampErrorResolvedUnquittiert::button_reset_released() {
     return new RampNoError(data);
 }
+
+State* RampErrorResolvedUnquittiert::clone() {
+    return new RampErrorResolvedUnquittiert(data);
+}

@@ -29,3 +29,7 @@ void GateToRampCRS::exit(){
 State* GateToRampCRS::laser_ramp_blocked(){
 	return State::EXIT_STATE;
 }
+
+State* GateToRampCRS::clone() {
+	return new GateToRampCRS(data);
+}

@@ -23,3 +23,7 @@ void PieceAtADCCDF::exit(){
 State* PieceAtADCCDF::adc_top_area_unblocked(){
 	return new ADCToGateCDF(data);
 }
+
+State* PieceAtADCCDF::clone() {
+	return new PieceAtADCCDF(data);
+}

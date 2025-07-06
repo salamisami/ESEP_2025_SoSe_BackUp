@@ -28,3 +28,7 @@ State* ReplayWarning::button_reset_released()
 {
     return new ReplayNoWarning(data);
 }
+
+State* ReplayWarning::clone() {
+    return new ReplayWarning(data);
+}

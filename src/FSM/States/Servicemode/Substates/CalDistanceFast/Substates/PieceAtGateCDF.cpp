@@ -24,3 +24,7 @@ void PieceAtGateCDF::exit(){
 State* PieceAtGateCDF::laser_sorting_gate_unblocked(){
 	return new GateToEndCDF(data);
 }
+
+State* PieceAtGateCDF::clone() {
+	return new PieceAtGateCDF(data);
+}

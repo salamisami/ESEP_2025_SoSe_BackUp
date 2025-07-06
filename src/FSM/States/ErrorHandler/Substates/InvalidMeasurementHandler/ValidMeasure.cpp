@@ -26,3 +26,7 @@ State* ValidMeasure::adc_invalid_measure()
 {
     return new MeasureFehlerUnquittiert(data);
 }
+
+State* ValidMeasure::clone() {
+    return new ValidMeasure(data);
+}

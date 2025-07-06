@@ -30,3 +30,7 @@ State* RampNotFull::laser_ramp_blocked()
 {
     return new RampTimer(data);
 }
+
+State* RampNotFull::clone() {
+    return new RampNotFull(data);
+}

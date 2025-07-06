@@ -28,3 +28,7 @@ void ADCFreiUnquittiert::exit(){
 State* ADCFreiUnquittiert::button_reset_released() {
     return new ValidMeasure(data);
 }
+
+State* ADCFreiUnquittiert::clone() {
+    return new ADCFreiUnquittiert(data);
+}

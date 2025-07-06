@@ -30,3 +30,7 @@ State* EndToGateCRF::timer(TIMER_ID id){
 	}
 	return nullptr;
 }
+
+State* EndToGateCRF::clone() {
+	return new EndToGateCRF(data);
+}

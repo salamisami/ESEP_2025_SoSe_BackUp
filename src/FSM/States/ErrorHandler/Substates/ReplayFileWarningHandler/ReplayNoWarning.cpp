@@ -26,3 +26,7 @@ void ReplayNoWarning::exit(){
 State* ReplayNoWarning::cant_find_rep_conf() {
     return new ReplayWarning(data);
 }
+
+State* ReplayNoWarning::clone() {
+    return new ReplayNoWarning(data);
+}

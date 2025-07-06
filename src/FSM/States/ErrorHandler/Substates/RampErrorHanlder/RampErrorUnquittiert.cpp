@@ -30,3 +30,7 @@ State* RampErrorUnquittiert::com_ramp_not_full() {
 State* RampErrorUnquittiert::button_reset_released() {
     return new RampErrorQuittiert(data);
 }
+
+State* RampErrorUnquittiert::clone() {
+    return new RampErrorUnquittiert(data);
+}

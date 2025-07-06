@@ -17,6 +17,8 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 
+	State* clone() override;
+
 	State* mqtt_connected() override;
 	State* button_reset_released() override;
     

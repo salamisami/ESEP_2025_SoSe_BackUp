@@ -32,3 +32,7 @@ State* EStopQuit::com_button_estop_pressed(){
 State* EStopQuit::button_reset_released(){
     return new ModeHandler(data);
 }
+
+State* EStopQuit::clone() {
+    return new EStopQuit(data);
+}

@@ -28,3 +28,7 @@ void ADCFrei::exit(){
 State* ADCFrei::button_reset_released() {
     return new ValidMeasure(data);
 }
+
+State* ADCFrei::clone() {
+    return new ADCFrei(data);
+}

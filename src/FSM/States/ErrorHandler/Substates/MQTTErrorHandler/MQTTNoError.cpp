@@ -26,3 +26,7 @@ State* MQTTNoError::error_c_lost_mqtt()
 {
     return new MQTTFehlerUnquittiert(data);
 }
+
+State* MQTTNoError::clone() {
+    return new MQTTNoError(data);
+}

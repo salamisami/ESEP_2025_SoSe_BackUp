@@ -28,3 +28,7 @@ State* CalibWarning::button_reset_released()
 {
     return new CalibNoWarning(data);
 }
+
+State* CalibWarning::clone() {
+    return new CalibWarning(data);
+}

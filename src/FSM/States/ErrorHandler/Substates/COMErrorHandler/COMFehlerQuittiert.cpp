@@ -24,6 +24,10 @@ void COMFehlerQuittiert::exit(){
 	PRINT_STATE;
 }
 
+State* COMFehlerQuittiert::clone() {
+    return new COMFehlerQuittiert(data);
+}
+
 State* COMFehlerQuittiert::com_connected()
 {
     return new COMNoError(data);

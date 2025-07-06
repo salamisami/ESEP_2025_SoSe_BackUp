@@ -24,6 +24,10 @@ void COMFehlerUnquittiert::exit(){
 	PRINT_STATE;
 }
 
+State* COMFehlerUnquittiert::clone() {
+    return new COMFehlerUnquittiert(data);
+}
+
 State* COMFehlerUnquittiert::button_reset_released()
 {
     return new COMFehlerQuittiert(data);

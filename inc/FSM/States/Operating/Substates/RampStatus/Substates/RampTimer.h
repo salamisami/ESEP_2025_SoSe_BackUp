@@ -16,6 +16,8 @@ public: //============================================ constructors & destructor
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
     
 	State* laser_ramp_unblocked() override;
 	State* timer(TIMER_ID id) override;

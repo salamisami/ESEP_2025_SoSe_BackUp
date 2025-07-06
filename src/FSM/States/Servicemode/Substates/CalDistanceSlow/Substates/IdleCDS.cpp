@@ -22,3 +22,7 @@ void IdleCDS::exit(){
 State* IdleCDS::laser_front_unblocked(){
     return new StartCDS(data);
 }
+
+State* IdleCDS::clone() {
+    return new IdleCDS(data);
+}

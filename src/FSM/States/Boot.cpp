@@ -30,3 +30,7 @@ State* Boot::is_switch(){
     DEBUG("Machine is Switch Type");
     return new ModeHandler(data);
 }
+
+State* Boot::clone() {
+    return new Boot(data);
+}

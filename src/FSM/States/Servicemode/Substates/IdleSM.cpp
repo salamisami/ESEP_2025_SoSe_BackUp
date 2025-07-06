@@ -24,3 +24,7 @@ void IdleSM::exit() {
 State* IdleSM::laser_front_blocked() {
 	return new ServiceModeSendRamp(data);
 }
+
+State* IdleSM::clone() {
+	return new IdleSM(data);
+}

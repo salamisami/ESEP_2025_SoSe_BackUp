@@ -14,6 +14,8 @@ public: //============================================ constructors & destructor
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
     
 	State* laser_sorting_gate_unblocked() override;
 

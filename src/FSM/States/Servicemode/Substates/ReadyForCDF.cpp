@@ -23,3 +23,7 @@ void ReadyForCDF::exit(){
 State* ReadyForCDF::laser_front_blocked(){
     return new CalDistanceFast(data);
 }
+
+State* ReadyForCDF::clone() {
+    return new ReadyForCDF(data);
+}

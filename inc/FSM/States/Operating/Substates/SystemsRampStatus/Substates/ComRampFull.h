@@ -16,6 +16,8 @@ public: //============================================ constructors & destructor
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
     
 	State* com_ramp_not_full() override;
 	State* ramp_full() override;

@@ -32,3 +32,7 @@ State* LocalRampFull::ramp_not_full()
 {
     return new NoRampFull(data);
 }
+
+State* LocalRampFull::clone() {
+    return new LocalRampFull(data);
+}

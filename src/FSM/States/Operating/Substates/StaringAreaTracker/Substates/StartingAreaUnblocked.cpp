@@ -29,3 +29,7 @@ State* StartingAreaUnblocked::laser_front_blocked()
 {
     return new StartingAreaBlocked(data);
 }
+
+State* StartingAreaUnblocked::clone() {
+    return new StartingAreaUnblocked(data);
+}

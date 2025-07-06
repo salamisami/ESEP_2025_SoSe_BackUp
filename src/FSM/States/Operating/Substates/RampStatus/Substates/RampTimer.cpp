@@ -33,3 +33,7 @@ State* RampTimer::timer(TIMER_ID id)
     if(id == TIMER_ID::RAMP_TIMER) return new RampFull(data);
     return nullptr;
 }
+
+State* RampTimer::clone() {
+    return new RampTimer(data);
+}

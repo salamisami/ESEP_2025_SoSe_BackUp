@@ -25,3 +25,7 @@ State* GateToEndCDS::laser_back_blocked(){
     //return new CalRampSlow(data);
     return State::EXIT_STATE;
 }
+
+State* GateToEndCDS::clone() {
+    return new GateToEndCDS(data);
+}

@@ -25,3 +25,7 @@ State* GateToEndCDF::laser_back_blocked(){
     //return new CalRampFast(data);
     return State::EXIT_STATE;
 }
+
+State* GateToEndCDF::clone() {
+    return new GateToEndCDF(data);
+}

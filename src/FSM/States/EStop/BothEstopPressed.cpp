@@ -25,3 +25,7 @@ State* BothEstopPressed::button_estop_released(){
 State* BothEstopPressed::com_button_estop_released(){
     return new EStopViaLocal(data);
 }
+
+State* BothEstopPressed::clone() {
+    return new BothEstopPressed(data);
+}

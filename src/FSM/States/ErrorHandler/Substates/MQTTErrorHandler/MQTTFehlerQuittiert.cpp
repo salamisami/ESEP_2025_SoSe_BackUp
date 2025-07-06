@@ -27,3 +27,7 @@ State* MQTTFehlerQuittiert::mqtt_connected()
 {
     return new MQTTNoError(data);
 }
+
+State* MQTTFehlerQuittiert::clone() {
+    return new MQTTFehlerQuittiert(data);
+}

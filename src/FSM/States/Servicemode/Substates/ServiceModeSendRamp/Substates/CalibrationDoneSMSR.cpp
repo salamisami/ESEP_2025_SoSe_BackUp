@@ -23,3 +23,7 @@ void CalibrationDoneSMSR::exit(){
 State* CalibrationDoneSMSR::laser_ramp_blocked(){
     return State::EXIT_STATE;
 }
+ 
+State* CalibrationDoneSMSR::clone() {
+    return new CalibrationDoneSMSR(data);
+}

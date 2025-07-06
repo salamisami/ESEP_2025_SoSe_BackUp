@@ -25,3 +25,7 @@ State* IdleLPT::laser_sorting_gate_blocked(){
     }
     return nullptr;
 }
+
+State* IdleLPT::clone() {
+    return new IdleLPT(data, duration);
+}

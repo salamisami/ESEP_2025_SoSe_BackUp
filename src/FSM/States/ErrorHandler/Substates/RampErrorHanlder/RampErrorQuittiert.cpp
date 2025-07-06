@@ -26,3 +26,7 @@ State* RampErrorQuittiert::ramp_not_full() {
 State* RampErrorQuittiert::com_ramp_not_full() {
     return new RampErrorResolvedUnquittiert(data);
 }
+
+State* RampErrorQuittiert::clone() {
+    return new RampErrorQuittiert(data);
+}

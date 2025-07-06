@@ -23,3 +23,7 @@ void ReadyForCDS::exit(){
 State* ReadyForCDS::laser_front_blocked(){
     return new CalDistanceSlow(data);
 }
+
+State* ReadyForCDS::clone() {
+    return new ReadyForCDS(data);
+}

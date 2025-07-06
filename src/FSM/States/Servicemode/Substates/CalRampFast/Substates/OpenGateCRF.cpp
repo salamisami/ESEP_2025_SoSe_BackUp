@@ -32,3 +32,7 @@ State* OpenGateCRF::timer(TIMER_ID id){
 	}
 	return nullptr;
 }
+
+State* OpenGateCRF::clone() {
+	return new OpenGateCRF(data);
+}

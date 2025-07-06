@@ -30,7 +30,6 @@ State* StartingAreaBlocked::unblock_starting_area() {
     return new StartingAreaUnblocked(data);
 }
 
-//TODO uncomment this code
 State* StartingAreaBlocked::laser_front_blocked() {
     return new PiecesTooClose(data);
 }
@@ -41,3 +40,8 @@ State* StartingAreaBlocked::laser_front_blocked() {
 //     }
 //     return nullptr;
 // }
+
+State* StartingAreaBlocked::clone() {
+    return new StartingAreaBlocked(data);
+}
+

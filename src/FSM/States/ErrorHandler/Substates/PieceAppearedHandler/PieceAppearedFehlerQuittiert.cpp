@@ -29,3 +29,7 @@ State* PieceAppearedFehlerQuittiert::button_reset_released()
 {
     return new PieceAppearedNoError(data);
 }
+
+State* PieceAppearedFehlerQuittiert::clone() {
+    return new PieceAppearedFehlerQuittiert(data);
+}
