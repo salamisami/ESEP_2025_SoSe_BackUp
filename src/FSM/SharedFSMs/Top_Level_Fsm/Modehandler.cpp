@@ -31,8 +31,8 @@ State* Modehandler::error_c_lost_mqtt(){
 }
 
 State* Modehandler::button_estop_pressed(){
-	State* cloned = this->clone();
-	data->modehandler_history->push(cloned);
+	// State* cloned = this->clone();
+	// data->modehandler_history->push(cloned);
 	return new EStop(data,new EStopViaLocal(data));
 }
 

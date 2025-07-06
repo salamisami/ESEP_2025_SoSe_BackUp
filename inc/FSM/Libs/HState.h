@@ -44,6 +44,8 @@ public:
         substate->exit();
     }
 
+    //virtual State* clone() override = 0;
+
     virtual std::string get_current_state() override {
         std::string substate_name = substate->get_current_state();
         return substate_name;

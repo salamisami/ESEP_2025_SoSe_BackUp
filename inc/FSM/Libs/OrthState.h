@@ -51,6 +51,8 @@ public:
         }
     }
 
+    //virtual State* clone() override = 0;
+
 
     /**
      * @brief adds one substate to run parallel among with other existing substates. This function will also call the entry() of the new added substate.

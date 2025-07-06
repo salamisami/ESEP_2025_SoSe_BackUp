@@ -10,13 +10,16 @@
 
 class ServiceModeSendRamp : public OrthState {
 public: //============================================ constructors & destructors ============================================
-    ServiceModeSendRamp(ContextData* data) ;
+    ServiceModeSendRamp(ContextData* data);
+	ServiceModeSendRamp(ContextData* data, std::deque<State*> initial_substates);
     virtual ~ServiceModeSendRamp();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
 
 	//State* laser_ramp_blocked() override;
     
