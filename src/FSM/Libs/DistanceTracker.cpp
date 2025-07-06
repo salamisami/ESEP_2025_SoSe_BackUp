@@ -88,8 +88,8 @@ std::pair<Area, double> DistanceTracker::timestamp_to_area_pos(const long& times
             return std::make_pair(area, position);
         }
     }
-    area = Area::GATE_END;
-    position = 100;
+    area = Area::OUT_OF_RANGE;
+    position = 0;
     return std::make_pair(area, position);
 }
 
@@ -114,6 +114,9 @@ long DistanceTracker::area_pos_to_timestamp(const Area& input_area, const double
         default:
             THROW("Wrong mode");
             return 0;
+    }
+    if(input_area == Area::OUT_OF_RANGE){
+        return 0;
     }
     if(input_area == Area::GATE_RAMP) {
         //TODO
@@ -153,7 +156,6 @@ std::pair<Area, double> DistanceTracker::calculate_area_pos(const Area& last_are
     if(mode == (int) 0) {
         return std::make_pair(last_area, last_pos);
     }
-    //TODO continue here
     long last_position_in_ms = (long) area_pos_to_timestamp(last_area, last_pos, mode);
     long current_position_in_ms = stopwatch.peek_time() + last_position_in_ms;
     stopwatch.reset();
@@ -163,10 +165,16 @@ std::pair<Area, double> DistanceTracker::calculate_area_pos(const Area& last_are
 
 void DistanceTracker::update() {
     auto result = calculate_area_pos(current_area, current_position, current_mode);
-    //TODO on speed change, stopwatch must be re-calculated
     //stopwatch.start();
     current_area = result.first;
     current_position = result.second;
+}
+
+void DistanceTracker::update_distance_force(const Area& area, const double& position) {
+    current_area = area;
+    current_position = position;
+    stopwatch.reset();
+    stopwatch.start();
 }
 
 
@@ -212,6 +220,10 @@ void DistanceTracker::reset() {
 std::pair<Area, double> DistanceTracker::get_distance() {
     update();
     return std::make_pair(current_area, current_position);
+}
+
+void DistanceTracker::print_distance() {
+    std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
 }
 
 bool DistanceTracker::send_to_ramp() {

@@ -13,7 +13,7 @@
 
 #define EXPECT_STATE(expected_state) \
     do { \
-        WAIT(50); \
+        WAIT(10); \
         std::string is_state = logic->show_state(); \
         EXPECT_EQ(is_state, expected_state); \
     } while (0)
@@ -201,16 +201,16 @@ TEST_F(RealImplementationSetup, PutNewPiece){
     EXPECT_STATE("Start_PT1 Fast PieceFlat StartingAreaBlocked");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
     EXPECT_STATE("StartADC_PT1 Fast PieceFlat StartingAreaBlocked");
-    WAIT(2100);
+    WAIT(2000);
     EXPECT_STATE("ADC_PT1 Slow PieceFlat StartingAreaUnblocked");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
     remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
     WAIT(1123);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
     remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_WF_DETECT);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
     EXPECT_STATE("ADCGate_PT1 Fast PieceFlat StartingAreaUnblocked");
     
-    WAIT(1400);
+    WAIT(1500);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
     EXPECT_STATE("GateEnd_PT1 Fast PieceTall StartingAreaUnblocked");
     WAIT(400);

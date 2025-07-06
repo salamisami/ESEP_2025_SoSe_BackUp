@@ -29,8 +29,9 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 	auto piece = data->pieces_map->at(localdata_.id);
 	auto distance = piece->piece_tracker.get_distance();
 	Area current_area = distance.first;
+	piece->piece_tracker.print_distance();
 
-	if(current_area != Area::GATE_END) {
+	if(current_area == Area::OUT_OF_RANGE) {
 		//PieceMissing
 		data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
@@ -62,19 +63,12 @@ State* GateEnd_PT1::laser_back_blocked() {
 	auto piece = data->pieces_map->at(localdata_.id);
 	auto distance = piece->piece_tracker.get_distance();
 	Area current_area = distance.first;
+	auto current_pos = distance.second;
 
-	if(current_area == Area::GATE_END) {
+	if(current_area == Area::GATE_END && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)) {
 		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.id);
 		return new PendingTransferRequest_PT1(data, localdata_);
 	}
 
 	return nullptr;
-}
-
-State* GateEnd_PT1::let_through() {
-	return new GateEnd_PT1(data, localdata_);
-}
-
-State* GateEnd_PT1::sort_out_fbm2() {
-	return new GateEnd_PT1(data, localdata_);
 }

@@ -19,9 +19,9 @@ enum class Area : uint8_t {
 	START_ADC = 0,
 	ADC,
 	ADC_GATE,
-
 	GATE,
 	GATE_END,
+	OUT_OF_RANGE,
 	GATE_RAMP
 };
 
@@ -66,6 +66,8 @@ public: //================================================ public functions ====
 
 	void reset();
 
+	void update_distance_force(const Area& area, const double& position);
+
 
 
 	/**
@@ -86,6 +88,7 @@ public: //================================================ public functions ====
 	// double getPosition();
 
 	std::pair<Area, double> get_distance();
+	void print_distance();
 
 	bool debug = false;
 
