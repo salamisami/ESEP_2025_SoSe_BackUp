@@ -75,7 +75,6 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 		auto current_pos = distance.second;
 
 		if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)){
-			//piece->piece_tracker.update_distance_force(Area::GATE, 0);
 			return new Gate_PT1(data, localdata_);
 		}
 
@@ -92,7 +91,6 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 		auto current_pos = distance.second;
 
 		if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)){
-			//piece->piece_tracker.update_distance_force(Area::GATE, 0);
 			return new IsMetal_PT1(data, localdata_);
 		}
 

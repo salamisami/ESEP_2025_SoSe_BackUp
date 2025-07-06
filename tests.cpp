@@ -196,7 +196,7 @@ TEST_F(DeepHistorySetup, DeepHistoryTest) {
 TEST_F(RealImplementationSetup, PutNewPiece){
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-
+    EXPECT_STATE("PieceControllerFBM1 Idle PieceFlat StartingAreaUnblocked");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
     EXPECT_STATE("Start_PT1 Fast PieceFlat StartingAreaBlocked");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
@@ -211,17 +211,24 @@ TEST_F(RealImplementationSetup, PutNewPiece){
     EXPECT_STATE("ADCGate_PT1 Fast PieceFlat StartingAreaUnblocked");
     
     WAIT(1500);
+    DEBUG(">>>>>>laser sorting gate blocked<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
     EXPECT_STATE("GateEnd_PT1 Fast PieceTall StartingAreaUnblocked");
     WAIT(400);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    DEBUG(">>>>>>laser sorting gate unblocked<<<<<<<<<<<");
     WAIT(2000);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);   
-    EXPECT_STATE("PendingTransferRequest_PT1 Fast PieceTall StartingAreaUnblocked"); 
+    EXPECT_STATE("PendingTransferRequest_PT1 Stop PieceTall StartingAreaUnblocked"); 
+
+    //wait till fbm2 ready
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_READY);
+    EXPECT_STATE("Transfer_PT1 Fast PieceTall StartingAreaUnblocked");
     WAIT(1000);
-    auto distance = data->piece_tracker.get_distance();
-    EXPECT_EQ(distance.first, Area::GATE_END);
-    EXPECT_GT(distance.second, 95);
+    //transfer done
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_DONE);
+    EXPECT_STATE("PieceControllerFBM1 Stop PieceTall StartingAreaUnblocked");
 
 
 }
