@@ -4,7 +4,6 @@
 
 #include "QNet.h"
 #include "Context.h"
-#include "IdleMode.h"
 #include "Boot.h"
 #include "Event.h"
 
@@ -16,19 +15,11 @@ template <typename InitialState>
 class Logic {
 public: //============================================ constructors & destructors ============================================
     /**
-     * @brief This constructor is used, if the dispatcher is smart, so that the logic will use 2 different senders to send events out and send event to itself.
-     * @param local sender to send events out
-     * @param to_self_sender to send events to self
-     */
-    Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender);
-
-    /**
      * @brief Same as above, but the context data can be injected
-     * @param local sender to send events out
-     * @param to_self_sender to send events to self
+     * @param local_sender sender to send events out
      * @param data context data to be injected
      */
-    Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender, ContextData* input_data);
+    Logic(I_Receiver* local_receiver, I_Sender* local_sender, ContextData* input_data);
 
     /**
     * @brief This constructor is used, if the dispatcher is broadcast type. The context will use the same sender to send events out and to self
@@ -46,7 +37,6 @@ private: //================================================ private variables ==
     //pointers
     I_Receiver* local_receiver;
     I_Sender* local_sender;
-    I_Sender* to_self_sender;
     ContextData* data;
     Context<InitialState>* fsm;
     //primitive types
@@ -60,19 +50,12 @@ private: //================================================ private functions ==
 };
 
 //================================================= constructors & destructors =================================================
-template <typename InitialState>
-Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender)
-    : local_receiver(local_receiver)
-    , local_sender(local_sender)
-    , to_self_sender(to_self_sender) {
-    init();
-}
+
 
 template <typename InitialState>
-Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender, ContextData* input_data)
+Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, ContextData* input_data)
     : local_receiver(local_receiver)
     , local_sender(local_sender)
-    , to_self_sender(to_self_sender)
     , data(input_data) {
     fsm = new Context<InitialState>(data);
     logicRunning = true;
@@ -83,14 +66,13 @@ Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I
 template <typename InitialState>
 Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender)
     : local_receiver(local_receiver)
-    , local_sender(local_sender)
-    , to_self_sender(local_sender) {
+    , local_sender(local_sender){
     init();
 }
 
 template <typename InitialState>
 void Logic<InitialState>::init() {
-    data = new ContextData(local_sender, to_self_sender);
+    data = new ContextData(local_sender);
     fsm = new Context<InitialState>(data);
     logicRunning = true;
     logicThread = std::thread(&Logic::threadFunction, this);

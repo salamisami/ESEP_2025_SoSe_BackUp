@@ -31,7 +31,8 @@ void SimulatePiece::entry(){
 void SimulatePiece::exit(){
 	OrthState::exit();
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
-	std::cout << "Area: " << (int) data->piece_tracker.getArea() << ", " << "Position: " << (double) data->piece_tracker.getPosition() << std::endl;
+	auto distance = data->piece_tracker.get_distance();
+	std::cout << "Area: " << (int) distance.first << ", " << "Position: " << (double) distance.second << std::endl;
 	//delete data->piece_tracker;
 	PRINT_STATE;
 }
