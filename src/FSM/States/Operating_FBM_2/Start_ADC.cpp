@@ -55,14 +55,14 @@ State* Start_ADC::request_transfer(){
 }
 
 State* Start_ADC::laser_back_blocked(){
-	return new piece_appeared(data);
+	return new pieceappeared(data);
 }
 State* Start_ADC::laser_front_blocked(){
-	return new piece_appeared(data);
+	return new pieceappeared(data);
 }
 State* Start_ADC::laser_sorting_gate_blocked(){
-	return new piece_appeared(data);
+	return new pieceappeared(data);
 }
 State* Start_ADC::laser_ramp_blocked(){
-	return new piece_appeared(data);
+	return new pieceappeared(data);
 }

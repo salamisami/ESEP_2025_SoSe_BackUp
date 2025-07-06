@@ -3,7 +3,7 @@
 #pragma once
  
 #include "State.h"
-#include "PieceAppeared.h"
+#include "Pieceappeared.h"
 #include "Piece_Missing.h"
 #include "Gate.h"
  
