@@ -37,23 +37,23 @@ State* Start_Gate::clone(){
 	return new Start_Gate(data);
 }
 
-State* request_transfer(){
+State* Start_Gate::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
 	return new Start_Gate(data);
 }
 State* Start_Gate::laser_sorting_gate_blocked(){
-	if (data->piece_FBM2->piece_tracker.getPosition()() >= WAY_TO_AREA && piece_FBM2->piece_tracker.getArea() == Area::ADC_GATE) {
+	if (data->piece_FBM2->piece_tracker.getPosition() >= WAY_TO_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::ADC_GATE) {
 		return new Gate(data);
 	} else {
-		return new Piece_appeared(data);
+		return new Pieceappeared(data);
 	}
 }
 State* Start_Gate::laser_back_blocked(){
-	return new Piece_appeared(data);
+	return new Pieceappeared(data);
 }
 State* Start_Gate::laser_front_blocked(){
-	return new Piece_appeared(data);
+	return new Pieceappeared(data);
 }
 State* Start_Gate::laser_ramp_blocked(){
-	return new Piece_appeared(data);
+	return new Pieceappeared(data);
 }

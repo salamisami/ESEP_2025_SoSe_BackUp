@@ -37,15 +37,15 @@ State* End::request_transfer(){
 }
 
 State* End::laser_front_blocked(){
-  return new Piece_appeared(data);
+  return new Pieceappeared(data);
 }
 
 State* End::laser_sorting_gate_blocked(){
-  return new Piece_appeared(data);
+  return new Pieceappeared(data);
 }
 
 State* End::laser_ramp_blocked(){
-  return new Piece_appeared(data);
+  return new Pieceappeared(data);
 }
 
 State* End::laser_back_unblocked(){

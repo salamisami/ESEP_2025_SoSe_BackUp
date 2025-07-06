@@ -5,6 +5,7 @@
 #include "State.h"
 #include "ReadyForPiece.h"
 #include "Pieceappeared.h"
+#include "Transfer.h"
  
 class WaitingForTransferStart : public State {
 public: //============================================ constructors & destructors ============================================

@@ -47,20 +47,20 @@ State* ADC_Gate::request_transfer() {
 	return new ADC_Gate(data);
 }
 State* ADC_Gate::laser_back_blocked() {
-	return new Piece_appeared(data);
+	return new Pieceappeared(data);
 }
 State* ADC_Gate::laser_front_blocked() {
-	return new Piece_appeared(data);
+	return new Pieceappeared(data);
 }
 State* ADC_Gate::laser_ramp_blocked() {
-	return new Piece_appeared(data);
+	return new Pieceappeared(data);
 }
 State* ADC_Gate::laser_sorting_gate_blocked() {
 	if 	((data->piece_FBM2->piece_tracker.getPosition() >= WAY_TO_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::ADC_GATE) ||
 		(data->piece_FBM2->piece_tracker.getPosition() <= OVER_AREA && data->piece_FBM2->piece_tracker.getArea() == Area::GATE)) {
 		return new Gate(data);
 	} else {
-		return new Piece_appeared(data);
+		return new Pieceappeared(data);
 	}
 }
 

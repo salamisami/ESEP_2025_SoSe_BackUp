@@ -58,11 +58,11 @@ State* TransferDone::laser_front_unblocked(){
 	}
 }
 State* TransferDone::laser_sorting_gate_blocked(){
-	return new Piece_appeared(data);	
+	return new Pieceappeared(data);
 }
 State* TransferDone::laser_ramp_blocked(){
-	return new Piece_appeared(data);
+	return new Pieceappeared(data);
 }
 State* TransferDone::laser_back_blocked(){
-	return new Piece_appeared(data);
+	return new Pieceappeared(data);
 }

@@ -5,6 +5,8 @@
 #include "State.h"
 #include "Piece_Missing.h"
 #include "ReadyForPiece.h"
+#include "Pieceappeared.h"
+
  
 class Sorting_out : public State {
 public: //============================================ constructors & destructors ============================================
@@ -23,7 +25,7 @@ public: //================================================ public functions ====
   State* laser_ramp_blocked() override;
   State* laser_back_blocked() override;
   State* laser_front_blocked() override;
-  //State* laser_gate_blocked() override;
+  State* laser_gate_blocked() override;
   State* request_transfer() override;
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

@@ -6,6 +6,8 @@
 #include "State.h"
 #include "Pieceappeared.h"
 #include "Piece_Missing.h" 
+#include "Measuring.h"
+
 class ADC : public State {
 public: //============================================ constructors & destructors ============================================
     ADC(ContextData* data); //for all types of states
