@@ -42,56 +42,63 @@ State* WaitingForTransferStart::request_transfer() {
 	return new ReadyForPiece(data);
 }
 
-tate* ReadyForPiece::laser_front_blocked() {
+tate* WaitingForTransferStart::laser_front_blocked() {
 	return new piece_appeared(data);
 	
 }
-State* ReadyForPiece::laser_sorting_gate_blocked() {
-	return new piece_appeared(data);
-	
-}
-
-State* ReadyForPiece::laser_ramp_blocked() {
-	return new piece_appeared(data);
-	
-}
-State* ReadyForPiece::laser_back_blocked() {
+State* WaitingForTransferStart::laser_sorting_gate_blocked() {
 	return new piece_appeared(data);
 	
 }
 
-State* transfer_start_other(){
+State* WaitingForTransferStart::laser_ramp_blocked() {
+	return new piece_appeared(data);
+	
+}
+State* WaitingForTransferStart::laser_back_blocked() {
+	return new piece_appeared(data);
+	
+}
+
+State* WaitingForTransferStart::transfer_start_other(){
 	data->Piece_FBM2 = new Piece();
 	data->Piece_FBM2->type = PieceEnum::UNKNOWN;
+	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	return new Transfer(data);
 }
-State* transfer_start_tall(){
+State* WaitingForTransferStart::transfer_start_tall(){
 	data->Piece_FBM2 = new Piece();
 	data->Piece_FBM2->type = PieceEnum::TALL;
+	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	return new Transfer(data);
 }
-State* transfer_start_flat(){
+State* WaitingForTransferStart::transfer_start_flat(){
 	ata->Piece_FBM2 = new Piece();
 	data->Piece_FBM2->type = PieceEnum::FLAT;
+	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	return new Transfer(data);
 }
-State* transfer_start_tall_w_metal(){
+State* WaitingForTransferStart::transfer_start_tall_w_metal(){
 	data->Piece_FBM2 = new Piece();
 	data->Piece_FBM2->type = PieceEnum::TALL_WITH_METAL;
+	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	return new Transfer(data);
 }
-State* transfer_start_tall_sort_out(){
+State* WaitingForTransferStart::transfer_start_tall_sort_out(){
 	data->Piece_FBM2 = new Piece();
 	data->Piece_FBM2->type = PieceEnum::TALL_SORT_OUT;
+	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	return new Transfer(data);
 }
-State* transfer_start_tall_w_metal_sort_out(){
+State* WaitingForTransferStart::transfer_start_tall_w_metal_sort_out(){
 	data->Piece_FBM2 = new Piece();
 	data->Piece_FBM2->type = PieceEnum::TALL_WITH_METAL_SORT_OUT;
+	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	return new Transfer(data);
 }
-State* transfer_start_flat_sort_out(){
+State* WaitingForTransferStart::transfer_start_flat_sort_out(){
 	data->Piece_FBM2 = new Piece();
 	data->Piece_FBM2->type = PieceEnum::FLAT_SORT_OUT;
+	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	return new Transfer(data);
 }

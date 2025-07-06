@@ -19,6 +19,7 @@ Start_ADC::~Start_ADC() {}
 //===================================================== public functions =====================================================
 void Start_ADC::entry(){
 	PRINT_STATE;
+	data->timer->start_timer(100,TIMER_ID::START_ADC);
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -39,7 +40,7 @@ State* Start_ADC::clone(){
 
 State* Start_ADC::timer(TIMER_ID id) {
     if(id == TIMER_ID::START_ADC) {
-        if (data->piece_FBM2->pieceTracker.get_Position() >= WAY_TO_ADC && data->piece_FBM2->pieceTracker.getArea() == Area::START_ADC) {
+        if (data->piece_FBM2->pieceTracker.get_Position() >= WAY_TO_AREA && data->piece_FBM2->pieceTracker.getArea() == Area::START_ADC) {
 			return new ADC(data);
 		} else {
 			return new Start_ADC(data);

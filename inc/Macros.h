@@ -34,5 +34,5 @@
 #define SAVE_LOCATION_TIMEPROFILE "time_profiles.csv"
 
 #define DISTANCE_BETWEEN_PIECES 50
-#define WAY_TO_ADC 80
-#define WAY_TO_GATE 80
+#define WAY_TO_AREA 80
+#define OVER_AREA 20

@@ -21,8 +21,8 @@ void Transfer::entry(){
 	PRINT_STATE;
 	daTA->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
-	data->piece_tracker.fast();
-	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
+	piece_FBM2->piece_tracker.fast();
+	
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -44,6 +44,7 @@ State* Transfer::clone(){
 
 State* Transfer::timer(TIMER_ID id) {
     if(id == TIMER_ID::TRANSFER_FAILED) {
+		data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_FAILED);
         return new Piece_Missing(data);
     }
     return nullptr;

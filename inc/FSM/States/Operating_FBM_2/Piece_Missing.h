@@ -17,6 +17,9 @@ public: //================================================ public functions ====
     void exit() override;
 	State* clone() override;
 
+	State* request_transfer() override;
+	State* error_w_lost_fixed() override;
+
  
  
 private: //================================================ private variables ================================================

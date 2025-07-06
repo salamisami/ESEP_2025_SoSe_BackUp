@@ -28,6 +28,10 @@ public: //================================================ public functions ====
 	State* transfer_start_tall() override;
 	State* transfer_start_flat() override;
 	State* transfer_start_tall_w_metal() override;
+	State* transfer_start_tall_w_metal_sort_out() override;
+	State* transfer_start_tall_sort_out() override;
+	State* transfer_start_flat_sort_out() override;
+
 
 
  
