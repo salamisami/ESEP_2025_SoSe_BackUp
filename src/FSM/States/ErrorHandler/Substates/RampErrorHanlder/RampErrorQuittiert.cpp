@@ -20,9 +20,9 @@ void RampErrorQuittiert::exit() {
 }
 
 State* RampErrorQuittiert::ramp_not_full() {
-    return new RampErrorResolvedUnquittiert(data);
+    return new RampErrorResolved(data);
 }
 
 State* RampErrorQuittiert::com_ramp_not_full() {
-    return new RampErrorResolvedUnquittiert(data);
+    return new RampErrorResolved(data);
 }

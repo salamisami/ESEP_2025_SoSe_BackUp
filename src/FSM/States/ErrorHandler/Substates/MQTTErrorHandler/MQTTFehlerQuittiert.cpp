@@ -25,5 +25,5 @@ void MQTTFehlerQuittiert::exit(){
 
 State* MQTTFehlerQuittiert::mqtt_connected()
 {
-    return new MQTTNoError(data);
+    return new MQTTReconnected(data);
 }

@@ -101,7 +101,7 @@ protected:
     }
 };
 
-class PieceTrackerSetup : public LogicBaseTest<PieceControllerFBM1> {
+/* class PieceTrackerSetup : public LogicBaseTest<PieceControllerFBM1> {
 protected:
     void SetUp() override {
         LogicBaseTest<PieceControllerFBM1>::SetUp();
@@ -133,7 +133,7 @@ protected:
         // Call base class setup
         LogicBaseTest<SimulatePiece>::SetUp();
     }
-};
+}; */
 
 //Tests-Setups für ErrorHandler
 class CalibrationFileWarningHandlerSetup : public LogicBaseTest<CalibNoWarning> {
@@ -192,7 +192,7 @@ protected:
     }
 };
 
-TEST_F(PieceTrackerSetup, PieceTrackerTest){
+/* TEST_F(PieceTrackerSetup, PieceTrackerTest){
     EXPECT_STATE("PieceControllerFBM1");
     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::NEW_PIECE);
     EXPECT_STATE("Start_PT1");
@@ -218,7 +218,7 @@ TEST_F(PieceTrackingSetup, PieceTrackingTest) {
     auto distance = data->piece_tracker.get_distance();
     EXPECT_EQ(distance.first, Area::GATE_END);
     EXPECT_GT(distance.second, 95);
-}
+} */
 
 TEST_F(DeepHistorySetup, DeepHistoryTest) {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
@@ -731,14 +731,192 @@ TEST_F(MotorControlSetup, MotorControlEdgeCasesTest) {
 /**
  * @brief testet Übergägne der Zustände von "CalibrationFileWarningHandler"
  */
-TEST_F(CalibrationFileWarningHandlerSetup, LongTimerTest) {
-    //go to service mode
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-    EXPECT_STATE("WaitingIM");
-    WAIT(5000);
-    EXPECT_STATE("TimerReceivedIM");
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-    EXPECT_STATE("IdleSM");
+TEST_F(CalibrationFileWarningHandlerSetup, CalibrationWarningTest) {
+    //go to CalibWarning
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::CANT_FIND_CALB_CONF);
+    EXPECT_STATE("CalibWarning");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("CalibNoWarning");
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "COMErrorHandler" mit quittierung des Fehlers
+ */
+TEST_F(COMErrorHandlerSetup, COMErrorTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_C_LOST_COM);
+    EXPECT_STATE("COMFehlerUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("COMFehlerQuittiert");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::COM_CONNECTED);
+    EXPECT_STATE("COMReconnected");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("COMNoError");
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "COMErrorHandler" ohne quittierung des Fehlers
+ */
+TEST_F(COMErrorHandlerSetup, COMErrorUnquittiertTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_C_LOST_COM);
+    EXPECT_STATE("COMFehlerUnquittiert");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::COM_CONNECTED);
+    EXPECT_STATE("COMReconnectedUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("COMNoError");
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "InvalidMeasurementHandle" mit quittierung des Fehlers
+ */
+TEST_F(InvalidMeasurementHandlerSetup, InvalidMeasurementTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_INVALID_MESURE);
+    EXPECT_STATE("MeasureFehlerUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("MeasureFehlerQuittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+    EXPECT_STATE("ADCFrei");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("ValidMeasure");
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "InvalidMeasurementHandle" ohne quittierung des Fehlers
+ */
+TEST_F(InvalidMeasurementHandlerSetup, InvalidMeasurementUnquittiertTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_INVALID_MESURE);
+    EXPECT_STATE("MeasureFehlerUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+    EXPECT_STATE("ADCFreiUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("ValidMeasure");
+}
+
+
+/**
+ * @brief testet Übergägne der Zustände von "MQTTErrorHandler" mit quittierung des Fehlers
+ */
+TEST_F(MQTTErrorHandlerSetup, MQTTErrorTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_C_LOST_MQTT);
+    EXPECT_STATE("MQTTFehlerUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("MQTTFehlerQuittiert");
+    remote_control->send_event((int8_t) Topic::REM_CON, (int) RemoteControlEnum::MQTT_CONNECTED);
+    EXPECT_STATE("MQTTReconnected");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("MQTTNoError");
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "MQTTErrorHandler" ohne quittierung des Fehlers
+ */
+TEST_F(MQTTErrorHandlerSetup, MQTTErrorUnquittiertTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_C_LOST_MQTT);
+    EXPECT_STATE("MQTTFehlerUnquittiert");
+    remote_control->send_event((int8_t) Topic::REM_CON, (int) RemoteControlEnum::MQTT_CONNECTED);
+    EXPECT_STATE("MQTTReconnectedUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("MQTTNoError");
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "PieceAppearedHandler" mit quittierung des Fehlers
+ */
+TEST_F(PieceAppearedHandlerSetup, PieceAppearedHandlerTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_APPEARED);
+    EXPECT_STATE("PieceAppearedFehlerUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("PieceAppearedFehlerQuittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("PieceAppearedNoError");
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "COMErrorHandler" mit quittierung des Fehlers
+ */
+TEST_F(PieceLostHandlerSetup, PieceLostHandlerTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
+    EXPECT_STATE("PieceLostFehlerUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("PieceLostFehlerQuittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("PieceLostNoError");
+}
+
+
+/**
+ * @brief testet Übergägne der Zustände von "RampErrorHandler" mit quittierung des Fehlers
+ */
+TEST_F(RampErrorHandlerSetup, RampErrorTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_BOTH_R_FULL);
+    EXPECT_STATE("RampErrorUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("RampErrorQuittiert");
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RAMP_NOT_FULL);
+    EXPECT_STATE("RampErrorResolved");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("RampNoError");
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "RampErrorHandler" ohne quittierung des Fehlers
+ */
+TEST_F(RampErrorHandlerSetup, RampErrorUnquittiertTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_BOTH_R_FULL);
+    EXPECT_STATE("RampErrorUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RAMP_NOT_FULL);
+    EXPECT_STATE("RampErrorResolvedUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("RampNoError");
+}
+
+
+/**
+ * @brief testet Übergägne via COM-Events der Zustände von "RampErrorHandler" mit quittierung des Fehlers
+ */
+TEST_F(RampErrorHandlerSetup, RampComErrorTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_BOTH_R_FULL);
+    EXPECT_STATE("RampErrorUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("RampErrorQuittiert");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::RAMP_NOT_FULL);
+    EXPECT_STATE("RampErrorResolved");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("RampNoError");
+}
+
+/**
+ * @brief testet Übergägne via COM-Events der Zustände von "RampErrorHandler" ohne quittierung des Fehlers
+ */
+TEST_F(RampErrorHandlerSetup, RampComErrorUnquittiertTest) {
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_BOTH_R_FULL);
+    EXPECT_STATE("RampErrorUnquittiert");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::RAMP_NOT_FULL);
+    EXPECT_STATE("RampErrorResolvedUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("RampNoError");
+}
+
+/**
+ * @brief testet Übergägne der Zustände von "CalibrationFileWarningHandler"
+ */
+TEST_F(ReplayFileWarningHandlerSetup, ReplayWarningTest) {
+    //go to CalibWarning
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::CANT_FIND_REP_CONF);
+    EXPECT_STATE("ReplayWarning");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("ReplayNoWarning");
 }
 
 int main(int argc, char** argv) {

@@ -33,6 +33,7 @@ private:
     State* handleInternal(int event_value);
     State* handlePiece(int event_value);
     State* handleError(int event_value);
+    State* handleRemote(int event_value);
 };
 
 //================================================= constructors & destructors =================================================
@@ -202,6 +203,9 @@ State* Context<T>::handleCOM(int event_value) {
         case COM_Enum::TRANSFER_START_OTHER:
             newState = state->transfer_start_other();
             break;
+        case COM_Enum::COM_CONNECTED:
+            newState = state->com_connected();
+            break;
         case COM_Enum::COM_MQTT_CONNECTED:
             newState = state->com_mqtt_connected();
             break;
@@ -323,6 +327,25 @@ State* Context<T>::handlePiece(int event_value) {
 }
 
 template <typename T>
+State* Context<T>::handleRemote(int event_value) {
+    State* newState = nullptr;
+    switch((RemoteControlEnum) event_value) {
+        case RemoteControlEnum::MQTT_DISCONNECTED:
+            newState = state->mqtt_disconnected();
+            break;
+        case RemoteControlEnum::MQTT_CONNECTED:
+            newState = state->mqtt_connected();
+            break;
+        case RemoteControlEnum::RECONNECT:
+            newState = state->reconnect();
+            break;
+        default:
+            break;
+    }
+    return newState;
+}
+
+template <typename T>
 State* Context<T>::handleError(int event_value) {
     State* newState = nullptr;
     switch((Error_Enum) event_value) {
@@ -413,6 +436,9 @@ void Context<T>::handleEvent(_pulse event)
             break;
         case Topic::CHECK_PIECE:
             newState = handlePiece(event_value);
+            break;
+        case Topic::REM_CON:
+            newState = handleRemote(event_value);
             break;
         case Topic::ERROR:
             newState = handleError(event_value);
