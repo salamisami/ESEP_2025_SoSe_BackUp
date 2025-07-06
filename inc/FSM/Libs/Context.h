@@ -89,6 +89,7 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::UNBLOCK_STARTING_AREA:
             newState = state->unblock_starting_area();
             break;
+        //case Internal_Enum::REMOTE_STOP
         default:
             break;
     }
@@ -145,7 +146,9 @@ template <typename T>
 State* Context<T>::handleCOM(int event_value) {
     State* newState = nullptr;
     switch((COM_Enum) event_value) {
-        //TODO is this true?
+        case COM_Enum::BUTTON_RESET_PRESSED:
+            newState = state->com_button_reset_pressed();
+            break;
         case COM_Enum::BUTTON_ESTOP_PRESSED:
             newState = state->com_button_estop_pressed();
             break;

@@ -4,7 +4,6 @@
 
 #include "QNet.h"
 #include "Context.h"
-#include "IdleMode.h"
 #include "Boot.h"
 #include "Event.h"
 

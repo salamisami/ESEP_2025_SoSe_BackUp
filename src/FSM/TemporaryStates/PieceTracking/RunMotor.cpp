@@ -24,3 +24,7 @@ void RunMotor::exit() {
 State* RunMotor::laser_front_unblocked() {
 	return new SimulatePiece(data);
 }
+
+State* RunMotor::clone() {
+	return new RunMotor(data);
+}

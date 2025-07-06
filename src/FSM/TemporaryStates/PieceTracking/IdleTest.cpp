@@ -23,3 +23,7 @@ void IdleTest::exit() {
 State* IdleTest::laser_front_blocked() {
 	return new RunMotor(data);
 }
+
+State* IdleTest::clone() {
+	return new IdleTest(data);
+}

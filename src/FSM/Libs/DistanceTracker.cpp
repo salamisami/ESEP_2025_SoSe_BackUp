@@ -156,6 +156,9 @@ std::pair<Area, double> DistanceTracker::calculate_area_pos(const Area& last_are
     if(mode == (int) 0) {
         return std::make_pair(last_area, last_pos);
     }
+    if(last_area == Area::OUT_OF_RANGE){
+        return std::make_pair(last_area, 0);
+    }
     long last_position_in_ms = (long) area_pos_to_timestamp(last_area, last_pos, mode);
     long current_position_in_ms = stopwatch.peek_time() + last_position_in_ms;
     stopwatch.reset();
