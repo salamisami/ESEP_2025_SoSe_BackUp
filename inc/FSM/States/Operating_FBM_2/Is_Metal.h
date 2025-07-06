@@ -16,8 +16,17 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 	State* clone() override;
+  State* request_transfer() override;
+  State* laser_sorting_gate_blocked() override;
+  State* timer() override;
+  State* laser_ramp_blocked() override;
+  State* laser_back_blocked() override;
+  State* laser_front_blocked() override;
+// 
 
- 
+//REQUEST_TARNSFER /FBM_2_BUSY   laser_sorting_gate_blocked
+
+  //TIMER:After(100ms)/getArea(),getPosition() laser_front_blocked,laser_ramp_blocked,laser_back_blocked,
  
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
