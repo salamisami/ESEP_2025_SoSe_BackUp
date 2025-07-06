@@ -36,3 +36,29 @@ State* Is_Metal::clone(){
 	//return new Is_Metal(data, substates_clone()); //for OrthState
 	return new Is_Metal(data);
 }
+
+State* Is_Metal::request_transfer() {
+
+  }
+
+  State* Is_Metal::laser_sorting_gate_blocked() {
+
+  }
+
+  State* Is_Metal::timer() {
+
+  }
+
+  State* Is_Metal::laser_ramp_blocked() {
+
+  }
+
+  State* Is_Metal::laser_back_blocked() {
+
+  }
+
+  State* Is_Metal::laser_front_blocked() {
+
+  }
+
+/
