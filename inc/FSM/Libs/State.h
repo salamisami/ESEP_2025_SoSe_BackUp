@@ -335,7 +335,7 @@ public: //================================================ public functions ====
     virtual State* com_ramp_not_full() {
         return handle_event_using_function(&State::com_ramp_not_full);
     }
-    
+
     virtual State* com_mqtt_connected() {
         return handle_event_using_function(&State::com_mqtt_connected);
     }

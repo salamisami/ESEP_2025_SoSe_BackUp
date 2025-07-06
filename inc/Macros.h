@@ -38,7 +38,6 @@
 #define PRINT_STATE
 #endif
 
-#define SAVE_LOCATION_TIMEPROFILE "time_profiles.csv"
 
 #define DISTANCE_BETWEEN_PIECES 50
 #define WAY_TO_AREA 80

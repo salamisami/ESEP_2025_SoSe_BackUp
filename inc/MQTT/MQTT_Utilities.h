@@ -9,6 +9,7 @@
 #define MQTT_UTILITIES_H
 #include "MQTTClient.h"
 #include "Thread_COM.h"
+#include "Macros.h"
 #include <unistd.h>
 #include <hw/inout.h>
 #include <sys/neutrino.h>

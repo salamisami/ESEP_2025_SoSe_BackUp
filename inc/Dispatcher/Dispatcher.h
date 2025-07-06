@@ -9,6 +9,7 @@
 #define DISPATCHER_H_
 
 #include "Thread_COM.h"
+#include "Macros.h"
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
