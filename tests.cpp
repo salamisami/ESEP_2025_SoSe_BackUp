@@ -698,54 +698,54 @@ TEST_F(PieceTrackingFBM1Setup, PieceMissingAfterADC) {
     // Should transition to end state after handling
 }
 
-// TEST_F(PieceTrackingFBM1Setup, MetalPieceDetection) {
-//     EXPECT_STATE("Start_PT1");
+TEST_F(PieceTrackingFBM1Setup, MetalPieceDetection) {
+    EXPECT_STATE("Start_PT1");
     
-//     remote_control->send_event((int)InterruptEnum::LASER_FRONT_UNBLOCKED, 1);
-//     EXPECT_STATE("StartADC_PT1");
+    remote_control->send_event((int)InterruptEnum::LASER_FRONT_UNBLOCKED, 1);
+    EXPECT_STATE("StartADC_PT1");
     
-//     WAIT(100);
-//     EXPECT_STATE("ADC_PT1");
+    WAIT(100);
+    EXPECT_STATE("ADC_PT1");
     
-//     remote_control->send_event((int8_t)ADC_Enum::ADC_NEW_PIECE, 1);
-//     EXPECT_STATE("Measuring_PT1");
+    remote_control->send_event((int8_t)ADC_Enum::ADC_NEW_PIECE, 1);
+    EXPECT_STATE("Measuring_PT1");
     
-//     // Metal detected
-//     remote_control->send_event((int8_t)ADC_Enum::ADC_WH_DETECT, 1);
-//     EXPECT_STATE("ADCGate_PT1");
+    // Metal detected
+    remote_control->send_event((int8_t)ADC_Enum::ADC_WH_DETECT, 1);
+    EXPECT_STATE("ADCGate_PT1");
     
-//     WAIT(100);
+    WAIT(100);
     
-//     // Metal detection confirmed
-//     remote_control->send_event((int)InterruptEnum::METAL_DETECTED, 1);
-//     EXPECT_STATE("IsMetal_PT1");
+    // Metal detection confirmed
+    remote_control->send_event((int)InterruptEnum::METAL_DETECTED, 1);
+    EXPECT_STATE("IsMetal_PT1");
     
-//     // Continue with sorting...
-// }
+    // Continue with sorting...
+}
 
-// TEST_F(PieceTrackingFBM1Setup, TransferToFBM2Flow) {
-//     // ... (previous steps to reach Gate_PT1)
+TEST_F(PieceTrackingFBM1Setup, TransferToFBM2Flow) {
+    // ... (previous steps to reach Gate_PT1)
     
-//     // Let through to FBM2
-//     remote_control->send_event((int)Internal_Enum::LET_THROUGH, 1);
-//     EXPECT_STATE("GateEnd_PT1");
+    // Let through to FBM2
+    remote_control->send_event((int)Internal_Enum::LET_THROUGH, 1);
+    EXPECT_STATE("GateEnd_PT1");
     
-//     // After 100ms
-//     WAIT(100);
-//     // Should check position
+    // After 100ms
+    WAIT(100);
+    // Should check position
     
-//     // Laser back blocked (expected)
-//     remote_control->send_event((int)InterruptEnum::LASER_BACK_BLOCKED, 1);
-//     EXPECT_STATE("PendingTransferRequest_PT1");
+    // Laser back blocked (expected)
+    remote_control->send_event((int)InterruptEnum::LASER_BACK_BLOCKED, 1);
+    EXPECT_STATE("PendingTransferRequest_PT1");
     
-//     // FBM2 ready
-//     remote_control->send_event((int)COM_Enum::FBM_2_READY, 1);
-//     EXPECT_STATE("Transfer_PT1");
+    // FBM2 ready
+    remote_control->send_event((int)COM_Enum::FBM_2_READY, 1);
+    EXPECT_STATE("Transfer_PT1");
     
-//     // Transfer done
-//     remote_control->send_event((int)COM_Enum::TRANSFER_DONE, 1);
-//     // Should reach end state
-// }
+    // Transfer done
+    remote_control->send_event((int)COM_Enum::TRANSFER_DONE, 1);
+    // Should reach end state
+}
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
