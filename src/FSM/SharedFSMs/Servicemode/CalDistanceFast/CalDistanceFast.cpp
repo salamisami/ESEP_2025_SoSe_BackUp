@@ -6,9 +6,11 @@ CalDistanceFast::CalDistanceFast(ContextData* data) : OrthState(data,
 	{
 		new IdleCDF(data),
 		new LetPieceThrough(data, OPEN_GATE_FAST_DURATION)
-		}
-		, new CalRampFast(data)
-) {}
+	}
+	, new CalRampFast(data)
+	, true
+) {
+}
 
 CalDistanceFast::~CalDistanceFast() {}
 
