@@ -164,8 +164,8 @@ enum class TIMER_ID : int {
     PENDINGTRANSFERREQUEST_PT1,
     GATE_END,
     TRANSFER_FAILED,
-    START_ADC
-
+    START_ADC,
+    SORTING_OUT
 };
 
 enum class PieceEnum : int {
