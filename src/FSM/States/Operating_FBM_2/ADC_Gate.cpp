@@ -72,6 +72,7 @@ State* ADC_Gate::timer(TIMER_ID id) {
 			return new ADC_Gate(data);
 		}
 	}
+  return nullptr;
 }
 
 State *ADC_Gate::metal_detected(){

@@ -38,15 +38,15 @@ State* Gate::clone(){
 }
 
 State* Gate::laser_front_blocked(){
-  return new Piece_appeared(data);
+  return new Pieceappeared(data);
 }
 
   State* Gate::laser_back_blocked(){
-  return new Piece_appeared(data);
+  return new Pieceappeared(data);
 }
 
 State* Gate::laser_ramp_blocked(){
-  return new Piece_appeared(data);
+  return new Pieceappeared(data);
 }
 
 
@@ -60,8 +60,8 @@ State* Gate::check_piece(){
   if (data->piece_FBM2_measured != data->piece_FBM2){
     return new Sorting_out(data);
   }
-  if(data->piece_FBM2_measured.type>=PieceEnum::TALL_SORT_OUT
-      && data->piece_FBM2_measured.type <= PieceEnum::FLAT_SORT_OUT){
+  if(data->piece_FBM2_measured->type>=PieceEnum::TALL_SORT_OUT
+      && data->piece_FBM2_measured->type <= PieceEnum::FLAT_SORT_OUT){
     return new Sorting_out(data);
     }
   data->timer->start_timer(100, TIMER_ID::GATE_END);

@@ -38,20 +38,20 @@ State* ReadyForPiece::clone(){
 }
 
 State* ReadyForPiece::laser_front_blocked() {
-	return new piece_appeared(data);
+	return new Pieceappeared(data);
 	
 }
 State* ReadyForPiece::laser_sorting_gate_blocked() {
-	return new piece_appeared(data);
+	return new Pieceappeared(data);
 	
 }
 
 State* ReadyForPiece::laser_ramp_blocked() {
-	return new piece_appeared(data);
+	return new Pieceappeared(data);
 	
 }
 State* ReadyForPiece::laser_back_blocked() {
-	return new piece_appeared(data);
+	return new Pieceappeared(data);
 	
 }
 State* ReadyForPiece::request_transfer() {

@@ -25,10 +25,10 @@ public: //================================================ public functions ====
 	State* laser_sorting_gate_blocked() override;
 	State* laser_ramp_blocked() override;
 
-	State* adc_wh_detected() override;
-	State* adc_wf_detected() override;
-	State* adc_w_b_detected() override;
-	State* adc_w_not_detected() override;
+	State* adc_wh_detect() override;
+	State* adc_wf_detect() override;
+	State* adc_w_b_detect() override;
+	State* adc_w_not_detect() override;
  
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

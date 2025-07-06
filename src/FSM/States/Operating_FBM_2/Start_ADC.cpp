@@ -40,7 +40,8 @@ State* Start_ADC::clone(){
 
 State* Start_ADC::timer(TIMER_ID id) {
     if(id == TIMER_ID::START_ADC) {
-        if (data->piece_FBM2->pieceTracker.get_Position() >= WAY_TO_AREA && data->piece_FBM2->pieceTracker.getArea() == Area::START_ADC) {
+        if (data->piece_FBM2->piece_tracker.getPosition() >= WAY_TO_AREA 
+            && data->piece_FBM2->piece_tracker.getArea() == Area::START_ADC) {
 			return new ADC(data);
 		} else {
 			return new Start_ADC(data);
@@ -55,14 +56,14 @@ State* Start_ADC::request_transfer(){
 }
 
 State* Start_ADC::laser_back_blocked(){
-	return new pieceappeared(data);
+	return new Pieceappeared(data);
 }
 State* Start_ADC::laser_front_blocked(){
-	return new pieceappeared(data);
+	return new Pieceappeared(data);
 }
 State* Start_ADC::laser_sorting_gate_blocked(){
-	return new pieceappeared(data);
+	return new Pieceappeared(data);
 }
 State* Start_ADC::laser_ramp_blocked(){
-	return new pieceappeared(data);
+	return new Pieceappeared(data);
 }

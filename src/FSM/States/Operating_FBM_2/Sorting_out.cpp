@@ -45,6 +45,7 @@ State* Sorting_out::timer(TIMER_ID id) {
 	if(id == TIMER_ID::SORTING_OUT){
     return new Piece_Missing(data);
   }
+  return nullptr;
 } 
 State* Sorting_out::laser_ramp_blocked(){
   return new ReadyForPiece(data);

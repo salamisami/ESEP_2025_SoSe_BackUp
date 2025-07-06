@@ -226,8 +226,8 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::adc_wf_detect);
     }
 
-    virtual State* adc_wb_detect(){
-        return handle_event_using_function(&State::adc_wb_detect);
+    virtual State* adc_w_b_detect(){
+        return handle_event_using_function(&State::adc_w_b_detect);
     }
 
     virtual State* adc_w_not_detect(){

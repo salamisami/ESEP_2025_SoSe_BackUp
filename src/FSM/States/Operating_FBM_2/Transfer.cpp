@@ -19,9 +19,9 @@ Transfer::~Transfer() {}
 //===================================================== public functions =====================================================
 void Transfer::entry(){
 	PRINT_STATE;
-	daTA->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
-	piece_FBM2->piece_tracker.fast();
+	data->piece_FBM2->piece_tracker.fast();
 	
 	//Action here
 	//HState::entry() //for HState
@@ -55,13 +55,13 @@ State* Transfer::request_transfer(){
 }
 
 State* Transfer::laser_back_unblocked(){
-	return new PieceAppeard(data);
+	return new Pieceappeared(data);
 }
 State* Transfer::laser_sorting_gate_blocked(){
-	return new PieceAppeard(data);
+	return new Pieceappeared(data);
 }
 State* Transfer::laser_ramp_blocked(){
-	return new PieceAppeard(data);	
+	return new Pieceappeared(data);	
 }
 State* Transfer::laser_front_blocked(){
 	data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_DONE);

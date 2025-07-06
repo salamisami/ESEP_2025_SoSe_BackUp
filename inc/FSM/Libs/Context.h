@@ -126,7 +126,7 @@ State* Context<T>::handleADC(int event_value) {
             newState = state->adc_calibration_done();
             break;
         case ADC_Enum::ADC_W_B_DETECT:
-            newState = state->adc_wb_detect();
+            newState = state->adc_w_b_detect();
             break;
         case ADC_Enum::ADC_WF_DETECT:
             newState = state->adc_wf_detect();
@@ -358,15 +358,11 @@ State* Context<T>::handleError(int event_value) {
         case Error_Enum::ERROR_W_APPEARED:
             newState = state->error_w_appear();
             break;
-        case Error_Enum::PIECE_APPEARED_RESOLVED,
-            newState = state->piece_appeared_resolved()
+        case Error_Enum::PIECE_APPEARED_RESOLVED:
+            newState = state->piece_appeared_resolved();
             break;
         case Error_Enum::ERROR_W_LOST_RESOLVED:
-<<<<<<< Updated upstream
-            newState = state->piece_lost_resolved() ;
-=======
             newState = state->piece_lost_resolved();
->>>>>>> Stashed changes
             break;
         default:
             break;

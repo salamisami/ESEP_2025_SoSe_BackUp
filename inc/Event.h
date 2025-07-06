@@ -166,7 +166,8 @@ enum class TIMER_ID : int {
     TRANSFER_FAILED,
     START_ADC,
     ADC_GATE,
-    SORTING_OUT
+    SORTING_OUT,
+    IS_METAL
 };
 
 enum class PieceEnum : int {
@@ -203,7 +204,8 @@ enum class Error_Enum : int {
     PIECE_APPEARED_RESOLVED,
     PIECE_LOST_RESOLVED,
     PIECES_TOO_CLOSE,
-    ERROR_INVALID_MEASURE_RESOLVED
+    ERROR_INVALID_MEASURE_RESOLVED,
+    ERROR_W_LOST_RESOLVED
 };
 
 
