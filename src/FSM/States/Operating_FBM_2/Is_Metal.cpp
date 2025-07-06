@@ -39,26 +39,26 @@ State* Is_Metal::clone(){
 
 State* Is_Metal::request_transfer() {
 
-  };
+  }
 
   State* Is_Metal::laser_sorting_gate_blocked() {
 
-  };
+  }
 
   State* Is_Metal::timer() {
 
-  };
+  }
 
   State* Is_Metal::laser_ramp_blocked() {
 
-  };
+  }
 
   State* Is_Metal::laser_back_blocked() {
 
-  };
+  }
 
   State* Is_Metal::laser_front_blocked() {
 
-  };
+  }
 
 /

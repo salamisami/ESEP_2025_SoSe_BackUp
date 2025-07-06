@@ -3,7 +3,8 @@
 #pragma once
  
 #include "State.h"
- 
+#include "PieceAppeared.h"
+#include "Piece_Missing.h" 
 class ADC : public State {
 public: //============================================ constructors & destructors ============================================
     ADC(ContextData* data); //for all types of states
@@ -23,8 +24,8 @@ public: //================================================ public functions ====
 	State* laser_sorting_gate_blocked() override;
 	State* laser_ramp_blocked() override;
 
-	State* ADC_Timeout() override;
-	State* ADC_new_piece() override;
+	State* adc_timeout() override;
+	State* adc_new_piece() override;
 
  
  

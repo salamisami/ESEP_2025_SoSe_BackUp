@@ -45,21 +45,21 @@ State* ADC::request_transfer(){
 	return new ADC(data);
 }
 State* ADC::laser_back_blocked(){
-	return new piece_appeared(data);
+	return new PieceAppeared(data);
 }
 State* ADC::laser_front_blocked(){
-	return new piece_appeared(data);
+	return new PieceAppeared(data);
 }
 State* ADC::laser_sorting_gate_blocked(){
-	return new piece_appeared(data);
+	return new PieceAppeared(data);
 }
 State* ADC::laser_ramp_blocked(){
-	return new piece_appeared(data);
+	return new PieceAppeared(data);
 }
 
-State* ADC::ADC_Timeout(){
+State* ADC::adc_timeout(){
 	return new Piece_Missing(data);
 }
-State* ADC::ADC_new_piece(){
+State* ADC::adc_new_piece(){
 	return new Measuring(data);
 }
