@@ -221,7 +221,7 @@ TEST_F(RealImplementationSetup, PutNewPiece){
     WAIT(2000);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER BACK BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);   
-    EXPECT_STATE("PendingTransferRequest_PT1 Stop PieceTall StartingAreaUnblocked"); 
+    EXPECT_STATE("PendingTransferRequest_PT1 Stop PieceTall StartingAreaUnblocked"); //TODO
 
     //wait till fbm2 ready
     WAIT(2000);
