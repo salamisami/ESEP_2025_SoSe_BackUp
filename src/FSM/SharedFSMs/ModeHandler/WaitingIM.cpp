@@ -1,4 +1,5 @@
 #include "WaitingIM.h"
+#include "Operating.h"
 
 //================================================= constructors & destructors =================================================
 WaitingIM::WaitingIM(ContextData* data) :State(data) {

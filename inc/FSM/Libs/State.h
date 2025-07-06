@@ -232,6 +232,13 @@ public: //================================================ public functions ====
         	return handle_event_using_function(&State::transfer_start_tall_w_metall);
         }
 
+    virtual State* error_w_lost(){
+    	return handle_event_using_function(&State::error_w_lost);
+    }
+
+    virtual State* sorted(){
+        	return handle_event_using_function(&State::sorted);
+        }
 protected: //================================================ protected ================================================
     //classes, STL containers, and structs
     //pointers

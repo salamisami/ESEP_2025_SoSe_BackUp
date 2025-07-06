@@ -10,6 +10,9 @@
 
 #include "State.h"
 #include "ContextData.h"
+#include "EstopViaLocal.h"
+#include "EstopViaNeighbor.h"
+#include "EStopReleased.h"
 
 class WaitingForLocalReset : public State {
 public:

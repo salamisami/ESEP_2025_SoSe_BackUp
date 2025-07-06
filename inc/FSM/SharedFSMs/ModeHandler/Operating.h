@@ -10,6 +10,7 @@ class Operating : public OrthState {
 //============================================ constructors & destructors ============================================
 public:
 	Operating(ContextData* data);
+	Operating(ContextData* data, std::vector<State*> initial_substates);
     virtual ~Operating();
 	
 //================================================ public functions ================================================

@@ -8,6 +8,9 @@
 #ifndef INC_FSM_SHAREDFSMS_E_STOP_WAITINGFORCOMRESET_H_
 #define INC_FSM_SHAREDFSMS_E_STOP_WAITINGFORCOMRESET_H_
 #include "State.h"
+#include "EstopViaLocal.h"
+#include "EstopViaNeighbor.h"
+#include "EStopReleased.h"
 
 class WaitingForComReset : public State{
 public:

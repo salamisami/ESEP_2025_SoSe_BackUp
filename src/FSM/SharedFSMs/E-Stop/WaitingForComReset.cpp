@@ -14,11 +14,11 @@ void WaitingForComReset::exit(){ }
 State* WaitingForComReset::clone(){ return new WaitingForComReset(data);}
 
 State* WaitingForComReset::button_estop_pressed(){
-	return new EstopViaLocal(data);
+	return new EStopViaLocal(data);
 }
 
 State* WaitingForComReset::com_button_estop_pressed(){
-	return new EstopViaNeighbor(data);
+	return new EStopViaNeighbor(data);
 }
 
 State* WaitingForComReset::com_button_reset_pressed(){

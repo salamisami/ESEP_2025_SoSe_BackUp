@@ -16,6 +16,6 @@ State* PieceTallWMetall::sorted(){
 }
 
 State* PieceTallWMetall::error_w_lost(){
-	data->sender->send_event(Topic::INTERNAL, Internal_Enum::RESET_TO_TALL, EventPriority::DEFAULT);
+	data->sender->send_event((int8_t) Topic::INTERNAL,(int8_t) Internal_Enum::RESET_TO_TALL,(int8_t) EventPriority::DEFAULT);
 	return new IdleReset(data);
 }

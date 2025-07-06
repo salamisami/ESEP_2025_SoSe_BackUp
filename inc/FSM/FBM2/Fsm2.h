@@ -16,10 +16,9 @@ class Fsm2 : public OrthState{
 public:
 	void entry() override;
 	void exit() override;
-	State* clone() override;
 
-	Fsm2(ContexData* data);
-	Fsm2(ContexData* data, std::vector<State*> initial_substates);
+	Fsm2(ContextData* data) : OrthState(data,{new Boot(data)}){};
+	Fsm2(ContextData* data, std::vector<State*> initial_substates) : OrthState(data, initial_substates){};
 	virtual ~Fsm2();
 };
 

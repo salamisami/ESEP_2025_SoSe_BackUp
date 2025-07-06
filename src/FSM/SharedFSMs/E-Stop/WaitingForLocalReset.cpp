@@ -24,7 +24,7 @@ State* WaitingForLocalReset::button_estop_pressed(){
 }
 
 State* WaitingForLocalReset::com_button_estop_pressed(){
-	return new EstopViaNeighbor(data);
+	return new EStopViaNeighbor(data);
 }
 
 State* WaitingForLocalReset::remote_stop(){
