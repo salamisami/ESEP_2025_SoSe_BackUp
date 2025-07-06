@@ -77,15 +77,19 @@ public:
             const char* state_name = typeid(*this).name();
             return demangle(state_name);
         }
-        
+
+
+
         std::string appended_string;
         bool first = true; // To avoid leading space
-        for(auto& current_substate : substates) {
+        for(auto it = substates.begin(); it != substates.end(); ) {
+            State*& current_substate = *it;  // Use reference to pointer
             if(!first) {
                 appended_string += " "; // Add space between substates
             }
             appended_string += current_substate->get_current_state();
             first = false;
+            ++it;
         }
         return appended_string;
     }
@@ -95,9 +99,9 @@ public:
             State* newSubstate = current_substate->timer(id);
             if(newSubstate == State::EXIT_STATE) {
                 // Handle substate exit
-                current_substate->exit();
-                delete current_substate;
-                current_substate = nullptr;
+                //current_substate->exit();
+                //delete current_substate;
+                //current_substate = nullptr;
                 // Return default exit state to parent
                 return default_exit_state_;
             } else if(newSubstate != nullptr) {
@@ -135,9 +139,9 @@ protected:
 
             if(newSubstate == State::EXIT_STATE) {
                 // Handle exit case
-                current_substate->exit();
-                delete current_substate;
-                it = substates.erase(it);
+                // current_substate->exit();
+                // delete current_substate;
+                // it = substates.erase(it);
                 return default_exit_state_;
             }
 
