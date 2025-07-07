@@ -7,12 +7,21 @@
 
 #include "Modehandler.h"
 
-Modehandler::Modehandler(ContextData* data) : OrthState(data, {new IdleIM(data)}){}
+Modehandler::Modehandler(ContextData* data) : OrthState(data, {
+	new IdleIM(data),
+	new ErrorHandler(data)
+}){}
 Modehandler::Modehandler(ContextData* data, std::deque<State*> substates) : OrthState(data, substates){}
 
-void Modehandler::entry(){ }
+void Modehandler::entry(){
+	PRINT_STATE;
+	OrthState::entry();
+}
 
-void Modehandler::exit() { }
+void Modehandler::exit() {
+	OrthState::exit();
+	PRINT_STATE;
+}
 
 State* Modehandler::clone(){
 	return new Modehandler(data,this->clone_substates());

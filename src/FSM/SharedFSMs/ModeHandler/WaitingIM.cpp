@@ -30,11 +30,12 @@ State* WaitingIM::button_start_released() {
 		//TODO data->sender->send_event(event_code, event_value, priority);
 		return nullptr;
 	}
-    if(data->modehandler_history->empty()) {
+
+    if(data->operating_history->empty()){
         return new Operating(data);
     }
-    State* loaded_state = data->modehandler_history->top();
-    data->modehandler_history->pop();
+    auto loaded_state = data->operating_history->top();
+    data->operating_history->pop();
     return loaded_state;
 }
 
