@@ -12,6 +12,7 @@
 #include "StartingAreaTracker.h"
 #include "ErrorHandler.h"
 #include "ReadyForPiece.h"
+#include "IdleSorting.h"
 
 class Operating : public OrthState {
 //============================================ constructors & destructors ============================================
