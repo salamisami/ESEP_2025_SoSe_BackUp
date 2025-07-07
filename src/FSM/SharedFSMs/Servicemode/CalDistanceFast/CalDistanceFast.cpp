@@ -12,6 +12,9 @@ CalDistanceFast::CalDistanceFast(ContextData* data) : OrthState(data,
 ) {
 }
 
+CalDistanceFast::CalDistanceFast(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {
+}
+
 CalDistanceFast::~CalDistanceFast() {}
 
 //===================================================== private functions =====================================================
@@ -29,6 +32,10 @@ void CalDistanceFast::exit() {
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
+}
+
+State* CalDistanceFast::clone() {
+	return new CalDistanceFast(data, OrthState::clone_substates());
 }
 
 //explicit exit

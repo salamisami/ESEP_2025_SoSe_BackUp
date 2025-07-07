@@ -5,6 +5,9 @@ Servicemode::Servicemode(ContextData* data)
     : HState(data, new IdleSM(data)) {
 }
 
+Servicemode::Servicemode(ContextData* data, State* initial_substate) : HState(data, initial_substate) 
+{}
+
 Servicemode::~Servicemode() {}
 
 //===================================================== private functions =====================================================
@@ -30,5 +33,9 @@ void Servicemode::exit() {
 
 State* Servicemode::button_stop_pressed() {
     return new IdleIM(data);
+}
+
+State* Servicemode::clone() {
+    return new Servicemode(data, substate->clone());
 }
 

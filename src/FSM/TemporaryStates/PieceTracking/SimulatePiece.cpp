@@ -8,6 +8,9 @@ SimulatePiece::SimulatePiece(ContextData* data) : OrthState(data, std::deque<Sta
     //substate = new SubState(data);
 }
 
+SimulatePiece::SimulatePiece(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {
+}
+
 SimulatePiece::~SimulatePiece() {}
 
 //===================================================== private functions =====================================================
@@ -39,4 +42,8 @@ void SimulatePiece::exit(){
 
 State* SimulatePiece::laser_back_blocked(){
 	return new IdleTest(data);
+}
+
+State* SimulatePiece::clone() {
+	return new SimulatePiece(data, OrthState::clone_substates());
 }

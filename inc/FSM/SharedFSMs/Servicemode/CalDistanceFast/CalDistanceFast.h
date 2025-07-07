@@ -10,12 +10,15 @@
 class CalDistanceFast : public OrthState{
 public: //============================================ constructors & destructors ============================================
     CalDistanceFast(ContextData* data) ;
+	CalDistanceFast(ContextData* data, std::deque<State*> initial_substates);
     virtual ~CalDistanceFast();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
 
 	//State* laser_back_blocked() override;
     

@@ -26,3 +26,7 @@ void MeasureFehlerQuittiert::exit(){
 State* MeasureFehlerQuittiert::adc_top_area_unblocked() {
     return new ADCFrei(data);
 }
+
+State* MeasureFehlerQuittiert::clone() {
+    return new MeasureFehlerQuittiert(data);
+}

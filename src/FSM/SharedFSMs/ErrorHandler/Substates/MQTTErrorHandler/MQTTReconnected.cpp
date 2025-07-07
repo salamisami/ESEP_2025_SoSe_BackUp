@@ -30,3 +30,7 @@ State* MQTTReconnected::button_reset_released()
 {
     return new MQTTNoError(data);
 }
+
+State* MQTTReconnected::clone() {
+    return new MQTTReconnected(data);
+}

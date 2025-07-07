@@ -10,12 +10,15 @@
 class CalDistanceSlow : public OrthState{
 public: //============================================ constructors & destructors ============================================
     CalDistanceSlow(ContextData* data) ;
+	CalDistanceSlow(ContextData* data, std::deque<State*> initial_substates);
     virtual ~CalDistanceSlow();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
 
 	//State* laser_back_blocked() override;
     

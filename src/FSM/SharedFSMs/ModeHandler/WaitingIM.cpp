@@ -43,3 +43,7 @@ State* WaitingIM::timer(TIMER_ID id) {
     }
     return nullptr;
 }
+
+State* WaitingIM::clone() {
+    return new WaitingIM(data);
+}

@@ -22,3 +22,7 @@ State* IdleReset::transfer_start_tall(){
 State* IdleReset::transfer_start_tall_w_metal(){
 	return new PieceTallWMetall(data);
 }
+
+State* IdleReset::clone() {
+	return new IdleReset(data);
+}

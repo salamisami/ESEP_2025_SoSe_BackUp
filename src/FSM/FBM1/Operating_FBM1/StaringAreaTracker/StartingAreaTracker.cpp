@@ -8,7 +8,7 @@ StartingAreaTracker::StartingAreaTracker(ContextData* data) : HState(data, new S
     //substate = new SubState(data);
 }
 
-StartingAreaTracker::StartingAreaTracker(ContextData* data, State* initial_substate): HState(data, initial_substate)
+StartingAreaTracker::StartingAreaTracker(ContextData* data, State* initial_substate) : HState(data, initial_substate) 
 {}
 
 StartingAreaTracker::~StartingAreaTracker() {}

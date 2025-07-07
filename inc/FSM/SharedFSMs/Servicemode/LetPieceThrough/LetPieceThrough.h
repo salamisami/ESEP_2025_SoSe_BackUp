@@ -10,6 +10,7 @@
 class LetPieceThrough : public HState {
 public: //============================================ constructors & destructors ============================================
     LetPieceThrough(ContextData* data, int duration) ;
+	LetPieceThrough(ContextData* data, State* initial_substate);
     virtual ~LetPieceThrough();
 	
 
@@ -17,7 +18,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
     
-
+	State* clone() override;
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
