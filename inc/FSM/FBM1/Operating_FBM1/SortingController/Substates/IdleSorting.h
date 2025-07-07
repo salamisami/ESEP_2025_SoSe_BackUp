@@ -17,7 +17,7 @@ public: //================================================ public functions ====
 
     State* clone() override;
     State* sort_out() override;
-    State* let_trough() override;
+    State* let_through() override;
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers

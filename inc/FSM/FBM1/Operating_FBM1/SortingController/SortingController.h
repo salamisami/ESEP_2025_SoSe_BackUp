@@ -3,7 +3,7 @@
 #pragma once
 
 #include "HState.h"
-#include "Idle.h"
+#include "IdleSorting.h"
 
 class SortingController : public HState{
 public: //============================================ constructors & destructors ============================================

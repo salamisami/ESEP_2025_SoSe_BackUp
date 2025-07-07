@@ -15,8 +15,6 @@ public: //================================================ public functions ====
     void exit() override;
 
     State* clone() override;
-    State* sort_out() override;
-    State* let_trough() override;
     State* timer(TIMER_ID id) override;
 
 private: //================================================ private variables ================================================

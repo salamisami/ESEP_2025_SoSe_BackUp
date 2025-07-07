@@ -23,14 +23,14 @@ State* IdleSorting::clone() {
     return new IdleSorting(data);
 }
 
-State* sort_out(){
+State* IdleSorting::sort_out(){
   if (!data->is_switch){
     return new PushRamp_OP(data);
   }
   return nullptr;
 }
 
-State* let_trough(){
+State* IdleSorting::let_through(){
   if (data->is_switch){
     return new OpenGate_OP(data);
   }
