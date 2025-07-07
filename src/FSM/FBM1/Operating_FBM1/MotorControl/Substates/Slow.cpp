@@ -11,8 +11,7 @@ Slow::~Slow() {}
 
 
 //===================================================== public functions =====================================================
-void Slow::entry(){
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
+void Slow::entry(){	
 	PRINT_STATE;
 }
 
