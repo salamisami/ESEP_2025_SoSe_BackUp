@@ -440,7 +440,11 @@ void COM::handleComTopic(int originalValue, _pulse &dispatcherMsg)
             originalValue == static_cast<int>(COM_Enum::TRANSFER_START_FLAT) ||
             originalValue == static_cast<int>(COM_Enum::TRANSFER_START_OTHER) ||
             originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL_W_METAL) ||
-            originalValue == static_cast<int>(COM_Enum::REQUEST_TRANSFER))
+            originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL_SORT_OUT) ||
+            originalValue == static_cast<int>(COM_Enum::TRANSFER_START_FLAT_SORT_OUT) || 
+            originalValue == static_cast<int>(COM_Enum::TRANSFER_START_TALL_W_METAL_SORT_OUT) ||
+            originalValue == static_cast<int>(COM_Enum::REQUEST_TRANSFER)||
+            originalValue == static_cast<int>(COM_Enum::REQUEST_TRANSFER_SORT) )
             return;
     }
     lowPriorityQueue.push_back(dispatcherMsg);
