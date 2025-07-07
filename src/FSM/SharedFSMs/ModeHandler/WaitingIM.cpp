@@ -24,11 +24,9 @@ void WaitingIM::exit() {
 
 //load history
 State* WaitingIM::button_start_released() {
-	//TODO check config
-	bool config = true;
-	if(!config){
-		//TODO data->sender->send_event(event_code, event_value, priority);
-		return nullptr;
+	if(!data->config){
+		DEBUG("No config exits");
+		return new IdleIM(data);
 	}
 
     if(data->operating_history->empty()){

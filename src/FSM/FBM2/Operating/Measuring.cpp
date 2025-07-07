@@ -55,22 +55,22 @@ State* Measuring::laser_ramp_blocked(){
 }
 
 State* Measuring::adc_wh_detect(){
-	data->piece_FBM2_measured = new Piece();
+	data->piece_FBM2_measured = new Piece(&data->timeprofile);
 	data->piece_FBM2_measured->type = PieceEnum::UNKNOWN;
 	return new ADC_Gate(data);
 }
 State* Measuring::adc_wf_detect(){
-	data->piece_FBM2_measured = new Piece();
+	data->piece_FBM2_measured = new Piece(&data->timeprofile);
 	data->piece_FBM2_measured->type = PieceEnum::FLAT;
 	return new ADC_Gate(data);
 }
 State* Measuring::adc_w_b_detect(){
-	data->piece_FBM2_measured = new Piece();
+	data->piece_FBM2_measured = new Piece(&data->timeprofile);
 	data->piece_FBM2_measured->type = PieceEnum::TALL;
 	return new ADC_Gate(data);
 }
 State* Measuring::adc_w_not_detect(){
-	data->piece_FBM2_measured = new Piece();
+	data->piece_FBM2_measured = new Piece(&data->timeprofile);
 	data->piece_FBM2_measured->type = PieceEnum::UNKNOWN;
 	return new ADC_Gate(data);
 }

@@ -20,9 +20,10 @@ public:
 	static void save_profile(const TimeProfile& timeprofile, const std::string& save_location) {
 		std::ofstream file;
 		file.open(save_location, std::ios::out);
-		if(!file.is_open()) {
-			throw std::runtime_error("TimeProfileManager: Datei konnte nicht geöffnet werden!");
+		if(!file.is_open() || file.fail()) {
+			throw std::runtime_error("Cannot save file");
 		}
+		
 		file << "Fast, Slow\n";  // CSV-Header
 		for(int i = 0; i < 6; i++) {
 			file << timeprofile.fast_timestamps[i] << "," << timeprofile.slow_timestamps[i] << "\n";
@@ -34,7 +35,7 @@ public:
 	static void load_profile(TimeProfile* time_profile, const std::string& load_location) {
 		std::ifstream in_file(load_location);
 		if(!in_file.is_open()) {
-			THROW("TimeProfile: Datei konnte nicht geöffnet werden!");
+			throw std::runtime_error("Cannot load file");
 			return;
 		}
 
@@ -87,12 +88,12 @@ public:
 		input_timetable->fast_deadlines[4] = input_timetable->fast_timestamps[(int) Timestamp::END] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED];
 		input_timetable->fast_deadlines[5] = input_timetable->fast_timestamps[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
 
-		for(auto& current_deadline: input_timetable->fast_deadlines){
+		for(auto& current_deadline : input_timetable->fast_deadlines) {
 			current_deadline *= DEADLINE_FACTOR;
 			//std::cout << "Fast deadline: " << current_deadline << std::endl;
 		}
 
-		for(auto& current_deadline: input_timetable->slow_deadlines){
+		for(auto& current_deadline : input_timetable->slow_deadlines) {
 			current_deadline *= DEADLINE_FACTOR;
 			//std::cout << "Slow deadline: " << current_deadline << std::endl;
 		}

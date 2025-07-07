@@ -36,7 +36,7 @@ PieceEnum Gate_PT1::validate_piece(const ScannedPiece& scanned_piece, const bool
 //===================================================== public functions =====================================================
 void Gate_PT1::entry() {
 	auto piece = data->pieces_map->at(localdata_.id);
-	piece->piece_tracker.update_distance_force(Area::GATE, 0);
+	piece->piece_tracker->update_distance_force(Area::GATE, 0);
 	localdata_.validated_type = validate_piece(localdata_.ist_type, localdata_.is_metal);
 	data->sender->send_event((int8_t)Topic::CHECK_PIECE, (int) localdata_.validated_type);
 	PRINT_STATE;

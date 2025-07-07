@@ -27,9 +27,9 @@ State* GateEnd_PT1::clone() {
 
 State* GateEnd_PT1::timer(TIMER_ID id) {
 	auto piece = data->pieces_map->at(localdata_.id);
-	auto distance = piece->piece_tracker.get_distance();
+	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
-	piece->piece_tracker.print_distance();
+	piece->piece_tracker->print_distance();
 
 	if(current_area == Area::OUT_OF_RANGE) {
 		//PieceMissing
@@ -61,7 +61,7 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 
 State* GateEnd_PT1::laser_back_blocked() {
 	auto piece = data->pieces_map->at(localdata_.id);
-	auto distance = piece->piece_tracker.get_distance();
+	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 

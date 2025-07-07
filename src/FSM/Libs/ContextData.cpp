@@ -15,11 +15,17 @@ ContextData::ContextData(I_Sender* sender) {
 
 
 ContextData::~ContextData() {
+    State* current_state;
+    while(!operating_history->empty()) {
+        current_state = operating_history->top();  // For stack, use top() instead of iterating
+        delete current_state;
+        operating_history->pop();
+    }
     delete operating_history;
     delete pieces_map;
    // delete piece_tracker;
     delete timer;
-    State* current_state;
+    
     while(!modehandler_history->empty()) {
         current_state = modehandler_history->top();  // For stack, use top() instead of iterating
         delete current_state;
@@ -33,6 +39,7 @@ ContextData::~ContextData() {
         estop_history->pop();
     }
     delete estop_history;
+    delete piece_tracker;
 }
 
 //===================================================== private functions =====================================================

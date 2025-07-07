@@ -194,7 +194,7 @@ protected:
     */
 
     // TEST_F(LogicBaseTest, PieceTrackingTest) {
-    //     data->piece_tracker.debug = true;
+    //     data->piece_tracker->debug = true;
     //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
     //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
     //     WAIT(2000);
@@ -208,7 +208,7 @@ protected:
     //     WAIT(2000);
     //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);    
     //     WAIT(1000);
-    //     auto distance = data->piece_tracker.get_distance();
+    //     auto distance = data->piece_tracker->get_distance();
     //     EXPECT_EQ(distance.first, Area::GATE_END);
     //     EXPECT_GT(distance.second, 95);
     // }
@@ -954,26 +954,7 @@ TEST_F(ReplayFileWarningHandlerSetup, ReplayWarningTest) {
 }
 
 int main(int argc, char** argv) {
-    // Initialize time profiles
-    TimeProfile both_profiles;
-
-    // Set fast timestamps
-    long fast_profile[TIMESTAMP_LENGTH] = { 2000, 2100, 3600, 4000, 6000, 3800 };
-    for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
-        both_profiles.fast_timestamps[i] = fast_profile[i];
-    }
-
-    // Set slow timestamps
-    long slow_profile[TIMESTAMP_LENGTH] = { 6060, 7183, 10309, 11780, 17207, 10552 };
-    for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
-        both_profiles.slow_timestamps[i] = slow_profile[i];
-    }
-
-    // Save the profile
-    TimeProfileManager::save_profile(both_profiles, SAVE_LOCATION_TIMEPROFILE);
-    TimeProfileManager::convert_to_deadlines(&both_profiles);
-
-    WAIT(100);
+ 
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

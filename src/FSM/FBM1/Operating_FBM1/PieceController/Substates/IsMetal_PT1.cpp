@@ -26,7 +26,7 @@ State* IsMetal_PT1::clone(){
 
 State* IsMetal_PT1::laser_sorting_gate_blocked() {
 	auto piece = data->pieces_map->at(localdata_.id);
-	auto distance = piece->piece_tracker.get_distance();
+	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 
 	if(current_area == Area::GATE){

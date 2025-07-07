@@ -43,7 +43,7 @@ public:
     int event_payload;
     Stopwatch stopwatch;
     TimeProfile timeprofile;
-    DistanceTracker piece_tracker; // = DistanceTracker(true);
+    DistanceTracker* piece_tracker; // = DistanceTracker(true);
     std::stack<State*>* operating_history;
     std::stack<State*>* modehandler_history;
     std::stack<State*>* estop_history;
@@ -75,6 +75,7 @@ public:
     bool motor_stopped = false;
     bool no_error_or_warning = true;
     bool is_estop = false;
+    bool config = false;
     StateContainer workpieceList;
 
     //PieceTrack -> PieceTrack

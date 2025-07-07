@@ -11,7 +11,7 @@ End::~End() {}
 //===================================================== public functions =====================================================
 void End::entry(){
 	PRINT_STATE;
-  data->piece_tracker.stop();
+  data->piece_tracker->stop();
   data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 
 	//Action here

@@ -12,7 +12,7 @@ FastTemp::~FastTemp() {}
 //===================================================== public functions =====================================================
 void FastTemp::entry() {
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
-	data->piece_tracker.fast();
+	data->piece_tracker->fast();
 	PRINT_STATE;
 }
 
