@@ -27,6 +27,16 @@
         EXPECT_EQ(is_state, expected_state); \
     } while (0)
 
+#define EXPECT_STATE_CONTAINS(expected_state) \
+    do { \
+        WAIT(50); \
+        std::string is_state = logic->show_state(); \
+        EXPECT_NE(is_state.find(expected_state), std::string::npos) \
+            << "Expected state to contain: '" << expected_state \
+            << "' but got: '" << is_state << "'"; \
+    } while (0)
+
+
 #define EXPECT_STATE_INSTANT(expected_state) \
     do { \
         WAIT(10); \
@@ -184,6 +194,136 @@ protected:
     }
 };
 
+
+TEST_F(RealImplementationSetup, EStopViaLocalTest){
+  remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+  EXPECT_STATE_CONTAINS("WaitingIM");
+  remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_PRESSED);
+  EXPECT_STATE_CONTAINS("EStopViaLocal");
+  remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_ESTOP_RELEASED);
+  EXPECT_STATE_CONTAINS("EStopReleased"); 
+  remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
+  EXPECT_STATE_CONTAINS("WaitingForComReset");
+  remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::BUTTON_RESET_PRESSED);
+  EXPECT_STATE_CONTAINS("IdleIM");
+}
+
+
+TEST_F(RealImplementationSetup, EStopViaComTest){
+  remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+  EXPECT_STATE_CONTAINS("WaitingIM");
+  remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::BUTTON_ESTOP_PRESSED);
+  EXPECT_STATE_CONTAINS("EStopViaNeighbor");
+  remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::BUTTON_ESTOP_RELEASED);
+  EXPECT_STATE_CONTAINS("EStopReleased"); 
+  remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::BUTTON_RESET_PRESSED);
+  EXPECT_STATE_CONTAINS("WaitingForLocalReset");
+  remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_PRESSED);
+  EXPECT_STATE_CONTAINS("IdleIM");
+}
+
+// Test both local and remote E-Stop simultaneously
+TEST_F(RealImplementationSetup, BothEStopSources) {
+    // Initial state
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingIM");
+    
+    // Trigger both E-Stops nearly simultaneously
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_PRESSED);
+    EXPECT_STATE_CONTAINS("EStopViaLocal");
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_ESTOP_PRESSED);
+    EXPECT_STATE_CONTAINS("BothEstopPressed");
+    
+    // Release both
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_RELEASED);
+    EXPECT_STATE_CONTAINS("EStopViaNeighbor");
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_ESTOP_RELEASED);
+    EXPECT_STATE_CONTAINS("EStopReleased");
+    
+    // Reset sequence (order shouldn't matter)
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingForComReset");
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("IdleIM");
+}
+
+TEST_F(RealImplementationSetup, CompleteEStopResetTransitionTest) {
+    // Enter initial working state
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_START_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingIM");
+
+    // Trigger E-Stop via COM (neighbor)
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_ESTOP_PRESSED);
+    EXPECT_STATE_CONTAINS("EStopViaNeighbor");
+    
+    // Release E-Stop
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_ESTOP_RELEASED);
+    EXPECT_STATE_CONTAINS("EStopReleased");
+
+    // ----------------------------------------------------------------
+    // Test 1: Interrupt Reset -> WaitingForComReset
+    // ----------------------------------------------------------------
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingForComReset");
+    
+    // Verify COM reset completes the cycle
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingIM");  // Returns to operational state
+
+    // ----------------------------------------------------------------
+    // Test 2: COM Reset -> WaitingForLocalReset 
+    // (need new E-Stop cycle)
+    // ----------------------------------------------------------------
+    // Trigger E-Stop again
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_PRESSED);
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_RELEASED);
+    EXPECT_STATE_CONTAINS("EStopReleased");
+
+    // Now send COM reset first
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingForLocalReset");
+    
+    // Complete with Interrupt reset
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingIM");
+
+    // ----------------------------------------------------------------
+    // Test 3: Verify both reset paths work from BothEStopPressed
+    // ----------------------------------------------------------------
+    // Trigger dual E-Stop
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_PRESSED);
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_ESTOP_PRESSED);
+    EXPECT_STATE_CONTAINS("BothEStopPressed");
+    
+    // Release both
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_RELEASED);
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_ESTOP_RELEASED);
+    EXPECT_STATE_CONTAINS("EStopReleased");
+
+    // Path A: Interrupt reset first
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingForComReset");
+    
+    // Then COM reset
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingIM");
+
+    // Trigger dual E-Stop again
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_PRESSED);
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_ESTOP_PRESSED);
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_RELEASED);
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_ESTOP_RELEASED);
+    EXPECT_STATE_CONTAINS("EStopReleased");
+
+    // Path B: COM reset first
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("WaitingForLocalReset");
+    
+    // Then Interrupt reset
+    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_RESET_PRESSED);
+    EXPECT_STATE_CONTAINS("IdleIM");
+}
+
 /* TEST_F(PieceTrackerSetup, PieceTrackerTest){
     EXPECT_STATE("PieceControllerFBM1");
     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::NEW_PIECE);
@@ -280,6 +420,7 @@ TEST_F(RealImplementationSetup, PutNewPiece) {
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
     EXPECT_STATE_INSTANT("GateEnd_PT1 Fast PieceTall StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
+    //TODO this is correct because of 2 substate communication
     WAIT(400);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
@@ -297,6 +438,40 @@ TEST_F(RealImplementationSetup, PutNewPiece) {
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> TRANSFER DONE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_DONE);
     EXPECT_STATE_INSTANT("PieceControllerFBM1 Idle PieceTall StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull"); //TODO if one state exits, that state should be deleted
+}
+
+TEST_F(RealImplementationSetup, PutNewPieceTall) {
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE_INSTANT("PieceControllerFBM1 Idle PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    EXPECT_STATE_INSTANT("Start_PT1 Fast PieceFlat StartingAreaBlocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
+
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+    EXPECT_STATE_INSTANT("StartADC_PT1 Fast PieceFlat StartingAreaBlocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
+    WAIT(2000);
+    EXPECT_STATE_INSTANT("ADC_PT1 Slow PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> ADC BEGIN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
+    WAIT(1123);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> ADC END <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_W_B_DETECT);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+    EXPECT_STATE_INSTANT("ADCGate_PT1 Fast PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
+
+    WAIT(1500);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(100);
+    EXPECT_STATE_INSTANT("SortingOut_PT1 Fast PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
+    //TODO still wrong
+    
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER RAMP BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    EXPECT_STATE_INSTANT("PieceControllerFBM1 Idle PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampTimer NoRampFull");
 }
 
 
