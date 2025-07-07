@@ -13,9 +13,13 @@ BothEstopPressed::~BothEstopPressed() {}
 
 void BothEstopPressed::entry(){
     PRINT_STATE;
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON_SLOW);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON_SLOW);
 }
 void BothEstopPressed::exit(){
     PRINT_STATE;
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 }
 
 State* BothEstopPressed::clone(){

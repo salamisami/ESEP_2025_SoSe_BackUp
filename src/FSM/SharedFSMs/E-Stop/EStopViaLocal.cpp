@@ -21,6 +21,7 @@ void EStopViaLocal::entry(){
 void EStopViaLocal::exit(){
     PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 }
 
 State* EStopViaLocal::clone(){

@@ -14,7 +14,6 @@ EStopReleased::~EStopReleased() {}
 void EStopReleased::entry(){
     PRINT_STATE;
 	data->sender->send_event((int8_t)Topic::ACTUATOR,(int8_t) ActuatorEnum::TRAFFIC_RED_ON, (int8_t)EventPriority::DEFAULT);
-	data->sender->send_event((int8_t)Topic::ACTUATOR,(int8_t) ActuatorEnum::TRAFFIC_YELLOW_OFF,(int8_t) EventPriority::DEFAULT);
 }
 
 void EStopReleased::exit(){
