@@ -46,13 +46,13 @@ State* Modehandler::button_estop_pressed(){
 }
 
 State* Modehandler::com_button_estop_pressed(){
-	State* cloned = this->clone();
-	data->modehandler_history->push(cloned);
+	// State* cloned = this->clone();
+	// data->modehandler_history->push(cloned);
 	return new EStop(data,new EStopViaNeighbor(data));
 }
 
 State* Modehandler::remote_stop(){
-	State* cloned = this->clone();
-	data->modehandler_history->push(cloned);
+	// State* cloned = this->clone();
+	// data->modehandler_history->push(cloned);
 	return new EStop(data,new EStopReleased(data));
 }
