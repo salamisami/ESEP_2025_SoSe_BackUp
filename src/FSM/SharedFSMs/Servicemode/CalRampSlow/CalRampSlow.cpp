@@ -3,8 +3,9 @@
 
 //================================================= constructors & destructors =================================================
 CalRampSlow::CalRampSlow(ContextData* data) : OrthState(data,
-    {new EndToGateCRS(data),new PusherIdleCRS(data)} ///substates
+    { new EndToGateCRS(data), new PusherIdleCRS(data) } ///substates
     , new CalibrationFinished(data)                  //default class
+    , true
 ) {
     //substate = new SubState(data);
 }

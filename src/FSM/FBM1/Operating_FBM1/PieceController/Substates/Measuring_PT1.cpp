@@ -48,7 +48,7 @@ State* Measuring_PT1::adc_wf_detect() {
 	return goto_adcgate();
 }
 
-State* Measuring_PT1::adc_wb_detect() {
+State* Measuring_PT1::adc_w_b_detect() {
 	localdata_.ist_type = ScannedPiece::HOLE;
 	return goto_adcgate();
 }

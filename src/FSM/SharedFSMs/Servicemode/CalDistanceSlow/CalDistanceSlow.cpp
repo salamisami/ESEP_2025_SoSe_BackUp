@@ -6,8 +6,9 @@ CalDistanceSlow::CalDistanceSlow(ContextData* data) : OrthState(data,
 	{
 		new IdleCDS(data),
 		new LetPieceThrough(data, OPEN_GATE_SLOW_DURATION)
-		}
-		, new CalRampSlow(data)
+	}
+	, new CalRampSlow(data)
+	, true
 ) {
 	//substate = new SubState(data);
 }

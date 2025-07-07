@@ -4,11 +4,14 @@
 
 #include "TimeProfile.h"
 
+#include "Macros.h"
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <stdexcept> // For std::runtime_error
 #include <sstream>
+
 
 
 
@@ -31,15 +34,14 @@ public:
 	static void load_profile(TimeProfile* time_profile, const std::string& load_location) {
 		std::ifstream in_file(load_location);
 		if(!in_file.is_open()) {
-			std::cerr << "TimeProfile: Datei konnte nicht geöffnet werden!\n";
+			THROW("TimeProfile: Datei konnte nicht geöffnet werden!");
 			return;
 		}
 
 		// Skip header (same as your save format)
 		std::string line;
 		if(!std::getline(in_file, line)) {
-			std::cerr << "Error: Empty file\n";
-			return;
+			THROW("Error: Empty file");
 		}
 
 		for(int i = 0; i < 6; i++) {

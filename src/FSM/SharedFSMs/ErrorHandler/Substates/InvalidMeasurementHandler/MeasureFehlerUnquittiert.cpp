@@ -29,7 +29,7 @@ State* MeasureFehlerUnquittiert::adc_top_area_unblocked() {
 }
 
 State* MeasureFehlerUnquittiert::button_reset_released() {
-    return new ValidMeasure(data);
+    return new MeasureFehlerQuittiert(data);
 }
 
 State* MeasureFehlerUnquittiert::clone() {

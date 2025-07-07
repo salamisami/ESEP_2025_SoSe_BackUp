@@ -24,9 +24,8 @@ PieceEnum Gate_PT1::validate_piece(const ScannedPiece& scanned_piece, const bool
 			case ScannedPiece::FLAT:
 				predicted_piece = PieceEnum::FLAT;
 				break;
-			case ScannedPiece::TALL:
+			case ScannedPiece::HOLE:
 				predicted_piece = PieceEnum::TALL;
-				break;
 			default:
 				break;
 		}
@@ -55,8 +54,10 @@ State* Gate_PT1::sort_out() {
 	return new SortingOut_PT1(data, localdata_);
 }
 State* Gate_PT1::let_through() {
+	localdata_.sort_out_fbm2 = false;
 	return new GateEnd_PT1(data, localdata_);
 }
 State* Gate_PT1::sort_out_fbm2() {
+	localdata_.sort_out_fbm2 = true;
 	return new GateEnd_PT1(data, localdata_);
 }

@@ -5,6 +5,7 @@
 #include "OrthState.h"
 #include "Start_PT1.h"
 
+
 class PieceControllerFBM1 : public OrthState {
 public: //============================================ constructors & destructors ============================================
     PieceControllerFBM1(ContextData* data);
@@ -35,9 +36,10 @@ protected:
 	virtual State* laser_back_blocked() override;
 	virtual State* metal_detected() override;
 	virtual State* laser_sorting_gate_blocked() override;
-	virtual State* timer(TIMER_ID id) override;
 
-	virtual State* custom_handler_function(State* (State::* handler_function)());
+	//virtual State* handle_event_using_function(State* (State::* handler_function)()) override;
+	//virtual State* timer(TIMER_ID id) override;
+	//virtual State* custom_handler_function(State* (State::* handler_function)());
 	
 };
 

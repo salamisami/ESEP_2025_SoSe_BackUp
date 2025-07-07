@@ -6,10 +6,12 @@ ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data) : OrthState(data,
 		new IdleSMSR(data),
 		new SendToRamp(data)
 	}
-, new ReadyForCDF(data)
-){}
+	, new ReadyForCDF(data)
+	, true
+) {
+}
 
-ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data, std::deque<State*> initial_substates):OrthState(data, initial_substates) {}
+ServiceModeSendRamp::ServiceModeSendRamp(ContextData* data, std::deque<State*> initial_substates) :OrthState(data, initial_substates) {}
 
 ServiceModeSendRamp::~ServiceModeSendRamp() {}
 
@@ -34,7 +36,7 @@ void ServiceModeSendRamp::exit() {
 }
 
 State* ServiceModeSendRamp::clone() {
-	return new ServiceModeSendRamp(data,clone_substates());
+	return new ServiceModeSendRamp(data, clone_substates());
 }
 
 // State* ServiceModeSendRamp::laser_ramp_blocked(){

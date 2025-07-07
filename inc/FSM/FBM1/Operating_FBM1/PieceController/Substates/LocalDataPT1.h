@@ -11,6 +11,7 @@ public:
 	int is_metal = false;
 	PieceEnum validated_type = PieceEnum::UNKNOWN;
 	bool unblock_signal_has_been_sent = false;
+	bool sort_out_fbm2 = true;
 };
 
 #endif

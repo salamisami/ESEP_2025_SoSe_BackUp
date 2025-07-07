@@ -19,7 +19,7 @@ public: //================================================ public functions ====
 
 	State* adc_wh_detect() override;
 	State* adc_wf_detect() override;
-	State* adc_wb_detect() override;
+	State* adc_w_b_detect() override;
 	
     State* adc_w_not_detect() override;
 	State* adc_invalid_measure() override;

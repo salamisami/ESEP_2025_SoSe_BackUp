@@ -2,12 +2,13 @@
 
 
 //================================================= constructors & destructors =================================================
-CalRampFast::CalRampFast(ContextData* data) : OrthState(data, 
+CalRampFast::CalRampFast(ContextData* data) : OrthState(data,
     {
         new EndToGateCRF(data),
         new PusherIdleCRF(data)
     }
     , new ReadyForCDS(data)
+    , true
 ) {
     //substate = new SubState(data);
 }

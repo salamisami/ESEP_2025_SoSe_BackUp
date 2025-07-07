@@ -15,7 +15,7 @@ ADCGate_PT1::~ADCGate_PT1() {}
 //===================================================== public functions =====================================================
 void ADCGate_PT1::entry() {
 	PRINT_STATE;
-	data->timer->start_timer(100, TIMER_ID::ADCGATE_PT1);
+	data->timer->start_timer(UPDATE_PIECE_INTERVAL, TIMER_ID::ADCGATE_PT1);
 }
 
 void ADCGate_PT1::exit() {

@@ -95,6 +95,11 @@ public: //================================================ public functions ====
     virtual State* reset_to_tall_w_metal() {
         return handle_event_using_function(&State::reset_to_tall_w_metal);
     }
+
+    virtual State* sorted(){
+      return handle_event_using_function(&State::sorted);
+    }
+
     //====================================================MotorPiece======================================================
     virtual State* delete_w_motor() {
         return handle_event_using_function(&State::delete_w_motor);
@@ -216,8 +221,8 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::adc_wf_detect);
     }
 
-    virtual State* adc_wb_detect() {
-        return handle_event_using_function(&State::adc_wb_detect);
+    virtual State* adc_w_b_detect(){
+        return handle_event_using_function(&State::adc_w_b_detect);
     }
 
     virtual State* adc_w_not_detect() {
@@ -291,6 +296,15 @@ public: //================================================ public functions ====
     virtual State* transfer_start_other() {
         return handle_event_using_function(&State::transfer_start_other);
     }
+    virtual State* transfer_start_tall_sort_out() {
+        return handle_event_using_function(&State::transfer_start_tall_sort_out);
+    }
+    virtual State* transfer_start_tall_w_metal_sort_out() {
+        return handle_event_using_function(&State::transfer_start_tall_w_metal_sort_out);
+    }
+    virtual State* transfer_start_flat_sort_out() {
+        return handle_event_using_function(&State::transfer_start_flat_sort_out);
+    }
 
     virtual State* adc_calibration_done() {
         return handle_event_using_function(&State::adc_calibration_done);
@@ -341,6 +355,9 @@ public: //================================================ public functions ====
     }
     virtual State* com_connected() {
         return handle_event_using_function(&State::com_connected);
+    }
+    virtual State* mqtt_disconnected() {
+        return handle_event_using_function(&State::mqtt_disconnected);
     }
     virtual State* mqtt_connected() {
         return handle_event_using_function(&State::mqtt_connected);
@@ -393,15 +410,31 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::error_c_lost_com_fixed);
     }
 
-    virtual State* sorted() {
-        return handle_event_using_function(&State::sorted);
-    }
-
     virtual State* remote_stop() {
         return handle_event_using_function(&State::remote_stop);
     }
 
 
+
+    //Fehlende States für Operating_FBM_2 
+    virtual State* adc_wh_detected(){
+      return handle_event_using_function(&State::adc_wh_detected);
+    }
+    virtual State* adc_wf_detected(){
+      return handle_event_using_function(&State::adc_wf_detected);
+    }
+    virtual State* adc_w_b_detected(){
+      return handle_event_using_function(&State::adc_w_b_detected);
+    }
+    virtual State* adc_w_not_detected(){
+      return handle_event_using_function(&State::adc_w_not_detected);
+    }
+    virtual State* error_w_lost_fixed(){
+      return handle_event_using_function(&State::error_w_lost_fixed);
+    }
+    virtual State* laser_gate_blocked(){
+      return handle_event_using_function(&State::laser_gate_blocked);
+    }
 
 
 

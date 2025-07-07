@@ -19,13 +19,13 @@ void RampErrorResolved::entry(){
 void RampErrorResolved::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::RAMP_ERROR_RESOLVED);
-    data->sender->send_event((int8_t) Topic::MOTOR_SLOW, data->event_payload); 
+    data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) Error_Enum::ERROR_BOTH_R_FULL); 
     //TODO CODE
 	PRINT_STATE;
 }
 
 State* RampErrorResolved::button_reset_released() 
 {
-    return new RampErrorUnquittiert(data);
+    return new RampNoError(data);
 }
 

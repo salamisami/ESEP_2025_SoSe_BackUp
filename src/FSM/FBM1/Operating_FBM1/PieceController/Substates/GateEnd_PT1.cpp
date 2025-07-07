@@ -14,7 +14,7 @@ GateEnd_PT1::~GateEnd_PT1() {}
 void GateEnd_PT1::entry() {
 	PRINT_STATE;
 	//TODO set sort status
-	data->timer->start_timer(100, TIMER_ID::GATEEND_PT1);
+	data->timer->start_timer(UPDATE_PIECE_INTERVAL, TIMER_ID::GATEEND_PT1);
 }
 
 void GateEnd_PT1::exit() {
