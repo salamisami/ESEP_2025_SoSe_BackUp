@@ -44,7 +44,9 @@ public:
         substate->exit();
     }
 
-    //virtual State* clone() override = 0;
+    // virtual State* clone() override{
+    //     throw std::runtime_error("Error, the clone of following state is called due to history, but not implemented: " + get_current_state());
+    // }
 
     virtual std::string get_current_state() override {
         std::string substate_name = substate->get_current_state();
@@ -60,8 +62,8 @@ public:
         if(newSubstate == State::EXIT_STATE) {
             // Handle substate exit
             substate->exit();
-            delete substate;
-            substate = nullptr;
+            // delete substate;
+            // substate = nullptr;
 
             // Return default exit state to parent
             return default_exit_state_;
@@ -92,8 +94,8 @@ protected:
         if(newSubstate == State::EXIT_STATE) {
             // Handle substate exit
             substate->exit();
-            delete substate;
-            substate = nullptr;
+            // delete substate;
+            // substate = nullptr;
 
             // Return default exit state to parent
             return default_exit_state_;

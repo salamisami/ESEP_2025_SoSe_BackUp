@@ -1,30 +1,23 @@
-#ifndef SIMULATEPIECE_H
-#define SIMULATEPIECE_H
+#ifndef IDLESORTING_H
+#define IDLESORTING_H
 #pragma once
 
-#include "OrthState.h"
-#include "FastTemp.h"
-#include "LetPieceThrough.h"
-#include "IdleTest.h"
-#include "TimeProfileManager.h"
-
-class SimulatePiece : public OrthState {
+#include "State.h"
+#include "PushRamp_OP.h"
+#include "OpenGate_OP.h"
+class IdleSorting : public State {
 public: //============================================ constructors & destructors ============================================
-    SimulatePiece(ContextData* data) ;
-	SimulatePiece(ContextData* data, std::deque<State*> initial_substates);
-    virtual ~SimulatePiece();
+    IdleSorting(ContextData* data) ;
+    virtual ~IdleSorting();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* clone() override;
-
-	State* laser_back_blocked() override;
-    
-
-
+    State* clone() override;
+    State* sort_out() override;
+    State* let_through() override;
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers

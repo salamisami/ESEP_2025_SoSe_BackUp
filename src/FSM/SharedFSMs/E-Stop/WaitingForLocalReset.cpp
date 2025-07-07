@@ -7,9 +7,13 @@
 
 #include "WaitingForLocalReset.h"
 
-void WaitingForLocalReset::entry(){ }
+void WaitingForLocalReset::entry(){
+	PRINT_STATE;
+}
 
-void WaitingForLocalReset::exit(){ }
+void WaitingForLocalReset::exit(){
+	PRINT_STATE;
+}
 
 State* WaitingForLocalReset::clone(){
 	return new WaitingForLocalReset(data);

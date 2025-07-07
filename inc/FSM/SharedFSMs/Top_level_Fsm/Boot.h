@@ -18,6 +18,8 @@ public: //================================================ public functions ====
 	void entry() override;
 	void exit() override;
 
+	State* clone() override;
+
 	State* is_switch() override;
 	State* is_pusher() override;
     

@@ -10,6 +10,9 @@ CalRampSlow::CalRampSlow(ContextData* data) : OrthState(data,
     //substate = new SubState(data);
 }
 
+CalRampSlow::CalRampSlow(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {
+}
+
 CalRampSlow::~CalRampSlow() {}
 
 //===================================================== private functions =====================================================
@@ -24,4 +27,8 @@ void CalRampSlow::entry() {
 void CalRampSlow::exit() {
     OrthState::exit();
     PRINT_STATE;
+}
+
+State* CalRampSlow::clone() {
+	return new CalRampSlow(data, OrthState::clone_substates());
 }

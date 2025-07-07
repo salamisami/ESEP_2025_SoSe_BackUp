@@ -1,27 +1,21 @@
-#ifndef SIMULATEPIECE_H
-#define SIMULATEPIECE_H
+#ifndef SORTINGCONTROLLER_H
+#define SORTINGCONTROLLER_H
 #pragma once
 
-#include "OrthState.h"
-#include "FastTemp.h"
-#include "LetPieceThrough.h"
-#include "IdleTest.h"
-#include "TimeProfileManager.h"
+#include "HState.h"
+#include "IdleSorting.h"
 
-class SimulatePiece : public OrthState {
+class SortingController : public HState{
 public: //============================================ constructors & destructors ============================================
-    SimulatePiece(ContextData* data) ;
-	SimulatePiece(ContextData* data, std::deque<State*> initial_substates);
-    virtual ~SimulatePiece();
+    SortingController(ContextData* data) ;
+    SortingController(ContextData* data, State* initial_substate);
+    virtual ~SortingController();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
-	State* clone() override;
-
-	State* laser_back_blocked() override;
+    State* clone() override;
     
 
 

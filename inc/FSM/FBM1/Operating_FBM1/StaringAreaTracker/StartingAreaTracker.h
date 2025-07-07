@@ -18,10 +18,6 @@ public: //================================================ public functions ====
 
 	State* clone() override;
 
-
-    
-
-
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers

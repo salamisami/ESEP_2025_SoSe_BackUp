@@ -17,7 +17,6 @@ void Idle::entry(){
 }
 
 void Idle::exit(){
-    //TODO:Update data
     PRINT_STATE;
 }
 

@@ -7,24 +7,28 @@
 
 #include "WaitingForComReset.h"
 
-void WaitingForComReset::entry(){ }
+void WaitingForComReset::entry() {
+	PRINT_STATE;
+}
 
-void WaitingForComReset::exit(){ }
+void WaitingForComReset::exit() {
+	PRINT_STATE;
+}
 
-State* WaitingForComReset::clone(){ return new WaitingForComReset(data);}
+State* WaitingForComReset::clone() { return new WaitingForComReset(data); }
 
-State* WaitingForComReset::button_estop_pressed(){
+State* WaitingForComReset::button_estop_pressed() {
 	return new EStopViaLocal(data);
 }
 
-State* WaitingForComReset::com_button_estop_pressed(){
+State* WaitingForComReset::com_button_estop_pressed() {
 	return new EStopViaNeighbor(data);
 }
 
-State* WaitingForComReset::com_button_reset_pressed(){
+State* WaitingForComReset::com_button_reset_pressed() {
 	return State::EXIT_STATE;
 }
 
-State* WaitingForComReset::remote_stop(){
+State* WaitingForComReset::remote_stop() {
 	return new EStopReleased(data);
 }

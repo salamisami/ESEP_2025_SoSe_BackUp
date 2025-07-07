@@ -31,3 +31,7 @@ State* COMReconnected::button_reset_released()
 {
     return new COMNoError(data);
 }
+
+State* COMReconnected::clone() {
+    return new COMReconnected(data);
+}

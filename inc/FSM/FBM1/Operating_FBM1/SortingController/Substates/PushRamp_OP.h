@@ -1,29 +1,21 @@
-#ifndef SIMULATEPIECE_H
-#define SIMULATEPIECE_H
+#ifndef PUSHRAMP_OP_H
+#define PUSHRAMP_OP_H
 #pragma once
 
-#include "OrthState.h"
-#include "FastTemp.h"
-#include "LetPieceThrough.h"
-#include "IdleTest.h"
-#include "TimeProfileManager.h"
-
-class SimulatePiece : public OrthState {
+#include "State.h"
+#include "IdleSorting.h"
+class PushRamp_OP : public State {
 public: //============================================ constructors & destructors ============================================
-    SimulatePiece(ContextData* data) ;
-	SimulatePiece(ContextData* data, std::deque<State*> initial_substates);
-    virtual ~SimulatePiece();
+    PushRamp_OP(ContextData* data) ;
+    virtual ~PushRamp_OP();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 
-	State* clone() override;
-
-	State* laser_back_blocked() override;
-    
-
+    State* clone() override;
+    State* timer(TIMER_ID id) override;
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

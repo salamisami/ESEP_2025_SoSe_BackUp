@@ -31,3 +31,6 @@ State* ErrorCom::error_c_lost_com_fixed() {
 	return modehandler;
 }
 
+State* ErrorCom::clone() {
+	return new ErrorCom(data);
+}

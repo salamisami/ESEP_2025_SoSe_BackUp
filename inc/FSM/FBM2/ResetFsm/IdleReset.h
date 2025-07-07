@@ -21,6 +21,8 @@ public:
 	void entry() override;
 	void exit() override;
 
+	State* clone() override;
+
 	State* transfer_start_tall() override;
 	State* transfer_start_flat() override;
 	State* transfer_start_tall_w_metal() override;

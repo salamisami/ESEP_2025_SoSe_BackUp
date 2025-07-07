@@ -12,3 +12,7 @@ void IdleIM::exit() {
 State* IdleIM::button_start_pressed(){
     return new WaitingIM(data);
 }
+
+State* IdleIM::clone() {
+    return new IdleIM(data);
+}

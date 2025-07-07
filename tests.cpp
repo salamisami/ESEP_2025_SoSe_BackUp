@@ -268,7 +268,7 @@ TEST_F(RealImplementationSetup, CompleteEStopResetTransitionTest) {
     
     // Verify COM reset completes the cycle
     remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_RESET_PRESSED);
-    EXPECT_STATE_CONTAINS("WaitingIM");  // Returns to operational state
+    EXPECT_STATE_CONTAINS("IdleIM");  // Returns to operational state
 
     // ----------------------------------------------------------------
     // Test 2: COM Reset -> WaitingForLocalReset 
@@ -285,7 +285,7 @@ TEST_F(RealImplementationSetup, CompleteEStopResetTransitionTest) {
     
     // Complete with Interrupt reset
     remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_RESET_PRESSED);
-    EXPECT_STATE_CONTAINS("WaitingIM");
+    EXPECT_STATE_CONTAINS("IdleIM");
 
     // ----------------------------------------------------------------
     // Test 3: Verify both reset paths work from BothEStopPressed
@@ -293,7 +293,7 @@ TEST_F(RealImplementationSetup, CompleteEStopResetTransitionTest) {
     // Trigger dual E-Stop
     remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_PRESSED);
     remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_ESTOP_PRESSED);
-    EXPECT_STATE_CONTAINS("BothEStopPressed");
+    EXPECT_STATE_CONTAINS("BothEstopPressed");
     
     // Release both
     remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_RELEASED);
@@ -306,7 +306,7 @@ TEST_F(RealImplementationSetup, CompleteEStopResetTransitionTest) {
     
     // Then COM reset
     remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::BUTTON_RESET_PRESSED);
-    EXPECT_STATE_CONTAINS("WaitingIM");
+    EXPECT_STATE_CONTAINS("IdleIM");
 
     // Trigger dual E-Stop again
     remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::BUTTON_ESTOP_PRESSED);

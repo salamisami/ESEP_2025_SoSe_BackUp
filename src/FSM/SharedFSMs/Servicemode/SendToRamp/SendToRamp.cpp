@@ -5,6 +5,9 @@ SendToRamp::SendToRamp(ContextData* data) : HState(data, new IdleSTR(data)) {
     //substate = new SubState(data);
 }
 
+SendToRamp::SendToRamp(ContextData* data, State* initial_substate) : HState(data, initial_substate) 
+{}
+
 SendToRamp::~SendToRamp() {}
 
 //===================================================== private functions =====================================================
@@ -19,4 +22,8 @@ void SendToRamp::entry(){
 void SendToRamp::exit(){
     HState::exit();
     PRINT_STATE;
+}
+
+State* SendToRamp::clone() {
+    return new SendToRamp(data, substate->clone());
 }
