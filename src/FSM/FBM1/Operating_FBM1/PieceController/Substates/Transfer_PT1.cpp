@@ -62,7 +62,7 @@ State* Transfer_PT1::transfer_done() {
 }
 
 State* Transfer_PT1::transfer_failed() {
-	//PieceMissing
+	DEBUG("PieceMissing! Cause: piece does not reach to FBM2.");
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
 	PieceEnum validated_piece = localdata_.validated_type;

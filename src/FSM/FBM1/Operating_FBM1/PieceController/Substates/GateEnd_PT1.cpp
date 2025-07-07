@@ -32,7 +32,7 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 	piece->piece_tracker->print_distance();
 
 	if(current_area == Area::OUT_OF_RANGE) {
-		//PieceMissing
+		DEBUG("PieceMissing! Cause: piece is too long to reach laser back.");
 		data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
 		PieceEnum validated_piece = localdata_.validated_type;
