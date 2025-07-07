@@ -11,7 +11,10 @@ Operating::Operating(ContextData* data): OrthState(data, {
 }) {}
 #else
 #ifdef FBM_2
-Operating::Operating(ContextData* data): OrthState(data, {new PseudoState(data)}) {
+Operating::Operating(ContextData* data): OrthState(data, 
+    {new ReadyForPiece(data),
+    new MotorControl(data)
+    }) {
 }
 #endif
 #endif
