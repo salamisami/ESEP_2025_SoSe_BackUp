@@ -19,10 +19,7 @@ ADC_Gate::~ADC_Gate() {}
 //===================================================== public functions =====================================================
 void ADC_Gate::entry(){
 	PRINT_STATE;
-//TODO: Über motorcontrol ansteuern
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
-	data->piece_FBM2->piece_tracker->fast();
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2.id); 
 	data->timer->start_timer(100,TIMER_ID::ADC_GATE);
 	//Action here
 	//HState::entry() //for HState
