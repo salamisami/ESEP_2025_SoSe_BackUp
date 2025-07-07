@@ -39,7 +39,6 @@ State* PieceControllerFBM1::new_piece() {
 	//add new piece entry to shared data
 	Piece* next_piece = new Piece(id, &data->timeprofile);
 	data->pieces_map->insert({ id, next_piece });
-
 	//create a local data and inject the id
 	LocalDataPT1 localdata;
 	localdata.id = id;

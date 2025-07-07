@@ -27,6 +27,9 @@ public:
     //Disable copy constructor, because we're going to use clone() instead
     HState(const HState& other) = delete;
     virtual ~HState() override {
+        if(default_exit_state_ != nullptr) {
+            delete default_exit_state_;
+        }
         //std::cout << "HState Destructor" << std::endl;
         if(substate != nullptr) {
             delete substate;
@@ -66,6 +69,9 @@ public:
             // substate = nullptr;
 
             // Return default exit state to parent
+            if(default_exit_state_ != nullptr) {
+                return default_exit_state_->clone();
+            }
             return default_exit_state_;
         } else if(newSubstate != nullptr) {
             // there is substate change, change only the substate
@@ -98,6 +104,9 @@ protected:
             // substate = nullptr;
 
             // Return default exit state to parent
+            if(default_exit_state_ != nullptr) {
+                return default_exit_state_->clone();
+            }
             return default_exit_state_;
         } else if(newSubstate) {
             // Normal state transition

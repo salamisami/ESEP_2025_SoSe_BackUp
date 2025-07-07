@@ -28,6 +28,9 @@ State* SortingOut_PT1::clone() {
 
 State* SortingOut_PT1::laser_ramp_blocked() {
   data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
+  Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
+	data->pieces_map->erase(localdata_.id);
+	delete piece_to_delete;
   return State::EXIT_STATE;
 }
 
@@ -50,6 +53,9 @@ State* SortingOut_PT1::timer(TIMER_ID id) {
       default:
         break;
     }
+    Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
+    data->pieces_map->erase(localdata_.id);
+    delete piece_to_delete;
     return State::EXIT_STATE;
   }
   return nullptr;

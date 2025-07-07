@@ -52,5 +52,8 @@ State* ADC_PT1::adc_timeout() {
 		default:
 			break;
 	}
+	Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
+	data->pieces_map->erase(localdata_.id);
+	delete piece_to_delete;
 	return State::EXIT_STATE;
 }
