@@ -93,7 +93,9 @@ enum class Internal_Enum : int {
     UNBLOCK_STARTING_AREA,
     NEW_PIECE,
     RAMP_FULL,
-    RAMP_NOT_FULL
+    RAMP_NOT_FULL,
+	REMOTE_STOP,
+	SORTED
 };
 
 enum class ADC_Enum : int {
@@ -172,7 +174,7 @@ enum class ScannedPiece : int {
     UNKNOWN
 };
 enum class Error_Enum : int {
-    ERROR_W_LOST=1,
+    ERROR_W_LOST=-128,
     ERROR_BOTH_R_FULL,
     ERROR_C_LOST_NR,
     ERROR_C_LOST_MQTT,
@@ -187,7 +189,9 @@ enum class Error_Enum : int {
     PIECE_APPEARED_RESOLVED,
     PIECE_LOST_RESOLVED,
     PIECES_TOO_CLOSE,
-    ERROR_INVALID_MEASURE_RESOLVED
+    ERROR_INVALID_MEASURE_RESOLVED,
+	ERROR_C_LOST_MQTT_OVER_COM,
+	ERROR_C_LOST_MQTT_OVER_COM_RESOLVED
 };
 
 
