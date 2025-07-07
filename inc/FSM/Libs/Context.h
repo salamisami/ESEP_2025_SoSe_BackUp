@@ -353,7 +353,7 @@ State* Context<T>::handleRemote(int event_value) {
         case RemoteControlEnum::RECONNECT:
             newState = state->reconnect();
             break;
-        case RemoteControlEnum::REMOTE_ESTOP
+        case RemoteControlEnum::REMOTE_ESTOP:
             newState = state->remote_stop();
             break;
         default:
