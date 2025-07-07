@@ -30,7 +30,7 @@ State* ADC_PT1::adc_new_piece() {
 }
 
 State* ADC_PT1::adc_timeout() {
-	//PieceMissing
+	DEBUG("PieceMissing! Cause: piece is too long in ADC.");
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
 	PieceEnum validated_piece = localdata_.validated_type;

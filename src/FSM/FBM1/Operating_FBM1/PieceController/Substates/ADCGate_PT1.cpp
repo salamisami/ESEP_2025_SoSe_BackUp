@@ -41,15 +41,14 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 		case Area::ADC_GATE:
 			return new ADCGate_PT1(data, localdata_);
 			break;
-		case Area::GATE:
-			if(current_pos < PIECE_TRANSITION_TOLERANCE) {
-				return new ADCGate_PT1(data, localdata_);
-			}
+		// case Area::GATE:
+		// 	if(current_pos < PIECE_TRANSITION_TOLERANCE) {
+		// 		return new ADCGate_PT1(data, localdata_);
+		// 	}
 		default:
 			break;
 	}
-	DEBUG("PieceMissing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-	std::cout << std::string(__PRETTY_FUNCTION__) << std::endl;
+	DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
 	PieceEnum validated_piece = localdata_.validated_type;
@@ -74,7 +73,7 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
-
+	//before expected
 	if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE_GATE)) {
 		return new Gate_PT1(data, localdata_);
 	}
