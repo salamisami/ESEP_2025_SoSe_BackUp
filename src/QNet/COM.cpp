@@ -132,12 +132,11 @@ void COM::checkQueues()
     }
     while (!lowPriorityQueue.empty())
     {
-        COUT("Something in low prio");
+        //COUT("Something in low prio");
 
         auto msg = lowPriorityQueue.front();
         lowPriorityQueue.pop_front();
-        lock.unlock();
-        // Print every low prio message with its values.
+        lock.unlock(); 
         // printf("Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
         sendToServer(msg);
         lock.lock();
@@ -323,16 +322,10 @@ void COM::handle_QNX_IO_msg(_pulse *msg, int rcvid)
 void COM::processMessage(const _pulse &msg)
 {
     if (msg.code == ((int)Topic::COM))
-    {
-        // Process ES messages immediately Same priority goes to connection lost
+    { 
         if (msg.value.sival_int == ((int)COM_Enum::BUTTON_ESTOP_PRESSED))
         {
             sendToDispatcher(msg, (int)EventPriority::FIRST_PRIO);
-        }
-        else if (msg.value.sival_int == ((int)COM_Enum::BUTTON_RESET_PRESSED))
-        {
-            sendToDispatcher(msg);
-            return;
         }
         else if (msg.value.sival_int != (((int)COM_Enum::TIMEOUT_COM) || ((int)COM_Enum::HEARTBEAT)))
         {
@@ -374,12 +367,7 @@ void COM::handleInterruptTopic(int originalValue, _pulse &dispatcherMsg)
         dispatcherMsg.code = static_cast<int>(Topic::COM);
         dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED);
         highPriorityQueue.push_back(dispatcherMsg);
-        break;
-    /*case InterruptEnum::BUTTON_RESET_RELEASED:
-        dispatcherMsg.code = static_cast<int>(Topic::COM);
-        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_RELEASED);
-        highPriorityQueue.push_back(dispatcherMsg);
-        break;*/
+        break; 
     default:
         break;
     }
