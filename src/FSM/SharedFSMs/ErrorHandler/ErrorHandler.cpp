@@ -12,16 +12,21 @@ ErrorHandler::ErrorHandler(ContextData* data) : OrthState(data,
 		new RampNoError(data),
 		new CalibNoWarning(data),
 		new ReplayNoWarning(data),
-		new StartingAreaTracker(data),
-		new RampStatus(data),
-		new SystemsRampStatus(data)
+		new RampNotFull(data), //Ramp Status
+		new NoRampFull(data) //system ramp status
 	}
+	, nullptr
+	, false
+	, false
 ) {
 	//substate = new SubState(data);
 }
 
 ErrorHandler::ErrorHandler(ContextData* data, std::deque<State*> initial_substates) : OrthState(data,
 	initial_substates
+	, nullptr
+	, false
+	, false
 ) {
 	//substate = new SubState(data);
 }
@@ -32,8 +37,7 @@ ErrorHandler::~ErrorHandler() {}
 
 
 //===================================================== public functions =====================================================
-State* ErrorHandler::clone()
-{
+State* ErrorHandler::clone() {
 	auto cloned_substates = OrthState::clone_substates();
 	ErrorHandler* cloned_state = new ErrorHandler(data, cloned_substates);
 	return cloned_state;
@@ -54,11 +58,11 @@ void ErrorHandler::exit() {
 
 //explicit exit
 /* State* ErrorHandler::laser_back_blocked() {
-    for(auto& current_substate : substates) {
-        State* newSubstate = current_substate->laser_back_blocked();
-        if(newSubstate != nullptr) {
-            return newSubstate;
-        }
-    }
-    return nullptr;
+	for(auto& current_substate : substates) {
+		State* newSubstate = current_substate->laser_back_blocked();
+		if(newSubstate != nullptr) {
+			return newSubstate;
+		}
+	}
+	return nullptr;
 } */

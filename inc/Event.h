@@ -84,7 +84,8 @@ enum class Topic : int8_t {
     MOTOR_STOP_FSM,
     MOTOR_SLOW,
     MOTOR_FAST,
-    DELETE_W_MOTOR
+    DELETE_W_MOTOR,
+	REM_CON
 };
 
 enum class Internal_Enum : int {

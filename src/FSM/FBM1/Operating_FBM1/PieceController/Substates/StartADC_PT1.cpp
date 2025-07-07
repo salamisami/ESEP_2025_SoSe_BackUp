@@ -35,18 +35,26 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 	Area current_area = distance.first;
 	auto current_position = distance.second;
 
-	if(current_area == Area::START_ADC && current_position > (100 - PIECE_TRANSITION_TOLERANCE)) {
-		return new ADC_PT1(data, localdata_);
-	}
+	
 
 	//TODO calibrate here
-	if(current_position > DISTANCE_BETWEEN_PIECES) {
+	if(current_area == Area::START_ADC && current_position > DISTANCE_BETWEEN_PIECES && current_position <= (100 - PIECE_TRANSITION_TOLERANCE)) {
 		if(!localdata_.unblock_signal_has_been_sent) {
 			localdata_.unblock_signal_has_been_sent = true;
 			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
 		}
 		piece->piece_tracker.print_distance();
+		return new StartADC_PT1(data, localdata_);
 	}
+
+	if(current_area == Area::START_ADC && current_position > (100 - PIECE_TRANSITION_TOLERANCE)) {
+		return new ADC_PT1(data, localdata_);
+	}
+
+	if(current_area != Area::START_ADC){
+		return new ADC_PT1(data, localdata_);
+	}
+
 	return new StartADC_PT1(data, localdata_);
 }
 

@@ -96,8 +96,8 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::reset_to_tall_w_metal);
     }
 
-    virtual State* sorted() {
-        return handle_event_using_function(&State::sorted);
+    virtual State* sorted(){
+      return handle_event_using_function(&State::sorted);
     }
 
     //====================================================MotorPiece======================================================
@@ -221,7 +221,7 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::adc_wf_detect);
     }
 
-    virtual State* adc_w_b_detect() {
+    virtual State* adc_w_b_detect(){
         return handle_event_using_function(&State::adc_w_b_detect);
     }
 
@@ -335,9 +335,11 @@ public: //================================================ public functions ====
     virtual State* com_ramp_not_full() {
         return handle_event_using_function(&State::com_ramp_not_full);
     }
+
     virtual State* com_mqtt_connected() {
         return handle_event_using_function(&State::com_mqtt_connected);
     }
+
     virtual State* com_mqtt_disconnected() {
         return handle_event_using_function(&State::com_mqtt_disconnected);
     }
@@ -415,23 +417,23 @@ public: //================================================ public functions ====
 
 
     //Fehlende States für Operating_FBM_2 
-    virtual State* adc_wh_detected() {
-        return handle_event_using_function(&State::adc_wh_detected);
+    virtual State* adc_wh_detected(){
+      return handle_event_using_function(&State::adc_wh_detected);
     }
-    virtual State* adc_wf_detected() {
-        return handle_event_using_function(&State::adc_wf_detected);
+    virtual State* adc_wf_detected(){
+      return handle_event_using_function(&State::adc_wf_detected);
     }
-    virtual State* adc_w_b_detected() {
-        return handle_event_using_function(&State::adc_w_b_detected);
+    virtual State* adc_w_b_detected(){
+      return handle_event_using_function(&State::adc_w_b_detected);
     }
-    virtual State* adc_w_not_detected() {
-        return handle_event_using_function(&State::adc_w_not_detected);
+    virtual State* adc_w_not_detected(){
+      return handle_event_using_function(&State::adc_w_not_detected);
     }
-    virtual State* error_w_lost_fixed() {
-        return handle_event_using_function(&State::error_w_lost_fixed);
+    virtual State* error_w_lost_fixed(){
+      return handle_event_using_function(&State::error_w_lost_fixed);
     }
-    virtual State* laser_gate_blocked() {
-        return handle_event_using_function(&State::laser_gate_blocked);
+    virtual State* laser_gate_blocked(){
+      return handle_event_using_function(&State::laser_gate_blocked);
     }
 
 
