@@ -12,7 +12,7 @@ Idle::~Idle() {}
 
 //===================================================== public functions =====================================================
 void Idle::entry(){
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP), (int) EventPriority::SECOND_PRIO);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP, (int) EventPriority::SECOND_PRIO);
 	PRINT_STATE;
 }
 
@@ -21,7 +21,7 @@ void Idle::exit(){
 }
 
 State* Idle::motor_fast(){
-    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START), (int) EventPriority::SECOND_PRIO);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START, (int) EventPriority::SECOND_PRIO);
     for (auto& pair : *data->pieces_map) {
       Piece* piece = pair.second;  // pair.second is the value (Piece*)
       piece->piece_tracker->fast();               // Call fast() on the Piece*

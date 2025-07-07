@@ -44,8 +44,8 @@ State *Stop::motor_slow()
     else
     {
         updateData(MotorPieceState::SLOW);
-        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START), (int) EventPriority::SECOND_PRIO);       
-        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON), (int) EventPriority::SECOND_PRIO);
+        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START, (int) EventPriority::SECOND_PRIO);       
+        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON, (int) EventPriority::SECOND_PRIO);
         for (auto& pair : *data->pieces_map) {
           Piece* piece = pair.second;  // pair.second is the value (Piece*)
           piece->piece_tracker->slow();               // Call fast() on the Piece*
@@ -62,7 +62,7 @@ State *Stop::motor_fast()
     }
     else
     {
-        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START), (int) EventPriority::SECOND_PRIO);
+        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START, (int) EventPriority::SECOND_PRIO);
         for (auto& pair : *data->pieces_map) {
           Piece* piece = pair.second;  // pair.second is the value (Piece*)
           piece->piece_tracker->fast();               // Call fast() on the Piece*
