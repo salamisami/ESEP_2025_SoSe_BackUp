@@ -166,7 +166,8 @@ enum class TIMER_ID : int {
     START_ADC,
     ADC_GATE,
     SORTING_OUT,
-    IS_METAL
+    IS_METAL,
+    GATE_FBM_2
 };
 
 enum class PieceEnum : int {
