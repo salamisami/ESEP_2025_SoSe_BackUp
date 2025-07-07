@@ -3,11 +3,11 @@
 //================================================= constructors & destructors =================================================
 
 
-DistanceTracker::DistanceTracker(TimeProfile* time_profile, bool debug):time_profile(time_profile) {
+DistanceTracker::DistanceTracker(TimeProfile* time_profile, bool debug) :time_profile(time_profile) {
     running = true;
     this->debug = debug;
     stop();
-    debug_thread = std::thread(&DistanceTracker::debug_function, this);
+    //debug_thread = std::thread(&DistanceTracker::debug_function, this);
 
     //debug_thread.detach();
 }
@@ -17,7 +17,7 @@ DistanceTracker::~DistanceTracker() {
     running = false;  // Signal threads to stop
 
     // Wake up threads if they're waiting
-    debug_thread.join();
+    //debug_thread.join();
 }
 
 //===================================================== private functions =====================================================
@@ -114,7 +114,7 @@ long DistanceTracker::area_pos_to_timestamp(const Area& input_area, const double
             THROW("Wrong mode");
             return 0;
     }
-    if(input_area == Area::OUT_OF_RANGE){
+    if(input_area == Area::OUT_OF_RANGE) {
         return 0;
     }
     if(input_area == Area::GATE_RAMP) {
@@ -153,9 +153,11 @@ void DistanceTracker::debug_function() {
 //updates area and pos from the last time.
 std::pair<Area, double> DistanceTracker::calculate_area_pos(const Area& last_area, const double& last_pos, const uint8_t& mode) {
     if(mode == (int) 0) {
+        stopwatch.reset();
+        stopwatch.start();
         return std::make_pair(last_area, last_pos);
     }
-    if(last_area == Area::OUT_OF_RANGE){
+    if(last_area == Area::OUT_OF_RANGE) {
         return std::make_pair(last_area, 0);
     }
     long last_position_in_ms = (long) area_pos_to_timestamp(last_area, last_pos, mode);
@@ -196,12 +198,14 @@ void DistanceTracker::slow() {
 
 void DistanceTracker::stop() {
     log = false;
+    DEBUG("Piece_stop_called!");
     update();
     current_mode = 0;
 }
 
 
 void DistanceTracker::reset() {
+    DEBUG("Piece_reset called!");
     stop();
     stopwatch.reset();
     current_mode = 0;
@@ -224,6 +228,7 @@ std::pair<Area, double> DistanceTracker::get_distance() {
 }
 
 void DistanceTracker::print_distance() {
+    update();
     std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
 }
 

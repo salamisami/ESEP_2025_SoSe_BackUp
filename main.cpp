@@ -8,6 +8,7 @@
 #include "Logic.h"
 #include "Boot.h"
 #include "SimulatePiece.h"
+#include "Piece.h"
 
 #include <iostream>
 
@@ -31,7 +32,7 @@ int main() {
         both_profiles.fast_timestamps[i] = fast_profile[i];
     }
     // Set slow timestamps
-    long slow_profile[TIMESTAMP_LENGTH] = { 6060, 7183, 10309, 11780, 17207, 10552 };
+    long slow_profile[TIMESTAMP_LENGTH] = { 6000, 7200, 10309, 11780, 17207, 10552 };
     for(int i = 0; i < TIMESTAMP_LENGTH; i++) {
         both_profiles.slow_timestamps[i] = slow_profile[i];
     }
@@ -40,41 +41,69 @@ int main() {
     TimeProfileManager::save_profile(both_profiles, SAVE_LOCATION_TIMEPROFILE);
     TimeProfileManager::convert_to_deadlines(&both_profiles);
 
-
-    Mock_PM::Receiver* logic_receiver = new Mock_PM::Receiver();
-    Mock_PM::Sender* remote_control = new Mock_PM::Sender(logic_receiver);
-
-    Mock_PM::Receiver* hal_receiver = new Mock_PM::Receiver();
-    Mock_PM::Sender* logic_sender = new Mock_PM::Sender(hal_receiver);
-    I_Sender* to_self_sender = new Mock_PM::Sender(logic_receiver);
-
-
-
-    auto logic = new Logic<SimulatePiece>(logic_receiver, to_self_sender);
-    //boot
-    WAIT(500);
-    //remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
-
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
-    WAIT(2000);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
-    WAIT(100);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
-    WAIT(1500);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-    WAIT(400);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-    WAIT(2000);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
+    Piece* piece = new Piece(&both_profiles);
+    piece->piece_tracker->print_distance();
+    piece->piece_tracker->fast();
+    for(int i = 0; i < 20; i++){
+        piece->piece_tracker->print_distance();
+        WAIT(100);
+    }
+    piece->piece_tracker->slow();
+    for(int i = 0; i < 12; i++){
+        piece->piece_tracker->print_distance();
+        WAIT(100);
+    }
+    piece->piece_tracker->fast();
+    for(int i = 0; i < 26; i++){
+        piece->piece_tracker->print_distance();
+        WAIT(100);
+    }
+    piece->piece_tracker->stop();
+    for(int i = 0; i < 3; i++){
+        piece->piece_tracker->print_distance();
+        WAIT(1000);
+    }
+    piece->piece_tracker->fast();
+    for(int i = 0; i < 13; i++){
+        piece->piece_tracker->print_distance();
+        WAIT(100);
+    }
+    
+    piece->piece_tracker->print_distance();
     WAIT(1000);
+    piece->piece_tracker->print_distance();
 
-    delete logic;
-    delete to_self_sender;
-    delete logic_sender;
-    delete hal_receiver;
-    delete remote_control;
-    delete logic_receiver;
+
+
+    piece->piece_tracker->reset();
+    piece->piece_tracker->fast();
+    for(int i = 0; i < 20; i++){
+        piece->piece_tracker->print_distance();
+        WAIT(100);
+    }
+    piece->piece_tracker->slow();
+    for(int i = 0; i < 12; i++){
+        piece->piece_tracker->print_distance();
+        WAIT(100);
+    }
+    piece->piece_tracker->fast();
+    for(int i = 0; i < 26; i++){
+        piece->piece_tracker->print_distance();
+        WAIT(100);
+    }
+    DEBUG("resetting to gate, 0...");
+    piece->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
+    //piece->piece_tracker->fast();
+    for(int i = 0; i < 13; i++){
+        piece->piece_tracker->print_distance();
+        WAIT(100);
+    }
+    
+    piece->piece_tracker->print_distance();
+    WAIT(1000);
+    piece->piece_tracker->print_distance();
+
+    delete piece;
     cout << "Program Finished." << endl;
     return 0;
 
