@@ -3,8 +3,7 @@
 //================================================= constructors & destructors =================================================
 
 
-DistanceTracker::DistanceTracker(bool debug) {
-    TimeProfileManager::load_profile(&time_profile, SAVE_LOCATION_TIMEPROFILE);
+DistanceTracker::DistanceTracker(TimeProfile* time_profile, bool debug):time_profile(time_profile) {
     running = true;
     this->debug = debug;
     stop();
@@ -62,11 +61,11 @@ std::pair<Area, double> DistanceTracker::timestamp_to_area_pos(const long& times
             return std::make_pair(Area::START_ADC, 0);
         case 1:
             //slow
-            selected_timestamps = time_profile.slow_timestamps;
+            selected_timestamps = time_profile->slow_timestamps;
             break;
         case 2:
             //fast
-            selected_timestamps = time_profile.fast_timestamps;
+            selected_timestamps = time_profile->fast_timestamps;
             break;
         default:
             THROW("Wrong mode");
@@ -103,13 +102,13 @@ long DistanceTracker::area_pos_to_timestamp(const Area& input_area, const double
             return 0;
         case 1:
             //slow
-            selected_timestamps = time_profile.slow_timestamps;
-            selected_deadlines = time_profile.slow_deadlines;
+            selected_timestamps = time_profile->slow_timestamps;
+            selected_deadlines = time_profile->slow_deadlines;
             break;
         case 2:
             //fast
-            selected_timestamps = time_profile.fast_timestamps;
-            selected_deadlines = time_profile.fast_deadlines;
+            selected_timestamps = time_profile->fast_timestamps;
+            selected_deadlines = time_profile->fast_deadlines;
             break;
         default:
             THROW("Wrong mode");

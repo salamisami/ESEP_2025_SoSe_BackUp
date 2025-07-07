@@ -14,7 +14,7 @@ SlowTemp::~SlowTemp() {}
 void SlowTemp::entry(){
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_ON);
-	data->piece_tracker.slow();
+	data->piece_tracker->slow();
 
 }
 

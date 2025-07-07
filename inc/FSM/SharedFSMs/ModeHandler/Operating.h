@@ -24,6 +24,8 @@ public:
 public:
     void entry() override;
     void exit() override;
+
+    State* clone() override;
     
     State* button_stop_pressed() override;
     

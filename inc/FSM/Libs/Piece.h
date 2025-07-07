@@ -7,15 +7,29 @@
 #include "DistanceTracker.h"
 
 
-class Piece{
+class Piece {
 public: //================================================ public functions ================================================
-    Piece(int id = -1): id(id){};
-    virtual ~Piece() = default;
+    Piece(TimeProfile* time_profile)
+        : id(-1)
+        , time_profile_(time_profile)
+        {
+        piece_tracker = new DistanceTracker(time_profile_);
+    }
+    Piece(int id, TimeProfile* time_profile)
+        : id(id)
+        , time_profile_(time_profile)
+        {
+        piece_tracker = new DistanceTracker(time_profile_);
+    }
+    virtual ~Piece() {
+        delete piece_tracker;
+    }
 
     int id = 0;
     PieceEnum type = PieceEnum::UNKNOWN;
     long sorting_time = 0;
-    DistanceTracker piece_tracker;
+    DistanceTracker* piece_tracker;
+    TimeProfile* time_profile_;
 };
 
 

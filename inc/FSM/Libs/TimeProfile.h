@@ -15,12 +15,13 @@ enum class Timestamp : uint8_t {
     LASER_RAMP_BLOCKED
 };
 
-typedef struct {
+class TimeProfile {
+public:
     long fast_timestamps[TIMESTAMP_LENGTH];
     long slow_timestamps[TIMESTAMP_LENGTH];
 
     long fast_deadlines[TIMESTAMP_LENGTH];
     long slow_deadlines[TIMESTAMP_LENGTH];
-} TimeProfile;
+};
 
 #endif

@@ -19,7 +19,10 @@ ADC_Gate::~ADC_Gate() {}
 //===================================================== public functions =====================================================
 void ADC_Gate::entry(){
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2->id);
+//TODO: Über motorcontrol ansteuern
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
+	data->piece_FBM2->piece_tracker->fast();
 	data->timer->start_timer(100,TIMER_ID::ADC_GATE);
 	//Action here
 	//HState::entry() //for HState
@@ -53,8 +56,8 @@ State* ADC_Gate::laser_ramp_blocked() {
 	return new Pieceappeared(data);
 }
 State* ADC_Gate::laser_sorting_gate_blocked() {
-	if 	((data->piece_FBM2->piece_tracker.get_distance().second >= WAY_TO_AREA && data->piece_FBM2->piece_tracker.get_distance().first == Area::ADC_GATE) ||
-		(data->piece_FBM2->piece_tracker.get_distance().second <= OVER_AREA && data->piece_FBM2->piece_tracker.get_distance().first == Area::GATE)) {
+	if 	((data->piece_FBM2->piece_tracker->get_distance().second >= WAY_TO_AREA && data->piece_FBM2->piece_tracker->get_distance().first == Area::ADC_GATE) ||
+		(data->piece_FBM2->piece_tracker->get_distance().second <= OVER_AREA && data->piece_FBM2->piece_tracker->get_distance().first == Area::GATE)) {
 		return new Gate(data);
 	} else {
 		return new Pieceappeared(data);
@@ -63,7 +66,7 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 
 State* ADC_Gate::timer(TIMER_ID id) {
 	if(id == TIMER_ID::ADC_GATE) {
-		if (data->piece_FBM2->piece_tracker.get_distance().second >= OVER_AREA && data->piece_FBM2->piece_tracker.get_distance().first == Area::GATE) {
+		if (data->piece_FBM2->piece_tracker->get_distance().second >= OVER_AREA && data->piece_FBM2->piece_tracker->get_distance().first == Area::GATE) {
 			return new Piece_Missing(data);
 		} else {
 			return new ADC_Gate(data);

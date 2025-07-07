@@ -45,7 +45,8 @@ enum class Area : uint8_t {
 
 class DistanceTracker {
 public: //============================================ constructors & destructors ============================================
-	DistanceTracker(bool debug = false);
+	DistanceTracker() = default;
+	DistanceTracker(TimeProfile* time_profile, bool debug = false);
 	virtual ~DistanceTracker();
 
 
@@ -95,19 +96,19 @@ public: //================================================ public functions ====
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
-	std::thread piece_thread;
 	std::thread debug_thread;
 	//Timer timer;
 	//pointers
+	TimeProfile* time_profile;
 	//primitive types
 	Stopwatch stopwatch;
-	TimeProfile time_profile;
+
 	//bool and char
 	volatile bool running = false;
 	Area current_area = Area::START_ADC;
 	double current_position = 0;
 	uint8_t current_mode = 0;
-	
+
 	bool log = false;
 
 

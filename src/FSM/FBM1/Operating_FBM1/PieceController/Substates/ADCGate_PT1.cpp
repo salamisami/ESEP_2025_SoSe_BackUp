@@ -31,11 +31,11 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 		return nullptr;
 	}
 	auto piece = data->pieces_map->at(localdata_.id);
-	auto distance = piece->piece_tracker.get_distance();
+	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
-	piece->piece_tracker.print_distance();
+	piece->piece_tracker->print_distance();
 
 	switch(current_area) {
 		case Area::ADC_GATE:
@@ -71,7 +71,7 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 
 State* ADCGate_PT1::laser_sorting_gate_blocked() {
 	auto piece = data->pieces_map->at(localdata_.id);
-	auto distance = piece->piece_tracker.get_distance();
+	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
@@ -87,7 +87,7 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 
 State* ADCGate_PT1::metal_detected() {
 	auto piece = data->pieces_map->at(localdata_.id);
-	auto distance = piece->piece_tracker.get_distance();
+	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
