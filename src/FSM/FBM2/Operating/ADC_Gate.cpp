@@ -19,7 +19,7 @@ ADC_Gate::~ADC_Gate() {}
 //===================================================== public functions =====================================================
 void ADC_Gate::entry(){
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2.id); 
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2->id);
 	data->timer->start_timer(100,TIMER_ID::ADC_GATE);
 	//Action here
 	//HState::entry() //for HState

@@ -19,7 +19,7 @@ Transfer::~Transfer() {}
 //===================================================== public functions =====================================================
 void Transfer::entry(){
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2.id); 
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2->id); 
 	
 	//Action here
 	//HState::entry() //for HState
