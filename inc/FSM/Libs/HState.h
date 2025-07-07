@@ -60,8 +60,8 @@ public:
         if(newSubstate == State::EXIT_STATE) {
             // Handle substate exit
             substate->exit();
-            delete substate;
-            substate = nullptr;
+            // delete substate;
+            // substate = nullptr;
 
             // Return default exit state to parent
             return default_exit_state_;
@@ -92,8 +92,8 @@ protected:
         if(newSubstate == State::EXIT_STATE) {
             // Handle substate exit
             substate->exit();
-            delete substate;
-            substate = nullptr;
+            // delete substate;
+            // substate = nullptr;
 
             // Return default exit state to parent
             return default_exit_state_;
