@@ -21,7 +21,7 @@ public:
 		std::ofstream file;
 		file.open(save_location, std::ios::out);
 		if(!file.is_open()) {
-      std::cerr("TimeProfileManager: Datei konnte nicht geöffnet werden!\n");
+      std::cerr<<"TimeProfileManager: Datei konnte nicht geöffnet werden!\n";
 		}
 		file << "Fast, Slow\n";  // CSV-Header
 		for(int i = 0; i < 6; i++) {
