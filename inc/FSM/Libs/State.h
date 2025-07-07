@@ -33,9 +33,7 @@ public: //================================================ public functions ====
      * @brief Clones the current state.
      * @return Cloned state, which is already allocated to heap
      */
-    virtual State* clone() {
-        throw std::runtime_error("Error, the clone of following state is called due to history, but not implemented: " + get_current_state());
-    }
+    virtual State* clone() = 0;
     /**
      * @brief Returns the name of the current state.
      * @return The name of current state as string
