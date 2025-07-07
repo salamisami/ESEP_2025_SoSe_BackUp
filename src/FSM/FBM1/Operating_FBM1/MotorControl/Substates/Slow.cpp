@@ -16,7 +16,6 @@ void Slow::entry(){
 }
 
 void Slow::exit(){
-    //TODO:Update data
     PRINT_STATE;
 }
 
@@ -25,7 +24,7 @@ State* Slow::motor_fast(){
         return new Slow(data);
     }
     else{
-        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF), (int) EventPriority::SECOND_PRIO);
         updateData(MotorPieceState::FAST);
         for (auto& pair : *data->pieces_map) {
           Piece* piece = pair.second;  // pair.second is the value (Piece*)
@@ -36,8 +35,8 @@ State* Slow::motor_fast(){
 }
 
 State* Slow::motor_stop_fsm(){
-        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
-        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
+        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF), (int) EventPriority::SECOND_PRIO);
+        data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP), (int) EventPriority::SECOND_PRIO);
         for (auto& pair : *data->pieces_map) {
           Piece* piece = pair.second;  // pair.second is the value (Piece*)
           piece->piece_tracker->stop();               // Call fast() on the Piece*
@@ -55,7 +54,7 @@ State *Slow::delete_w_motor()
     }
   else
     {
-      data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+      data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF), (int) EventPriority::SECOND_PRIO);
       return new Idle(data);
     }
 }
