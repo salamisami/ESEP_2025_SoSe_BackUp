@@ -13,12 +13,14 @@ EStop::EStop(ContextData* data, State* substate) :
 
 void EStop::entry() {
 	PRINT_STATE;
+	data->is_estop = true;
 	substate->entry();
 }
 
 void EStop::exit() {
 	substate->exit();
 	PRINT_STATE;
+	data->is_estop = true;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF, (int) EventPriority::DEFAULT);
 }
 

@@ -198,7 +198,8 @@ enum class ScannedPiece : int {
 enum class RemoteControlEnum: int {
 	MQTT_DISCONNECTED,
 	MQTT_CONNECTED,
-	RECONNECT
+	RECONNECT,
+    REMOTE_ESTOP
 };
 
 enum class Error_Enum : int {

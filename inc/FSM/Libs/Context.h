@@ -92,8 +92,6 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::SORTED:
             newState = state->sorted();
             break;
-
-        //case Internal_Enum::REMOTE_STOP
         default:
             break;
     }
@@ -354,6 +352,9 @@ State* Context<T>::handleRemote(int event_value) {
             break;
         case RemoteControlEnum::RECONNECT:
             newState = state->reconnect();
+            break;
+        case RemoteControlEnum::REMOTE_ESTOP
+            newState = state->remote_stop();
             break;
         default:
             break;
