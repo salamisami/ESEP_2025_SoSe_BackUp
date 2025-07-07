@@ -249,6 +249,7 @@ bool ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bo
 
         nanosleep(&delay, NULL);
     }
+    return false;
 }
 
 ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {

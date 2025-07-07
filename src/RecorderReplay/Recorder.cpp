@@ -3,7 +3,7 @@
 
 Recorder::Recorder(I_Receiver* local_receiver, I_Sender* local_sender)
     : local_receiver(local_receiver), local_sender(local_sender),
-      running(true), record_running(false), replay_running(false)
+      record_running(false), replay_running(false), running(true)
 {
     RecReplay_thread = std::thread(&Recorder::threadFunction, this);
     std::cout << "Recorder: Main-Thread gestartet" << std::endl;
