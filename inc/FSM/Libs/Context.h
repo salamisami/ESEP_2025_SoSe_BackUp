@@ -55,6 +55,7 @@ Context<T>::~Context()
 
 //===================================================== private functions =====================================================
 
+
 template <typename T>
 State* Context<T>::handleInternal(int event_value) {
     State* newState = nullptr;
@@ -89,9 +90,12 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::UNBLOCK_STARTING_AREA:
             newState = state->unblock_starting_area();
             break;
+        case Internal_Enum::REMOTE_STOP:
+        	newState = state->remote_stop();
+        	break;
         case Internal_Enum::SORTED:
-            newState = state->sorted();
-            break;
+        	newState = state->sorted();
+        	break;
         default:
             break;
     }
