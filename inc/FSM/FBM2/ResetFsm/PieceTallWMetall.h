@@ -19,6 +19,8 @@ public:
 	void entry() override;
 	void exit() override;
 
+	State* clone() override;
+
 	State* error_w_lost() override;
 	State* sorted() override;
 };

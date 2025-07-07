@@ -29,3 +29,6 @@ State* RampErrorResolved::button_reset_released()
     return new RampNoError(data);
 }
 
+State* RampErrorResolved::clone() {
+    return new RampErrorResolved(data);
+}
