@@ -130,7 +130,7 @@ void COM::checkQueues()
         sendToServer(msg, (int)EventPriority::FIRST_PRIO);
         lock.lock();
     }
-    while (!lowPriorityQueue.empty())
+    while (!lowPriorityQueue.empty() && highPriorityQueue.empty())
     {
         //COUT("Something in low prio");
 
