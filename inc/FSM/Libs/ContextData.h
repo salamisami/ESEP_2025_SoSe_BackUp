@@ -43,7 +43,7 @@ public:
     int event_payload;
     Stopwatch stopwatch;
     TimeProfile timeprofile;
-    DistanceTracker* piece_tracker; // = DistanceTracker(true);
+    DistanceTracker* piece_tracker = nullptr; // = DistanceTracker(true);
     std::stack<State*>* operating_history;
     std::stack<State*>* modehandler_history;
     std::stack<State*>* estop_history;

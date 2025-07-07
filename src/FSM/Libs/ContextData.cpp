@@ -39,7 +39,10 @@ ContextData::~ContextData() {
         estop_history->pop();
     }
     delete estop_history;
-    delete piece_tracker;
+    if(piece_tracker != nullptr){
+        delete piece_tracker;
+    }
+    
 }
 
 //===================================================== private functions =====================================================

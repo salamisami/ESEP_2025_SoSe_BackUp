@@ -65,6 +65,9 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 		default:
 			break;
 	}
+	Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
+	data->pieces_map->erase(localdata_.id);
+	delete piece_to_delete;
 	return State::EXIT_STATE;
 }
 
