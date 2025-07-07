@@ -318,20 +318,20 @@ TEST_F(RealImplementationSetup, PutNewPieceTall) {
     remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
     WAIT(1123);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> ADC END <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_WH_DETECT);
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_W_B_DETECT);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
     EXPECT_STATE_INSTANT("ADCGate_PT1 Fast PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
 
     WAIT(1500);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-    WAIT(400);
+    WAIT(100);
     EXPECT_STATE_INSTANT("SortingOut_PT1 Fast PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
     //TODO still wrong
     
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER RAMP BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    EXPECT_STATE_INSTANT("PieceControllerFBM1 Idle PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
+    EXPECT_STATE_INSTANT("PieceControllerFBM1 Idle PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampTimer NoRampFull");
 }
 
 

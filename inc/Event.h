@@ -181,10 +181,10 @@ enum class PieceEnum : int {
 
 
 enum class ScannedPiece : int {
+    UNKNOWN = 0,
     TALL,
     FLAT,
-    HOLE,
-    UNKNOWN
+    HOLE
 };
 
 enum class RemoteControlEnum: int {

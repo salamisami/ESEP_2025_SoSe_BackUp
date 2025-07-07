@@ -36,8 +36,10 @@ State* PieceFlat::tall_w_metal_piece() {
 
 State* PieceFlat::tall_piece()  {
 	if (data->is_ramp_full) {
+		DEBUG("tall_piece: Sorting Order -> PT1: Sort out fbm2");
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
 	} else {
+		DEBUG("tall_piece: Sorting Order -> PT1: Sort out");
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
 	}
 	return nullptr;
@@ -45,6 +47,7 @@ State* PieceFlat::tall_piece()  {
 }
 
 State* PieceFlat::flat_piece() {
+	DEBUG("flat_piece: Sorting Order -> PT1: let through");
 	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
 	return new PieceTall(data);
 }
