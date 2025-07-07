@@ -6,6 +6,9 @@ LetPieceThrough::LetPieceThrough(ContextData* data, int duration)
     //substate = new SubState(data);
 }
 
+LetPieceThrough::LetPieceThrough(ContextData* data, State* initial_substate) : HState(data, initial_substate) 
+{}
+
 LetPieceThrough::~LetPieceThrough() {}
 
 //===================================================== private functions =====================================================
@@ -20,4 +23,8 @@ void LetPieceThrough::entry(){
 void LetPieceThrough::exit(){
     HState::exit();
     PRINT_STATE;
+}
+
+State* LetPieceThrough::clone() {
+    return new LetPieceThrough(data, substate->clone());
 }

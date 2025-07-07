@@ -8,6 +8,9 @@ StartingAreaTracker::StartingAreaTracker(ContextData* data) : HState(data, new S
     //substate = new SubState(data);
 }
 
+StartingAreaTracker::StartingAreaTracker(ContextData* data, State* initial_substate) : HState(data, initial_substate) 
+{}
+
 StartingAreaTracker::~StartingAreaTracker() {}
 
 //===================================================== private functions =====================================================
@@ -24,4 +27,8 @@ void StartingAreaTracker::exit(){
     HState::exit();
     //TODO CODE
 	PRINT_STATE;
+}
+
+State* StartingAreaTracker::clone() {
+    return new StartingAreaTracker(data, substate->clone());
 }

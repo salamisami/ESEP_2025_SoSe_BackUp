@@ -13,6 +13,9 @@ CalDistanceSlow::CalDistanceSlow(ContextData* data) : OrthState(data,
 	//substate = new SubState(data);
 }
 
+CalDistanceSlow::CalDistanceSlow(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {
+}
+
 CalDistanceSlow::~CalDistanceSlow() {}
 
 //===================================================== private functions =====================================================
@@ -32,6 +35,10 @@ void CalDistanceSlow::exit() {
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
+}
+
+State* CalDistanceSlow::clone() {
+	return new CalDistanceSlow(data, OrthState::clone_substates());
 }
 
 //explicit exit

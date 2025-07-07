@@ -8,6 +8,7 @@
 class StartingAreaTracker : public HState {
 public: //============================================ constructors & destructors ============================================
     StartingAreaTracker(ContextData* data) ;
+	StartingAreaTracker(ContextData* data, State* initial_substate);
     virtual ~StartingAreaTracker();
 	
 
@@ -15,7 +16,7 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
     
-
+	State* clone() override;
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs

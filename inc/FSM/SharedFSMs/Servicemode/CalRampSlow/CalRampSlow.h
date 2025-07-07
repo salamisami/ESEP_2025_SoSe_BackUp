@@ -9,12 +9,15 @@
 class CalRampSlow : public OrthState {
 public: //============================================ constructors & destructors ============================================
     CalRampSlow(ContextData* data);
+	CalRampSlow(ContextData* data, std::deque<State*> initial_substates);
     virtual ~CalRampSlow();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
     
 
 

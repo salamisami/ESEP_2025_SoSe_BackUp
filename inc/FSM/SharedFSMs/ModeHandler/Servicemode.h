@@ -11,12 +11,15 @@
 class Servicemode : public HState{
 public: //============================================ constructors & destructors ============================================
     Servicemode(ContextData* data);
+    Servicemode(ContextData* data, State* initial_substate);
     virtual ~Servicemode();
 	
 
 public: //================================================ public functions ================================================
 	void entry() override;
 	void exit() override;
+
+	State* clone() override;
 
 	State* button_stop_pressed() override;
     
