@@ -59,7 +59,9 @@ public:
         }
     }
 
-    //virtual State* clone() override = 0;
+    virtual State* clone() override {
+        throw std::runtime_error("Error, the clone of following state is called due to history, but not implemented: " + get_current_state());
+    }
 
 
     /**
