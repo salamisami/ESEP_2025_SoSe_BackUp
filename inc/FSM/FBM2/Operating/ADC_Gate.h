@@ -1,10 +1,11 @@
 #ifndef ADC_GATE_H
 #define ADC_GATE_H
+
 #pragma once
  
 #include "State.h"
 #include "Pieceappeared.h"
-#include "ADC.h"
+#include "ADC_State.h"
 #include "Is_Metal.h"
 #include "Gate.h"
 

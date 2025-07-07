@@ -1,10 +1,11 @@
 #ifndef START_ADC_H
 #define START_ADC_H
+
 #pragma once
  
 #include "State.h"
 #include "Pieceappeared.h"
-#include "ADC.h"
+#include "ADC_State.h"
  
 class Start_ADC : public State {
 public: //============================================ constructors & destructors ============================================

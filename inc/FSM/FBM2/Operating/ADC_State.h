@@ -1,5 +1,5 @@
-#ifndef ADC_H
-#define ADC_H
+#ifndef ADC_STATE_H
+#define ADC_STATE_H
 
 #pragma once
  
@@ -8,12 +8,12 @@
 #include "Piece_Missing.h" 
 #include "Measuring.h"
 
-class ADC : public State {
+class ADC_State : public State {
 public: //============================================ constructors & destructors ============================================
-    ADC(ContextData* data); //for all types of states
+    ADC_State(ContextData* data); //for all types of states
 	//ADC(ContextData* data, State* initial_substate); //for HState
 	//ADC(ContextData* data, std::deque<State*> initial_substates); //for OrthState
-    virtual ~ADC();
+    virtual ~ADC_State();
 
  
 public: //================================================ public functions ================================================

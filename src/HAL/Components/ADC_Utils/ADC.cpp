@@ -13,10 +13,10 @@
  *
  */
 
-#include "ADC.h"
 #include "Util.h"
 #include <sys/neutrino.h>
 #include <stdlib.h>
+#include "ADC.h"
 
 #define ADC_FIFO0_VALUE 		6
 #define ADC_TSC_GENINT 	 		16
