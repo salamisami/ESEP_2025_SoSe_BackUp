@@ -132,7 +132,7 @@ void COM::checkQueues()
           highPriorityQueue.push_front(msg);
           lock.unlock();
         }
-        std::this_thread.yield();
+        std::this_thread::yield();
         lock.lock();
     }
     while (!lowPriorityQueue.empty() && highPriorityQueue.empty())
@@ -148,7 +148,7 @@ void COM::checkQueues()
           lowPriorityQueue.push_front(msg);
           lock.unlock();
         }
-        std::this_thread.yield();
+        std::this_thread::yield();
         lock.lock();
     }
 }
