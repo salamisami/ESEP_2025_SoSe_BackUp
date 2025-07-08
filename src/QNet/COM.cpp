@@ -127,7 +127,12 @@ void COM::checkQueues()
         auto msg = highPriorityQueue.front();
         highPriorityQueue.pop_front();
         lock.unlock();
-        sendToServer(msg, (int)EventPriority::FIRST_PRIO);
+        if (sendToServer(msg)==-1){
+          lock.lock();
+          highPriorityQueue.push_front(msg);
+          lock.unlock();
+        }
+        this_thread.yield();
         lock.lock();
     }
     while (!lowPriorityQueue.empty() && highPriorityQueue.empty())
@@ -138,7 +143,12 @@ void COM::checkQueues()
         lowPriorityQueue.pop_front();
         lock.unlock(); 
         // printf("Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
-        sendToServer(msg);
+        if (sendToServer(msg)==-1){
+          lock.lock();
+          lowPriorityQueue.push_front(msg);
+          lock.unlock();
+        }
+        this_thread.yield();
         lock.lock();
     }
 }
@@ -161,14 +171,15 @@ void COM::sendHeartbeat()
     }
 }
 
-void COM::sendToServer(const _pulse &msg, int priority)
-{
+int COM::sendToServer(const _pulse &msg, int priority)
+{int send_event_status = 0;
     std::lock_guard<std::mutex> lock(_clientMutex);
     if (_client)
     {
-        _client->send_event((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
+        send_event_status = _client->send_event_com((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
     }
     updateHeartbeat();
+    return send_event_status;
 }
 
 // Server side implementation
