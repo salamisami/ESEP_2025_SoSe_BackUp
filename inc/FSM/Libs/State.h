@@ -48,6 +48,10 @@ public: //================================================ public functions ====
         return nullptr;
     }
 
+    virtual State* id(){
+      return handle_event_using_function(&State::id);
+    }
+
     static State* EXIT_STATE;
 
     virtual State* new_piece() {

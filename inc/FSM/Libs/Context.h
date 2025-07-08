@@ -478,6 +478,8 @@ void Context<T>::handleEvent(_pulse event)
         case Topic::DELETE_W_MOTOR:
             newState = state->delete_w_motor();
             break;
+        case Topic::ID:
+            newState = state->id();
         default:
             break;
     }
