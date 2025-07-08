@@ -158,7 +158,7 @@ void COM::checkQueues() {
         
         // Process high priority first
         for (auto& msg : highPrioBatch) {
-            if (sendToServer(msg, EventPriority::FIRST_PRIO) == -1) {
+            if (sendToServer(msg, (int)EventPriority::FIRST_PRIO) == -1) {
                 std::lock_guard<std::mutex> lock(queueMutex);
                 highPriorityQueue.push_front(std::move(msg));
             }
