@@ -31,8 +31,9 @@ void Sorting_out::exit(){
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
 	//Action here
-	PRINT_STATE;
-  data->stopwatch.stop();
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, data->piece_FBM2->id);
+  PRINT_STATE;
+  data->sort_out_time = data->stopwatch.stop();
 }
  
 State* Sorting_out::clone(){

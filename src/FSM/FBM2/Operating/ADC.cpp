@@ -20,8 +20,7 @@ ADC::~ADC() {}
 void ADC::entry(){
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
-	data->piece_FBM2->piece_tracker->slow();
-
+	data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) data->piece_FBM2->id);
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState

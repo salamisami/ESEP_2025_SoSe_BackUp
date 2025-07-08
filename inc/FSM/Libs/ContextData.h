@@ -58,7 +58,7 @@ public:
     // PieceEnum soll_type = PieceEnum::UNKNOWN;
     // long sorting_time = 0;
     // DistanceTracker* piece_tracker;
-
+    long sort_out_time = 0;
 
     I_Sender* timer_sender;
     Timer* timer;
