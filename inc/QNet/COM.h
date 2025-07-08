@@ -13,6 +13,13 @@
 
 #define COUT(msg) std::cout << msg << std::endl
 
+#define HEARTBEAT_MULTIPLIER 1
+
+#define HEARTBEAT_INTERVAL 100 * HEARTBEAT_MULTIPLIER
+
+#define TIMEOUT_COM_INTERVAL HEARTBEAT_MULTIPLIER * 1000000000ULL; 
+
+
 class COM
 {
 public:
@@ -68,9 +75,7 @@ private:
     std::thread serverThread;
     std::thread dispatcherThread;
 
-    // Constants
-    static constexpr int HEARTBEAT_INTERVAL = 1000;
-
+    // Constants 
     template <typename T, typename... Args>
     std::unique_ptr<T> make_unique(Args &&...args)
     {
