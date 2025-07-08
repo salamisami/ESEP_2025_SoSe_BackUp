@@ -13,10 +13,12 @@ LeavingGate_PT1::~LeavingGate_PT1() {}
 //===================================================== public functions =====================================================
 void LeavingGate_PT1::entry(){
 	PRINT_STATE;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON_SLOW);
 	data->timer->start_timer(100, TIMER_ID::LEAVINGGATE_PT1);
 }
 
 void LeavingGate_PT1::exit(){
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 	PRINT_STATE;
 	
 }

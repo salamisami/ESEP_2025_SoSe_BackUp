@@ -36,3 +36,10 @@ State* IdleSorting::let_through(){
   }
   return nullptr;
 }
+
+State* IdleSorting::sort_out_fbm2(){
+  if (data->is_switch){
+    return new OpenGate_OP(data);
+  }
+  return nullptr;
+}
