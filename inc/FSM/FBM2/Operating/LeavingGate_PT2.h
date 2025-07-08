@@ -1,46 +1,40 @@
-#ifndef GATE_H
-#define GATE_H
-
+#ifndef LEAVINGGATE_PT2_H
+#define LEAVINGGATE_PT2_H
 #pragma once
- 
+
 #include "State.h"
-#include "Sorting_out.h"
-#include "Pieceappeared.h"
 #include "Gate_End.h"
-#include "LocalDataPT1.h"
 
-class Gate : public State {
+class LeavingGate_PT2 : public State {
 public: //============================================ constructors & destructors ============================================
-    Gate(ContextData* data); //for all types of states
-	//Gate(ContextData* data, State* initial_substate); //for HState
-	//Gate(ContextData* data, std::deque<State*> initial_substates); //for OrthState
-    virtual ~Gate();
+    LeavingGate_PT2(ContextData* data) ;
+    virtual ~LeavingGate_PT2();
+	
 
- 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 	State* clone() override;
 
-  State* laser_front_blocked() override; 
-  State* laser_ramp_blocked() override;
-  State* laser_back_blocked() override;
-  State* request_transfer() override;
-  State* timer(TIMER_ID id)override;
- 
- 
+	State* laser_sorting_gate_unblocked() override;
+	State* timer(TIMER_ID ID) override;
+
+	State* request_transfer() override;
+    
+
+
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
 	//primitive types
 	//bool and char
-  LocalDataPT1 localdata;
+	//LocalDataPT1 localdata_;
+   
+	
 
- 
 private: //================================================ private functions ================================================
 	//void privateFunction();
-  State* check_piece();
-  PieceEnum validate_piece(const ScannedPiece& scanned_piece, const bool& has_metal);
+	
 };
- 
+
 #endif

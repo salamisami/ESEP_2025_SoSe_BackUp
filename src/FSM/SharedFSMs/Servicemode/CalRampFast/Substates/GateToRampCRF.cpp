@@ -28,7 +28,7 @@ void GateToRampCRF::exit(){
 
 State* GateToRampCRF::laser_ramp_blocked(){
 	//return new ReadyForCDS(data);
-	return EXIT_STATE;
+	return State::EXIT_STATE;
 }
 
 State* GateToRampCRF::clone() {

@@ -50,15 +50,18 @@ public:
 
     std::unordered_map<int, Piece*>* pieces_map;
     int available_id = 0;
-    Piece* piece_FBM2 = nullptr;
-    Piece* piece_FBM2_measured = nullptr;
+    Piece* piece_FBM2_soll = nullptr;
+    //Piece* piece_FBM2_ist = nullptr;
+
+    ScannedPiece scanned_piece_FBM2 = ScannedPiece::UNKNOWN;
+    bool scanned_piece_has_metal_fbm2 = false;
     
     // int piece_id = 0;
     // PieceEnum ist_type = PieceEnum::UNKNOWN;
     // PieceEnum soll_type = PieceEnum::UNKNOWN;
     // long sorting_time = 0;
     // DistanceTracker* piece_tracker;
-
+    long sort_out_time = 0;
 
     I_Sender* timer_sender;
     Timer* timer;
