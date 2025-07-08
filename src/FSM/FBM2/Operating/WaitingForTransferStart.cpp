@@ -39,7 +39,7 @@ State* WaitingForTransferStart::clone(){
 
 State* WaitingForTransferStart::request_transfer() {
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new ReadyForPiece(data);
+	return new WaitingForTransferStart(data);
 }
 
 State* WaitingForTransferStart::laser_front_blocked() {

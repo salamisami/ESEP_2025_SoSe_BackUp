@@ -29,19 +29,19 @@ void COM::start() {
 
     // Dispatcher (Highest Priority - Handles Critical Events)
     dispatcherThread = std::thread([this, set_priority]{
-        set_priority(25);  // Highest
+        set_priority(10);  // Highest
         runDispatcher();
     });
 
     // Client (Medium Priority - Sends Messages)
     clientThread = std::thread([this, set_priority]{
-        set_priority(25);
+        set_priority(10);
         runClient();
     });
 
     // Server (Lowest Priority - Background Tasks)
     serverThread = std::thread([this, set_priority]{
-        set_priority(15);
+        set_priority(5);
         runServer();
     });
 }

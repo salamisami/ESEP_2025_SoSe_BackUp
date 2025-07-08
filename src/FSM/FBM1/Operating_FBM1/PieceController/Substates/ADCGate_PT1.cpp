@@ -78,20 +78,24 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
-
-	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
-		return nullptr;
-	}
-
-	//before expected
-	if(current_area == Area::ADC_GATE && current_pos >= (100 - PIECE_TRANSITION_TOLERANCE)) {
+	std::cout << "Gate laser blocked Last Area: " << (int)current_area
+	          << " Last Pos: " << (int)current_pos << std::endl;
+	if(current_area == Area::GATE){
 		return new Gate_PT1(data, localdata_);
 	}
-
-	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
-		return new Gate_PT1(data, localdata_);
-	}
-	return nullptr;
+//	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
+//		return nullptr;
+//	}
+//
+//	//before expected
+//	if(current_area == Area::ADC_GATE && current_pos >= (100 - PIECE_TRANSITION_TOLERANCE)) {
+//		return new Gate_PT1(data, localdata_);
+//	}
+//
+//	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
+//		return new Gate_PT1(data, localdata_);
+//	}
+//	return nullptr;
 }
 
 State* ADCGate_PT1::metal_detected() {

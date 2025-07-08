@@ -30,7 +30,7 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	
-	if(current_area == Area::OUT_OF_RANGE) {
+	if(current_area == Area::OUT_OF_RANGE && distance.second >= PIECE_TRANSITION_TOLERANCE) {
 		DEBUG("PieceMissing! Cause: piece is too long to reach laser back.");
 		data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
@@ -68,6 +68,10 @@ State* GateEnd_PT1::laser_back_blocked() {
 	auto current_pos = distance.second;
 
 	if(current_area == Area::GATE_END && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)) {
+		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
+		return new PendingTransferRequest_PT1(data, localdata_);
+	}
+	if(current_area == Area::OUT_OF_RANGE&& distance.second <= PIECE_TRANSITION_TOLERANCE) {
 		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
 		return new PendingTransferRequest_PT1(data, localdata_);
 	}
