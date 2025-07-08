@@ -4,7 +4,7 @@
  
 #include "State.h"
 #include "Pieceappeared.h"
-#include "Gate.h"
+#include "LeavingGate_PT2.h"
  
 class Start_Gate : public State {
 public: //============================================ constructors & destructors ============================================

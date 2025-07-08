@@ -23,12 +23,20 @@ void Idle::exit(){
 State* Idle::motor_fast(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START, (int) EventPriority::SECOND_PRIO);
     data->current_motor_speed = MotorPieceState::FAST;
-    // for (auto& pair : *data->pieces_map) {
-    //   Piece* piece = pair.second;  // pair.second is the value (Piece*)
-    //   piece->piece_tracker->fast();               // Call fast() on the Piece*
-    // }
     updateData(MotorPieceState::FAST);
     return new Fast(data);
+}
+
+State *Idle::motor_stop_fsm()
+{
+  updateData(MotorPieceState::STOPPED);
+  data->current_motor_speed = MotorPieceState::STOPPED;
+    for (auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second;  
+    piece->piece_tracker->stop();               
+}
+  data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
+  return new Stop(data);
 }
 
 void Idle::updateData(MotorPieceState motorPieceState) {

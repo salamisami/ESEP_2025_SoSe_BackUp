@@ -39,7 +39,7 @@ State* Measuring::clone(){
 
 State* Measuring::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new Measuring(data);
+	return nullptr;
 }
 State* Measuring::laser_back_blocked(){
 	return new Pieceappeared(data);
@@ -55,22 +55,29 @@ State* Measuring::laser_ramp_blocked(){
 }
 
 State* Measuring::adc_wh_detect(){
-	data->piece_FBM2_measured = new Piece(&data->timeprofile);
-	data->piece_FBM2_measured->type = PieceEnum::UNKNOWN;
+	data->scanned_piece_FBM2 = ScannedPiece::TALL;
+	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
 	return new ADC_Gate(data);
 }
 State* Measuring::adc_wf_detect(){
-	data->piece_FBM2_measured = new Piece(&data->timeprofile);
-	data->piece_FBM2_measured->type = PieceEnum::FLAT;
+	data->scanned_piece_FBM2 = ScannedPiece::FLAT;
+	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
 	return new ADC_Gate(data);
 }
 State* Measuring::adc_w_b_detect(){
-	data->piece_FBM2_measured = new Piece(&data->timeprofile);
-	data->piece_FBM2_measured->type = PieceEnum::TALL;
+	data->scanned_piece_FBM2 = ScannedPiece::HOLE;
+	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
 	return new ADC_Gate(data);
 }
 State* Measuring::adc_w_not_detect(){
-	data->piece_FBM2_measured = new Piece(&data->timeprofile);
-	data->piece_FBM2_measured->type = PieceEnum::UNKNOWN;
+	data->scanned_piece_FBM2 = ScannedPiece::UNKNOWN;
+	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
 	return new ADC_Gate(data);
 }
+
+State* Measuring::adc_invalid_measure(){
+	data->scanned_piece_FBM2 = ScannedPiece::UNKNOWN;
+	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
+	return new ADC_Gate(data);
+}
+

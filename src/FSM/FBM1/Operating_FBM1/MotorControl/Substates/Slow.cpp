@@ -61,6 +61,7 @@ State *Slow::delete_w_motor()
       return new Idle(data);
     }
 }
+
 State* Slow::motor_slow(){
   updateData(MotorPieceState::SLOW);
   data->current_motor_speed = MotorPieceState::SLOW;
