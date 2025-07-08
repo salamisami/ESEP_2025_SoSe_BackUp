@@ -312,7 +312,7 @@ void COM::handle_QNX_pulse(_pulse *msg, int rcvid)
         printf("received _PULSE_CODE_UNBLOCK\n");
         break;
     case _PULSE_CODE_COIDDEATH:
-        printf("Received _PULSE_CODE_COIDDEATH\n")
+        printf("Received _PULSE_CODE_COIDDEATH\n");
         ConnectDetach(msg->scoid);
         break;
     default:
