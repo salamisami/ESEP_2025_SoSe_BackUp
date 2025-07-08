@@ -35,6 +35,7 @@ private: //================================================ private variables ==
  
 private: //================================================ private functions ================================================
 	//void privateFunction();
+    PieceEnum validate_piece(const ScannedPiece& scanned_piece, const bool& has_metal);
 };
  
 #endif

@@ -168,7 +168,8 @@ enum class TIMER_ID : int {
     SORTING_OUT,
     IS_METAL,
     OPENGATE_OP,
-    PUSHRAMP_OP
+    PUSHRAMP_OP,
+    GATE_FBM_2
 };
 
 enum class PieceEnum : int {
