@@ -14,6 +14,9 @@ EStop::EStop(ContextData* data, State* substate) :
 void EStop::entry() {
 	PRINT_STATE;
 	data->is_estop = true;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
 	substate->entry();
 }
 
@@ -21,7 +24,8 @@ void EStop::exit() {
 	substate->exit();
 	PRINT_STATE;
 	data->is_estop = true;
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF, (int) EventPriority::DEFAULT);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
 }
 
 State* EStop::clone() {
