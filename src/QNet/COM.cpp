@@ -89,6 +89,9 @@ void COM::runDispatcher()
                 case Topic::REM_CON:
                     handleRemConTopic(originalValue, dispatcherMsg);
                     break;
+                case Topic::ID:
+                  lowPriorityQueue.push_back(dispatcherMsg);
+                  break;
                 default:
                     break; // No conversion needed
                 }
@@ -373,9 +376,13 @@ void COM::processMessage(const _pulse &msg)
             sendToDispatcher(msg);
         }
     }
+    else if (msg.code == (int) Topic::ID)
+    {
+      sendToDispatcher(msg);
+    }
     else
     {
-        printf("Received non COM Topic from other machine: Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
+        printf("Received non COM Topic & non id Topic from other machine: Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
     }
 }
 
