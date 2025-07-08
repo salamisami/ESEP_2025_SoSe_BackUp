@@ -11,9 +11,7 @@ ErrorHandler::ErrorHandler(ContextData* data) : OrthState(data,
 		new ValidMeasure(data),
 		new RampNoError(data),
 		new CalibNoWarning(data),
-		new ReplayNoWarning(data),
-		new RampNotFull(data), //Ramp Status
-		new NoRampFull(data) //system ramp status
+		new ReplayNoWarning(data)
 	}
 	, nullptr
 	, false
