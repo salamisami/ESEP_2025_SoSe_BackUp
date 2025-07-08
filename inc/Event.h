@@ -100,9 +100,9 @@ enum class Internal_Enum : int {
     SORTED,
     RAMP_FULL,
     RAMP_NOT_FULL,
-	REMOTE_STOP,
-
-    OUT
+    REMOTE_STOP,
+    SORTING_OUT_FBM2,
+    SORTED_OUT
 };
 
 enum class ADC_Enum : int {
@@ -174,7 +174,8 @@ enum class TIMER_ID : int {
     IS_METAL,
     OPENGATE_OP,
     PUSHRAMP_OP,
-    GATE_FBM_2
+    GATE_FBM_2,
+    LEAVINGGATE_PT2
 };
 
 enum class PieceEnum : int {
@@ -201,15 +202,15 @@ enum class ScannedPiece : int {
     HOLE
 };
 
-enum class RemoteControlEnum: int {
-	MQTT_DISCONNECTED,
-	MQTT_CONNECTED,
-	RECONNECT,
+enum class RemoteControlEnum : int {
+    MQTT_DISCONNECTED,
+    MQTT_CONNECTED,
+    RECONNECT,
     REMOTE_ESTOP
 };
 
 enum class Error_Enum : int {
-    ERROR_W_LOST=-128,
+    ERROR_W_LOST = -128,
     ERROR_W_APPEARED,
     ERROR_BOTH_R_FULL,
     ERROR_C_LOST_NR,
@@ -227,8 +228,8 @@ enum class Error_Enum : int {
     PIECES_TOO_CLOSE,
     ERROR_INVALID_MEASURE_RESOLVED,
     ERROR_W_LOST_RESOLVED,
-	  ERROR_C_LOST_MQTT_OVER_COM,
-	  ERROR_C_LOST_MQTT_OVER_COM_RESOLVED
+    ERROR_C_LOST_MQTT_OVER_COM,
+    ERROR_C_LOST_MQTT_OVER_COM_RESOLVED
 };
 
 

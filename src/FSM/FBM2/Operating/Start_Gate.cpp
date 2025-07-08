@@ -39,14 +39,16 @@ State* Start_Gate::clone(){
 
 State* Start_Gate::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new Start_Gate(data);
+	return nullptr;
 }
 State* Start_Gate::laser_sorting_gate_blocked(){
-	if (data->piece_FBM2->piece_tracker->get_distance().second >= WAY_TO_AREA && data->piece_FBM2->piece_tracker->get_distance().first == Area::ADC_GATE) {
-		return new Gate(data);
+	auto distance = data->piece_tracker->get_distance();
+	if ( distance.first == Area::GATE) {
+		return new LeavingGate_PT2(data);
 	} else {
 		return new Pieceappeared(data);
 	}
+	return nullptr;
 }
 State* Start_Gate::laser_back_blocked(){
 	return new Pieceappeared(data);

@@ -81,7 +81,7 @@ State* PieceControllerFBM1::new_piece() {
 //TODO check if the event is consumed or not here
 State* PieceControllerFBM1::laser_back_blocked() {
 	State* newState = OrthState::handle_event_using_function(&State::laser_back_blocked);
-	//here
+
 	return newState;
 }
 
@@ -128,3 +128,48 @@ State* PieceControllerFBM1::laser_sorting_gate_blocked() {
 //         return nullptr;
 //     }
 
+State* PieceControllerFBM1::handle_event_using_function(State* (State::* handler_function)()) {
+	if(substates.empty() && quit_on_empty_) {
+		return default_exit_state_;
+	}
+
+	auto it = substates.begin();
+	while(it != substates.end()) {
+		State*& current_substate = *it;
+		State* newSubstate = (current_substate->*handler_function)();
+
+		if(newSubstate == State::EXIT_STATE) {
+			// Handle exit case
+			current_substate->exit();
+			delete current_substate;
+			it = substates.erase(it);
+
+			if(direct_exit_) {
+				if(default_exit_state_ != nullptr) {
+					return default_exit_state_->clone();
+				}
+				return default_exit_state_;
+			}
+
+			// If we've removed all substates, return the exit state
+			if(substates.empty() && quit_on_empty_) {
+				if(default_exit_state_ != nullptr) {
+					return default_exit_state_->clone();
+				}
+				return default_exit_state_;
+			}
+		} else if(newSubstate != nullptr && newSubstate != current_substate) {
+			// Handle state transition only if it's a different state
+			current_substate->exit();
+			delete current_substate;
+			current_substate = newSubstate;
+			current_substate->entry();
+			++it;
+		} else {
+			// No state change
+			++it;
+		}
+	}
+
+	return nullptr;
+}

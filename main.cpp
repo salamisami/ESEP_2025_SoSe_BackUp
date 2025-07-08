@@ -23,7 +23,9 @@
 using namespace std;
 
 
+#define ONE_MILLISECOND 1000
 
+using namespace std;
 
 
 int main() {
