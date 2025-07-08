@@ -52,6 +52,18 @@ State* PieceFlat::flat_piece() {
 	return new PieceTall(data);
 }
 
+State* PieceFlat::unknown_piece() {
+	if(data->is_ramp_full) {
+		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
+	} else {
+		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
+	}
+	return nullptr;
+	//return new PieceTallWithMetal(data);
+}
+
+
+
 State *PieceFlat::reset_to_tall_w_metal() {
 	return new PieceTallWithMetal(data);
 }
