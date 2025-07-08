@@ -219,7 +219,7 @@ void COM::runServer()
         struct _pulse event;
         struct _msg_info info; 
         struct sigevent sigev;
-        uint64_t timeout_nsec = 3 * 1000000000ULL; 
+        uint64_t timeout_nsec = TIMEOUT_COM_INTERVAL; 
         sigev.sigev_notify = SIGEV_UNBLOCK;
         TimerTimeout(CLOCK_MONOTONIC,
                      _NTO_TIMEOUT_RECEIVE,
