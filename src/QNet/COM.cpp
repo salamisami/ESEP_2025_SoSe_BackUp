@@ -102,53 +102,46 @@ void COM::runDispatcher()
     }
 }
 
-void COM::runClient()
-{
-    const int RETRY_DELAY_MS = 1000;
-    while (running)
-    {
-
-        while (!_client || _client->getcoid() == -1)
-        {
-            std::lock_guard<std::mutex> lock(_clientMutex);
-            try
-            {
-                _client = make_unique<Thread_COM::Sender>(_clientSendName);
-                if (_client->getcoid() >= 0)
-                {
-                    COUT("Connection established successfully");
-                    break;
-                }
-            }
-            catch (...)
-            {
-                std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-            continue;
+void COM::runClient() {
+  const int RETRY_DELAY_MS = 1000;
+  while (running) {
+    while (!_client || _client->getcoid() == -1) {
+      std::lock_guard<std::mutex> lock(_clientMutex);
+      try {
+        _client = make_unique<Thread_COM::Sender>(_clientSendName);
+        if (_client->getcoid() >= 0) {
+          COUT("Connection established successfully");
+          break;
         }
-    struct _pulse pulse;
+      } catch (...) {
+        std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
+      continue;
+    }
+    struct _pulse event;
     struct _msg_info info;
-    int rcvid = MsgReceivePulse(_client->getPulseChid(), &pulse, sizeof(pulse), 
-                              &info, NTO_TIMEOUT_RECEIVE, 50);
-    
-    if (rcvid > 0) {  // Received a pulse
-        if (pulse.code == _PULSE_CODE_COIDDEATH) {
-            // Handle connection death
-            std::lock_guard<std::mutex> lock(_clientMutex);
-            _client.reset();
-            continue;
-        }
-    } 
-    else if (rcvid == -1 && errno != ETIMEDOUT) {
-        // Real error occurred
-        perror("MsgReceivePulse");
+    struct sigevent sigev;
+    uint64_t timeout_nsec = 1 * 100000ULL;
+    sigev.sigev_notify = SIGEV_UNBLOCK;
+    TimerTimeout(CLOCK_MONOTONIC, _NTO_TIMEOUT_RECEIVE, &sigev, &timeout_nsec,
+                 NULL);
+    int rcvid = MsgReceive(_client->getcoid(), &event, sizeof(event), &info);
+    if (rcvid == 0) {  // It's a pulse
+      if (event.code == _PULSE_CODE_COIDDEATH) {
+        // Handle connection death
+        int dead_coid = event.value.sival_int;
+        std::cout << "Connection " << dead_coid << " died" << std::endl;
+        _client.reset();  // Clean up your client
+      }
+    } else if (rcvid == -1 && errno != ETIMEDOUT) {
+      perror("MsgReceivePulse");
     }
-   if (_client || _client->getcoid() != -1){
- 
-        checkQueues();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));}
+    if (_client && _client->getcoid() != -1) {
+      checkQueues();
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+  }
 }
 void COM::checkQueues() {
     const size_t MAX_BATCH = 10;
