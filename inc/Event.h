@@ -95,7 +95,8 @@ enum class Internal_Enum : int {
     NEW_PIECE,
     SORTED,
     RAMP_FULL,
-    RAMP_NOT_FULL
+    RAMP_NOT_FULL,
+    SORTING_OUT_FBM2
 };
 
 enum class ADC_Enum : int {

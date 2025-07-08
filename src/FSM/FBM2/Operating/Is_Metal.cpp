@@ -44,8 +44,8 @@ State* Is_Metal::request_transfer() {
   }
 
   State* Is_Metal::laser_sorting_gate_blocked() {
-if (data->piece_FBM2->piece_tracker->get_distance().second >= WAY_TO_AREA 
-            && data->piece_FBM2->piece_tracker->get_distance().first <= Area::GATE_END) {
+if (data->piece_tracker->get_distance().second >= WAY_TO_AREA 
+            && data->piece_tracker->get_distance().first <= Area::GATE_END) {
 			return new Gate(data);
 		} else {
 			return new Pieceappeared(data);
@@ -55,8 +55,8 @@ if (data->piece_FBM2->piece_tracker->get_distance().second >= WAY_TO_AREA
 
   State* Is_Metal::timer(TIMER_ID id) {
 if (id==TIMER_ID::IS_METAL){
-  if (data->piece_FBM2->piece_tracker->get_distance().second >= WAY_TO_AREA 
-      && data->piece_FBM2->piece_tracker->get_distance().first == Area::GATE) {
+  if (data->piece_tracker->get_distance().second >= WAY_TO_AREA 
+      && data->piece_tracker->get_distance().first == Area::GATE) {
 			data->timer->start_timer(100,TIMER_ID::IS_METAL);
 		} else {
 			return new Piece_Missing(data);

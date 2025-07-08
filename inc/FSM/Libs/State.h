@@ -98,6 +98,10 @@ public: //================================================ public functions ====
       return handle_event_using_function(&State::sorted);
     }
 
+    virtual State* sorting_out_fbm2(){
+      return handle_event_using_function(&State::sorted);
+    }
+
     //====================================================MotorPiece======================================================
     virtual State* delete_w_motor() {
         return handle_event_using_function(&State::delete_w_motor);

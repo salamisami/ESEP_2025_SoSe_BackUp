@@ -20,7 +20,14 @@ void Gate::entry(){
 	PRINT_STATE;
   //Gate::check_piece();
 	//Action here
-  data->timer->start_timer(1, TIMER_ID::GATE_FBM_2);
+  /* alte Lösung 
+  data->timer->start_timer(1, TIMER_ID::GATE_FBM_2); 
+  */
+  check_piece();
+  piece_data = data->piece_FBM2_measured;
+  data->piece_tracker->update_distance_force(Area::GATE, 0);
+  data->sender->send_event((int8_t)Topic::CHECK_PIECE, (int) piece_data);
+	printf("PT1 -> Sorting Order: %d\n", (int) piece_data);
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
 }
@@ -56,27 +63,59 @@ State* Gate::request_transfer(){
   return new Gate(data);
 }
 
-State* Gate::timer(TIMER_ID id) {
-  if(TIMER_ID::GATE_FBM_2 == id) return check_piece();
-  return nullptr;
+State* Gate::let_through()
+{
+  return new LeavingGate_PT2(data);
 }
 
+State* Gate::sorting_out_fbm2()
+{
+  return new Sorting_out(out);
+}
+
+
 State* Gate::check_piece(){
-  auto distanz = data->piece_FBM2->piece_tracker->get_distance();
-  auto distanzMeasured = data->piece_FBM2_measured->piece_tracker->get_distance();
+	//soll: data->piece_FBM2
+	//ist: data->piece_FBM2_measured
+  
   //if (data->piece_FBM2_measured != data->piece_FBM2){
-  if (distanz.first != distanzMeasured.first || distanz.second != distanzMeasured.second){
-    data->piece_FBM2_measured->piece_tracker->print_distance();
-    data->piece_FBM2->piece_tracker->print_distance();
-    printf("_____________piece_measured != piece___________________\n");
-    return new Sorting_out(data);
+  switch (data->piece_FBM2->type)
+  {
+    case PieceEnum::TALL_WITH_METAL:
+      if (PieceEnum::TALL != data->piece_FBM2_measured->type){
+        printf("_____________piece_measured (%d) != piece (%d)___________________\n");
+        data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::SORTING_OUT_FBM2);
+      }
+      else data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::LET_THROUGH);
+      break;
+    case PieceEnum::TALL_SORT_OUT:
+      data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::SORTING_OUT_FBM2);
+      break;
+    case PieceEnum::TALL_WITH_METAL_SORT_OUT:
+      data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::SORTING_OUT_FBM2);
+      break;
+    case PieceEnum::FLAT_SORT_OUT:
+      data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::SORTING_OUT_FBM2);
+      break;
+    case PieceEnum::UNKNOWN:
+      data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::SORTING_OUT_FBM2);
+      break;
+    default:
+      if (data->piece_FBM2->type != data->piece_FBM2_measured->type){
+        printf("_____________piece_measured (%d) != piece (%d)___________________\n");
+        data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::SORTING_OUT_FBM2);
+      }
+      else data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::LET_THROUGH);
+      break;
   }
-  if(data->piece_FBM2_measured->type >= PieceEnum::TALL_SORT_OUT
+  
+  /* if(data->piece_FBM2_measured->type >= PieceEnum::TALL_SORT_OUT
       && data->piece_FBM2_measured->type <= PieceEnum::FLAT_SORT_OUT){
     printf("_____________sort out___________________\n");
-    return new Sorting_out(data);
-    }
-  data->timer->start_timer(100, TIMER_ID::GATE_END);
+    data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::SORTING_OUT_FBM2);
+  } */
+  /* data->timer->start_timer(100, TIMER_ID::GATE_END);
   printf("_____________return Gate End___________________\n");
-  return new Gate_End(data);
+  data->sender->send_event((int8_t) Topic::Internal, (int) Internal_Enum::LET_THROUGH); */
 }
+
