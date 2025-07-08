@@ -127,7 +127,7 @@ void COM::checkQueues()
         auto msg = highPriorityQueue.front();
         highPriorityQueue.pop_front();
         lock.unlock();
-        if (sendToServer(msg, EventPriority::FIRST_PRIO)==-1){
+        if (sendToServer(msg,(int) EventPriority::FIRST_PRIO)==-1){
           lock.lock();
           highPriorityQueue.push_front(msg);
           lock.unlock();
