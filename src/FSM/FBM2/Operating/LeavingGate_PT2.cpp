@@ -26,7 +26,6 @@ State* LeavingGate_PT2::clone(){
 }
 
 State* LeavingGate_PT2::laser_sorting_gate_unblocked() {
-	//Piece* piece = localdata_.piece;
 	data->piece_tracker->update_distance_force(Area::GATE_END, 0);
 	return new Gate_End(data);
 }
@@ -66,4 +65,10 @@ State* LeavingGate_PT2::timer(TIMER_ID id) {
 	//Piece* piece_to_delete = localdata_.piece;
 	
 	return State::EXIT_STATE;
+}
+
+
+State* LeavingGate_PT2::request_transfer() {
+	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
+	return nullptr;
 }
