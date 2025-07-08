@@ -95,7 +95,7 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 //	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
 //		return new Gate_PT1(data, localdata_);
 //	}
-//	return nullptr;
+	return nullptr;
 }
 
 State* ADCGate_PT1::metal_detected() {
