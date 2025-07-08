@@ -9,6 +9,7 @@
 #include "Remote_Controller.h"
 #include "Boot.h"
 #include "EStopTest.h"
+#include "Fsm.h"
 
 #include <iostream>
 #include <thread>
@@ -59,9 +60,9 @@ int main() {
     Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
 
-    auto logic = new Logic<Boot>(fsm_receiver, fsm_sender);
+    auto logic = new Logic<Fsm>(fsm_receiver, fsm_sender);
     Recorder* rec = new Recorder(recorder_receiver, recorder_sender);
-    Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
+    //Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
     COM* externCommunication = new COM(com_external_receiver, FBM_N_COM_EXT, com_receiver_local, com_sender_local);
     externCommunication->start();
     HAL* hal = new HAL(hal_receiver, hal_sender);

@@ -35,13 +35,13 @@ Fsm::Fsm(ContextData* data, std::deque<State*> initial_substates) : OrthState(da
 Fsm::~Fsm() {}
 
 void Fsm::entry() {
-    HState::entry();
+    OrthState::entry();
 }
 
 void Fsm::exit() {
-    HState::exit();
+    OrthState::exit();
 }
 
 State* Fsm::clone() {
-    return new Fsm(data, clone_substates);
+    return new Fsm(data, clone_substates());
 }
