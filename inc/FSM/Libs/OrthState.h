@@ -123,7 +123,7 @@ public:
                 if(substates.empty() && quit_on_empty_) {
                     return default_exit_state_;
                 }
-            } else if(newSubstate != nullptr && newSubstate != current_substate) {
+            } else if(newSubstate != nullptr) {
                 // Handle state transition only if it's a different state
                 current_substate->exit();
                 delete current_substate;
@@ -187,7 +187,7 @@ protected:
                 if(substates.empty() && quit_on_empty_) {
                     return default_exit_state_;
                 }
-            } else if(newSubstate != nullptr && newSubstate != current_substate) {
+            } else if(newSubstate != nullptr) {
                 // Handle state transition only if it's a different state
                 current_substate->exit();
                 delete current_substate;
