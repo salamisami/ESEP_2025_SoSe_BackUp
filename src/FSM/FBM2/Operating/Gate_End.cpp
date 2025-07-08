@@ -67,7 +67,7 @@ State* Gate_End::laser_ramp_blocked(){
 }
 
 State* Gate_End::laser_back_blocked(){ 
-	auto piece = data->piece_FBM2;
+	auto piece = data->piece_FBM2_soll;
 	Area current_area = piece->piece_tracker->get_distance().first;
 	int current_position = piece->piece_tracker->get_distance().second;
   if(current_area == Area::GATE_END){

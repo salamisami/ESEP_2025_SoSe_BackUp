@@ -19,7 +19,7 @@ Is_Metal::~Is_Metal() {}
 //===================================================== public functions =====================================================
 void Is_Metal::entry(){
 	PRINT_STATE;
-  data->piece_FBM2_measured->type= PieceEnum::TALL_WITH_METAL;
+  data->piece_FBM2_ist->type= PieceEnum::TALL_WITH_METAL;
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState

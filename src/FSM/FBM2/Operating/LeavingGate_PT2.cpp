@@ -50,7 +50,7 @@ State* LeavingGate_PT2::timer(TIMER_ID id) {
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 	//data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
 	//PieceEnum validated_piece = localdata_.validated_type;
-	switch(data->piece_FBM2->type) {
+	switch(data->piece_FBM2_soll->type) {
 		case PieceEnum::FLAT:
 			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_FLAT);
 			break;

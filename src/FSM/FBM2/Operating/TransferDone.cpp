@@ -43,15 +43,15 @@ State* TransferDone::request_transfer(){
 }
 State* TransferDone::laser_front_unblocked(){
 	data->piece_tracker->fast();
-	if(data->piece_FBM2->type == PieceEnum::FLAT_SORT_OUT ||
-		data->piece_FBM2->type == PieceEnum::TALL_SORT_OUT ||
-		data->piece_FBM2->type == PieceEnum::TALL_WITH_METAL_SORT_OUT ||
-		data->piece_FBM2->type == PieceEnum:: UNKNOWN)
+	if(data->piece_FBM2_soll->type == PieceEnum::FLAT_SORT_OUT ||
+		data->piece_FBM2_soll->type == PieceEnum::TALL_SORT_OUT ||
+		data->piece_FBM2_soll->type == PieceEnum::TALL_WITH_METAL_SORT_OUT ||
+		data->piece_FBM2_soll->type == PieceEnum:: UNKNOWN)
 	{
 		return new Start_Gate(data);
-	} else if(data->piece_FBM2->type == PieceEnum::FLAT ||
-			data->piece_FBM2->type == PieceEnum::TALL ||
-			data->piece_FBM2->type == PieceEnum::TALL_WITH_METAL)
+	} else if(data->piece_FBM2_soll->type == PieceEnum::FLAT ||
+			data->piece_FBM2_soll->type == PieceEnum::TALL ||
+			data->piece_FBM2_soll->type == PieceEnum::TALL_WITH_METAL)
 	{	
 		return new Start_ADC(data);
 	} else {

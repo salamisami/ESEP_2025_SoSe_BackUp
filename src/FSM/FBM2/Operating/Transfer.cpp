@@ -54,8 +54,8 @@ State* Transfer::request_transfer(){
 }
 
 State* Transfer::id() {
-    if (data && data->piece_FBM2) {  // Check both data and piece_FBM2 exist
-        data->piece_FBM2->id = data->event_payload;
+    if (data && data->piece_FBM2_soll) {  // Check both data and piece_FBM2_soll exist
+        data->piece_FBM2_soll->id = data->event_payload;
     }
     return nullptr;  // Assuming you want to return the current object
 }
