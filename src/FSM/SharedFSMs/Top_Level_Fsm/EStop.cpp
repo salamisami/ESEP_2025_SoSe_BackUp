@@ -23,7 +23,7 @@ void EStop::entry() {
 void EStop::exit() {
 	substate->exit();
 	PRINT_STATE;
-	data->is_estop = true;
+	data->is_estop = false;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
 }
