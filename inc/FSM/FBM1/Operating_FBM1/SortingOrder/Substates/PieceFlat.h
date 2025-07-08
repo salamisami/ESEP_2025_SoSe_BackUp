@@ -24,6 +24,8 @@ public: //================================================ public functions ====
 
 	State* reset_to_tall() override;
 	State* reset_to_tall_w_metal() override;
+	State* unknown_piece() override;
+
     
 
 
