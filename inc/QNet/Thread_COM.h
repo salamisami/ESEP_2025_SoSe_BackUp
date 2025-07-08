@@ -79,6 +79,8 @@ namespace Thread_COM {
 		 */
 		void send_event(int8_t event_code, int event_value, int priority = (int) EventPriority::DEFAULT) override;
 
+    int send_event_com(int8_t event_code, int event_value, int priority = (int) EventPriority::DEFAULT) override;
+
 		/**
 		 * @brief returns connection ID
 		 */

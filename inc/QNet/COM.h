@@ -28,7 +28,7 @@ private:
     void runClient();
     void checkQueues();
     void sendHeartbeat();
-    void sendToServer(const _pulse &msg, int priority = (int)EventPriority::DEFAULT);
+    int sendToServer(const _pulse &msg, int priority = (int)EventPriority::DEFAULT);
 
     void runDispatcher();
     

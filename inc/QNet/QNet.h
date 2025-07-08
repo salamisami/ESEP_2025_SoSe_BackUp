@@ -28,6 +28,9 @@ class I_Sender {
 public:
 	virtual ~I_Sender() = default;
 	virtual void send_event(int8_t event_code, int event_value, int priority = (int) EventPriority::DEFAULT) = 0;
+  virtual int send_event_com(int8_t event_code, int event_value, int priority = (int) EventPriority::DEFAULT){
+    return -1;
+  }
 	virtual int getcoid() = 0;
 };
 
