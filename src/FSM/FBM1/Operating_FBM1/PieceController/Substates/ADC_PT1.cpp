@@ -14,7 +14,7 @@ ADC_PT1::~ADC_PT1() {}
 void ADC_PT1::entry() {
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
-	data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) localdata_.id);
+	data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) localdata_.piece->id);
 }
 
 void ADC_PT1::exit() {
@@ -32,7 +32,7 @@ State* ADC_PT1::adc_new_piece() {
 State* ADC_PT1::adc_timeout() {
 	DEBUG("PieceMissing! Cause: piece is too long in ADC.");
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
 	PieceEnum validated_piece = localdata_.validated_type;
 	switch(validated_piece) {
 		case PieceEnum::FLAT:
@@ -47,8 +47,8 @@ State* ADC_PT1::adc_timeout() {
 		default:
 			break;
 	}
-	Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
-	data->pieces_map->erase(localdata_.id);
+	Piece* piece_to_delete = localdata_.piece;
+	data->pieces_map->erase(localdata_.piece->id);
 	delete piece_to_delete;
 	return State::EXIT_STATE;
 }

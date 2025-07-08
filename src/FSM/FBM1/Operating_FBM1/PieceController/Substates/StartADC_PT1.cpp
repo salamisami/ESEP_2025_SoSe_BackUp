@@ -30,7 +30,7 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 	if(id != TIMER_ID::STARTADC_PT1) {
 		return nullptr;
 	}
-	Piece* piece = data->pieces_map->at(localdata_.id);
+	Piece* piece = localdata_.piece;
 
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
@@ -63,7 +63,7 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 // 	if(id != TIMER_ID::STARTADC_PT1) {
 // 		return nullptr;
 // 	}
-// 	Piece* piece = data->pieces_map->at(localdata_.id);
+// 	Piece* piece = localdata_.piece;
 
 // 	auto distance = piece->piece_tracker->get_distance();
 // 	Area current_area = distance.first;

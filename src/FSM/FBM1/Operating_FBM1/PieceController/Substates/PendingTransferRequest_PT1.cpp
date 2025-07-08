@@ -31,7 +31,7 @@ State* PendingTransferRequest_PT1::fbm_2_busy() {
 }
 
 State* PendingTransferRequest_PT1::fbm_2_ready() {
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.id);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 	return new Transfer_PT1(data, localdata_);
 }
 

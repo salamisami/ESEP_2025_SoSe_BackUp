@@ -18,8 +18,8 @@ void Measuring_PT1::entry() {
 
 void Measuring_PT1::exit() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.id);
-	Piece* piece = data->pieces_map->at(localdata_.id);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
+	Piece* piece = localdata_.piece;
 	piece->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
 }
 
@@ -28,7 +28,7 @@ State* Measuring_PT1::clone() {
 }
 
 State* Measuring_PT1::laser_sorting_gate_blocked() {
-	auto piece = data->pieces_map->at(localdata_.id);
+	auto piece = localdata_.piece;
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 

@@ -13,7 +13,7 @@ Start_PT1::~Start_PT1() {}
 //===================================================== public functions =====================================================
 void Start_PT1::entry() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.id);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 }
 
 void Start_PT1::exit() {
@@ -25,7 +25,7 @@ State* Start_PT1::clone() {
 }
 
 State* Start_PT1::laser_front_unblocked() {
-	Piece* piece = data->pieces_map->at(localdata_.id);
+	Piece* piece = localdata_.piece;
 	switch(data->current_motor_speed) {
 		case MotorPieceState::FAST:
 			piece->piece_tracker->fast();

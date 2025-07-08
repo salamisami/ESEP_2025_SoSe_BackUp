@@ -57,10 +57,10 @@ State* Transfer_PT1::clone() {
 }
 
 State* Transfer_PT1::transfer_done() {
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
-	Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
+	Piece* piece_to_delete = localdata_.piece;
 	
-	data->pieces_map->erase(localdata_.id);
+	data->pieces_map->erase(localdata_.piece->id);
 	delete piece_to_delete;
 	return State::EXIT_STATE;
 }
@@ -68,7 +68,7 @@ State* Transfer_PT1::transfer_done() {
 State* Transfer_PT1::transfer_failed() {
 	DEBUG("PieceMissing! Cause: piece does not reach to FBM2.");
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
 	PieceEnum validated_piece = localdata_.validated_type;
 	switch(validated_piece) {
 		case PieceEnum::FLAT:
@@ -83,8 +83,8 @@ State* Transfer_PT1::transfer_failed() {
 		default:
 			break;
 	}
-	Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
-	data->pieces_map->erase(localdata_.id);
+	Piece* piece_to_delete = localdata_.piece;
+	data->pieces_map->erase(localdata_.piece->id);
 	delete piece_to_delete;
 	return State::EXIT_STATE;
 }

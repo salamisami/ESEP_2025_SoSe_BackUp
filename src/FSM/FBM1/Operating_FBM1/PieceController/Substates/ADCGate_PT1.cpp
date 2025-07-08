@@ -30,7 +30,7 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 	if(id != TIMER_ID::ADCGATE_PT1) {
 		return nullptr;
 	}
-	auto piece = data->pieces_map->at(localdata_.id);
+	auto piece = localdata_.piece;
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
@@ -52,7 +52,7 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 	
 	DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
 	PieceEnum validated_piece = localdata_.validated_type;
 	switch(validated_piece) {
 		case PieceEnum::FLAT:
@@ -67,14 +67,14 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 		default:
 			break;
 	}
-	Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
-	data->pieces_map->erase(localdata_.id);
+	Piece* piece_to_delete = localdata_.piece;
+	data->pieces_map->erase(localdata_.piece->id);
 	delete piece_to_delete;
 	return State::EXIT_STATE;
 }
 
 State* ADCGate_PT1::laser_sorting_gate_blocked() {
-	auto piece = data->pieces_map->at(localdata_.id);
+	auto piece = localdata_.piece;
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
@@ -95,7 +95,7 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 }
 
 State* ADCGate_PT1::metal_detected() {
-	auto piece = data->pieces_map->at(localdata_.id);
+	auto piece = localdata_.piece;
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;

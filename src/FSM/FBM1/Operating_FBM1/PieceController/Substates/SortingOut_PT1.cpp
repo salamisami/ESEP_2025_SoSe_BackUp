@@ -27,13 +27,13 @@ State* SortingOut_PT1::clone() {
 }
 
 State* SortingOut_PT1::laser_ramp_blocked() {
-  data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
-  Piece* piece = data->pieces_map->at(localdata_.id);
+  data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
+  Piece* piece = localdata_.piece;
 
   piece->sorting_time = data->stopwatch.stop();
   printf("Piece ID: %d has sorting time of %ld ms\n", piece->id, piece->sorting_time);
 
-  data->pieces_map->erase(localdata_.id);
+  data->pieces_map->erase(localdata_.piece->id);
   delete piece;
   return State::EXIT_STATE;
 }
@@ -42,7 +42,7 @@ State* SortingOut_PT1::timer(TIMER_ID id) {
   if(id == TIMER_ID::SORTINGOUT_PT1) {
     DEBUG("PieceMissing! Cause: piece is too long to reach ramp.");
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
-    data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
+    data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
     PieceEnum validated_piece = localdata_.validated_type;
     switch(validated_piece) {
       case PieceEnum::FLAT:
@@ -57,8 +57,8 @@ State* SortingOut_PT1::timer(TIMER_ID id) {
       default:
         break;
     }
-    Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
-    data->pieces_map->erase(localdata_.id);
+    Piece* piece_to_delete = localdata_.piece;
+    data->pieces_map->erase(localdata_.piece->id);
     delete piece_to_delete;
     return State::EXIT_STATE;
   }
