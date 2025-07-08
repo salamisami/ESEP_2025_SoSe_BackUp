@@ -36,6 +36,11 @@ State* CalRampFast::clone() {
 	return new CalRampFast(data, OrthState::clone_substates());
 }
 
+State * CalRampFast::laser_back_blocked(){
+	return new ReadyForCDS(data);
+
+}
+
 
 // State* CalRampFast::laser_ramp_blocked() {
 //     //explicit exit
