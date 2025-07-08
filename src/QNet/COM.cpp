@@ -16,15 +16,34 @@ COM::~COM()
 {
     stop();
 }
-void COM::start()
-{
-    if (running)
-        return;
+void COM::start() {
+    if (running) return;
 
     running = true;
-    clientThread = std::thread(&COM::runClient, this);
-    serverThread = std::thread(&COM::runServer, this);
-    dispatcherThread = std::thread(&COM::runDispatcher, this);
+    
+    auto set_priority = [](int priority) {
+        struct sched_param param;
+        param.sched_priority = priority;
+        pthread_setschedparam(pthread_self(), SCHED_FIFO, &param);
+    };
+
+    // Dispatcher (Highest Priority - Handles Critical Events)
+    dispatcherThread = std::thread([this, set_priority]{
+        set_priority(25);  // Highest
+        runDispatcher();
+    });
+
+    // Client (Medium Priority - Sends Messages)
+    clientThread = std::thread([this, set_priority]{
+        set_priority(25);
+        runClient();
+    });
+
+    // Server (Lowest Priority - Background Tasks)
+    serverThread = std::thread([this, set_priority]{
+        set_priority(15);
+        runServer();
+    });
 }
 
 void COM::stop()
@@ -109,37 +128,57 @@ void COM::runClient()
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
-void COM::checkQueues()
-{
-    std::unique_lock<std::mutex> lock(queueMutex);
-
-    // Send heartbeat if queues are empty
-    if (highPriorityQueue.empty() &&
-        lowPriorityQueue.empty())
-    {
-        lock.unlock();
+void COM::checkQueues() {
+    const size_t MAX_BATCH = 10;
+    
+    while (running) {
+        // Local batch containers
+        std::deque<_pulse> highPrioBatch;
+        std::deque<_pulse> lowPrioBatch;
+        
+        { // Locked scope
+            std::unique_lock<std::mutex> lock(queueMutex);
+            
+            // Move items to local batches
+            auto move_batch = [](std::deque<_pulse>& src, std::deque<_pulse>& dest, size_t max) {
+                auto end = src.size() > max ? src.begin() + max : src.end();
+                dest.insert(dest.end(), std::make_move_iterator(src.begin()), 
+                                    std::make_move_iterator(end));
+                src.erase(src.begin(), end);
+            };
+            
+            if (!highPriorityQueue.empty()) {
+                move_batch(highPriorityQueue, highPrioBatch, MAX_BATCH);
+            } else if (!lowPriorityQueue.empty()) {
+                move_batch(lowPriorityQueue, lowPrioBatch, MAX_BATCH);
+            } else {
+                break; // Both queues empty
+            }
+        } // Lock released
+        
+        // Process high priority first
+        for (auto& msg : highPrioBatch) {
+            if (sendToServer(msg, (int)EventPriority::FIRST_PRIO) == -1) {
+                std::lock_guard<std::mutex> lock(queueMutex);
+                highPriorityQueue.push_front(std::move(msg));
+            }
+        }
+        
+        // Then process low priority
+        for (auto& msg : lowPrioBatch) {
+            if (sendToServer(msg) == -1) {
+                std::lock_guard<std::mutex> lock(queueMutex);
+                lowPriorityQueue.push_front(std::move(msg));
+            }
+        }
+        
+        // Cooperative yield
+        std::this_thread::yield();
+    }
+    
+    // Only send heartbeat when truly idle
+    if (highPriorityQueue.empty() && lowPriorityQueue.empty()) {
         sendHeartbeat();
-        return;
-    }
-
-    while (!highPriorityQueue.empty())
-    {
-        auto msg = highPriorityQueue.front();
-        highPriorityQueue.pop_front();
-        lock.unlock();
-        sendToServer(msg, (int)EventPriority::FIRST_PRIO);
-        lock.lock();
-    }
-    while (!lowPriorityQueue.empty() && highPriorityQueue.empty())
-    {
-        //COUT("Something in low prio");
-
-        auto msg = lowPriorityQueue.front();
-        lowPriorityQueue.pop_front();
-        lock.unlock(); 
-        // printf("Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
-        sendToServer(msg);
-        lock.lock();
     }
 }
 
@@ -161,14 +200,16 @@ void COM::sendHeartbeat()
     }
 }
 
-void COM::sendToServer(const _pulse &msg, int priority)
+int COM::sendToServer(const _pulse &msg, int priority)
 {
-    std::lock_guard<std::mutex> lock(_clientMutex);
+  int send_event_status = 0;
+  std::lock_guard<std::mutex> lock(_clientMutex);
     if (_client)
     {
-        _client->send_event((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
+        send_event_status = _client->send_event_com((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
     }
     updateHeartbeat();
+    return send_event_status;
 }
 
 // Server side implementation
@@ -216,8 +257,8 @@ void COM::runServer()
                                                           : static_cast<int>(COM_Enum::COM_MQTT_DISCONNECTED);
                 {
                     std::lock_guard<std::mutex> lock(queueMutex);
-                    lowPriorityQueue.push_back(rampEvent);
-                    lowPriorityQueue.push_back(mqttEvent);
+                    lowPriorityQueue.push_front(rampEvent);
+                    lowPriorityQueue.push_front(mqttEvent);
                 }
             }
 
