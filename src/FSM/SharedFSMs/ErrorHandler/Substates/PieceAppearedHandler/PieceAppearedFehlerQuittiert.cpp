@@ -19,7 +19,7 @@ void PieceAppearedFehlerQuittiert::entry(){
 }
 
 void PieceAppearedFehlerQuittiert::exit(){
-    data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) Error_Enum::ERROR_W_APPEARED);  
+    data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) Error_Enum::ERROR_W_APPEARED);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::PIECE_LOST_RESOLVED);
     //TODO CODE
