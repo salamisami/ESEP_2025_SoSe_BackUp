@@ -63,13 +63,22 @@ int main() {
     logic_sender = new Mock_PM::Sender(hal_receiver);
     to_self_sender = new Mock_PM::Sender(logic_receiver);
     data = new ContextData(to_self_sender);
-    auto logic = new Logic<ReadyForPiece>(logic_receiver, to_self_sender, data);
-
+    auto logic = new Logic<Boot>(logic_receiver, to_self_sender, data);
     // Boot sequence
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+
+    WAIT(2000);
+
+
     remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::REQUEST_TRANSFER);
     //EXPECT_STATE_INSTANT("WaitingForTransferStart");
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>> REQUEST_TRANSFER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
+    WAIT(2000);
     remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::TRANSFER_START_TALL);
+    remote_control->send_event((int8_t)Topic::ID, (int) 2);
     //EXPECT_STATE_INSTANT("Transfer");
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> TRANSFER_START_TALL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     WAIT(1000);
