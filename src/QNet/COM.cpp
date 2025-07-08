@@ -365,7 +365,7 @@ void COM::processMessage(const _pulse &msg)
 {
     if (msg.code == ((int)Topic::COM))
     { 
-        if (msg.value.sival_int == ((int)COM_Enum::BUTTON_ESTOP_PRESSED))
+        if (msg.value.sival_int == ((int)COM_Enum::BUTTON_ESTOP_PRESSED || (int) COM_Enum::BUTTON_ESTOP_RELEASED))
         {
             sendToDispatcher(msg, (int)EventPriority::FIRST_PRIO);
         }
@@ -402,17 +402,17 @@ void COM::handleInterruptTopic(int originalValue, _pulse &dispatcherMsg)
     case InterruptEnum::BUTTON_ESTOP_PRESSED:
         dispatcherMsg.code = static_cast<int>(Topic::COM);
         dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_PRESSED);
-        highPriorityQueue.push_back(dispatcherMsg);
+        highPriorityQueue.push_front(dispatcherMsg);
         break;
     case InterruptEnum::BUTTON_ESTOP_RELEASED:
         dispatcherMsg.code = static_cast<int>(Topic::COM);
         dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_ESTOP_RELEASED);
-        highPriorityQueue.push_back(dispatcherMsg);
+        highPriorityQueue.push_front(dispatcherMsg);
         break;
     case InterruptEnum::BUTTON_RESET_PRESSED:
         dispatcherMsg.code = static_cast<int>(Topic::COM);
         dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::BUTTON_RESET_PRESSED);
-        highPriorityQueue.push_back(dispatcherMsg);
+        highPriorityQueue.push_front(dispatcherMsg);
         break; 
     default:
         break;
