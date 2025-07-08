@@ -102,11 +102,11 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::sorted);
     }
 
-    virtual State* out() {
-        return handle_event_using_function(&State::out);
-    }
-    virtual State* sorting_out_fbm2() {
+   virtual State* sorting_out_fbm2() {
         return handle_event_using_function(&State::sorted);
+   }
+    virtual State* sorted_out(){
+      return handle_event_using_function(&State::sorted_out);
     }
 
     //====================================================MotorPiece======================================================
