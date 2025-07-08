@@ -95,6 +95,9 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::OUT:
             newState = state->out();
             break;
+        case Internal_Enum::SORTING_OUT_FBM2:
+            newState = state->sort_out_fbm2();
+            break;
         default:
             break;
     }

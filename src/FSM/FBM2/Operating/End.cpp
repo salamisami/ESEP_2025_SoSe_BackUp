@@ -11,7 +11,7 @@ End::~End() {}
 //===================================================== public functions =====================================================
 void End::entry(){
 	PRINT_STATE; 
-  data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) data->piece_FBM2->id);
+  data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) data->piece_FBM2_soll->id);
 
 	//Action here
 	//HState::entry() //for HState

@@ -24,11 +24,10 @@ public: //================================================ public functions ====
 
 	State* request_transfer() override;
 
-	State* laser_back_unblocked() override;
+	State* laser_back_blocked() override;
 	State* laser_sorting_gate_blocked() override;
 	State* laser_ramp_blocked() override;
 	State* laser_front_blocked() override;
-  State* id() override;
 	State* timer(TIMER_ID id) override;
 
 

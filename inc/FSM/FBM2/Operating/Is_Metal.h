@@ -5,7 +5,7 @@
 #include "State.h"
 #include "Pieceappeared.h"
 #include "Piece_Missing.h"
-#include "Gate.h"
+#include "LeavingGate_PT2.h"
  
 class Is_Metal : public State {
 public: //============================================ constructors & destructors ============================================
@@ -40,7 +40,6 @@ private: //================================================ private variables ==
 
  
 private: //================================================ private functions ================================================
-	//void privateFunction();
 };
  
 #endif

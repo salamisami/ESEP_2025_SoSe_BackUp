@@ -1,46 +1,40 @@
-#ifndef ADC_H
-#define ADC_H
-
+#ifndef LEAVINGGATE_PT2_H
+#define LEAVINGGATE_PT2_H
 #pragma once
- 
+
 #include "State.h"
-#include "Pieceappeared.h"
-#include "Piece_Missing.h" 
-#include "Measuring.h"
+#include "Gate_End.h"
 
-class ADC : public State {
+class LeavingGate_PT2 : public State {
 public: //============================================ constructors & destructors ============================================
-    ADC(ContextData* data); //for all types of states
-	//ADC(ContextData* data, State* initial_substate); //for HState
-	//ADC(ContextData* data, std::deque<State*> initial_substates); //for OrthState
-    virtual ~ADC();
+    LeavingGate_PT2(ContextData* data) ;
+    virtual ~LeavingGate_PT2();
+	
 
- 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
 	State* clone() override;
 
+	State* laser_sorting_gate_unblocked() override;
+	State* timer(TIMER_ID ID) override;
+
 	State* request_transfer() override;
-	State* laser_back_blocked() override;
-	State* laser_front_blocked() override;
-	State* laser_sorting_gate_blocked() override;
-	State* laser_ramp_blocked() override;
+    
 
-	State* adc_timeout() override;
-	State* adc_new_piece() override;
 
- 
- 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
 	//primitive types
 	//bool and char
+	//LocalDataPT1 localdata_;
+   
+	
 
- 
 private: //================================================ private functions ================================================
 	//void privateFunction();
+	
 };
- 
+
 #endif

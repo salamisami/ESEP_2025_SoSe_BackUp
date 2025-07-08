@@ -97,7 +97,8 @@ enum class Internal_Enum : int {
     SORTED,
     RAMP_FULL,
     RAMP_NOT_FULL,
-    OUT
+    OUT,
+    SORTING_OUT_FBM2
 };
 
 enum class ADC_Enum : int {
@@ -172,7 +173,8 @@ enum class TIMER_ID : int {
     IS_METAL,
     OPENGATE_OP,
     PUSHRAMP_OP,
-    GATE_FBM_2
+    GATE_FBM_2,
+    LEAVINGGATE_PT2
 };
 
 enum class PieceEnum : int {

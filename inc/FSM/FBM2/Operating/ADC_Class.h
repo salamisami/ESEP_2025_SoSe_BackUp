@@ -1,20 +1,19 @@
-#ifndef GATE_H
-#define GATE_H
+#ifndef ADC_CLASS_H
+#define ADC_CLASS_H
 
 #pragma once
  
 #include "State.h"
-#include "Sorting_out.h"
 #include "Pieceappeared.h"
-#include "Gate_End.h"
-#include "LocalDataPT1.h"
+#include "Piece_Missing.h" 
+#include "Measuring.h"
 
-class Gate : public State {
+class ADC_Class : public State {
 public: //============================================ constructors & destructors ============================================
-    Gate(ContextData* data); //for all types of states
-	//Gate(ContextData* data, State* initial_substate); //for HState
-	//Gate(ContextData* data, std::deque<State*> initial_substates); //for OrthState
-    virtual ~Gate();
+    ADC_Class(ContextData* data); //for all types of states
+	//ADC(ContextData* data, State* initial_substate); //for HState
+	//ADC(ContextData* data, std::deque<State*> initial_substates); //for OrthState
+    virtual ~ADC_Class();
 
  
 public: //================================================ public functions ================================================
@@ -22,11 +21,15 @@ public: //================================================ public functions ====
     void exit() override;
 	State* clone() override;
 
-  State* laser_front_blocked() override; 
-  State* laser_ramp_blocked() override;
-  State* laser_back_blocked() override;
-  State* request_transfer() override;
-  State* timer(TIMER_ID id)override;
+	State* request_transfer() override;
+	State* laser_back_blocked() override;
+	State* laser_front_blocked() override;
+	State* laser_sorting_gate_blocked() override;
+	State* laser_ramp_blocked() override;
+
+	State* adc_timeout() override;
+	State* adc_new_piece() override;
+
  
  
 private: //================================================ private variables ================================================
@@ -34,13 +37,10 @@ private: //================================================ private variables ==
 	//pointers
 	//primitive types
 	//bool and char
-  LocalDataPT1 localdata;
 
  
 private: //================================================ private functions ================================================
 	//void privateFunction();
-  State* check_piece();
-  PieceEnum validate_piece(const ScannedPiece& scanned_piece, const bool& has_metal);
 };
  
 #endif

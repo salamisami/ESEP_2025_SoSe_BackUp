@@ -9,15 +9,40 @@
 #include "Boot.h"
 #include "SimulatePiece.h"
 #include "Piece.h"
+#include "ReadyForPiece.h"
+#include <gtest/gtest.h>
 
 #include <iostream>
 
 #define ONE_MILLISECOND 1000
 
+#define EXPECT_STATE(expected_state) \
+    do { \
+        WAIT(50); \
+        std::string is_state = logic->show_state(); \
+        EXPECT_EQ(is_state, expected_state); \
+    } while (0)
+
+#define EXPECT_STATE_CONTAINS(expected_state) \
+    do { \
+        WAIT(50); \
+        std::string is_state = logic->show_state(); \
+        EXPECT_NE(is_state.find(expected_state), std::string::npos) \
+            << "Expected state to contain: '" << expected_state \
+            << "' but got: '" << is_state << "'"; \
+    } while (0)
+
+
+#define EXPECT_STATE_INSTANT(expected_state) \
+    do { \
+        WAIT(10); \
+        std::string is_state = logic->show_state(); \
+        EXPECT_EQ(is_state, expected_state); \
+    } while (0)
+
+#define ONE_MILLISECOND 1000
+
 using namespace std;
-
-
-
 
 
 
@@ -29,7 +54,7 @@ int main() {
     Mock_PM::Receiver* hal_receiver;
     Mock_PM::Sender* logic_sender;
     I_Sender* to_self_sender;
-    Logic<Boot>* logic;
+    
     ContextData* data;
 
     logic_receiver = new Mock_PM::Receiver();
@@ -38,12 +63,24 @@ int main() {
     logic_sender = new Mock_PM::Sender(hal_receiver);
     to_self_sender = new Mock_PM::Sender(logic_receiver);
     data = new ContextData(to_self_sender);
-    logic = new Logic<Boot>(logic_receiver, to_self_sender, data);
-
+    auto logic = new Logic<Boot>(logic_receiver, to_self_sender, data);
     // Boot sequence
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+
+    WAIT(2000);
+
+
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::REQUEST_TRANSFER);
+    //EXPECT_STATE_INSTANT("WaitingForTransferStart");
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>> REQUEST_TRANSFER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
+    WAIT(2000);
+    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::TRANSFER_START_TALL);
+    remote_control->send_event((int8_t)Topic::ID, (int) 2);
+    //EXPECT_STATE_INSTANT("Transfer");
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> TRANSFER_START_TALL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     WAIT(1000);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
@@ -72,18 +109,10 @@ int main() {
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER BACK BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
 
-
-    //wait till fbm2 ready
-    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
+    //wait till piece is picked up
     WAIT(2000);
-    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
-    WAIT(2000);
-    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> FBM 2 READY <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_READY);
-   
-    WAIT(1000);
-    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> TRANSFER DONE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_DONE);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER BACK BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
     
 
     delete logic;
