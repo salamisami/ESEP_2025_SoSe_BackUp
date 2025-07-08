@@ -13,6 +13,8 @@
 #include "ErrorHandler.h"
 #include "ReadyForPiece.h"
 #include "IdleSorting.h"
+#include "RampNotFull.h"
+#include "NoRampFull.h"
 
 class Operating : public OrthState {
 //============================================ constructors & destructors ============================================
