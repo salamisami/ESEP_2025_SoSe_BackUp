@@ -73,6 +73,9 @@ State* Gate_End::laser_back_blocked() {
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
+	std::cout << "Gate laser blocked Last Area: " << (int) current_area
+		<< " Last Pos: " << (int) current_pos << std::endl;
+
 	if(current_area == Area::GATE_END && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)) {
 		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) data->piece_FBM2_soll->id);
 		return new End(data);
