@@ -49,7 +49,7 @@ State* Sorting_out::timer(TIMER_ID id) {
   return nullptr;
 } 
 State* Sorting_out::laser_ramp_blocked(){
-  data->sender->send_event((int8_t) TOPIC::INTERNAL, (int) Internal_Enum::OUT);
+  data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::OUT);
   return new ReadyForPiece(data);
 };
 State* Sorting_out::laser_back_blocked(){
