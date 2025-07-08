@@ -37,19 +37,19 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 
 	//piece->piece_tracker->print_distance();
 
-	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE){
-		return new ADCGate_PT1(data, localdata_);
-	}
+//	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE){
+//		return new ADCGate_PT1(data, localdata_);
+//	}
+//
+//	if(current_area == Area::ADC_GATE && current_pos >= PIECE_TRANSITION_TOLERANCE){
+//		return new ADCGate_PT1(data, localdata_);
+//	}
+//
+//	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE){
+//		return new ADCGate_PT1(data, localdata_);
+//	}
 
-	if(current_area == Area::ADC_GATE && current_pos >= PIECE_TRANSITION_TOLERANCE){
-		return new ADCGate_PT1(data, localdata_);
-	}
-
-	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE){
-		return new ADCGate_PT1(data, localdata_);
-	}
-
-	
+	if (current_area == Area::GATE_END){// && current_pos > PIECE_TRANSITION_TOLERANCE + 5){
 	DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
@@ -71,6 +71,8 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 	data->pieces_map->erase(localdata_.piece->id);
 	delete piece_to_delete;
 	return State::EXIT_STATE;
+	}
+	return new ADCGate_PT1(data, localdata_);
 }
 
 State* ADCGate_PT1::laser_sorting_gate_blocked() {
@@ -80,7 +82,7 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 	auto current_pos = distance.second;
 	std::cout << "Gate laser blocked Last Area: " << (int)current_area
 	          << " Last Pos: " << (int)current_pos << std::endl;
-	if(current_area == Area::GATE){
+	if(current_area == Area::GATE || current_area == Area::ADC_GATE){
 		return new Gate_PT1(data, localdata_);
 	}
 //	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {

@@ -118,25 +118,7 @@ void COM::runClient() {
       }
       std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
       continue;
-    }
-    struct _pulse event;
-    struct _msg_info info;
-    struct sigevent sigev;
-    uint64_t timeout_nsec = 1 * 100000ULL;
-    sigev.sigev_notify = SIGEV_UNBLOCK;
-    TimerTimeout(CLOCK_MONOTONIC, _NTO_TIMEOUT_RECEIVE, &sigev, &timeout_nsec,
-                 NULL);
-    int rcvid = MsgReceive(_client->getcoid(), &event, sizeof(event), &info);
-    if (rcvid == 0) {  // It's a pulse
-      if (event.code == _PULSE_CODE_COIDDEATH) {
-        // Handle connection death
-        int dead_coid = event.value.sival_int;
-        std::cout << "Connection " << dead_coid << " died" << std::endl;
-        _client.reset();  // Clean up your client
-      }
-    } else if (rcvid == -1 && errno != ETIMEDOUT) {
-      //perror("MsgReceivePulse");
-    }
+    } 
     if (_client && _client->getcoid() != -1) {
       checkQueues();
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -328,6 +310,10 @@ void COM::handle_QNX_pulse(_pulse *msg, int rcvid)
         break;
     case _PULSE_CODE_UNBLOCK:
         printf("received _PULSE_CODE_UNBLOCK\n");
+        break;
+    case _PULSE_CODE_COIDDEATH:
+        printf("Received _PULSE_CODE_COIDDEATH\n")
+        ConnectDetach(msg->scoid);
         break;
     default:
         /* A pulse sent by the kernel like
