@@ -7,6 +7,7 @@
 #include "Sorting_out.h"
 #include "Pieceappeared.h"
 #include "Gate_End.h"
+#include "LocalDataPT1.h"
 
 class Gate : public State {
 public: //============================================ constructors & destructors ============================================
@@ -25,6 +26,7 @@ public: //================================================ public functions ====
   State* laser_ramp_blocked() override;
   State* laser_back_blocked() override;
   State* request_transfer() override;
+  State* timer(TIMER_ID id)override;
  
  
 private: //================================================ private variables ================================================
@@ -32,11 +34,13 @@ private: //================================================ private variables ==
 	//pointers
 	//primitive types
 	//bool and char
+  LocalDataPT1 localdata;
 
  
 private: //================================================ private functions ================================================
 	//void privateFunction();
   State* check_piece();
+  PieceEnum validate_piece(const ScannedPiece& scanned_piece, const bool& has_metal);
 };
  
 #endif

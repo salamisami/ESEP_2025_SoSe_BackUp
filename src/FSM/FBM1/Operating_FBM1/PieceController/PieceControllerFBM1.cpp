@@ -41,7 +41,7 @@ State* PieceControllerFBM1::new_piece() {
 	data->pieces_map->insert({ id, next_piece });
 	//create a local data and inject the id
 	LocalDataPT1 localdata;
-	localdata.id = id;
+	localdata.piece = next_piece;
 	spawn_orthogonal_state(new Start_PT1(data, localdata));
 
 	return nullptr;
