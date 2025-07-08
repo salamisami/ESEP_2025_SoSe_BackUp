@@ -26,15 +26,14 @@ State* GateEnd_PT1::clone() {
 }
 
 State* GateEnd_PT1::timer(TIMER_ID id) {
-	auto piece = data->pieces_map->at(localdata_.id);
+	auto piece = localdata_.piece;
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
-	piece->piece_tracker->print_distance();
-
+	
 	if(current_area == Area::OUT_OF_RANGE) {
 		DEBUG("PieceMissing! Cause: piece is too long to reach laser back.");
 		data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
-		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
+		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
 		PieceEnum validated_piece = localdata_.validated_type;
 		switch(validated_piece) {
 			case PieceEnum::FLAT:
@@ -49,27 +48,27 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 			default:
 				break;
 		}
-		Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
-		data->pieces_map->erase(localdata_.id);
+		Piece* piece_to_delete = localdata_.piece;
+		data->pieces_map->erase(localdata_.piece->id);
 		delete piece_to_delete;
 		return State::EXIT_STATE;
 	}
 
 	if(data->piece_near_adc) {
-		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.id);
+		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
 		return new 	PendingTransferRequestNotAtEnd(data, localdata_);
 	}
 	return new GateEnd_PT1(data, localdata_);
 }
 
 State* GateEnd_PT1::laser_back_blocked() {
-	auto piece = data->pieces_map->at(localdata_.id);
+	auto piece = localdata_.piece;
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
 	if(current_area == Area::GATE_END && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)) {
-		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.id);
+		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
 		return new PendingTransferRequest_PT1(data, localdata_);
 	}
 

@@ -6,7 +6,7 @@
 
 class LocalDataPT1{
 public: 
-	int id = -1;
+	Piece* piece = nullptr;
 	ScannedPiece ist_type = ScannedPiece::UNKNOWN;
 	int is_metal = false;
 	PieceEnum validated_type = PieceEnum::UNKNOWN;
