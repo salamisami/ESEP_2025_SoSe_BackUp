@@ -27,6 +27,18 @@ State* Idle::motor_fast(){
     return new Fast(data);
 }
 
+State *Idle::motor_stop_fsm()
+{
+  updateData(MotorPieceState::STOPPED);
+  data->current_motor_speed = MotorPieceState::STOPPED;
+    for (auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second;  
+    piece->piece_tracker->stop();               
+}
+  data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
+  return new Stop(data);
+}
+
 void Idle::updateData(MotorPieceState motorPieceState) {
     int id = data->event_payload;
     
