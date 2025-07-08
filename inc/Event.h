@@ -206,7 +206,7 @@ enum class RemoteControlEnum: int {
 };
 
 enum class Error_Enum : int {
-    ERROR_W_LOST=-128,
+    ERROR_W_LOST=1,
     ERROR_W_APPEARED,
     ERROR_BOTH_R_FULL,
     ERROR_C_LOST_NR,
@@ -223,9 +223,7 @@ enum class Error_Enum : int {
     PIECE_LOST_RESOLVED,
     PIECES_TOO_CLOSE,
     ERROR_INVALID_MEASURE_RESOLVED,
-    ERROR_W_LOST_RESOLVED,
-	  ERROR_C_LOST_MQTT_OVER_COM,
-	  ERROR_C_LOST_MQTT_OVER_COM_RESOLVED
+    ERROR_W_LOST_RESOLVED
 };
 
 
