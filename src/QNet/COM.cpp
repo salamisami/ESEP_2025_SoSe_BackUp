@@ -129,40 +129,57 @@ void COM::runClient()
     }
 }
 void COM::checkQueues() {
-    constexpr size_t MAX_BATCH = 10;
+    const size_t MAX_BATCH = 10;
     
-    for(;;) {
-        std::deque<_pulse> batch;
-        {
+    while (running) {
+        // Local batch containers
+        std::deque<_pulse> highPrioBatch;
+        std::deque<_pulse> lowPrioBatch;
+        
+        { // Locked scope
             std::unique_lock<std::mutex> lock(queueMutex);
-            if(highPriorityQueue.empty() && lowPriorityQueue.empty()) break;
             
-            // Move up to MAX_BATCH items to local batch
-            auto move_items = [](auto& src, auto& dest, size_t n) {
-                auto end = src.begin() + std::min(n, src.size());
-                std::move(src.begin(), end, std::back_inserter(dest));
+            // Move items to local batches
+            auto move_batch = [](std::deque<_pulse>& src, std::deque<_pulse>& dest, size_t max) {
+                auto end = src.size() > max ? src.begin() + max : src.end();
+                dest.insert(dest.end(), std::make_move_iterator(src.begin()), 
+                                    std::make_move_iterator(end));
                 src.erase(src.begin(), end);
             };
             
-            if(!highPriorityQueue.empty()) {
-                move_items(highPriorityQueue, batch, MAX_BATCH);
+            if (!highPriorityQueue.empty()) {
+                move_batch(highPriorityQueue, highPrioBatch, MAX_BATCH);
+            } else if (!lowPriorityQueue.empty()) {
+                move_batch(lowPriorityQueue, lowPrioBatch, MAX_BATCH);
             } else {
-                move_items(lowPriorityQueue, batch, MAX_BATCH);
+                break; // Both queues empty
             }
-        } // Lock released here
+        } // Lock released
         
-        // Process batch without holding queue lock
-        for(auto& msg : batch) {
-            if(sendToServer(msg) == -1) {
+        // Process high priority first
+        for (auto& msg : highPrioBatch) {
+            if (sendToServer(msg, EventPriority::FIRST_PRIO) == -1) {
                 std::lock_guard<std::mutex> lock(queueMutex);
-                highPriorityQueue.push_front(msg); // Requeue failed messages
+                highPriorityQueue.push_front(std::move(msg));
             }
         }
         
+        // Then process low priority
+        for (auto& msg : lowPrioBatch) {
+            if (sendToServer(msg) == -1) {
+                std::lock_guard<std::mutex> lock(queueMutex);
+                lowPriorityQueue.push_front(std::move(msg));
+            }
+        }
+        
+        // Cooperative yield
         std::this_thread::yield();
     }
     
-    sendHeartbeat();
+    // Only send heartbeat when truly idle
+    if (highPriorityQueue.empty() && lowPriorityQueue.empty()) {
+        sendHeartbeat();
+    }
 }
 
 void COM::sendHeartbeat()
