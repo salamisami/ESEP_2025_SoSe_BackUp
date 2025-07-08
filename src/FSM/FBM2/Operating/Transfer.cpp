@@ -53,6 +53,14 @@ State* Transfer::request_transfer(){
 	return new Transfer(data);
 }
 
+State* Transfer::id() {
+    if (data && data->piece_FBM2) {  // Check both data and piece_FBM2 exist
+        data->piece_FBM2->id = data->event_payload;
+    }
+    return nullptr;  // Assuming you want to return the current object
+}
+
+
 State* Transfer::laser_back_unblocked(){
 	return new Pieceappeared(data);
 }

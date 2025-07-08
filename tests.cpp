@@ -525,100 +525,100 @@ TEST_F(SortingOrderSetup, SortingOrderNegativeTest) {
 /**
  * @brief enter service mode
  */
-// TEST_F(RealImplementationSetup, ServiceModeFullTest) {
-//     //go to service mode
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
-//     WAIT(2100);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
-//     EXPECT_STATE("IdleSM");
+TEST_F(RealImplementationSetup, ServiceModeFullTest) {
+    //go to service mode
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
+    WAIT(2100);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_RELEASED);
+    EXPECT_STATE("IdleSM PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
 
-//     //put a piece to calibrate the pieces
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
-//     EXPECT_STATE("IdleSMSR IdleSTR");
+    //put a piece to calibrate the pieces
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+    EXPECT_STATE("IdleSMSR IdleSTR PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
 
-//     // //piece goes to sorting gate
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_UNBLOCKED);
-//     EXPECT_STATE("IdleSMSR IdleSTR");
+    // //piece goes to sorting gate
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_UNBLOCKED);
+    EXPECT_STATE("IdleSMSR IdleSTR PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
 
-//     // //assume calibration is done
-//     remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATION_DONE);
-//     //last calibrated piece goes to ramp
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_UNBLOCKED);
-//     EXPECT_STATE("ReadyForCDF");
+    // //assume calibration is done
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_CALIBRATION_DONE);
+    //last calibrated piece goes to ramp
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_UNBLOCKED);
+    EXPECT_STATE("ReadyForCDF PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
 
-//     //calibrate fast mode
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
-//     EXPECT_STATE("StartCDF IdleLPT");
-//     WAIT(2000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
-//     WAIT(1000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
-//     WAIT(1000);
-//     //pieces are let through the gate
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-//     WAIT(1000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-//     WAIT(3000);
-//     // //piece is now at the end of the machine
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
-//     EXPECT_STATE("EndToGateCRF PusherIdleCRF");
+    //calibrate fast mode
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+    EXPECT_STATE("StartCDF IdleLPT PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+    WAIT(1000);
+    //pieces are let through the gate
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(3000);
+    // //piece is now at the end of the machine
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
+    EXPECT_STATE("EndToGateCRF PusherIdleCRF PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
 
-//     //the piece goes back
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
-//     WAIT(3000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-//     WAIT(1000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-//     WAIT(1000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-//     WAIT(250);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-//     WAIT(750);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_UNBLOCKED);
-//     EXPECT_STATE("ReadyForCDS");
+    //the piece goes back
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
+    WAIT(3000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(250);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(750);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_UNBLOCKED);
+    EXPECT_STATE("ReadyForCDS PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
 
-//     //calibrate slow mode
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
-//     EXPECT_STATE("StartCDS IdleLPT");
-//     WAIT(2000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
-//     WAIT(1000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
-//     WAIT(1000);
-//     //pieces are let through the gate
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-//     WAIT(1000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-//     WAIT(3000);
-//     // //piece is now at the end of the machine
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
-//     EXPECT_STATE("EndToGateCRS PusherIdleCRS");
+    //calibrate slow mode
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+    EXPECT_STATE("StartCDS IdleLPT PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
+    WAIT(2000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+    WAIT(1000);
+    //pieces are let through the gate
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(3000);
+    // //piece is now at the end of the machine
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
+    EXPECT_STATE("EndToGateCRS PusherIdleCRS PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
 
-//     //the piece goes back
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
-//     WAIT(3000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-//     WAIT(1000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-//     WAIT(1000);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-//     WAIT(250);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
-//     WAIT(750);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
-//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_UNBLOCKED);
-//     EXPECT_STATE("CalibrationFinished");
-// }
+    //the piece goes back
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
+    WAIT(3000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(1000);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(250);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    WAIT(750);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_UNBLOCKED);
+    EXPECT_STATE("CalibrationFinished PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning");
+}
 
 // /**
 //  * @brief enter adc calibration mode, then estop
@@ -1107,37 +1107,37 @@ TEST_F(RampErrorHandlerSetup, RampComErrorUnquittiertTest) {
 /**
  * @brief testing state-transitions for FBM2 with tall piece till end 
  */
-TEST_F(FBM2TestSetup, FBM2Test)
-{
-    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::REQUEST_TRANSFER);
-    EXPECT_STATE_INSTANT("WaitingForTransferStart");
-    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::TRANSFER_START_TALL);
-    EXPECT_STATE_INSTANT("Transfer");
-    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::LASER_FRONT_BLOCKED);
-    EXPECT_STATE_INSTANT("TransferDone");
-    remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::LASER_FRONT_UNBLOCKED);
-    EXPECT_STATE_INSTANT("Start_ADC");
-    double position = 80;
-    data->piece_tracker->update_distance_force(Area::START_ADC, position);
-    WAIT(110);
-    EXPECT_STATE_INSTANT("ADC");
-    remote_control->send_event((int8_t)Topic::ADC, (int)ADC_Enum::ADC_NEW_PIECE);
-    EXPECT_STATE_INSTANT("Measuring");
-    remote_control->send_event((int8_t)Topic::ADC, (int)ADC_Enum::ADC_WH_DETECT);
-    EXPECT_STATE_INSTANT("ADC_Gate");
-    data->piece_tracker->update_distance_force(Area::ADC_GATE, position);
-    data->piece_FBM2_measured->piece_tracker->update_distance_force(Area::ADC_GATE, position);
-    data->piece_FBM2_measured->piece_tracker->fast();
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-    EXPECT_STATE_INSTANT("Gate");
-    remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
-    EXPECT_STATE_INSTANT("Gate_End");
-    data->piece_tracker->update_distance_force(Area::GATE_END, position);
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
-    EXPECT_STATE_INSTANT("End");
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
-    EXPECT_STATE_INSTANT("ReadyForPiece");
-}
+// TEST_F(FBM2TestSetup, FBM2Test)
+// {
+//     remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::REQUEST_TRANSFER);
+//     EXPECT_STATE_INSTANT("WaitingForTransferStart");
+//     remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::TRANSFER_START_TALL);
+//     EXPECT_STATE_INSTANT("Transfer");
+//     remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::LASER_FRONT_BLOCKED);
+//     EXPECT_STATE_INSTANT("TransferDone");
+//     remote_control->send_event((int8_t)Topic::INTERRUPT, (int)InterruptEnum::LASER_FRONT_UNBLOCKED);
+//     EXPECT_STATE_INSTANT("Start_ADC");
+//     double position = 80;
+//     data->piece_FBM2->piece_tracker->update_distance_force(Area::START_ADC, position);
+//     WAIT(110);
+//     EXPECT_STATE_INSTANT("ADC");
+//     remote_control->send_event((int8_t)Topic::ADC, (int)ADC_Enum::ADC_NEW_PIECE);
+//     EXPECT_STATE_INSTANT("Measuring");
+//     remote_control->send_event((int8_t)Topic::ADC, (int)ADC_Enum::ADC_WH_DETECT);
+//     EXPECT_STATE_INSTANT("ADC_Gate");
+//     data->piece_FBM2->piece_tracker->update_distance_force(Area::ADC_GATE, position);
+//     data->piece_FBM2_measured->piece_tracker->update_distance_force(Area::ADC_GATE, position);
+//     data->piece_FBM2_measured->piece_tracker->fast();
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+//     EXPECT_STATE_INSTANT("Gate");
+//     remote_control->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
+//     EXPECT_STATE_INSTANT("Gate_End");
+//     data->piece_FBM2->piece_tracker->update_distance_force(Area::GATE_END, position);
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
+//     EXPECT_STATE_INSTANT("End");
+//     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
+//     EXPECT_STATE_INSTANT("ReadyForPiece");
+// }
 
 int main(int argc, char** argv) {
  

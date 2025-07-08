@@ -39,6 +39,7 @@ void Transfer_PT1::send_transfer_start() {
 			break;
 	}
 	data->sender->send_event((int8_t) Topic::COM, (int) transfer_enum);
+  data->sender->send_event((int8_t) Topic::ID, (int) localdata_.piece->id);
 }
 
 
