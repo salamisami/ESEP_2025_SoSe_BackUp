@@ -20,7 +20,7 @@ public:
 
 	void entry() override;
 	void exit() override;
-
+	State* clone() override {return nullptr;};
 	State* com_mqtt_disconnected() override;
 };
 

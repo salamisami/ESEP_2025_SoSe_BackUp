@@ -100,7 +100,7 @@ enum class Internal_Enum : int {
     RAMP_FULL,
     RAMP_NOT_FULL,
 	REMOTE_STOP,
-	SORTED
+
 };
 
 enum class ADC_Enum : int {

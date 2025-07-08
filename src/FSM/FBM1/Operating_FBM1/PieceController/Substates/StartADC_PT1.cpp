@@ -48,7 +48,7 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 		return new StartADC_PT1(data, localdata_);
 	}
 
-	if(current_area == Area::START_ADC && current_position > (100 - PIECE_TRANSITION_TOLERANCE_BEFORE_ADC)) {
+	if(current_area == Area::START_ADC && current_position > (100 - 20)) {
 		return new ADC_PT1(data, localdata_);
 	}
 
