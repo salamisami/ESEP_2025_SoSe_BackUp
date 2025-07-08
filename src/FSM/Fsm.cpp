@@ -7,7 +7,12 @@
 
 #include "../../inc/FSM/Fsm.h"
 
-Fsm::Fsm(ContextData* data) : OrthState(data, { new Boot(data), new IdleReset(data) }) {};
+Fsm::Fsm(ContextData* data) : OrthState(data, {
+		new Boot(data),
+		new IdleReset(data),
+		new MQTTNoError(data),
+		new COMNoError(data),
+}) {};
 Fsm::Fsm(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {};
 
 Fsm::~Fsm() {}

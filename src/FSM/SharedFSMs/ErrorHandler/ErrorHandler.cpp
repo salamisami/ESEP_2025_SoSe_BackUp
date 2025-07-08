@@ -6,8 +6,6 @@ ErrorHandler::ErrorHandler(ContextData* data) : OrthState(data,
 	{
 		new PieceAppearedNoError(data),
 		new PieceLostNoError(data),
-		new MQTTNoError(data),
-		new COMNoError(data),
 		new ValidMeasure(data),
 		new RampNoError(data),
 		new CalibNoWarning(data),

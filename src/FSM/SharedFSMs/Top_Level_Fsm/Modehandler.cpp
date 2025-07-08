@@ -36,7 +36,8 @@ State* Modehandler::error_c_lost_com(){
 State* Modehandler::error_c_lost_mqtt(){
 	State* cloned = this->clone();
 	data->modehandler_history->push(cloned);
-	return new ErrorCom(data);
+	//return new ErrorCom(data);
+	return nullptr;
 }
 
 State* Modehandler::button_estop_pressed(){
