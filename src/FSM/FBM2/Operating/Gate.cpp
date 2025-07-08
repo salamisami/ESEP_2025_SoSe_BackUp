@@ -62,12 +62,12 @@ State* Gate::timer(TIMER_ID id) {
 }
 
 State* Gate::check_piece(){
-  auto distanz = data->piece_FBM2->piece_tracker.get_distance();
-  auto distanzMeasured = data->piece_FBM2_measured->piece_tracker.get_distance();
+  auto distanz = data->piece_FBM2->piece_tracker->get_distance();
+  auto distanzMeasured = data->piece_FBM2_measured->piece_tracker->get_distance();
   //if (data->piece_FBM2_measured != data->piece_FBM2){
   if (distanz.first != distanzMeasured.first || distanz.second != distanzMeasured.second){
-    data->piece_FBM2_measured->piece_tracker.print_distance();
-    data->piece_FBM2->piece_tracker.print_distance();
+    data->piece_FBM2_measured->piece_tracker->print_distance();
+    data->piece_FBM2->piece_tracker->print_distance();
     printf("_____________piece_measured != piece___________________\n");
     return new Sorting_out(data);
   }
