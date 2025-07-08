@@ -16,9 +16,12 @@ void RampFull::entry(){
 	PRINT_STATE;
     //TODO CODE
     data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RAMP_FULL);
+
+    data->is_ramp_full = true;
 }
 
 void RampFull::exit(){
+	data->is_ramp_full = false;
     //TODO CODE
 	PRINT_STATE;
 }
