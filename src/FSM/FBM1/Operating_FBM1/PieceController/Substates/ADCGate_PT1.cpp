@@ -35,19 +35,21 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
-	piece->piece_tracker->print_distance();
+	//piece->piece_tracker->print_distance();
 
-	switch(current_area) {
-		case Area::ADC_GATE:
-			return new ADCGate_PT1(data, localdata_);
-			break;
-		// case Area::GATE:
-		// 	if(current_pos < PIECE_TRANSITION_TOLERANCE) {
-		// 		return new ADCGate_PT1(data, localdata_);
-		// 	}
-		default:
-			break;
+	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE){
+		return new ADCGate_PT1(data, localdata_);
 	}
+
+	if(current_area == Area::ADC_GATE && current_pos >= PIECE_TRANSITION_TOLERANCE){
+		return new ADCGate_PT1(data, localdata_);
+	}
+
+	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE){
+		return new ADCGate_PT1(data, localdata_);
+	}
+
+	
 	DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
@@ -76,12 +78,17 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
+
+	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
+		return nullptr;
+	}
+
 	//before expected
-	if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE_GATE)) {
+	if(current_area == Area::ADC_GATE && current_pos >= (100 - PIECE_TRANSITION_TOLERANCE)) {
 		return new Gate_PT1(data, localdata_);
 	}
 
-	if(current_area == Area::GATE) {
+	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
 		return new Gate_PT1(data, localdata_);
 	}
 	return nullptr;
@@ -93,11 +100,16 @@ State* ADCGate_PT1::metal_detected() {
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
-	if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE_GATE)) {
+	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
+		return nullptr;
+	}
+
+	//before expected
+	if(current_area == Area::ADC_GATE && current_pos >= (100 - PIECE_TRANSITION_TOLERANCE)) {
 		return new IsMetal_PT1(data, localdata_);
 	}
 
-	if(current_area == Area::GATE) {
+	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
 		return new IsMetal_PT1(data, localdata_);
 	}
 	return nullptr;

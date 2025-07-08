@@ -2,7 +2,7 @@
 
 //================================================= constructors & destructors =================================================
 Measuring_PT1::Measuring_PT1(ContextData* data, LocalDataPT1 localdata) : State(data), localdata_(localdata) {
-    //substate = new SubState(data);
+	//substate = new SubState(data);
 }
 
 Measuring_PT1::~Measuring_PT1() {}
@@ -11,17 +11,19 @@ Measuring_PT1::~Measuring_PT1() {}
 
 
 //===================================================== public functions =====================================================
-void Measuring_PT1::entry(){
+void Measuring_PT1::entry() {
 	PRINT_STATE;
 	data->piece_near_adc = false;
 }
 
-void Measuring_PT1::exit(){
+void Measuring_PT1::exit() {
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.id);
+	Piece* piece = data->pieces_map->at(localdata_.id);
+	piece->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
 }
 
-State* Measuring_PT1::clone(){
+State* Measuring_PT1::clone() {
 	return new Measuring_PT1(data, localdata_);
 }
 
@@ -30,7 +32,7 @@ State* Measuring_PT1::laser_sorting_gate_blocked() {
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 
-	if(current_area == Area::GATE){
+	if(current_area == Area::GATE) {
 		DEBUG("Typisierung schief gelaufen");
 		return new Gate_PT1(data, localdata_);
 	}

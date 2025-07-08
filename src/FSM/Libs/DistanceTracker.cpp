@@ -12,6 +12,7 @@ DistanceTracker::DistanceTracker(TimeProfile* time_profile, bool debug) :time_pr
 
 DistanceTracker::~DistanceTracker() {
     stop();
+    running = false;
     if(debug_thread.joinable()) {
         debug_thread.join();
     }
@@ -91,7 +92,7 @@ void DistanceTracker::debug_function() {
             std::this_thread::sleep_for(std::chrono::milliseconds(250));  // Print every 250ms
         } else {
             // Print once when stopped
-            std::cout << "Stopped. Last Area: " << static_cast<int>(current_area) << std::endl;
+            std::cout << "Stopped. Last Area: " << static_cast<int> (current_area) << "Last Pos: " << current_position << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Avoid busy-waiting
         }
     }

@@ -15,6 +15,7 @@ void StartADC_PT1::entry() {
 	PRINT_STATE;
 	data->timer->start_timer(UPDATE_PIECE_INTERVAL, TIMER_ID::STARTADC_PT1);
 	data->piece_near_adc = true;
+	
 }
 
 void StartADC_PT1::exit() {
@@ -43,11 +44,11 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 			localdata_.unblock_signal_has_been_sent = true;
 			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
 		}
-		piece->piece_tracker->print_distance();
+		//piece->piece_tracker->print_distance();
 		return new StartADC_PT1(data, localdata_);
 	}
 
-	if(current_area == Area::START_ADC && current_position > (100 - PIECE_TRANSITION_TOLERANCE)) {
+	if(current_area == Area::START_ADC && current_position > (100 - PIECE_TRANSITION_TOLERANCE_BEFORE_ADC)) {
 		return new ADC_PT1(data, localdata_);
 	}
 

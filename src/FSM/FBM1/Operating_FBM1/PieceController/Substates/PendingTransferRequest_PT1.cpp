@@ -37,7 +37,7 @@ State* PendingTransferRequest_PT1::fbm_2_ready() {
 
 State* PendingTransferRequest_PT1::timer(TIMER_ID id) {
 	if(id != TIMER_ID::PENDINGTRANSFERREQUEST_PT1){
-		return new PendingTransferRequest_PT1(data, localdata_);
+		return nullptr;
 	}
-	return nullptr;
+	return new PendingTransferRequest_PT1(data, localdata_);
 }

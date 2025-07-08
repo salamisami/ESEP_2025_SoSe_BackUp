@@ -29,8 +29,7 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 	auto piece = data->pieces_map->at(localdata_.id);
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
-	piece->piece_tracker->print_distance();
-
+	
 	if(current_area == Area::OUT_OF_RANGE) {
 		DEBUG("PieceMissing! Cause: piece is too long to reach laser back.");
 		data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);

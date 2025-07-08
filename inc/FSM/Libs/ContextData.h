@@ -77,6 +77,7 @@ public:
     bool is_estop = false;
     bool config = false;
     StateContainer workpieceList;
+    MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
 
     //PieceTrack -> PieceTrack
     bool piece_near_adc = false;

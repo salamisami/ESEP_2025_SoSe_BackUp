@@ -59,6 +59,7 @@ State* Transfer_PT1::clone() {
 State* Transfer_PT1::transfer_done() {
 	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
 	Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
+	
 	data->pieces_map->erase(localdata_.id);
 	delete piece_to_delete;
 	return State::EXIT_STATE;
