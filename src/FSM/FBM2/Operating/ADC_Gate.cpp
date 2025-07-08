@@ -70,7 +70,7 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 	switch(validated_piece) {
 		case PieceEnum::TALL:
 			if(data->piece_FBM2_soll->type == PieceEnum::TALL_SORT_OUT) {
-				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
 				return new Sorting_out(data);
 			} else {
 				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
@@ -80,7 +80,7 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 			break;
 		case PieceEnum::TALL_WITH_METAL:
 			if(data->piece_FBM2_soll->type == PieceEnum::TALL_WITH_METAL_SORT_OUT) {
-				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
 				return new Sorting_out(data);
 			} else {
 				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
