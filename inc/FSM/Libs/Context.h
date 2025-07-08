@@ -94,8 +94,11 @@ State* Context<T>::handleInternal(int event_value) {
         	newState = state->remote_stop();
         	break;
         case Internal_Enum::SORTED:
-        	newState = state->sorted();
-        	break;
+            newState = state->sorted();
+            break;
+        case Internal_Enum::OUT:
+            newState = state->out();
+            break;
         default:
             break;
     }

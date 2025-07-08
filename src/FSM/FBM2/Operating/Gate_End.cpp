@@ -73,6 +73,6 @@ State* Gate_End::laser_back_blocked(){
   if(current_area == Area::GATE_END){
     return new End(data);
   }
-  return nullptr;
+  return new Pieceappeared(data);
 }
 

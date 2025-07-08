@@ -31,8 +31,9 @@ void Sorting_out::exit(){
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
 	//Action here
-	PRINT_STATE;
-  data->stopwatch.stop();
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, data->piece_FBM2->id);
+  PRINT_STATE;
+  data->sort_out_time = data->stopwatch.stop();
 }
  
 State* Sorting_out::clone(){
@@ -48,6 +49,7 @@ State* Sorting_out::timer(TIMER_ID id) {
   return nullptr;
 } 
 State* Sorting_out::laser_ramp_blocked(){
+  data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::OUT);
   return new ReadyForPiece(data);
 };
 State* Sorting_out::laser_back_blocked(){

@@ -102,6 +102,7 @@ enum class Internal_Enum : int {
     RAMP_NOT_FULL,
 	REMOTE_STOP,
 
+    OUT
 };
 
 enum class ADC_Enum : int {
