@@ -55,7 +55,7 @@ State* ReadyForPiece::laser_back_blocked() {
 	
 }
 State* ReadyForPiece::request_transfer() {
-	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
+	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_READY);
 	return new WaitingForTransferStart(data);
 	
 }

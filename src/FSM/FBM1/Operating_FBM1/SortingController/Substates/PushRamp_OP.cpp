@@ -6,6 +6,7 @@ PushRamp_OP::~PushRamp_OP(){}
 void PushRamp_OP::entry(){
   PRINT_STATE;
   data->timer->start_timer(500, TIMER_ID::OPENGATE_OP);
+  //HIER ANPASSEN ROBIN
   data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
 }
 
