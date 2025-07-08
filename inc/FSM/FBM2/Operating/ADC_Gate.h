@@ -4,7 +4,7 @@
  
 #include "State.h"
 #include "Pieceappeared.h"
-#include "ADC_Class.h"
+#include "ADC_State.h"
 #include "Is_Metal.h"
 
 #include "Sorting_out.h"

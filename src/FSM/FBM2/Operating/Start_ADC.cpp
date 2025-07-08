@@ -53,11 +53,11 @@ State* Start_ADC::timer(TIMER_ID id)  {
 	}
 
 	if(current_area == Area::START_ADC && current_position > (100 - 20)) {
-		return new ADC_Class(data);
+		return new ADC_State(data);
 	}
 
 	if(current_area != Area::START_ADC){
-		return new ADC_Class(data);
+		return new ADC_State(data);
 	}
 
 	return new Start_ADC(data);
