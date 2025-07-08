@@ -135,7 +135,7 @@ void COM::runClient() {
         _client.reset();  // Clean up your client
       }
     } else if (rcvid == -1 && errno != ETIMEDOUT) {
-      perror("MsgReceivePulse");
+      //perror("MsgReceivePulse");
     }
     if (_client && _client->getcoid() != -1) {
       checkQueues();
