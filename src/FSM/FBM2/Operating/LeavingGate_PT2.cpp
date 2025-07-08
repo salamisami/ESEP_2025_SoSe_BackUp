@@ -1,11 +1,11 @@
 #include "LeavingGate_PT2.h"
 
 //================================================= constructors & destructors =================================================
-LeavingGate_PT2::LeavingGate_PT1(ContextData* data) : State(data){
+LeavingGate_PT2::LeavingGate_PT2(ContextData* data) : State(data){
     //substate = new SubState(data);
 }
 
-LeavingGate_PT2::~LeavingGate_PT1() {}
+LeavingGate_PT2::~LeavingGate_PT2() {}
 
 //===================================================== private functions =====================================================
 
@@ -13,7 +13,7 @@ LeavingGate_PT2::~LeavingGate_PT1() {}
 //===================================================== public functions =====================================================
 void LeavingGate_PT2::entry(){
 	PRINT_STATE;
-	data->timer->start_timer(100, TIMER_ID::LEAVINGGATE_PT1);
+	data->timer->start_timer(100, TIMER_ID::LEAVINGGATE_PT2);
 }
 
 void LeavingGate_PT2::exit(){
@@ -22,17 +22,17 @@ void LeavingGate_PT2::exit(){
 }
 
 State* LeavingGate_PT2::clone(){
-	return new LeavingGate_PT1(data);
+	return new LeavingGate_PT2(data);
 }
 
 State* LeavingGate_PT2::laser_sorting_gate_unblocked() {
 	//Piece* piece = localdata_.piece;
-	piece->piece_tracker->update_distance_force(Area::GATE_END, 0);
-	return new GateEnd(data);
+	data->piece_tracker->update_distance_force(Area::GATE_END, 0);
+	return new Gate_End(data);
 }
 
 State* LeavingGate_PT2::timer(TIMER_ID id) {
-	if(id != TIMER_ID::LEAVINGGATE_PT1){
+	if(id != TIMER_ID::LEAVINGGATE_PT2){
 		return nullptr;
 	}
 
@@ -43,7 +43,7 @@ State* LeavingGate_PT2::timer(TIMER_ID id) {
 	}
 
 	if(current_area == Area::GATE_END){
-		return new GateEnd(data, localdata_);
+		return new Gate_End(data, localdata_);
 	}
 
 	DEBUG("PieceMissing! Cause: piece is too long in leaving the Gate.");

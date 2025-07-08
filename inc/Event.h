@@ -171,7 +171,8 @@ enum class TIMER_ID : int {
     IS_METAL,
     OPENGATE_OP,
     PUSHRAMP_OP,
-    GATE_FBM_2
+    GATE_FBM_2,
+    LEAVINGGATE_PT2
 };
 
 enum class PieceEnum : int {

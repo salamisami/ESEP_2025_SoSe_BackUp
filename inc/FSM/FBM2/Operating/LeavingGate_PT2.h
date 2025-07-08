@@ -4,7 +4,7 @@
 
 #include "State.h"
 //#include "LocalDataPT1.h"
-#include "GateEnd.h"
+#include "Gate_End.h"
 
 class LeavingGate_PT2 : public State {
 public: //============================================ constructors & destructors ============================================
