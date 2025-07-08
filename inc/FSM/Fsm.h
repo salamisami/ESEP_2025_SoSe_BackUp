@@ -12,11 +12,16 @@
 #include "ContextData.h"
 #include "Boot.h"
 #include "IdleReset.h"
+#include "NoRampFull.h"
+#include "RampNotFull.h"
+#include "SortingOrder.h"
 
 class Fsm : public OrthState{
 public:
 	void entry() override;
 	void exit() override;
+
+	State* clone() override;
 
 	Fsm(ContextData* data);
 	Fsm(ContextData* data, std::deque<State*> initial_substates);

@@ -7,11 +7,37 @@
 
 #include "../../inc/FSM/Fsm.h"
 
-Fsm::Fsm(ContextData* data) : OrthState(data, { new Boot(data), new IdleReset(data) }) {};
-Fsm::Fsm(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {};
+#ifdef FBM_1
+Fsm::Fsm(ContextData* data) : OrthState(data, {
+    new NoRampFull(data),
+    new RampNotFull(data),
+    new Boot(data),
+    new SortingOrder(data)
 
+}) {};
+#else
+#ifdef FBM_2
+Fsm::Fsm(ContextData* data) : OrthState(data, {
+    new NoRampFull(data),
+    new RampNotFull(data),
+    new Boot(data),
+    new IdleReset(data)
+}) {};
+
+#endif
+#endif
+
+Fsm::Fsm(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {};
 Fsm::~Fsm() {}
 
-void Fsm::entry() {}
+void Fsm::entry() {
+    HState::entry();
+}
 
-void Fsm::exit() {}
+void Fsm::exit() {
+    HState::exit();
+}
+
+State* Fsm::clone() {
+    return new Fsm(data, clone_substates);
+}
