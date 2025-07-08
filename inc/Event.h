@@ -99,8 +99,7 @@ enum class Internal_Enum : int {
     SORTED,
     RAMP_FULL,
     RAMP_NOT_FULL,
-	REMOTE_STOP,
-	SORTED
+	  REMOTE_STOP
 };
 
 enum class ADC_Enum : int {
