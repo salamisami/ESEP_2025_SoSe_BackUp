@@ -127,8 +127,27 @@ void COM::runClient()
             std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
             continue;
         }
+    struct _pulse pulse;
+    struct _msg_info info;
+    int rcvid = MsgReceivePulse(_client->getPulseChid(), &pulse, sizeof(pulse), 
+                              &info, NTO_TIMEOUT_RECEIVE, 50);
+    
+    if (rcvid > 0) {  // Received a pulse
+        if (pulse.code == _PULSE_CODE_COIDDEATH) {
+            // Handle connection death
+            std::lock_guard<std::mutex> lock(_clientMutex);
+            _client.reset();
+            continue;
+        }
+    } 
+    else if (rcvid == -1 && errno != ETIMEDOUT) {
+        // Real error occurred
+        perror("MsgReceivePulse");
+    }
+   if (_client || _client->getcoid() != -1){
+ 
         checkQueues();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));}
     }
 }
 void COM::checkQueues() {
