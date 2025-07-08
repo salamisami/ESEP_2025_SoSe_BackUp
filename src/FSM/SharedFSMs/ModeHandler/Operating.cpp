@@ -5,22 +5,17 @@
 Operating::Operating(ContextData* data) : OrthState(data, {
 	new PieceControllerFBM1(data),
 	new MotorControl(data),
-	new SortingOrder(data),
 	new StartingAreaTracker(data),
-	new IdleSorting(data),
-	new RampNotFull(data), //Ramp Status
-	new NoRampFull(data) //system ramp status
+	new IdleSorting(data)
 	}) {
 }
 #else
 #ifdef FBM_2
 Operating::Operating(ContextData* data) : OrthState(data,
 	{
-		new ReadyForPiece(data),
-		new MotorControl(data),
-		new IdleSorting(data),
-		new RampNotFull(data), //Ramp Status
-		new NoRampFull(data) //system ramp status
+	new ReadyForPiece(data),
+	new MotorControl(data),
+	new IdleSorting(data)
 	}) {
 }
 #endif
