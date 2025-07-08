@@ -21,8 +21,6 @@ void ADC_Class::entry(){
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
 	data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) data->piece_FBM2_soll->id);
-	
-
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -43,7 +41,7 @@ State* ADC_Class::clone(){
 
 State* ADC_Class::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new ADC_Class(data);
+	return nullptr;
 }
 State* ADC_Class::laser_back_blocked(){
 	return new Pieceappeared(data);

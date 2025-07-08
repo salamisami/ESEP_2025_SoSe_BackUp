@@ -51,9 +51,9 @@ public:
     std::unordered_map<int, Piece*>* pieces_map;
     int available_id = 0;
     Piece* piece_FBM2_soll = nullptr;
-    Piece* piece_FBM2_ist = nullptr;
+    //Piece* piece_FBM2_ist = nullptr;
 
-    ScannedPiece scanned_piece_FBM2_soll = ScannedPiece::UNKNOWN;
+    ScannedPiece scanned_piece_FBM2 = ScannedPiece::UNKNOWN;
     bool scanned_piece_has_metal_fbm2 = false;
     
     // int piece_id = 0;

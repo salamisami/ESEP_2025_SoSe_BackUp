@@ -3,7 +3,6 @@
 #pragma once
 
 #include "State.h"
-//#include "LocalDataPT1.h"
 #include "Gate_End.h"
 
 class LeavingGate_PT2 : public State {
@@ -19,6 +18,8 @@ public: //================================================ public functions ====
 
 	State* laser_sorting_gate_unblocked() override;
 	State* timer(TIMER_ID ID) override;
+
+	State* request_transfer() override;
     
 
 

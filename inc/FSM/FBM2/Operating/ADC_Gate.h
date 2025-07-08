@@ -6,7 +6,10 @@
 #include "Pieceappeared.h"
 #include "ADC_Class.h"
 #include "Is_Metal.h"
-#include "Gate.h"
+
+#include "Sorting_out.h"
+#include "LeavingGate_PT2.h"
+
 
  
 class ADC_Gate : public State {
@@ -39,11 +42,10 @@ private: //================================================ private variables ==
 	//classes, STL containers, and structs
 	//pointers
 	//primitive types
-	//bool and char
 
  
 private: //================================================ private functions ================================================
-	//void privateFunction();
+	PieceEnum validate_piece(const ScannedPiece& scanned_piece, const bool& has_metal);
 };
  
 #endif

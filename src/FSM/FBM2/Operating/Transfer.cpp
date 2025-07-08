@@ -19,6 +19,7 @@ Transfer::~Transfer() {}
 //===================================================== public functions =====================================================
 void Transfer::entry(){
 	PRINT_STATE;
+	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
 	data->piece_tracker = new DistanceTracker(&data->timeprofile, true);
@@ -50,18 +51,11 @@ State* Transfer::timer(TIMER_ID id) {
 }
 State* Transfer::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new Transfer(data);
-}
-
-State* Transfer::id() {
-    if (data && data->piece_FBM2_soll) {  // Check both data and piece_FBM2_soll exist
-        data->piece_FBM2_soll->id = data->event_payload;
-    }
-    return nullptr;  // Assuming you want to return the current object
+	return nullptr;
 }
 
 
-State* Transfer::laser_back_unblocked(){
+State* Transfer::laser_back_blocked(){
 	return new Pieceappeared(data);
 }
 State* Transfer::laser_sorting_gate_blocked(){

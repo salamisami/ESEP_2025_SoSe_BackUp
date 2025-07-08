@@ -29,6 +29,7 @@ public: //================================================ public functions ====
 	State* adc_wf_detect() override;
 	State* adc_w_b_detect() override;
 	State* adc_w_not_detect() override;
+	State* adc_invalid_measure() override;
  
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
@@ -39,6 +40,7 @@ private: //================================================ private variables ==
  
 private: //================================================ private functions ================================================
 	//void privateFunction();
+
 };
  
 #endif
