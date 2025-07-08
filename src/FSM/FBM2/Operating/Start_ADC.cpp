@@ -42,7 +42,7 @@ State* Start_ADC::timer(TIMER_ID id) {
     if(id == TIMER_ID::START_ADC) {
         if (data->piece_tracker->get_distance().second >= WAY_TO_AREA 
             && data->piece_tracker->get_distance().first == Area::START_ADC) {
-			return new ADC(data);
+			return new ADC_Class(data);
 		} else {
 			return new Start_ADC(data);
 		}

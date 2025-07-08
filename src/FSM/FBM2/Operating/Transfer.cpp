@@ -22,7 +22,6 @@ void Transfer::entry(){
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
 	data->piece_tracker = new DistanceTracker(&data->timeprofile, true);
-	data->piece_tracker->fast();
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState

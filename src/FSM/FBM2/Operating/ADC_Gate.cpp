@@ -22,7 +22,6 @@ void ADC_Gate::entry(){
 //TODO: Über motorcontrol ansteuern
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_SLOW_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_RIGHT_START);
-	data->piece_tracker->fast();
 	data->timer->start_timer(100,TIMER_ID::ADC_GATE);
 	//Action here
 	//HState::entry() //for HState
