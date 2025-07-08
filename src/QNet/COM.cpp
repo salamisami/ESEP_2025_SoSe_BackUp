@@ -121,13 +121,13 @@ void COM::checkQueues()
         sendHeartbeat();
         return;
     }
-    while (!highPriorityQueue.empty() || !lowPriorityQueue.empty){
+    while (!highPriorityQueue.empty() || !lowPriorityQueue.empty()){
     if (!highPriorityQueue.empty())
     {
         auto msg = highPriorityQueue.front();
         highPriorityQueue.pop_front();
         lock.unlock();
-        if (sendToServer(msg)==-1){
+        if (sendToServer(msg, EventPriority::FIRST_PRIO)==-1){
           lock.lock();
           highPriorityQueue.push_front(msg);
           lock.unlock();
