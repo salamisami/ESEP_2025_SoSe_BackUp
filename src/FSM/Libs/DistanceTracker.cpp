@@ -4,20 +4,18 @@
 
 
 DistanceTracker::DistanceTracker(TimeProfile* time_profile, bool debug) :time_profile(time_profile) {
-    running = true;
-    this->debug = debug;
-    stop();
-    //debug_thread = std::thread(&DistanceTracker::debug_function, this);
-
-    //debug_thread.detach();
+    reset();
+    if(debug) {
+        start_debug_thread();
+    }
 }
 
 DistanceTracker::~DistanceTracker() {
-    stopwatch.stop();
-    running = false;  // Signal threads to stop
-
-    // Wake up threads if they're waiting
-    //debug_thread.join();
+    stop();
+    running = false;
+    if(debug_thread.joinable()) {
+        debug_thread.join();
+    }
 }
 
 //===================================================== private functions =====================================================
@@ -52,99 +50,57 @@ DistanceTracker::~DistanceTracker() {
 
 
 std::pair<Area, double> DistanceTracker::timestamp_to_area_pos(const long& timestamp, const uint8_t& mode) {
-    //TODO handle ramp?
-    long* selected_timestamps;
-    switch(mode) {
-        case 0:
-            //stop
-            //do nothing
-            return std::make_pair(Area::START_ADC, 0);
-        case 1:
-            //slow
-            selected_timestamps = time_profile->slow_timestamps;
-            break;
-        case 2:
-            //fast
-            selected_timestamps = time_profile->fast_timestamps;
-            break;
-        default:
-            THROW("Wrong mode");
-            return std::make_pair(Area::START_ADC, 0);
+    const long* timestamps = (mode == 1) ? time_profile->slow_timestamps : time_profile->fast_timestamps;
+
+    if(timestamp < timestamps[0]) {
+        return { Area::START_ADC, (timestamp * 100.0) / timestamps[0] };
     }
-    Area area;
-    double position = 0;
-    if(timestamp < selected_timestamps[0]) {
-        area = (Area) 0;
-        position = (double) timestamp / selected_timestamps[0] * 100;
-        //printf("position: %d, timestamp: %d, selected_timestamp: %d\n", (int) position, (int) timestamp, (int) selected_timestamps[0]);
-        return std::make_pair(area, position);
-    }
-    for(int i = 1; i < TIMESTAMP_LENGTH - 1; i++) {
-        if(timestamp < selected_timestamps[i]) {
-            area = (Area) i;
-            position = (double) (timestamp - selected_timestamps[i - 1]) / (selected_timestamps[i] - selected_timestamps[i - 1]) * 100;
-            //printf("position: %d, timestamp: %d, selected_timestamp: %d\n", (int) position, (int) timestamp, (int) selected_timestamps[0]);
-            return std::make_pair(area, position);
+
+    for(int i = 1; i < TIMESTAMP_LENGTH - 1; ++i) {
+        if(timestamp < timestamps[i]) {
+            double pos = (timestamp - timestamps[i - 1]) * 100.0 / (timestamps[i] - timestamps[i - 1]);
+            return { static_cast<Area>(i), pos };
         }
     }
-    area = Area::OUT_OF_RANGE;
-    position = 0;
-    return std::make_pair(area, position);
+
+    return { Area::OUT_OF_RANGE, 0 };
 }
 
-long DistanceTracker::area_pos_to_timestamp(const Area& input_area, const double& input_pos, const uint8_t mode) {
-    long* selected_timestamps;
-    long* selected_deadlines;
-    switch(mode) {
-        case 0:
-            //stop
-            //do nothing
-            return 0;
-        case 1:
-            //slow
-            selected_timestamps = time_profile->slow_timestamps;
-            selected_deadlines = time_profile->slow_deadlines;
-            break;
-        case 2:
-            //fast
-            selected_timestamps = time_profile->fast_timestamps;
-            selected_deadlines = time_profile->fast_deadlines;
-            break;
-        default:
-            THROW("Wrong mode");
-            return 0;
-    }
-    if(input_area == Area::OUT_OF_RANGE) {
+long DistanceTracker::area_pos_to_timestamp(const Area& area, const double& pos, const uint8_t& mode) {
+    if(mode == 0 || area == Area::OUT_OF_RANGE) {
         return 0;
     }
-    if(input_area == Area::GATE_RAMP) {
-        //TODO
-        return 0;
-    }
-    if(input_area == Area::START_ADC) {
-        return (long) selected_timestamps[0] * input_pos / 100;
-    }
-    long accumulated_timestamp = selected_timestamps[(int) input_area - 1];
-    long position_in_ms_local = selected_deadlines[(int) input_area] * input_pos / 100;
-    return accumulated_timestamp + position_in_ms_local;
 
-    // long start = selected_timestamps[(int) input_area - 1];
-    // long end = selected_timestamps[(int) input_area];
-    // return (long) (current_position * (end - start) + start ) / 100;
+    const long* timestamps = (mode == 1) ? time_profile->slow_timestamps : time_profile->fast_timestamps;
+    const long* deadlines = (mode == 1) ? time_profile->slow_deadlines : time_profile->fast_deadlines;
+
+    if(area == Area::START_ADC) {
+        return (timestamps[0] * pos) / 100;
+    }
+
+    return timestamps[static_cast<int>(area) - 1] + (deadlines[static_cast<int>(area)] * pos) / 100;
 }
 
 
 void DistanceTracker::debug_function() {
     while(running) {
-        while(debug) {
-            if(log) {
-                update();
-                std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
-            }
-            WAIT(1000);
+        if(log) {
+            update();
+            std::cout << "Area: " << static_cast<int>(current_area)
+                << ", Position: " << current_position
+                << ", Mode: " << static_cast<int>(current_mode) << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));  // Print every 250ms
+        } else {
+            // Print once when stopped
+            std::cout << "Stopped. Last Area: " << static_cast<int> (current_area) << "Last Pos: " << current_position << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Avoid busy-waiting
         }
-
     }
+}
+
+void DistanceTracker::start_debug_thread() {
+    running = true;
+    debug_thread = std::thread(&DistanceTracker::debug_function, this);
 }
 //===================================================== public functions =====================================================
 
@@ -169,7 +125,8 @@ std::pair<Area, double> DistanceTracker::calculate_area_pos(const Area& last_are
 
 void DistanceTracker::update() {
     auto result = calculate_area_pos(current_area, current_position, current_mode);
-    //stopwatch.start();
+    stopwatch.reset();
+    stopwatch.start();
     current_area = result.first;
     current_position = result.second;
 }
@@ -180,6 +137,7 @@ void DistanceTracker::update_distance_force(const Area& area, const double& posi
     stopwatch.reset();
     stopwatch.start();
 }
+
 
 
 void DistanceTracker::fast() {
@@ -224,19 +182,10 @@ void DistanceTracker::reset() {
 
 std::pair<Area, double> DistanceTracker::get_distance() {
     update();
-    return std::make_pair(current_area, current_position);
+    return {current_area, current_position};
 }
 
 void DistanceTracker::print_distance() {
     update();
     std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
-}
-
-bool DistanceTracker::send_to_ramp() {
-    if(current_area == Area::GATE) {
-        current_area = Area::GATE_RAMP;
-        current_position = 0;
-        return true;
-    }
-    return false;
 }

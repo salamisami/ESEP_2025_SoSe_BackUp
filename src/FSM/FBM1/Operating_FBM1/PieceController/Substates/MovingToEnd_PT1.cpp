@@ -12,7 +12,7 @@ MovingToEnd_PT1::~MovingToEnd_PT1() {}
 
 //===================================================== public functions =====================================================
 void MovingToEnd_PT1::entry(){
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.id);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 	PRINT_STATE;
 }
 
@@ -25,7 +25,7 @@ State* MovingToEnd_PT1::clone(){
 }
 
 State* MovingToEnd_PT1::laser_back_blocked(){
-	auto piece = data->pieces_map->at(localdata_.id);
+	auto piece = localdata_.piece;
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 
