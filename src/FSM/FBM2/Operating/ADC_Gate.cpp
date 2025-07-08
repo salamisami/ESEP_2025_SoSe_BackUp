@@ -19,7 +19,6 @@ ADC_Gate::~ADC_Gate() {}
 //===================================================== public functions =====================================================
 void ADC_Gate::entry() {
 	PRINT_STATE;
-	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
 	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	data->timer->start_timer(100, TIMER_ID::ADC_GATE);
 	//Action here
@@ -42,7 +41,7 @@ State* ADC_Gate::clone() {
 
 State* ADC_Gate::request_transfer() {
 	data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
-	return new ADC_Gate(data);
+	return nullptr;
 }
 State* ADC_Gate::laser_back_blocked() {
 	return new Pieceappeared(data);
