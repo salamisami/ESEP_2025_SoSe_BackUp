@@ -13,13 +13,13 @@ public: //================================================ public functions ====
         : id(-1)
         , time_profile_(time_profile)
         {
-        piece_tracker = new DistanceTracker(time_profile_);
+        piece_tracker = new DistanceTracker(time_profile_, false);
     }
     Piece(int id, TimeProfile* time_profile)
         : id(id)
         , time_profile_(time_profile)
         {
-        piece_tracker = new DistanceTracker(time_profile_);
+        piece_tracker = new DistanceTracker(time_profile_, false);
     }
     virtual ~Piece() {
         delete piece_tracker;

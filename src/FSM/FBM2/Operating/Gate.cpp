@@ -14,12 +14,13 @@ Gate::Gate(ContextData* data) : State(data) {}
 Gate::~Gate() {}
 //===================================================== private functions =====================================================
  
- 
+  
 //===================================================== public functions =====================================================
 void Gate::entry(){
 	PRINT_STATE;
-  Gate::check_piece();
+  //Gate::check_piece();
 	//Action here
+  data->timer->start_timer(1, TIMER_ID::GATE_FBM_2);
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
 }
@@ -55,15 +56,27 @@ State* Gate::request_transfer(){
   return new Gate(data);
 }
 
-State* Gate::check_piece(){
+State* Gate::timer(TIMER_ID id) {
+  if(TIMER_ID::GATE_FBM_2 == id) return check_piece();
+  return nullptr;
+}
 
-  if (data->piece_FBM2_measured != data->piece_FBM2){
+State* Gate::check_piece(){
+  auto distanz = data->piece_FBM2->piece_tracker->get_distance();
+  auto distanzMeasured = data->piece_FBM2_measured->piece_tracker->get_distance();
+  //if (data->piece_FBM2_measured != data->piece_FBM2){
+  if (distanz.first != distanzMeasured.first || distanz.second != distanzMeasured.second){
+    data->piece_FBM2_measured->piece_tracker->print_distance();
+    data->piece_FBM2->piece_tracker->print_distance();
+    printf("_____________piece_measured != piece___________________\n");
     return new Sorting_out(data);
   }
-  if(data->piece_FBM2_measured->type>=PieceEnum::TALL_SORT_OUT
+  if(data->piece_FBM2_measured->type >= PieceEnum::TALL_SORT_OUT
       && data->piece_FBM2_measured->type <= PieceEnum::FLAT_SORT_OUT){
+    printf("_____________sort out___________________\n");
     return new Sorting_out(data);
     }
   data->timer->start_timer(100, TIMER_ID::GATE_END);
+  printf("_____________return Gate End___________________\n");
   return new Gate_End(data);
 }

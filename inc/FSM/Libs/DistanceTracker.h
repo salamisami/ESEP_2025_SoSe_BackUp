@@ -45,9 +45,12 @@ enum class Area : uint8_t {
 
 class DistanceTracker {
 public: //============================================ constructors & destructors ============================================
-	DistanceTracker() = default;
 	DistanceTracker(TimeProfile* time_profile, bool debug = false);
 	virtual ~DistanceTracker();
+
+	// Disable copy/move
+    DistanceTracker(const DistanceTracker&) = delete;
+    DistanceTracker& operator=(const DistanceTracker&) = delete;
 
 
 public: //================================================ public functions ================================================
@@ -69,13 +72,6 @@ public: //================================================ public functions ====
 	void update_distance_force(const Area& area, const double& position);
 
 
-
-	/**
-	 * @brief attempts to send the piece to the ramp
-	 * @retval true if the send is valid
-	 * @retval false if the send is not valid
-	 */
-	bool send_to_ramp();
 	// /**
 	//  * @brief returns current area of this piece
 	//  * @return the area, in which the piece is currently located
@@ -116,11 +112,12 @@ private: //================================================ private variables ==
 
 private: //================================================ private functions ================================================
 	std::pair<Area, double> timestamp_to_area_pos(const long& timestamp, const uint8_t& mode);
-	long area_pos_to_timestamp(const Area& input_area, const double& position, const uint8_t mode);
+	long area_pos_to_timestamp(const Area& input_area, const double& position, const uint8_t& mode);
 	void debug_function();
 	//void set_thread_priority(pthread_t thread, int priority);
 	std::pair<Area, double> calculate_area_pos(const Area& input_area, const double& position, const uint8_t& mode);
 	void update();
+	void start_debug_thread();
 };
 
 #endif

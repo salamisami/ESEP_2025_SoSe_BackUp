@@ -31,13 +31,13 @@ State* PendingTransferRequest_PT1::fbm_2_busy() {
 }
 
 State* PendingTransferRequest_PT1::fbm_2_ready() {
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.id);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 	return new Transfer_PT1(data, localdata_);
 }
 
 State* PendingTransferRequest_PT1::timer(TIMER_ID id) {
 	if(id != TIMER_ID::PENDINGTRANSFERREQUEST_PT1){
-		return new PendingTransferRequest_PT1(data, localdata_);
+		return nullptr;
 	}
-	return nullptr;
+	return new PendingTransferRequest_PT1(data, localdata_);
 }
