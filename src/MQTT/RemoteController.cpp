@@ -129,7 +129,7 @@ void Remote_Controller::threadFunctionRecive() {
                 ActuatorEnum actuator_event_value = (ActuatorEnum) event.value.sival_int;
                 InterruptEnum interrupt_event_value = (InterruptEnum) event.value.sival_int;
                 Error_Enum Error_event_value = (Error_Enum) event.value.sival_int;
-
+                Internal_Enum Internal_event_value = (Internal_Enum) event.value.sival_int;
                 Topic event_code = (Topic) event.code;
                 if(event_code == Topic::ACTUATOR) {
                     switch(actuator_event_value) {
@@ -224,6 +224,14 @@ void Remote_Controller::threadFunctionRecive() {
                     }
                     if(interrupt_event_value == InterruptEnum::BUTTON_ESTOP_RELEASED) {
                         MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "notaus").c_str(), "false");
+                    }
+                }
+                if(event_code == Topic::INTERNAL) {
+                    if(Internal_event_value == Internal_Enum::RAMP_FULL) {
+                        MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "rutsche").c_str(), "1");
+                    }
+                    if(Internal_event_value == Internal_Enum::RAMP_NOT_FULL) {
+                        MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC,"rutsche").c_str(),"0");
                     }
                 }
                 if(event_code == Topic::ERROR) {
