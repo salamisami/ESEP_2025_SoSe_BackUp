@@ -30,9 +30,6 @@ public:
     //Disable copy constructor, because we're going to use clone() instead
     OrthState(const OrthState&) = delete;
     virtual ~OrthState() {
-        if(default_exit_state_ != nullptr) {
-            delete default_exit_state_;
-        }
         //std::cout << "OrthState Destructor" << std::endl;
         for(auto it = substates.begin(); it != substates.end(); ) {
             State*& current_substate = *it;  // Use reference to pointer
@@ -119,17 +116,11 @@ public:
                 it = substates.erase(it);
 
                 if(direct_exit_) {
-                    if(default_exit_state_ != nullptr) {
-                        return default_exit_state_->clone();
-                    }
                     return default_exit_state_;
                 }
 
                 // If we've removed all substates, return the exit state
                 if(substates.empty() && quit_on_empty_) {
-                    if(default_exit_state_ != nullptr) {
-                        return default_exit_state_->clone();
-                    }
                     return default_exit_state_;
                 }
             } else if(newSubstate != nullptr && newSubstate != current_substate) {
@@ -189,17 +180,11 @@ protected:
                 it = substates.erase(it);
 
                 if(direct_exit_) {
-                    if(default_exit_state_ != nullptr) {
-                        return default_exit_state_->clone();
-                    }
                     return default_exit_state_;
                 }
 
                 // If we've removed all substates, return the exit state
                 if(substates.empty() && quit_on_empty_) {
-                    if(default_exit_state_ != nullptr) {
-                        return default_exit_state_->clone();
-                    }
                     return default_exit_state_;
                 }
             } else if(newSubstate != nullptr && newSubstate != current_substate) {
