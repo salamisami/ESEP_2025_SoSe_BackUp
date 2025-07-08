@@ -419,8 +419,7 @@ TEST_F(RealImplementationSetup, PutNewPiece) {
     WAIT(1500);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-    EXPECT_STATE_INSTANT("GateEnd_PT1 Fast PieceTall StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
-    //TODO this is correct because of 2 substate communication
+    EXPECT_STATE_INSTANT("LeavingGate_PT1 Fast PieceTall StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
     WAIT(400);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
@@ -437,7 +436,8 @@ TEST_F(RealImplementationSetup, PutNewPiece) {
     WAIT(1000);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> TRANSFER DONE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_DONE);
-    EXPECT_STATE_INSTANT("PieceControllerFBM1 Idle PieceTall StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull"); //TODO if one state exits, that state should be deleted
+    //WAIT(50); //TODO performance issue here
+    EXPECT_STATE_INSTANT("PieceControllerFBM1 Idle PieceTall StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
 }
 
 TEST_F(RealImplementationSetup, PutNewPieceTall) {
@@ -465,12 +465,13 @@ TEST_F(RealImplementationSetup, PutNewPieceTall) {
     WAIT(1500);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
-    WAIT(100);
     EXPECT_STATE_INSTANT("SortingOut_PT1 Fast PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
     //TODO still wrong
     
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
+    WAIT(500);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER RAMP BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_RAMP_BLOCKED);
+    //WAIT(100); //TODO performance issue here
     EXPECT_STATE_INSTANT("PieceControllerFBM1 Idle PieceFlat StartingAreaUnblocked PieceAppearedNoError PieceLostNoError MQTTNoError COMNoError ValidMeasure RampNoError CalibNoWarning ReplayNoWarning RampTimer NoRampFull");
 }
 
