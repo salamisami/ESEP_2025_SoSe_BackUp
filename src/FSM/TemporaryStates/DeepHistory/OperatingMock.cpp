@@ -8,7 +8,7 @@ OperatingMock::OperatingMock(ContextData* data) : OrthState(
 ) {
 }
 
-OperatingMock::OperatingMock(ContextData* data, std::vector<State*> cloned_substates) : OrthState(data, cloned_substates, new IdleMock(data)) {}
+OperatingMock::OperatingMock(ContextData* data, std::deque<State*> cloned_substates) : OrthState(data, cloned_substates, new IdleMock(data)) {}
 
 OperatingMock::~OperatingMock() {
 	//OrthState::~OrthState();
@@ -38,6 +38,6 @@ void OperatingMock::exit() {
 
 //save history
 State* OperatingMock::button_stop_pressed() {
-	data->stateStack->push(clone());
+	data->modehandler_history->push(clone());
 	return new IdleMock(data);
 }

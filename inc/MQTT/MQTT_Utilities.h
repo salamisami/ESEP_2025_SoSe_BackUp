@@ -28,7 +28,7 @@
 #define STR_BUF_SIZE      100
 #define QOS               1
 #define TIMEOUT           10000L
-#define ClientID		CLIENT_NAME
+#define ClientID		MQTT_CLIENT
 
 
 class MQTT_Utilities{

@@ -24,23 +24,16 @@ public: //================================================ public functions ====
     /**
      * @brief Enters the state. This function must be overidden by the child state.
      */
-    virtual void entry() {
-        DEBUG("Warning, function of abstract class entry() is called.");
-    }
+    virtual void entry() = 0;
     /**
      * @brief Exits the state. This function must be overidden by the child state.
      */
-    virtual void exit() {
-        DEBUG("Warning, function of abstract class exit() is called.");
-    }
+    virtual void exit() = 0;
     /**
      * @brief Clones the current state.
      * @return Cloned state, which is already allocated to heap
      */
-    virtual State* clone() {
-        DEBUG("Warning, function of abstract class State::clone() is called.");
-        return nullptr;
-    }
+    virtual State* clone() = 0;
     /**
      * @brief Returns the name of the current state.
      * @return The name of current state as string
@@ -57,6 +50,26 @@ public: //================================================ public functions ====
 
     static State* EXIT_STATE;
 
+    virtual State* new_piece() {
+        return handle_event_using_function(&State::new_piece);
+    }
+
+    virtual State* unknown_piece() {
+        return handle_event_using_function(&State::unknown_piece);
+    }
+
+    virtual State* flat_piece() {
+        return handle_event_using_function(&State::flat_piece);
+    }
+
+    virtual State* tall_piece() {
+        return handle_event_using_function(&State::tall_piece);
+    }
+
+    virtual State* tall_w_metal_piece() {
+        return handle_event_using_function(&State::tall_w_metal_piece);
+    }
+
     virtual State* sort_out() {
         return handle_event_using_function(&State::sort_out);
     }
@@ -67,10 +80,6 @@ public: //================================================ public functions ====
 
     virtual State* let_through() {
         return handle_event_using_function(&State::let_through);
-    }
-
-    virtual State* check_piece() {
-        return handle_event_using_function(&State::check_piece);
     }
 
     virtual State* reset_to_flat() {
@@ -84,6 +93,25 @@ public: //================================================ public functions ====
     virtual State* reset_to_tall_w_metal() {
         return handle_event_using_function(&State::reset_to_tall_w_metal);
     }
+
+    virtual State* sorted(){
+      return handle_event_using_function(&State::sorted);
+    }
+
+    //====================================================MotorPiece======================================================
+    virtual State* delete_w_motor() {
+        return handle_event_using_function(&State::delete_w_motor);
+    }
+    virtual State* motor_slow() {
+        return handle_event_using_function(&State::motor_slow);
+    }
+    virtual State* motor_fast() {
+        return handle_event_using_function(&State::motor_fast);
+    }
+    virtual State* motor_stop_fsm() {
+        return handle_event_using_function(&State::motor_stop_fsm);
+    }
+
 
     //================================================ external events ================================================
 
@@ -99,7 +127,6 @@ public: //================================================ public functions ====
     virtual State* laser_back_blocked() {
         return handle_event_using_function(&State::laser_back_blocked);
     }
-
     virtual State* laser_back_unblocked() {
         return handle_event_using_function(&State::laser_back_unblocked);
     }
@@ -160,6 +187,14 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::laser_ramp_unblocked);
     }
 
+    virtual State* adc_new_piece() {
+        return handle_event_using_function(&State::adc_new_piece);
+    }
+
+    virtual State* adc_timeout() {
+        return handle_event_using_function(&State::adc_timeout);
+    }
+
     virtual State* adc_top_area_blocked() {
         return handle_event_using_function(&State::adc_top_area_blocked);
     }
@@ -176,6 +211,22 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::adc_side_area_unblocked);
     }
 
+    virtual State* adc_wh_detect() {
+        return handle_event_using_function(&State::adc_wh_detect);
+    }
+
+    virtual State* adc_wf_detect() {
+        return handle_event_using_function(&State::adc_wf_detect);
+    }
+
+    virtual State* adc_w_b_detect(){
+        return handle_event_using_function(&State::adc_w_b_detect);
+    }
+
+    virtual State* adc_w_not_detect() {
+        return handle_event_using_function(&State::adc_w_not_detect);
+    }
+
     virtual State* com_button_estop_pressed() {
         return handle_event_using_function(&State::com_button_estop_pressed);
     }
@@ -188,6 +239,71 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::com_button_reset_pressed);
     }
 
+    virtual State* heartbeat() {
+        return handle_event_using_function(&State::heartbeat);
+    }
+
+    virtual State* timeout_com() {
+        return handle_event_using_function(&State::timeout_com);
+    }
+
+    virtual State* reconnect() {
+        return handle_event_using_function(&State::reconnect);
+    }
+
+    virtual State* ramp_full() {
+        return handle_event_using_function(&State::ramp_full);
+    }
+
+    virtual State* ramp_not_full() {
+        return handle_event_using_function(&State::ramp_not_full);
+    }
+
+    virtual State* fbm_2_ready() {
+        return handle_event_using_function(&State::fbm_2_ready);
+    }
+
+    virtual State* fbm_2_busy() {
+        return handle_event_using_function(&State::fbm_2_busy);
+    }
+
+    virtual State* request_transfer() {
+        return handle_event_using_function(&State::request_transfer);
+    }
+
+    virtual State* transfer_done() {
+        return handle_event_using_function(&State::transfer_done);
+    }
+
+    virtual State* transfer_failed() {
+        return handle_event_using_function(&State::transfer_failed);
+    }
+
+    virtual State* transfer_start_tall() {
+        return handle_event_using_function(&State::transfer_start_tall);
+    }
+
+    virtual State* transfer_start_tall_w_metal() {
+        return handle_event_using_function(&State::transfer_start_tall_w_metal);
+    }
+
+    virtual State* transfer_start_flat() {
+        return handle_event_using_function(&State::transfer_start_flat);
+    }
+
+    virtual State* transfer_start_other() {
+        return handle_event_using_function(&State::transfer_start_other);
+    }
+    virtual State* transfer_start_tall_sort_out() {
+        return handle_event_using_function(&State::transfer_start_tall_sort_out);
+    }
+    virtual State* transfer_start_tall_w_metal_sort_out() {
+        return handle_event_using_function(&State::transfer_start_tall_w_metal_sort_out);
+    }
+    virtual State* transfer_start_flat_sort_out() {
+        return handle_event_using_function(&State::transfer_start_flat_sort_out);
+    }
+
     virtual State* adc_calibration_done() {
         return handle_event_using_function(&State::adc_calibration_done);
     }
@@ -198,6 +314,124 @@ public: //================================================ public functions ====
 
     virtual State* is_switch() {
         return handle_event_using_function(&State::is_switch);
+    }
+
+    virtual State* sorting_out() {
+        return handle_event_using_function(&State::sorting_out);
+    }
+    virtual State* error_pieces_too_close_fixed() {
+        return handle_event_using_function(&State::error_pieces_too_close_fixed);
+    }
+    virtual State* unblock_starting_area() {
+        return handle_event_using_function(&State::unblock_starting_area);
+    }
+
+    // Neue COM States
+    virtual State* com_ramp_full() {
+        return handle_event_using_function(&State::com_ramp_full);
+    }
+    virtual State* com_ramp_not_full() {
+        return handle_event_using_function(&State::com_ramp_not_full);
+    }
+
+    virtual State* com_mqtt_connected() {
+        return handle_event_using_function(&State::com_mqtt_connected);
+    }
+
+    virtual State* com_mqtt_disconnected() {
+        return handle_event_using_function(&State::com_mqtt_disconnected);
+    }
+    // States für ErrorHandler
+    virtual State* error_c_lost_com() {
+        return handle_event_using_function(&State::error_c_lost_com);
+    }
+    virtual State* error_c_lost_nr() {
+        return handle_event_using_function(&State::error_c_lost_nr);
+    }
+    virtual State* error_c_lost_mqtt() {
+        return handle_event_using_function(&State::error_c_lost_mqtt);
+    }
+    virtual State* com_connected() {
+        return handle_event_using_function(&State::com_connected);
+    }
+    virtual State* mqtt_disconnected() {
+        return handle_event_using_function(&State::mqtt_disconnected);
+    }
+    virtual State* mqtt_connected() {
+        return handle_event_using_function(&State::mqtt_connected);
+    }
+    virtual State* adc_invalid_measure() {
+        return handle_event_using_function(&State::adc_invalid_measure);
+    }
+    virtual State* cant_find_calb_conf() {
+        return handle_event_using_function(&State::cant_find_calb_conf);
+    }
+    virtual State* cant_find_rep_conf() {
+        return handle_event_using_function(&State::cant_find_rep_conf);
+    }
+    virtual State* error_w_lost() {
+        return handle_event_using_function(&State::error_w_lost);
+    }
+    virtual State* error_w_appear() {
+        return handle_event_using_function(&State::error_w_appear);
+    }
+    virtual State* error_both_r_full() {
+        return handle_event_using_function(&State::error_both_r_full);
+    }
+    virtual State* com_error_resolved() {
+        return handle_event_using_function(&State::com_error_resolved);
+    }
+    virtual State* ramp_error_resolved() {
+        return handle_event_using_function(&State::ramp_error_resolved);
+    }
+    virtual State* mqtt_error_resolved() {
+        return handle_event_using_function(&State::mqtt_error_resolved);
+    }
+    virtual State* piece_appeared_resolved() {
+        return handle_event_using_function(&State::piece_appeared_resolved);
+    }
+    virtual State* piece_lost_resolved() {
+        return handle_event_using_function(&State::piece_lost_resolved);
+    }
+    virtual State* pieces_too_close() {
+        return handle_event_using_function(&State::pieces_too_close);
+    }
+    virtual State* error_invalid_meassure_resolved() {
+        return handle_event_using_function(&State::error_invalid_meassure_resolved);
+    }
+
+    virtual State* error_c_lost_mqtt_fixed() {
+        return handle_event_using_function(&State::error_c_lost_mqtt_fixed);
+    }
+
+    virtual State* error_c_lost_com_fixed() {
+        return handle_event_using_function(&State::error_c_lost_com_fixed);
+    }
+
+    virtual State* remote_stop() {
+        return handle_event_using_function(&State::remote_stop);
+    }
+
+
+
+    //Fehlende States für Operating_FBM_2 
+    virtual State* adc_wh_detected(){
+      return handle_event_using_function(&State::adc_wh_detected);
+    }
+    virtual State* adc_wf_detected(){
+      return handle_event_using_function(&State::adc_wf_detected);
+    }
+    virtual State* adc_w_b_detected(){
+      return handle_event_using_function(&State::adc_w_b_detected);
+    }
+    virtual State* adc_w_not_detected(){
+      return handle_event_using_function(&State::adc_w_not_detected);
+    }
+    virtual State* error_w_lost_fixed(){
+      return handle_event_using_function(&State::error_w_lost_fixed);
+    }
+    virtual State* laser_gate_blocked(){
+      return handle_event_using_function(&State::laser_gate_blocked);
     }
 
 
@@ -215,9 +449,6 @@ protected: //================================================ protected ========
         return nullptr;
     }
 
-
-
-private: //================================================ private functions ================================================
     std::string demangle(const char* mangled) {
         int status;
         char* demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
@@ -225,6 +456,11 @@ private: //================================================ private functions ==
         free(demangled);
         return result;
     }
+
+
+
+private: //================================================ private functions ================================================
+
 
 };
 

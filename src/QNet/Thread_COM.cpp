@@ -86,20 +86,20 @@ Receiver::~Receiver(){
 void Receiver::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
     switch(msg->code) {
         case _PULSE_CODE_DISCONNECT:
-            printf("%s _PULSE_CODE_DISCONNECT\n", gns_name);
+            //printf("%s _PULSE_CODE_DISCONNECT\n", gns_name);
             /* A client disconnected all its connections (called
             * name_close() for each name_open() of our name) or
             * terminated. */
             ConnectDetach(msg->scoid);
             break;
         case _PULSE_CODE_UNBLOCK:
-            printf("%s received _PULSE_CODE_UNBLOCK\n", gns_name);
+            //printf("%s received _PULSE_CODE_UNBLOCK\n", gns_name);
             /* REPLY blocked client wants to unblock (was hit by
             * a signal or timed out). It's up to you if you
             * reply now or later. */
             break;
         case 12:
-        	printf("%s Sending EOK, connect\n", gns_name);
+        	//printf("%s Sending EOK, connect\n", gns_name);
             MsgReply(rcvid, EOK, NULL, 0);
             break;
         default:
@@ -119,7 +119,7 @@ void Receiver::handle_app_msg(_pulse* msg, int rcvid) {
 void Receiver::handle_QNX_pulse(_pulse* msg, int rcvid) {
     switch(msg->code) {
         case _PULSE_CODE_DISCONNECT:
-            printf("%s _PULSE_CODE_DISCONNECT\n", gns_name);
+            //printf("%s _PULSE_CODE_DISCONNECT\n", gns_name);
             /* A client disconnected all its connections (called
             * name_close() for each name_open() of our name) or
             * terminated. */

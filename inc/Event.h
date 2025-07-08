@@ -5,12 +5,12 @@
 #define OPEN_GATE_SLOW_DURATION 2200
 #define OPEN_GATE_FAST_DURATION 1000
 #define PUSH_DURATION 500
-#define ENDTOGATE_MULTIPLIER 0.75
+#define ENDTOGATE_MULTIPLIER 0.70
 
 #include <cstdint>
 
-enum class InterruptEnum : int
-{
+
+enum class InterruptEnum : int {
     LASER_FRONT_BLOCKED = 1, // the rest will continue (-2, -3)
     LASER_FRONT_UNBLOCKED,
     LASER_BACK_BLOCKED,
@@ -34,10 +34,10 @@ enum class InterruptEnum : int
     ADC_SIDE_AREA_BLOCKED,
     ADC_SIDE_AREA_UNBLOCKED,
     IS_SWITCH,
-    IS_PUSHER
+    IS_PUSHER,
+    REMOTE_STOP
 };
-enum class ActuatorEnum : int
-{
+enum class ActuatorEnum : int {
     MOTOR_RIGHT_START = 1,
     MOTOR_LEFT_START,
     MOTOR_SLOW_ON,
@@ -64,12 +64,11 @@ enum class ActuatorEnum : int
     LED_Q1_ON,
     LED_Q1_OFF,
     LED_Q2_ON,
-    LED_Q2_OFF,
-	WAKE_UP
+    LED_Q2_OFF
+
 };
 
-enum class Topic : int8_t
-{
+enum class Topic : int8_t {
     INTERRUPT = 1,
     ACTUATOR,
     COM,
@@ -77,13 +76,32 @@ enum class Topic : int8_t
     STOP_THREAD,
     TIMER,
     REC_REPLAY,
-	REM_CON,
-    INTERNAL
+    REM_CON,
+    INTERNAL,
+    ERROR,
+    WAKE_UP,
+    CHECK_PIECE,
+    MOTOR_STOP_FSM,
+    MOTOR_SLOW,
+    MOTOR_FAST,
+    DELETE_W_MOTOR
 };
 
+enum class Internal_Enum : int {
+    SORT_OUT,
+    SORT_OUT_FBM2,
+    LET_THROUGH,
+    RESET_TO_FLAT,
+    RESET_TO_TALL,
+    RESET_TO_TALL_W_METAL,
+    UNBLOCK_STARTING_AREA,
+    NEW_PIECE,
+    SORTED,
+    RAMP_FULL,
+    RAMP_NOT_FULL
+};
 
-enum class ADC_Enum : int
-{
+enum class ADC_Enum : int {
     ADC_WH_DETECT = 0xFFA0,
     ADC_WF_DETECT,
     ADC_W_B_DETECT,
@@ -93,16 +111,13 @@ enum class ADC_Enum : int
     ADC_INVALID_MESURE,
     ADC_CALIBRATION_DONE,
     ADC_STOP,
-	ADC_RESET,
+    ADC_RESET,
     ADC_NEW_PIECE,
-	ADC_TIMEOUT
+    ADC_TIMEOUT
 };
 
-enum class COM_Enum : int
-{
-    NEW_PIECE_TO_SORT = 1,
-    NEW_PIECE_NOT_TO_SORT,
-    BUTTON_ESTOP_PRESSED,
+enum class COM_Enum : int {
+    BUTTON_ESTOP_PRESSED = 1,
     BUTTON_ESTOP_RELEASED,
     HEARTBEAT,
     TIMEOUT_COM,
@@ -113,6 +128,7 @@ enum class COM_Enum : int
     RESET_TO_TALL_W_METAL,
     FBM_2_READY,
     FBM_2_BUSY,
+    REQUEST_TRANSFER_SORT,
     REQUEST_TRANSFER,
     TRANSFER_DONE,
     TRANSFER_FAILED,
@@ -120,52 +136,92 @@ enum class COM_Enum : int
     TRANSFER_START_TALL_W_METAL,
     TRANSFER_START_FLAT,
     TRANSFER_START_OTHER,
+    TRANSFER_START_TALL_SORT_OUT,
+    TRANSFER_START_TALL_W_METAL_SORT_OUT,
+    TRANSFER_START_FLAT_SORT_OUT,
     COM_CONNECTED,
-	BUTTON_RESET_PRESSED
+    BUTTON_RESET_PRESSED,
+    COM_MQTT_CONNECTED,
+    COM_MQTT_DISCONNECTED,
+    RECONNECT
 };
 
-enum class Internal_Enum : int
-{
-    SORT_OUT = 1,
-    SORT_OUT_FBM2,
-    LET_THROUGH,
-    CHECK_PIECE,
-    RESET_TO_FLAT,
-    RESET_TO_TALL,
-    RESET_TO_TALL_W_METAL,
-	RAMP_FULL,
-	RAMP_NOT_FULL,
-	REQUEST_TRANSFER
-};
-
-enum class TIMER_ID : int
-{
+enum class TIMER_ID : int {
     WAITING_IM = 1,
     OPENGATE_CDS,
     OPENGATE_LPT,
     PUSHRAMP_STR,
     CAL_GATE_RAMP2,
-    CAL_GATE_RAMP1
+    CAL_GATE_RAMP1,
+    RAMP_TIMER,
+    STARTING_AREA_TIMER,
+    STARTADC_PT1,
+    ADCGATE_PT1,
+    SORTINGOUT_PT1,
+    GATEEND_PT1,
+    PENDINGTRANSFERREQUESTNOTATEND,
+    PENDINGTRANSFERREQUEST_PT1,
+    GATE_END,
+    TRANSFER_FAILED,
+    START_ADC,
+    ADC_GATE,
+    SORTING_OUT,
+    IS_METAL,
+    OPENGATE_OP,
+    PUSHRAMP_OP
 };
 
-enum class Piece: int{
+enum class PieceEnum : int {
     UNKNOWN = 0,
     FLAT,
     TALL,
-    TALL_WITH_METAL
+    TALL_WITH_METAL,
+    TALL_SORT_OUT,
+    TALL_WITH_METAL_SORT_OUT,
+    FLAT_SORT_OUT,
 };
 
-enum class RecReplayEnum: int {
+enum class RecReplayEnum : int {
     START_REC = 1,
     STOP_REC,
     START_REPLAY,
-	STOP_REPLAY
+    STOP_REPLAY
 };
 
-enum class RemoteControl: int {
+enum class ScannedPiece : int {
+    UNKNOWN = 0,
+    TALL,
+    FLAT,
+    HOLE
+};
+
+enum class RemoteControlEnum: int {
 	MQTT_DISCONNECTED,
 	MQTT_CONNECTED,
 	RECONNECT,
+    REMOTE_ESTOP
 };
-#endif
 
+enum class Error_Enum : int {
+    ERROR_W_LOST=1,
+    ERROR_W_APPEARED,
+    ERROR_BOTH_R_FULL,
+    ERROR_C_LOST_NR,
+    ERROR_C_LOST_MQTT,
+    ERROR_C_LOST_COM,
+    ERROR_INVALID_MESURE,
+    CANT_FIND_CALB_CONF,
+    CANT_FIND_REP_CONF,
+    //NEUE ERROR STATES
+    COM_ERROR_RESOLVED,
+    RAMP_ERROR_RESOLVED,
+    MQTT_ERROR_RESOLVED,
+    PIECE_APPEARED_RESOLVED,
+    PIECE_LOST_RESOLVED,
+    PIECES_TOO_CLOSE,
+    ERROR_INVALID_MEASURE_RESOLVED,
+    ERROR_W_LOST_RESOLVED
+};
+
+
+#endif

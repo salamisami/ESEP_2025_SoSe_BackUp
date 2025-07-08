@@ -4,32 +4,39 @@
 
 #include "QNet.h"
 #include "Context.h"
-#include "IdleMode.h"
 #include "Boot.h"
 #include "Event.h"
 #include "Thread_COM.h"
 
 #include "Mock_PM.h"
-
+#include <pthread.h>
 #include <thread>
+
+void set_thread_priority(pthread_t thread, int priority) {
+    struct sched_param param;
+    param.sched_priority = priority;
+
+    // Set FIFO scheduling policy with specified priority
+    if (pthread_setschedparam(thread, SCHED_FIFO, &param) != 0) {
+        std::cerr << "Failed to set thread priority: " << strerror(errno) << std::endl;
+    }
+
+    // Optional: Set thread CPU affinity
+    // cpu_set_t cpuset;
+    // CPU_ZERO(&cpuset);
+    // CPU_SET(0, &cpuset);  // Pin to CPU 0
+    // pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+}
 
 template <typename InitialState>
 class Logic {
 public: //============================================ constructors & destructors ============================================
     /**
-     * @brief This constructor is used, if the dispatcher is smart, so that the logic will use 2 different senders to send events out and send event to itself.
-     * @param local sender to send events out
-     * @param to_self_sender to send events to self
-     */
-    Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender);
-
-    /**
      * @brief Same as above, but the context data can be injected
-     * @param local sender to send events out
-     * @param to_self_sender to send events to self
+     * @param local_sender sender to send events out
      * @param data context data to be injected
      */
-    Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender, ContextData* input_data);
+    Logic(I_Receiver* local_receiver, I_Sender* local_sender, ContextData* input_data);
 
     /**
     * @brief This constructor is used, if the dispatcher is broadcast type. The context will use the same sender to send events out and to self
@@ -47,7 +54,6 @@ private: //================================================ private variables ==
     //pointers
     I_Receiver* local_receiver;
     I_Sender* local_sender;
-    I_Sender* to_self_sender;
     ContextData* data;
     Context<InitialState>* fsm;
     //primitive types
@@ -61,19 +67,12 @@ private: //================================================ private functions ==
 };
 
 //================================================= constructors & destructors =================================================
-template <typename InitialState>
-Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender)
-    : local_receiver(local_receiver)
-    , local_sender(local_sender)
-    , to_self_sender(to_self_sender) {
-    init();
-}
+
 
 template <typename InitialState>
-Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I_Sender* to_self_sender, ContextData* input_data)
+Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, ContextData* input_data)
     : local_receiver(local_receiver)
     , local_sender(local_sender)
-    , to_self_sender(to_self_sender)
     , data(input_data) {
     fsm = new Context<InitialState>(data);
     logicRunning = true;
@@ -84,18 +83,21 @@ Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, I
 template <typename InitialState>
 Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender)
     : local_receiver(local_receiver)
-    , local_sender(local_sender)
-    , to_self_sender(local_sender) {
+    , local_sender(local_sender){
     init();
 }
 
 template <typename InitialState>
 void Logic<InitialState>::init() {
-    data = new ContextData(local_sender, to_self_sender);
+    data = new ContextData(local_sender);
     fsm = new Context<InitialState>(data);
     logicRunning = true;
     logicThread = std::thread(&Logic::threadFunction, this);
+    set_thread_priority(logicThread.native_handle(), 250);  // Higher priority for main thread
 }
+
+
+
 
 template <typename InitialState>
 Logic<InitialState>::~Logic() {

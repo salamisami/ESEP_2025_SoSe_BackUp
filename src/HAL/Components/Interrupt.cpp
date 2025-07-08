@@ -71,7 +71,9 @@ Interrupt::Interrupt(I_Sender* sender, Actuator* actuator)
 
 Interrupt::~Interrupt() {
     MsgSendPulse(internalConnectionID, -1, PULSE_STOP_THREAD, 0); //using prio of calling thread.
-    interruptThread.join();
+   if (interruptThread.joinable())
+	   interruptThread.join();
+
     //	(for rising edge detection)
     uint32_t currentConfig = in32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT));//Read current config.
     out32((uintptr_t) (gpio_bank_0 + GPIO_RISINGDETECT), (currentConfig ^ inputPins));//Write new config back.

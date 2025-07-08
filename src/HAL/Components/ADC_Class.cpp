@@ -14,8 +14,10 @@ ADC_Class::ADC_Class(I_Sender* sender)
 }
 
 ADC_Class::~ADC_Class() {
-    adcStopped = false;
-    running = false;
+	adcStopped = false;
+	running = false;
+	if (adc_thread.joinable())
+	adc_thread.join();
     //adc_thread.join();
 }
 
@@ -40,7 +42,7 @@ void ADC_Class::measureClassifySend() {
         return;
     }
     measure_mtx.lock();
-    bool inTime = ADC_Utilities::expect_piece(adc,tscadc,bandVoltage, &adcStopped, 200);// TODO: 200 Ms Zeit anpassen!!
+    bool inTime = ADC_Utilities::expect_piece(adc,tscadc,bandVoltage, &adcStopped, 1500);// TODO: 200 Ms Zeit anpassen!!
     if(inTime){
     	sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
     	ADC_Enum name = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage,&adcStopped);

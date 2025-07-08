@@ -2,23 +2,47 @@
 #include "HState.h"
 
 //================================================= constructors & destructors =================================================
-ContextData::ContextData(){}
-ContextData::ContextData(I_Sender* sender, I_Sender* to_self_sender) {
+ContextData::ContextData() {}
+ContextData::ContextData(I_Sender* sender) {
     this->sender = sender;
-    stateStack = new std::stack<State*>();
-    timer = new Timer(to_self_sender);
+    modehandler_history = new std::stack<State*>();
+    estop_history = new std::stack<State*>();
+    operating_history = new std::stack<State*>();
+    timer = new Timer(sender);
+    //piece_tracker = new DistanceTracker(SAVE_LOCATION_TIMEPROFILE, true);
+    pieces_map = new std::unordered_map<int, Piece*>;
 }
 
 
 ContextData::~ContextData() {
-    delete timer;
     State* current_state;
-    while(!stateStack->empty()) {
-        current_state = stateStack->top();  // For stack, use top() instead of iterating
+    while(!operating_history->empty()) {
+        current_state = operating_history->top();  // For stack, use top() instead of iterating
         delete current_state;
-        stateStack->pop();
+        operating_history->pop();
     }
-    delete stateStack;
+    delete operating_history;
+    delete pieces_map;
+   // delete piece_tracker;
+    delete timer;
+    
+    while(!modehandler_history->empty()) {
+        current_state = modehandler_history->top();  // For stack, use top() instead of iterating
+        delete current_state;
+        modehandler_history->pop();
+    }
+    delete modehandler_history;
+
+    while(!estop_history->empty()) {
+        current_state = estop_history->top();  // For stack, use top() instead of iterating
+        delete current_state;
+        estop_history->pop();
+    }
+    delete estop_history;
+    if(piece_tracker != nullptr){
+        delete piece_tracker;
+    }
+    
 }
 
 //===================================================== private functions =====================================================

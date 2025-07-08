@@ -21,10 +21,13 @@ HAL::HAL() {
 
 HAL::~HAL() {
     //mock_dispatcher_sender->send_event((int8_t) Topic::STOP_THREAD, 0);
-    halThread.join();
+	hal_running = false;
     delete adc;
     delete interrupt;
     delete actuator;
+    local_sender->send_event((int8_t) Topic::WAKE_UP,0);
+    if (halThread.joinable())
+    	halThread.join();
     //DEBUG("Actuator and Interrupts are deleted");
 
     if(detached) {

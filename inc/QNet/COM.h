@@ -31,11 +31,17 @@ private:
     void sendToServer(const _pulse &msg, int priority = (int)EventPriority::DEFAULT);
 
     void runDispatcher();
+    
+    // Handler functions for different topics
+    void handleInterruptTopic(int originalValue, _pulse& dispatcherMsg);
+    void handleInternalTopic(int originalValue, _pulse& dispatcherMsg);
+    void handleComTopic(int originalValue, _pulse& dispatcherMsg);
+    void handleRemConTopic(int originalValue, _pulse& dispatcherMsg);
 
     // Server side
     void runServer();
     void processMessage(const _pulse &msg);
-    void sendToDispatcher(const _pulse &msg, int priority = (int)EventPriority::DEFAULT);
+    void sendToDispatcher(const _pulse &msg, int priority = (int)EventPriority::SECOND_PRIO);
     void updateHeartbeat();
     void handle_QNX_pulse(_pulse *msg, int rcvid);
     void handle_QNX_IO_msg(_pulse *msg, int rcvid);
@@ -51,6 +57,7 @@ private:
     std::chrono::steady_clock::time_point lastHeartbeat;
     bool running;
     bool rampfull = false;
+    bool mqttConnected = false;
 
     std::deque<_pulse> highPriorityQueue;
     std::deque<_pulse> lowPriorityQueue;

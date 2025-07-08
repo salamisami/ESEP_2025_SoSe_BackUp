@@ -27,6 +27,9 @@ public:
     //Disable copy constructor, because we're going to use clone() instead
     HState(const HState& other) = delete;
     virtual ~HState() override {
+        if(default_exit_state_ != nullptr) {
+            delete default_exit_state_;
+        }
         //std::cout << "HState Destructor" << std::endl;
         if(substate != nullptr) {
             delete substate;
@@ -44,11 +47,10 @@ public:
         substate->exit();
     }
 
-    //TODO make virtual
-    virtual State* clone() override {
-        DEBUG("Warning, function of abstract class HState::clone() is called.");
-        return nullptr;
-    }
+    // virtual State* clone() override{
+    //     throw std::runtime_error("Error, the clone of following state is called due to history, but not implemented: " + get_current_state());
+    // }
+
     virtual std::string get_current_state() override {
         std::string substate_name = substate->get_current_state();
         return substate_name;
@@ -63,10 +65,13 @@ public:
         if(newSubstate == State::EXIT_STATE) {
             // Handle substate exit
             substate->exit();
-            delete substate;
-            substate = nullptr;
+            // delete substate;
+            // substate = nullptr;
 
             // Return default exit state to parent
+            if(default_exit_state_ != nullptr) {
+                return default_exit_state_->clone();
+            }
             return default_exit_state_;
         } else if(newSubstate != nullptr) {
             // there is substate change, change only the substate
@@ -95,10 +100,13 @@ protected:
         if(newSubstate == State::EXIT_STATE) {
             // Handle substate exit
             substate->exit();
-            delete substate;
-            substate = nullptr;
+            // delete substate;
+            // substate = nullptr;
 
             // Return default exit state to parent
+            if(default_exit_state_ != nullptr) {
+                return default_exit_state_->clone();
+            }
             return default_exit_state_;
         } else if(newSubstate) {
             // Normal state transition

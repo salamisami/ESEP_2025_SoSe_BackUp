@@ -112,10 +112,9 @@ int MQTT_Utilities::mqtt_festo_init(const char* broker, const char* client_id) {
 }
 
 void MQTT_Utilities::mqtt_festo_cleanup(void) {
-//	//mqtt_festo_publish("festo/anlage1-2/status/online", "offline");
-//	MQTTClient_disconnect(MQTT_Utilities::client, 10000);
-//	MQTTClient_destroy(&MQTT_Utilities::client);
-//	MQTT_Utilities::client = nullptr;
+	MQTTClient_disconnect(MQTT_Utilities::client, 1000);
+    MQTTClient_destroy(&MQTT_Utilities::client);
+    MQTT_Utilities::client = nullptr;
 }
 
 void MQTT_Utilities::mqtt_festo_heartbeat(void) {

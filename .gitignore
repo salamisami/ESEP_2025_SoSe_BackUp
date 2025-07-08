@@ -40,3 +40,13 @@ vsc.bat
 vsc.bat
 .cproject
 vc140.pdb
+CMakeFiles
+Testing/Temporary
+CMakeCache.txt
+CTestTestfile.cmake
+cmake_install.cmake
+tests[1]_include.cmake
+Project
+tests
+tests[1]_tests.cmake
+tests[1]_include.cmake

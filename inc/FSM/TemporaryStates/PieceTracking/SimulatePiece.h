@@ -3,7 +3,7 @@
 #pragma once
 
 #include "OrthState.h"
-#include "Fast.h"
+#include "FastTemp.h"
 #include "LetPieceThrough.h"
 #include "IdleTest.h"
 #include "TimeProfileManager.h"
@@ -11,12 +11,15 @@
 class SimulatePiece : public OrthState {
 public: //============================================ constructors & destructors ============================================
     SimulatePiece(ContextData* data) ;
+	SimulatePiece(ContextData* data, std::deque<State*> initial_substates);
     virtual ~SimulatePiece();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
+	State* clone() override;
 
 	State* laser_back_blocked() override;
     

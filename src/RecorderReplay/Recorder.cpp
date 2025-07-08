@@ -3,7 +3,7 @@
 
 Recorder::Recorder(I_Receiver* local_receiver, I_Sender* local_sender)
     : local_receiver(local_receiver), local_sender(local_sender),
-      running(true), record_running(false), replay_running(false)
+      record_running(false), replay_running(false), running(true)
 {
     RecReplay_thread = std::thread(&Recorder::threadFunction, this);
     std::cout << "Recorder: Main-Thread gestartet" << std::endl;
@@ -14,6 +14,8 @@ Recorder::~Recorder() {
     stop_record();
     stop_replay();
     if (RecReplay_thread.joinable()) RecReplay_thread.join();
+    if (writer_thread.joinable()) writer_thread.join();
+    if (replay_thread.joinable()) replay_thread.join();
 }
 
 void Recorder::threadFunction() {
@@ -24,6 +26,7 @@ void Recorder::threadFunction() {
 
         if (status == 0) {
             RecReplayEnum event_value = (RecReplayEnum)event.value.sival_int;
+            COM_Enum COM_event_value = (COM_Enum)event.value.sival_int;
             Topic event_code = (Topic)event.code;
             if (event_code == Topic::REC_REPLAY) {
             	DEBUG("[MAIN RecReplay event erhalten]");
@@ -34,25 +37,30 @@ void Recorder::threadFunction() {
                     case RecReplayEnum::STOP_REPLAY: stop_replay(); break;
                 }
             }
-            if (event_code == Topic::INTERRUPT && record_running){
+            if (record_running){
+            	if(event_code == Topic::INTERRUPT || event_code == Topic::COM){
+            		if(COM_event_value != COM_Enum::HEARTBEAT){
 
-				Topic Inter_event_code = (Topic)event.code;
-				if (Inter_event_code == Topic::INTERRUPT) {
-					DEBUG("Recorder interruped erhalten");
-					auto now = std::chrono::system_clock::now();
-					auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
-					{
-						std::lock_guard<std::mutex> lock(queue_mutex);
-						event_queue.push({ms, event.code, event.value.sival_int});
-					}
-					queue_cv.notify_one();
-				}
+    					DEBUG("Recorder Interrupt erhalten");
+    					auto now = std::chrono::system_clock::now();
+    					auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
+    					{
+    						std::lock_guard<std::mutex> lock(queue_mutex);
+    						event_queue.push({ms, event.code, event.value.sival_int});
+    					}
+    					queue_cv.notify_one();
+
+            		}
+            	}
             }
         }
     }
 }
 
+
 void Recorder::start_record() {
+	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
+	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_ON);
     std::lock_guard<std::mutex> lock(rec_mutex);
     if (record_running) {
         DEBUG("Record already running!");
@@ -67,6 +75,8 @@ void Recorder::start_record() {
 }
 
 void Recorder::stop_record() {
+	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
+	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_OFF);
     std::lock_guard<std::mutex> lock(rec_mutex);
     if (!record_running) return;
     record_running = false;
@@ -107,6 +117,9 @@ void Recorder::writer_loop() {
 }
 
 void Recorder::start_replay() {
+	int8_t ErrorCode = (int8_t) Topic::ERROR;
+	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
+	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_ON);
     std::lock_guard<std::mutex> lock(rep_mutex);
     if (replay_running) {
         DEBUG("Replay already running!");
@@ -117,7 +130,7 @@ void Recorder::start_replay() {
     replay_running = true;
 
     if (!FILE_EXISTS(RECORDER_CSV)) {
-    	//
+    	local_sender->send_event(ErrorCode, (int) Error_Enum::CANT_FIND_REP_CONF);
         std::cerr << "Replay: Datei existiert nicht!\n";
         replay_running = false;
         return;
@@ -148,6 +161,8 @@ void Recorder::start_replay() {
 }
 
 void Recorder::stop_replay() {
+	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
+	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_OFF);
     std::lock_guard<std::mutex> lock(rep_mutex);
     if (!replay_running) return;
     replay_running = false;
