@@ -55,3 +55,12 @@ State* PieceTallWithMetal::tall_piece() {
 	return nullptr;
 	//return new PieceTallWithMetal(data);
 }
+
+State* PieceTall::unknown_piece() {
+	if(data->is_ramp_full) {
+		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
+	} else {
+		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
+	}
+	return nullptr;
+}
