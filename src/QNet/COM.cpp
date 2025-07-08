@@ -121,8 +121,8 @@ void COM::checkQueues()
         sendHeartbeat();
         return;
     }
-
-    while (!highPriorityQueue.empty())
+    while (!highPriorityQueue.empty() || !lowPriorityQueue.empty){
+    if (!highPriorityQueue.empty())
     {
         auto msg = highPriorityQueue.front();
         highPriorityQueue.pop_front();
@@ -135,7 +135,7 @@ void COM::checkQueues()
         std::this_thread::yield();
         lock.lock();
     }
-    while (!lowPriorityQueue.empty() && highPriorityQueue.empty())
+    if (!lowPriorityQueue.empty())
     {
         //COUT("Something in low prio");
 
@@ -150,6 +150,7 @@ void COM::checkQueues()
         }
         std::this_thread::yield();
         lock.lock();
+    }
     }
 }
 
