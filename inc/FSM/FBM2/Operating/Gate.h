@@ -28,7 +28,7 @@ public: //================================================ public functions ====
   State* request_transfer() override;
   State* let_through() override;
   State* sorting_out_fbm2() override;
-  State* timer(TIMER_ID id)override;
+  //State* timer(TIMER_ID id)override;
  
  
 private: //================================================ private variables ================================================
@@ -41,7 +41,7 @@ private: //================================================ private variables ==
  
 private: //================================================ private functions ================================================
 	//void privateFunction();
-  State* check_piece();
+  void check_piece();
   PieceEnum validate_piece(const ScannedPiece& scanned_piece, const bool& has_metal);
 };
  

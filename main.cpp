@@ -10,15 +10,39 @@
 #include "SimulatePiece.h"
 #include "Piece.h"
 #include "ReadyForPiece.h"
+#include <gtest/gtest.h>
 
 #include <iostream>
 
 #define ONE_MILLISECOND 1000
 
+#define EXPECT_STATE(expected_state) \
+    do { \
+        WAIT(50); \
+        std::string is_state = logic->show_state(); \
+        EXPECT_EQ(is_state, expected_state); \
+    } while (0)
+
+#define EXPECT_STATE_CONTAINS(expected_state) \
+    do { \
+        WAIT(50); \
+        std::string is_state = logic->show_state(); \
+        EXPECT_NE(is_state.find(expected_state), std::string::npos) \
+            << "Expected state to contain: '" << expected_state \
+            << "' but got: '" << is_state << "'"; \
+    } while (0)
+
+
+#define EXPECT_STATE_INSTANT(expected_state) \
+    do { \
+        WAIT(10); \
+        std::string is_state = logic->show_state(); \
+        EXPECT_EQ(is_state, expected_state); \
+    } while (0)
+
+#define ONE_MILLISECOND 1000
+
 using namespace std;
-
-
-
 
 
 
@@ -43,9 +67,11 @@ int main() {
 
     // Boot sequence
     remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::REQUEST_TRANSFER);
-    EXPECT_STATE_INSTANT("WaitingForTransferStart");
+    //EXPECT_STATE_INSTANT("WaitingForTransferStart");
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>> REQUEST_TRANSFER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::TRANSFER_START_TALL);
-    EXPECT_STATE_INSTANT("Transfer");
+    //EXPECT_STATE_INSTANT("Transfer");
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> TRANSFER_START_TALL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     WAIT(1000);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);

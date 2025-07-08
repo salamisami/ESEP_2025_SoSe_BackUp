@@ -36,21 +36,21 @@ State* LeavingGate_PT2::timer(TIMER_ID id) {
 		return nullptr;
 	}
 
-	Piece* piece = localdata_.piece;
-	Area current_area = piece->piece_tracker->get_distance().first;
+	
+	Area current_area = data->piece_tracker->get_distance().first;
 	if(current_area == Area::GATE){
-		return new LeavingGate_PT2(data, localdata_);
+		return new LeavingGate_PT2(data);
 	}
 
 	if(current_area == Area::GATE_END){
-		return new Gate_End(data, localdata_);
+		return new Gate_End(data);
 	}
 
 	DEBUG("PieceMissing! Cause: piece is too long in leaving the Gate.");
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
 	//data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
 	//PieceEnum validated_piece = localdata_.validated_type;
-	switch(validated_piece) {
+	switch(data->piece_FBM2->type) {
 		case PieceEnum::FLAT:
 			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_FLAT);
 			break;
@@ -64,7 +64,6 @@ State* LeavingGate_PT2::timer(TIMER_ID id) {
 			break;
 	}
 	//Piece* piece_to_delete = localdata_.piece;
-	data->pieces_map->erase(localdata_.piece->id);
-	delete piece_to_delete;
+	
 	return State::EXIT_STATE;
 }

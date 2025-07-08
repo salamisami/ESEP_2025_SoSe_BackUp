@@ -74,7 +74,7 @@ State* Gate::sorting_out_fbm2()
 }
 
 
-State* Gate::check_piece(){
+void Gate::check_piece(){
 	//soll: data->piece_FBM2
 	//ist: data->piece_FBM2_measured
   
@@ -83,7 +83,7 @@ State* Gate::check_piece(){
   {
     case PieceEnum::TALL_WITH_METAL:
       if (PieceEnum::TALL != data->piece_FBM2_measured->type){
-        printf("_____________piece_measured (%d) != piece (%d)___________________\n");
+        printf("_____________piece_measured (%d) != piece (%d)___________________\n", data->piece_FBM2->type, data->piece_FBM2_measured->type);
         data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
       }
       else data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
@@ -102,7 +102,7 @@ State* Gate::check_piece(){
       break;
     default:
       if (data->piece_FBM2->type != data->piece_FBM2_measured->type){
-        printf("_____________piece_measured (%d) != piece (%d)___________________\n");
+        printf("_____________piece_measured (%d) != piece (%d)___________________\n", data->piece_FBM2->type, data->piece_FBM2_measured->type);
         data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
       }
       else data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
