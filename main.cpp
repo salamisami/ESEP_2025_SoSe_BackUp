@@ -87,7 +87,7 @@ int main() {
     while(1){}
     #endif
 
-    delete hal;
+    //delete hal;
 
     #ifndef NO_COM
     delete externCommunication;
