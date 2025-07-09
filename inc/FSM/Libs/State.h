@@ -411,13 +411,6 @@ public: //================================================ public functions ====
         return handle_event_using_function(&State::error_invalid_meassure_resolved);
     }
 
-    virtual State* error_c_lost_mqtt_fixed() {
-        return handle_event_using_function(&State::error_c_lost_mqtt_fixed);
-    }
-
-    virtual State* error_c_lost_com_fixed() {
-        return handle_event_using_function(&State::error_c_lost_com_fixed);
-    }
 
     virtual State* remote_stop() {
         return handle_event_using_function(&State::remote_stop);
