@@ -365,9 +365,6 @@ public: //================================================ public functions ====
     virtual State* com_connected() {
         return handle_event_using_function(&State::com_connected);
     }
-    virtual State* mqtt_disconnected() {
-        return handle_event_using_function(&State::mqtt_disconnected);
-    }
     virtual State* mqtt_connected() {
         return handle_event_using_function(&State::mqtt_connected);
     }

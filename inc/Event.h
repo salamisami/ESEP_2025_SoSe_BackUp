@@ -195,10 +195,9 @@ enum class ScannedPiece : int {
     HOLE
 };
 
-enum class RemoteControlEnum: int {
-	MQTT_DISCONNECTED,
-	MQTT_CONNECTED,
-	RECONNECT,
+enum class RemoteControlEnum : int {
+    MQTT_CONNECTED,
+    RECONNECT,
     REMOTE_ESTOP
 };
 
