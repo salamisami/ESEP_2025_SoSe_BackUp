@@ -6,7 +6,6 @@ Recorder::Recorder(I_Receiver* local_receiver, I_Sender* local_sender)
       record_running(false), replay_running(false), running(true)
 {
     RecReplay_thread = std::thread(&Recorder::threadFunction, this);
-    std::cout << "Recorder: Main-Thread gestartet" << std::endl;
 }
 
 Recorder::~Recorder() {
@@ -39,9 +38,9 @@ void Recorder::threadFunction() {
             }
             if (record_running){
             	if(event_code == Topic::INTERRUPT || event_code == Topic::COM){
-            		if(COM_event_value != COM_Enum::HEARTBEAT){
+            		//if(COM_event_value != COM_Enum::HEARTBEAT){
 
-    					DEBUG("Recorder Interrupt erhalten");
+    					//DEBUG("Recorder Interrupt erhalten");
     					auto now = std::chrono::system_clock::now();
     					auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
     					{
@@ -50,7 +49,7 @@ void Recorder::threadFunction() {
     					}
     					queue_cv.notify_one();
 
-            		}
+            		//}
             	}
             }
         }
@@ -71,7 +70,7 @@ void Recorder::start_record() {
 
     writer_thread = std::thread(&Recorder::writer_loop, this);
     // kurz warten, bis writer_ready ist
-    while (!writer_ready) std::this_thread::yield();
+    //while (!writer_ready) std::this_thread::yield();
 }
 
 void Recorder::stop_record() {
@@ -151,9 +150,9 @@ void Recorder::start_replay() {
         std::getline(iss, token, ','); evt.code = std::stoi(token);
         std::getline(iss, token, ','); evt.value = std::stoi(token);
         replay_events.push_back(evt);
-        DEBUG(("Replay: Event gelesen ms=" + std::to_string(evt.ms) +
-               " code=" + std::to_string(evt.code) +
-               " value=" + std::to_string(evt.value)).c_str());
+//        DEBUG(("Replay: Event gelesen ms=" + std::to_string(evt.ms) +
+//               " code=" + std::to_string(evt.code) +
+//               " value=" + std::to_string(evt.value)).c_str());
     }
     replay_file.close();
     replay_thread = std::thread(&Recorder::replay_loop, this);

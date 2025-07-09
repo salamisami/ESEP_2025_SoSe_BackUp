@@ -29,7 +29,7 @@
 #define PROFIL_DATEI "ESEP-Team-1-1_25/profile_calibration.csv"
 #define SAVE_LOCATION_TIMEPROFILE "ESEP-Team-1-1_25/time_profiles.csv"
 
-#define DEBUG(msg) //std::cout << msg << std::endl
+#define DEBUG(msg) std::cout << msg << std::endl
 #endif
 
 #ifdef VERBOSE_STATES
