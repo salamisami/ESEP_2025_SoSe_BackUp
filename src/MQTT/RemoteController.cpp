@@ -269,6 +269,10 @@ void Remote_Controller::threadFunctionRecive() {
                             msg = std::string(ClientID) + " Ein Werkstück ist verschwunden!";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
+                        case Error_Enum::ERROR_W_APPEARED:
+                            msg = std::string(ClientID) + " Ein Werkstück ist Appeared!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
                         default:
                             break;
                     }
