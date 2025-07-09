@@ -54,7 +54,7 @@ int main() {
     Mock_PM::Receiver* hal_receiver;
     Mock_PM::Sender* logic_sender;
     I_Sender* to_self_sender;
-    
+
     ContextData* data;
 
     logic_receiver = new Mock_PM::Receiver();
@@ -63,9 +63,22 @@ int main() {
     logic_sender = new Mock_PM::Sender(hal_receiver);
     to_self_sender = new Mock_PM::Sender(logic_receiver);
     data = new ContextData(to_self_sender);
+
+    TimeProfile profile = {
+        .fast_timestamps = { 2000, 2100, 3600, 4000, 6000, 3800 },
+        .slow_timestamps = { 6060, 7183, 10309, 11780, 17207, 10552 }
+        // deadlines will be automatically initialized to 0
+    };
+
+    TimeProfileManager::save_profile(profile, SAVE_LOCATION_TIMEPROFILE);
+    TimeProfileManager::convert_to_deadlines(&profile);
+
+    data->timeprofile = profile;
+
+
     auto logic = new Logic<Fsm>(logic_receiver, to_self_sender, data);
 
-    
+
     // Boot sequence
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
@@ -111,6 +124,25 @@ int main() {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
     WAIT(1000);
 
+
+
+
+
+
+
+
+
+
+    DEBUG("SECOND PIECE");
+
+
+
+
+
+
+
+
+
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
     WAIT(1000);
@@ -142,12 +174,16 @@ int main() {
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER BACK BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
 
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>  FBM 2 READY <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_READY);
+
     //wait till piece is picked up
     WAIT(2000);
-    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER BACK UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> TRANSFER DONE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::TRANSFER_DONE);
+
     WAIT(1000);
-    
+
 
     delete logic;
     delete data;
