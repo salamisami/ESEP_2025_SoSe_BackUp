@@ -108,7 +108,6 @@ State* Context<T>::handleInternal(int event_value) {
 
 template<typename T>
 State* Context<T>::handleADC(int event_value) {
-    //TODO put newState = state->function() here
     State* newState = nullptr;
     switch((ADC_Enum) event_value) {
         case ADC_Enum::ADC_TIMEOUT:
@@ -372,7 +371,6 @@ template <typename T>
 State* Context<T>::handleError(int event_value) {
     State* newState = nullptr;
     switch((Error_Enum) event_value) {
-        //TODO is this true?
         case Error_Enum::ERROR_W_LOST:
             newState = state->error_w_lost();
             break;

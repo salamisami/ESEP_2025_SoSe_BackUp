@@ -14,11 +14,11 @@ MQTTNoError::~MQTTNoError() {}
 //===================================================== public functions =====================================================
 void MQTTNoError::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void MQTTNoError::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

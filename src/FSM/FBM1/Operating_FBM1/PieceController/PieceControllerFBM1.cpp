@@ -47,38 +47,7 @@ State* PieceControllerFBM1::new_piece() {
 	return nullptr;
 }
 
-// State* PieceControllerFBM1::custom_handler_function(State* (State::* handler_function)()) {
-//         for(auto it = substates.begin(); it != substates.end(); ) {
-//             State*& current_substate = *it;  // Use reference to pointer
 
-//             State* newSubstate = (current_substate->*handler_function)();
-
-//             if(newSubstate == State::EXIT_STATE) {
-// 				//TODO event is consumed to exit the state
-//                 // Handle exit case
-//                 current_substate->exit();
-//                 delete current_substate;
-//                 it = substates.erase(it);
-// 				//TODO event is consumed, result is exit state
-//                 return nullptr;
-//             }
-
-//             if(newSubstate != nullptr) {
-// 				//TODO event is consumed
-//                 // Handle state transition
-//                 current_substate->exit();
-//                 delete current_substate;
-//                 current_substate = newSubstate;
-//                 current_substate->entry();
-//             }
-
-//             ++it;  // Common increment for both remaining cases
-//         }
-// 		//TODO event not consumed at all
-//         return nullptr;
-//     }
-
-//TODO check if the event is consumed or not here
 State* PieceControllerFBM1::laser_back_blocked() {
 	State* newState = handle_event_using_special_function(&State::laser_back_blocked);
 
@@ -96,37 +65,6 @@ State* PieceControllerFBM1::laser_sorting_gate_blocked() {
 	//here
 	return newState;
 }
-
-// State* PieceControllerFBM1::timer(TIMER_ID id) {
-//         for(auto it = substates.begin(); it != substates.end(); ) {
-//             State*& current_substate = *it;  // Use reference to pointer
-
-//             State* newSubstate = current_substate->timer(id);
-
-//             if(newSubstate == State::EXIT_STATE) {
-// 				//TODO event is consumed to exit the state
-//                 // Handle exit case
-//                 current_substate->exit();
-//                 delete current_substate;
-//                 it = substates.erase(it);
-// 				//TODO event is consumed, result is exit state
-//                 return nullptr;
-//             }
-
-//             if(newSubstate != nullptr) {
-// 				//TODO event is consumed
-//                 // Handle state transition
-//                 current_substate->exit();
-//                 delete current_substate;
-//                 current_substate = newSubstate;
-//                 current_substate->entry();
-//             }
-
-//             ++it;  // Common increment for both remaining cases
-//         }
-// 		//TODO event not consumed at all
-//         return nullptr;
-//     }
 
 State* PieceControllerFBM1::handle_event_using_special_function(State* (State::* handler_function)()) {
         if(substates.empty() && quit_on_empty_) {

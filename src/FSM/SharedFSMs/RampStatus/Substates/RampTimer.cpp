@@ -14,12 +14,12 @@ RampTimer::~RampTimer() {}
 //===================================================== public functions =====================================================
 void RampTimer::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
     data->timer->start_timer(1000, TIMER_ID::RAMP_TIMER);
 }
 
 void RampTimer::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

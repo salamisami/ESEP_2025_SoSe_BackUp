@@ -15,11 +15,11 @@ LocalRampFull::~LocalRampFull() {}
 //===================================================== public functions =====================================================
 void LocalRampFull::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void LocalRampFull::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

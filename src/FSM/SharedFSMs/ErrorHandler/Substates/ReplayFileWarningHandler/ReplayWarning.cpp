@@ -14,13 +14,13 @@ ReplayWarning::~ReplayWarning() {}
 //===================================================== public functions =====================================================
 void ReplayWarning::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON_FAST);
 }
 
 void ReplayWarning::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

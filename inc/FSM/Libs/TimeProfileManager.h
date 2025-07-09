@@ -62,7 +62,7 @@ public:
 
 			try {
 				time_profile->fast_timestamps[i] = (double) std::stol(fast_str) * TIMESTAMP_FACTOR;
-				time_profile->slow_timestamps[i] = (double) std::stol(slow_str) * TIMESTAMP_FACTOR; //TODO here also additional timestamp factor?
+				time_profile->slow_timestamps[i] = (double) std::stol(slow_str) * TIMESTAMP_FACTOR;
 			} catch(const std::invalid_argument& e) {
 				std::cerr << "Error: Invalid number format at line " << i + 2 << "\n";
 				break;

@@ -14,11 +14,11 @@ ValidMeasure::~ValidMeasure() {}
 //===================================================== public functions =====================================================
 void ValidMeasure::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void ValidMeasure::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

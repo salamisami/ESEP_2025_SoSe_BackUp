@@ -15,11 +15,11 @@ BothRampsFull::~BothRampsFull() {}
 //===================================================== public functions =====================================================
 void BothRampsFull::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void BothRampsFull::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

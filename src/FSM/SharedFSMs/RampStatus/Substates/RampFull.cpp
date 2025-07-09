@@ -14,12 +14,12 @@ RampFull::~RampFull() {}
 //===================================================== public functions =====================================================
 void RampFull::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
     data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RAMP_FULL);
 }
 
 void RampFull::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

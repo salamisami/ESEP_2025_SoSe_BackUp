@@ -15,11 +15,11 @@ ComRampFull::~ComRampFull() {}
 //===================================================== public functions =====================================================
 void ComRampFull::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void ComRampFull::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 
