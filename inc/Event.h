@@ -2,8 +2,8 @@
 #define EVENT_H
 #pragma once
 
-#define OPEN_GATE_SLOW_DURATION 2200
-#define OPEN_GATE_FAST_DURATION 1000
+#define OPEN_GATE_SLOW_DURATION 2500
+#define OPEN_GATE_FAST_DURATION 1500
 #define PUSH_DURATION 500
 #define ENDTOGATE_MULTIPLIER 0.70
 
@@ -203,7 +203,6 @@ enum class ScannedPiece : int {
 };
 
 enum class RemoteControlEnum : int {
-    MQTT_DISCONNECTED,
     MQTT_CONNECTED,
     RECONNECT,
     REMOTE_ESTOP
@@ -227,7 +226,6 @@ enum class Error_Enum : int {
     PIECE_LOST_RESOLVED,
     PIECES_TOO_CLOSE,
     ERROR_INVALID_MEASURE_RESOLVED,
-    ERROR_W_LOST_RESOLVED,
     ERROR_C_LOST_MQTT_OVER_COM,
     ERROR_C_LOST_MQTT_OVER_COM_RESOLVED
 };

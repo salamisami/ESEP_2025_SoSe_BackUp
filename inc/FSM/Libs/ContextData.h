@@ -79,6 +79,8 @@ public:
     bool no_error_or_warning = true;
     bool is_estop = false;
     bool config = false;
+    bool com_resolved = true;
+    bool mqtt_resolved = true;
     StateContainer workpieceList;
     MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
 

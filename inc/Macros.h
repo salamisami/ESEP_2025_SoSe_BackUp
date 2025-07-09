@@ -29,7 +29,7 @@
 #define PROFIL_DATEI "ESEP-Team-1-1_25/profile_calibration.csv"
 #define SAVE_LOCATION_TIMEPROFILE "ESEP-Team-1-1_25/time_profiles.csv"
 
-#define DEBUG(msg) //std::cout << msg << std::endl
+#define DEBUG(msg) std::cout << msg << std::endl
 #endif
 
 #ifdef VERBOSE_STATES
@@ -55,7 +55,6 @@
 #define TIMESTAMP_FACTOR 0.9
 #define GATE_END_FACTOR 1.1
 
-#define FBM_2
 // Configuration for FBM Module 1
 #ifdef FBM_1
 	#define FBM					1
@@ -87,3 +86,23 @@
 	#define COMMAND_TOPIC		"festo/anlage2/command"
 	#define MQTT_CLIENT			"Festo_FBM2"
 #endif
+#define MACRO_PIECE_MISSING_PT1 data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);\
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);\
+	PieceEnum validated_piece = localdata_.validated_type;\
+	switch(validated_piece) {\
+		case PieceEnum::FLAT:\
+			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_FLAT);\
+			break;\
+		case PieceEnum::TALL:\
+			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL);\
+			break;\
+		case PieceEnum::TALL_WITH_METAL:\
+			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL_W_METAL);\
+			break;\
+		default:\
+			break;\
+	}\
+	Piece* piece_to_delete = localdata_.piece;\
+	data->pieces_map->erase(localdata_.piece->id);\
+	delete piece_to_delete;\
+	return State::EXIT_STATE;
