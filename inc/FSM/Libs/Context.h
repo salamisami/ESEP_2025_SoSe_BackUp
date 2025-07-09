@@ -177,10 +177,10 @@ State* Context<T>::handleCOM(int event_value) {
             newState = state->reconnect();
             break;
         case COM_Enum::RAMP_FULL:
-            newState = state->ramp_full();
+            newState = state->com_ramp_full();
             break;
         case COM_Enum::RAMP_NOT_FULL:
-            newState = state->ramp_not_full();
+            newState = state->com_ramp_not_full();
             break;
         case COM_Enum::RESET_TO_FLAT:
             newState = state->reset_to_flat();
