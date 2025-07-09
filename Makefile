@@ -13,7 +13,7 @@ TARGET = $(OUTPUT_DIR)/$(ARTIFACT)
 
 #Compiler definitions
 
-CC = qcc -Vgcc_nto$(PLATFORM) -DFBM_1
+CC = qcc -Vgcc_nto$(PLATFORM)
 CXX = q++ -lang-c++ -Vgcc_nto$(PLATFORM)
 LD = $(CXX)
 
@@ -35,7 +35,7 @@ CCFLAGS_profile += -g -O0 -finstrument-functions
 LIBS_profile += -lprofilingS
 
 #Generic compiler flags (which include build type flags)
-CCFLAGS_all += -Wall -fmessage-length=0 -DVERBOSE_STATES
+CCFLAGS_all += -Wall -fmessage-length=0 -DVERBOSE_STATES -DFBM_1
 CCFLAGS_all += $(CCFLAGS_$(BUILD_PROFILE))
 #Shared library has to be compiled with -fPIC
 #CCFLAGS_all += -fPIC
