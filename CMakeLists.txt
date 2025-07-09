@@ -13,8 +13,8 @@ if(UNITY_BUILD)
 endif()
 
 # Use file globbing carefully
-file(GLOB_RECURSE MAIN_SRC LIST_DIRECTORIES false CONFIGURE_DEPENDS "src/[A-Za-z]*.cpp")
-file(GLOB_RECURSE MAIN_INC LIST_DIRECTORIES false CONFIGURE_DEPENDS "inc/[A-Za-z]*.h")
+file(GLOB_RECURSE MAIN_SRC LIST_DIRECTORIES false CONFIGURE_DEPENDS "src/FSM/[A-Za-z]*.cpp")
+file(GLOB_RECURSE MAIN_INC LIST_DIRECTORIES false CONFIGURE_DEPENDS "inc/FSM/[A-Za-z]*.h")
 
 # Get include directories
 set(GLOB_INC_DIRS "")
