@@ -273,6 +273,50 @@ void Remote_Controller::threadFunctionRecive() {
                             msg = std::string(ClientID) + " Ein Werkstück ist Appeared!";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
+                        case Error_Enum::COM_ERROR_RESOLVED:
+                            msg = std::string(ClientID) + " COM-Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::RAMP_ERROR_RESOLVED:
+                            msg = std::string(ClientID) + " Rampen-Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::MQTT_ERROR_RESOLVED:
+                            msg = std::string(ClientID) + " MQTT-Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::PIECE_APPEARED_RESOLVED:
+                            msg = std::string(ClientID) + " Werkstück Appeared Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::PIECE_LOST_RESOLVED:
+                            msg = std::string(ClientID) + " Werkstück-Verlust-Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::PIECES_TOO_CLOSE:
+                            msg = std::string(ClientID) + " Werkstücke zu nah beieinander!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::ERROR_INVALID_MEASURE_RESOLVED:
+                            msg = std::string(ClientID) + " Ungültige Messung behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::ERROR_C_LOST_MQTT_OVER_COM:
+                            msg = std::string(ClientID) + " MQTT-über-COM Fehler aufgetreten!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::ERROR_C_LOST_MQTT_OVER_COM_RESOLVED:
+                            msg = std::string(ClientID) + " MQTT-über-COM Fehler behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
                         default:
                             break;
                     }
