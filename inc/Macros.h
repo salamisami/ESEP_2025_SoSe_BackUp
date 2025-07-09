@@ -29,7 +29,7 @@
 #define PROFIL_DATEI "ESEP-Team-1-1_25_cal/profile_calibration.csv"
 #define SAVE_LOCATION_TIMEPROFILE "ESEP-Team-1-1_25rec/time_profiles.csv"
 
-#define DEBUG(msg) //std::cout << msg << std::endl
+#define DEBUG(msg) std::cout << msg << std::endl
 #endif
 
 #ifdef VERBOSE_STATES
@@ -55,7 +55,7 @@
 #define TIMESTAMP_FACTOR 0.9
 #define GATE_END_FACTOR 1.1
 
-#define FBM_1
+#define FBM_2
 // Configuration for FBM Module 1
 #ifdef FBM_1
 	#define FBM					1
