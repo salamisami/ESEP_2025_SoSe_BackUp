@@ -31,12 +31,15 @@
 
 typedef struct {
 	std::string name;
+	bool hatLoch;
 	ADC_Enum eventValue;
 	float avg;
+	float minV;
+	float stddev;
+	float range;
 	float lochMin; 
 	int lochStartIndex;
 	int lochEndIndex;
-	bool hatLoch;
 } Profil;
 
 typedef struct{

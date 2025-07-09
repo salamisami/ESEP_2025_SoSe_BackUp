@@ -19,7 +19,6 @@ Transfer::~Transfer() {}
 //===================================================== public functions =====================================================
 void Transfer::entry(){
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id); 
 	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
 	data->piece_tracker = new DistanceTracker(&data->timeprofile, true);
 	//Action here
@@ -50,6 +49,13 @@ State* Transfer::timer(TIMER_ID id) {
 }
 State* Transfer::request_transfer(){
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
+	return nullptr;
+}
+
+State* Transfer::id() {
+	int piece_id = data->event_payload;
+	data->piece_FBM2_soll->id = piece_id;
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	return nullptr;
 }
 
