@@ -51,26 +51,7 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 
 	
 	DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
-	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
-	PieceEnum validated_piece = localdata_.validated_type;
-	switch(validated_piece) {
-		case PieceEnum::FLAT:
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_FLAT);
-			break;
-		case PieceEnum::TALL:
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL);
-			break;
-		case PieceEnum::TALL_WITH_METAL:
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL_W_METAL);
-			break;
-		default:
-			break;
-	}
-	Piece* piece_to_delete = localdata_.piece;
-	data->pieces_map->erase(localdata_.piece->id);
-	delete piece_to_delete;
-	return State::EXIT_STATE;
+	MACRO_PIECE_MISSING_PT1
 }
 
 State* ADCGate_PT1::laser_sorting_gate_blocked() {
@@ -113,4 +94,3 @@ State* ADCGate_PT1::metal_detected() {
 		return new IsMetal_PT1(data, localdata_);
 	}
 	return nullptr;
-}
