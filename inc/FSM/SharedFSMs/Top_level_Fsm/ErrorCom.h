@@ -19,8 +19,9 @@ class ErrorCom : public State{
 	void exit() override;
 
 	State* clone() override;
-  State* com_error_resolved() override;
-  State* mqtt_error_resolved() override;
+
+	State* mqtt_error_resolved() override;
+	State* com_error_resolved() override;
 
 };
 
