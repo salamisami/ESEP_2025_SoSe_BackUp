@@ -28,9 +28,6 @@ using namespace std;
 
 using namespace std;
 
-#define NO_RC_REC
-#define NO_COM
-
 int main() {
 
     //std::thread inputThread(wait_for_enter);
