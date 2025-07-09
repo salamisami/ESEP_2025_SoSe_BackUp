@@ -55,7 +55,6 @@
 #define TIMESTAMP_FACTOR 0.9
 #define GATE_END_FACTOR 1.1
 
-#define FBM_2
 // Configuration for FBM Module 1
 #ifdef FBM_1
 	#define FBM					1

@@ -13,7 +13,7 @@ TARGET = $(OUTPUT_DIR)/$(ARTIFACT)
 
 #Compiler definitions
 
-CC = qcc -Vgcc_nto$(PLATFORM) -DFBM_1 -DFBM_2
+CC = qcc -Vgcc_nto$(PLATFORM) -DFBM_1
 CXX = q++ -lang-c++ -Vgcc_nto$(PLATFORM)
 LD = $(CXX)
 
