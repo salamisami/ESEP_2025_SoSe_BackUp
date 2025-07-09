@@ -79,9 +79,13 @@ int main() {
 
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
+    #ifndef NO_RC_REC
     while(Remote_Controller::Main_running) {
         //std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+    #else
+    while(1){}
+    #endif
 
     delete hal;
 
