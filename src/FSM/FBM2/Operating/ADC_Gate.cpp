@@ -56,9 +56,7 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 	auto distance = data->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
-	std::cout << "Gate laser blocked Last Area: " << (int) current_area
-		<< " Last Pos: " << (int) current_pos << std::endl;
-
+	
 	if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)){
 		return new Measuring(data);
 	}
