@@ -50,7 +50,7 @@
 #define DEADLINE_FACTOR 1
 #define TIMESTAMP_FACTOR 1
 
-#define FBM_2
+#define FBM_1
 // Configuration for FBM Module 1
 #ifdef FBM_1
 	#define FBM					1

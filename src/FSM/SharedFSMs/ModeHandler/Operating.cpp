@@ -41,7 +41,7 @@ void Operating::entry() {
 }
 
 void Operating::exit() {
-	OrthState::entry();
+	OrthState::exit();
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR,
 		(int) ActuatorEnum::TRAFFIC_GREEN_OFF);

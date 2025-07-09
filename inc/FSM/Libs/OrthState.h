@@ -5,6 +5,7 @@
 #include "Event.h"
 #include "ContextData.h"
 #include "State.h"
+#include "Worker.h"
 
 #include <deque>
 #include <iostream>
@@ -25,37 +26,46 @@ public:
         , default_exit_state_(default_exit_state)
         , direct_exit_(direct_exit)
         , quit_on_empty_(quit_on_empty) {
-        //std::cout << "OrthState Constructor" << std::endl;
+        for(auto& substate : substates) {
+            workers.push_back(new Worker());
+        }
+
     }
     //Disable copy constructor, because we're going to use clone() instead
     OrthState(const OrthState&) = delete;
     virtual ~OrthState() {
-        //std::cout << "OrthState Destructor" << std::endl;
+
+        for(auto& worker : workers) {
+            worker->stop();
+            delete worker;
+        }
+
         for(auto it = substates.begin(); it != substates.end(); ) {
             State*& current_substate = *it;  // Use reference to pointer
             delete current_substate;
             ++it;
         }
+
+
     }
 
     //================================================ public functions ================================================
 public:
     virtual void entry() override {
-        //PRINT_STATE;
-        for(auto it = substates.begin(); it != substates.end(); ) {
-            State*& current_substate = *it;  // Use reference to pointer
-            current_substate->entry();
-            ++it;
+        for(auto it = substates.begin(); it != substates.end(); ++it) {
+            State*& current_substate = *it;  // Dereference iterator to get the pointer
+            workers[std::distance(substates.begin(), it)]->enqueue([&current_substate]() {
+                current_substate->entry();
+                });
         }
     }
     virtual void exit() override {
         //PRINT_STATE;
-        for(auto it = substates.begin(); it != substates.end(); ) {
-            State*& current_substate = *it;  // Use reference to pointer
-            if(current_substate != nullptr) {
+        for(auto it = substates.begin(); it != substates.end(); ++it) {
+            State*& current_substate = *it;  // Dereference iterator to get the pointer
+            workers[std::distance(substates.begin(), it)]->enqueue([&current_substate]() {
                 current_substate->exit();
-            }
-            ++it;
+                });
         }
     }
 
@@ -70,14 +80,14 @@ public:
      */
     void spawn_orthogonal_state(State* input_state) {
         substates.push_back(input_state);
-        input_state->entry();
+        Worker* next_worker = new Worker();
+        workers.push_back(next_worker);
+        next_worker->enqueue([&input_state]() {
+            input_state->entry();
+            });
     }
 
-    State* despawn_orthogonal_state() {
-        State* state_to_despawn = substates.front();
-        substates.pop_front();
-        return state_to_despawn;
-    }
+
 
     virtual std::string get_current_state() override {
         if(substates.empty()) {
@@ -143,6 +153,7 @@ public:
     //================================================ private variables ================================================
 protected:
     std::deque<State*> substates;
+    std::deque<Worker*> workers;
     State* default_exit_state_;
     bool direct_exit_;
     bool quit_on_empty_;
@@ -166,6 +177,13 @@ protected:
     virtual State* handle_event_using_function(State* (State::* handler_function)()) override {
         if(substates.empty() && quit_on_empty_) {
             return default_exit_state_;
+        }
+
+        for(auto it = substates.begin(); it != substates.end(); ++it) {
+            State*& current_substate = *it;  // Dereference iterator to get the pointer
+            workers[std::distance(substates.begin(), it)]->enqueue([&current_substate]() {
+                current_substate->exit();
+                });
         }
 
         auto it = substates.begin();
