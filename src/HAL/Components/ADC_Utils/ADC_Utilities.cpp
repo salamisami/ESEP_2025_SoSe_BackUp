@@ -180,18 +180,18 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
 
     float avg = sum / value.size();
 
-//    std::cout << "\n--- Klassifikation Debug ---\n";
-//    std::cout << "Mittelwert: " << avg << " V\n";
-//    std::cout << "Minimum:    " << minV << " V an Index " << minIndex << "\n";
-//    std::cout << "Größe Messbereich: " << value.size() << "\n";
+    std::cout << "\n--- Klassifikation Debug ---\n";
+    std::cout << "Mittelwert: " << avg << " V\n";
+    std::cout << "Minimum:    " << minV << " V an Index " << minIndex << "\n";
+    std::cout << "Größe Messbereich: " << value.size() << "\n";
 
     for(const auto& p : profile) {
         std::cout << "\nVergleiche mit Profil: " << p.name << "\n";
-//        std::cout << "  Soll-Avg: " << p.avg << " ±" << MESS_TOLERANZ << "\n";
+        std::cout << "  Soll-Avg: " << p.avg << " ±" << MESS_TOLERANZ << "\n";
 
         if(std::fabs(avg - p.avg) > MESS_TOLERANZ) {
-//            std::cout << "  → ❌ Mittelwert außerhalb Toleranz\n";
-//            std::cout << "Aktuell:" << avg << "gespeichert:" << p.avg << "\n";
+            std::cout << "  → ❌ Mittelwert außerhalb Toleranz\n";
+            std::cout << "Aktuell:" << avg << "gespeichert:" << p.avg << "\n";
             continue;
         }
 
@@ -200,8 +200,8 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
             return p.eventValue;
         }
 
-        //std::cout << "  Loch-Soll: " << p.lochMin << " ±" << MESS_TOLERANZ
-         //   << ", Index-Bereich: [" << p.lochStartIndex << " – " << p.lochEndIndex << "]\n";
+        std::cout << "  Loch-Soll: " << p.lochMin << " ±" << MESS_TOLERANZ
+            << ", Index-Bereich: [" << p.lochStartIndex << " – " << p.lochEndIndex << "]\n";
 
         if(minV <= p.lochMin + MESS_TOLERANZ &&
             minIndex >= p.lochStartIndex &&
@@ -210,7 +210,7 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
             //TODO Spezifizieren!!!
             return p.eventValue;
         } else {
-            //std::cout << "  → ❌ Lochbedingung nicht erfüllt\n";
+            std::cout << "  → ❌ Lochbedingung nicht erfüllt\n";
             break;
             //SIgnal Aussenden Error  !
         }
@@ -249,7 +249,7 @@ bool ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bo
 
         nanosleep(&delay, NULL);
     }
-    return false;
+    //return false;
 }
 
 ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
