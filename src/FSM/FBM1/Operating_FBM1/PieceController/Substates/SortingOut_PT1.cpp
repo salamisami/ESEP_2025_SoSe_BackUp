@@ -14,14 +14,12 @@ SortingOut_PT1::~SortingOut_PT1() {}
 void SortingOut_PT1::entry() {
   PRINT_STATE;
   data->timer->start_timer(SORT_OUT_TIME, TIMER_ID::SORTINGOUT_PT1);
-  data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
   data->stopwatch.start();
 
 }
 
 void SortingOut_PT1::exit() {
   PRINT_STATE;
-  data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 }
 
 State* SortingOut_PT1::clone() {

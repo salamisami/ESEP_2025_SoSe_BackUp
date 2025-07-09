@@ -13,9 +13,9 @@ Operating::Operating(ContextData* data) : OrthState(data, {
 #ifdef FBM_2
 Operating::Operating(ContextData* data) : OrthState(data,
 	{
-	new ReadyForPiece(data),
-	new MotorControl(data),
-	new IdleSorting(data)
+		new ReadyForPiece(data),
+		new MotorControl(data),
+		new IdleSorting(data)
 	}) {
 }
 #endif
@@ -34,17 +34,17 @@ Operating::~Operating() {
 
 void Operating::entry() {
 	PRINT_STATE;
-
 	data->sender->send_event((int8_t) Topic::ACTUATOR,
 		(int) ActuatorEnum::TRAFFIC_GREEN_ON);
 	OrthState::entry();
 }
 
 void Operating::exit() {
-	OrthState::entry();
+	OrthState::exit();
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR,
 		(int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 }
 
 State* Operating::clone() {
