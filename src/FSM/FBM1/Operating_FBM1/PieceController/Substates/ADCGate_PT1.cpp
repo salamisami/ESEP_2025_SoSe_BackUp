@@ -52,6 +52,8 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 	if (current_area == Area::GATE_END){// && current_pos > PIECE_TRANSITION_TOLERANCE + 5){
 	DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
 	MACRO_PIECE_MISSING_PT1
+	}
+	return new ADCGate_PT1(data, localdata_);
 }
 
 State* ADCGate_PT1::laser_sorting_gate_blocked() {
