@@ -38,6 +38,16 @@ State* ErrorCom::com_error_resolved() {
 	return modehandler;
 }
 
+State* ErrorCom::error_c_lost_com(){
+	  data->com_resolved = false;
+	  return nullptr;
+}
+
+State* ErrorCom::error_c_lost_mqtt(){
+	  data->mqtt_resolved = false;
+	  return nullptr;
+}
+
 State* ErrorCom::clone() {
 	return new ErrorCom(data);
   }
