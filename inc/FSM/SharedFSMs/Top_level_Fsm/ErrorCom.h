@@ -22,6 +22,8 @@ class ErrorCom : public State{
 
 	State* mqtt_error_resolved() override;
 	State* com_error_resolved() override;
+	State* error_c_lost_com() override;
+	State* error_c_lost_mqtt() override;
 
 };
 
