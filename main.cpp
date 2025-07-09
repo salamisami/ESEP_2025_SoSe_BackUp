@@ -10,7 +10,7 @@
 #include "SimulatePiece.h"
 #include "Piece.h"
 #include "ReadyForPiece.h"
-#include <gtest/gtest.h>
+#include "Fsm.h"
 
 #include <iostream>
 
@@ -63,7 +63,9 @@ int main() {
     logic_sender = new Mock_PM::Sender(hal_receiver);
     to_self_sender = new Mock_PM::Sender(logic_receiver);
     data = new ContextData(to_self_sender);
-    auto logic = new Logic<Boot>(logic_receiver, to_self_sender, data);
+    auto logic = new Logic<Fsm>(logic_receiver, to_self_sender, data);
+
+    
     // Boot sequence
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::IS_SWITCH);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_START_PRESSED);
@@ -72,16 +74,6 @@ int main() {
     WAIT(2000);
 
 
-    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::REQUEST_TRANSFER);
-    //EXPECT_STATE_INSTANT("WaitingForTransferStart");
-    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>> REQUEST_TRANSFER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-
-    WAIT(2000);
-    remote_control->send_event((int8_t)Topic::COM, (int)COM_Enum::TRANSFER_START_TALL);
-    remote_control->send_event((int8_t)Topic::ID, (int) 2);
-    //EXPECT_STATE_INSTANT("Transfer");
-    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> TRANSFER_START_TALL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-    WAIT(1000);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
     WAIT(1000);
@@ -94,10 +86,14 @@ int main() {
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
     remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
     WAIT(1123);
-    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> ADC END <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> ADC END (PIECE FLAT) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_WF_DETECT);
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
 
+
+    // DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> [MUST ERROR] LASER BACK BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    // remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
+    // remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
 
     WAIT(1500);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
@@ -113,6 +109,44 @@ int main() {
     WAIT(2000);
     DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER BACK UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
+    WAIT(1000);
+
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
+    WAIT(1000);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER FRONT UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
+
+    WAIT(2000);
+
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> ADC BEGIN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_BLOCKED);
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
+    WAIT(1123);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> ADC END (PIECE HOLE) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_W_B_DETECT);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::ADC_TOP_AREA_UNBLOCKED);
+
+
+    // DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> [MUST ERROR] LASER BACK BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    // remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
+    // remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
+
+    WAIT(1500);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_BLOCKED);
+    WAIT(400);
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_SORTING_GATE_UNBLOCKED);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER SORTING UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    WAIT(2000);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER BACK BLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);
+
+    //wait till piece is picked up
+    WAIT(2000);
+    DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>> LASER BACK UNBLOCKED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_UNBLOCKED);
+    WAIT(1000);
     
 
     delete logic;
