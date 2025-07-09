@@ -62,7 +62,7 @@ int main() {
 
     auto logic = new Logic<Fsm>(fsm_receiver, fsm_sender);
     Recorder* rec = new Recorder(recorder_receiver, recorder_sender);
-    //Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
+    Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
     COM* externCommunication = new COM(com_external_receiver, FBM_N_COM_EXT, com_receiver_local, com_sender_local);
     externCommunication->start();
     HAL* hal = new HAL(hal_receiver, hal_sender);
