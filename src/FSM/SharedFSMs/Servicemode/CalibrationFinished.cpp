@@ -25,6 +25,7 @@ void CalibrationFinished::entry(){
 	TimeProfileManager::save_profile(data->timeprofile, SAVE_LOCATION_TIMEPROFILE);
 	TimeProfileManager::convert_to_deadlines(&data->timeprofile);
 	data->config = true;
+  EXIT_STATE;
 }
 
 void CalibrationFinished::exit(){
