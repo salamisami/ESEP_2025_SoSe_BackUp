@@ -111,13 +111,13 @@ int main() {
     delete com_sender_local;
     delete RemCon_sender;
 
-    #ifndef NO_COM
+    #ifndef NO_RC_REC
     delete RemCon_receiver;
     #endif
 
     delete recorder_sender;
 
-    #ifndef NO_COM
+    #ifndef NO_RC_REC
     delete recorder_receiver;    
     #endif
 
