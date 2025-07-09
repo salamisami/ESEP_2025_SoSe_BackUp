@@ -283,7 +283,7 @@ void COM::runServer()
                 updateHeartbeat();
 
                 _pulse timeoutEvent;
-                int8_t comCode = (int8_t)Topic::Error;
+                int8_t comCode = (int8_t)Topic::ERROR;
                 int value = (int)Error_Enum::ERROR_C_LOST_COM;
 
                 timeoutEvent.code = comCode;
