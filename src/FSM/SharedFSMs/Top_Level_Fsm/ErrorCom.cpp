@@ -22,6 +22,7 @@ State* ErrorCom::mqtt_error_resolved() {
 		else{
 			State* modehandler = data->modehandler_history->top();
 			data->modehandler_history->pop();
+			//TODO check for EstopPressed and send Event
 			return modehandler;
 		}
 	}
@@ -41,6 +42,8 @@ State* ErrorCom::com_error_resolved() {
 
 		else{
 			State* modehandler = data->modehandler_history->top();
+			data->modehandler_history->pop();
+			//TODO check for EstopPressed and send Event
 			return modehandler;
 		}
 	}
