@@ -283,12 +283,12 @@ void COM::runServer()
                 updateHeartbeat();
 
                 _pulse timeoutEvent;
-                int8_t comCode = (int8_t)Topic::COM;
-                int value = (int)COM_Enum::TIMEOUT_COM;
+                int8_t comCode = (int8_t)Topic::Error;
+                int value = (int)Error_Enum::ERROR_C_LOST_COM;
 
                 timeoutEvent.code = comCode;
                 timeoutEvent.value.sival_int = value;
-                COUT("Sending Timeout Notification; COM_Server");
+                COUT("Sending ERROR_C_LOST_COM Notification; COM_Server");
                 sendToDispatcher(timeoutEvent, (int)EventPriority::FIRST_PRIO);
             }
         }
