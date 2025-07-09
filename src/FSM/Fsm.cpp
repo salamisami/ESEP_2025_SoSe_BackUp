@@ -11,7 +11,7 @@
 Fsm::Fsm(ContextData* data) : OrthState(data, {
     new NoRampFull(data),
     new RampNotFull(data),
-    new Boot(data),
+    new IdleIM(data),
     new SortingOrder(data),
     new MQTTNoError(data),
 	new COMNoError(data)
@@ -22,7 +22,7 @@ Fsm::Fsm(ContextData* data) : OrthState(data, {
 Fsm::Fsm(ContextData* data) : OrthState(data, {
     new NoRampFull(data),
     new RampNotFull(data),
-    new Boot(data),
+    new IdleIM(data),
     new IdleReset(data),
     new MQTTNoError(data),
 	new COMNoError(data)

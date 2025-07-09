@@ -48,11 +48,11 @@ int main() {
     #ifndef NO_RC_REC
     Thread_COM::Receiver* recorder_receiver = new Thread_COM::Receiver(FBM_N_RECORDER); //comment this to test without recorder
     #endif
-    Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
+    //Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
     #ifndef NO_RC_REC
     Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
     #endif
-    Thread_COM::Sender* RemCon_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
+    //Thread_COM::Sender* RemCon_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
     Thread_COM::Sender* com_sender_local = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
@@ -61,8 +61,8 @@ int main() {
     Thread_COM::Receiver* com_receiver_local = new Thread_COM::Receiver(FBM_N_COM_RECEIVER);
     #endif
 
-    Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_N_HAL);
-    Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
+    //Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_N_HAL);
+    //Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
 
     auto logic = new Logic<Fsm>(fsm_receiver, fsm_sender);
@@ -100,8 +100,8 @@ int main() {
 
     delete logic;
 
-    delete hal_sender;
-    delete hal_receiver;
+    // delete hal_sender;
+    // delete hal_receiver;
 
     #ifndef NO_COM
     delete com_receiver_local;
@@ -109,13 +109,13 @@ int main() {
     #endif
 
     delete com_sender_local;
-    delete RemCon_sender;
+    //delete RemCon_sender;
 
     #ifndef NO_RC_REC
     delete RemCon_receiver;
     #endif
 
-    delete recorder_sender;
+    // delete recorder_sender;
 
     #ifndef NO_RC_REC
     delete recorder_receiver;    

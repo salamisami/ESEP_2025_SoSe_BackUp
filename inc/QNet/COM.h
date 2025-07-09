@@ -10,8 +10,7 @@
 #include <condition_variable>
 #include <thread>
 #include <memory>
-
-#define COUT(msg) std::cout << msg << std::endl
+#include "macros.h"
 
 #define HEARTBEAT_MULTIPLIER 1
 

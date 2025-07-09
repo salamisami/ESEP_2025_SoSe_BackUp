@@ -112,7 +112,7 @@ void COM::runClient() {
             try {
                 _client = make_unique<Thread_COM::Sender>(_clientSendName);
                 if(_client->getcoid() >= 0) {
-                    COUT("Connection established successfully");
+                    DEBUG("Connection established successfully");
                     break;
                 }
             } catch(...) {
@@ -208,7 +208,7 @@ int COM::sendToServer(const _pulse& msg, int priority) {
 
 // Server side implementation
 void COM::runServer() {
-    COUT("COM server started.");
+    DEBUG("COM server started.");
     bool disconnected = true;
     while(running) {
         struct _pulse event;
@@ -275,7 +275,7 @@ void COM::runServer() {
 
                 timeoutEvent.code = comCode;
                 timeoutEvent.value.sival_int = value;
-                COUT("Sending ERROR_C_LOST_COM Notification; COM_Server");
+                DEBUG("Sending ERROR_C_LOST_COM Notification; COM_Server");
                 sendToDispatcher(timeoutEvent, (int) EventPriority::FIRST_PRIO);
             }
         }
@@ -320,7 +320,7 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
 
             timeoutEvent.code = comCode;
             timeoutEvent.value.sival_int = value;
-            COUT("Sending Timeout Notification");
+            DEBUG("Sending Timeout Notification");
             sendToDispatcher(timeoutEvent); // Andere Maschine disconeccted -> Timeout
             ConnectDetach(msg->scoid);
             break;
