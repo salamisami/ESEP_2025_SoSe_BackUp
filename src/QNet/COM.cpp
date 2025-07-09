@@ -92,6 +92,13 @@ void COM::runDispatcher()
                 case Topic::ID:
                   lowPriorityQueue.push_back(dispatcherMsg);
                   break;
+                case Topic::Error:
+                  if (originalValue == (int) Error_Enum::ERROR_C_LOST_MQTT):
+                      mqttConnected = false;
+                      dispatcherMsg.code = static_cast<int>(Topic::COM);
+                      dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_MQTT_DISCONNECTED);
+                      highPriorityQueue.push_front(dispatcherMsg);
+                      break;
                 default:
                     break; // No conversion needed
                 }
@@ -506,12 +513,6 @@ void COM::handleRemConTopic(int originalValue, _pulse &dispatcherMsg)
         dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_MQTT_CONNECTED);
         lowPriorityQueue.push_back(dispatcherMsg);
  
-        break;
-    case static_cast<int>(RemoteControlEnum::MQTT_DISCONNECTED):
-        mqttConnected = false;
-        dispatcherMsg.code = static_cast<int>(Topic::COM);
-        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_MQTT_DISCONNECTED);
-        lowPriorityQueue.push_back(dispatcherMsg);
         break;
     default:
         break;
