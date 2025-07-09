@@ -53,7 +53,7 @@
 
 #define DEADLINE_FACTOR 1
 #define TIMESTAMP_FACTOR 0.9
-#define GATE_END_FACTOR 0.9
+#define GATE_END_FACTOR 1.1
 
 #define FBM_1
 // Configuration for FBM Module 1

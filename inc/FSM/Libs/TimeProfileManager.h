@@ -69,6 +69,7 @@ public:
 			}
 		}
 		in_file.close();
+		time_profile->fast_timestamps[4] *= GATE_END_FACTOR;
 		convert_to_deadlines(time_profile);
 	}
 
@@ -86,7 +87,6 @@ public:
 		input_timetable->fast_deadlines[2] = input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::ADC_UNBLOCKED];
 		input_timetable->fast_deadlines[3] = input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
 		input_timetable->fast_deadlines[4] = input_timetable->fast_timestamps[(int) Timestamp::END] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED];
-		//input_timetable->fast_deadlines[4] *= GATE_END_FACTOR;
 		input_timetable->fast_deadlines[5] = input_timetable->fast_timestamps[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
 
 		for(auto& current_deadline : input_timetable->fast_deadlines) {
