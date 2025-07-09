@@ -20,8 +20,8 @@ class ErrorCom : public State{
 
 	State* clone() override;
 
-	State* error_c_lost_mqtt_fixed() override;
-	State* error_c_lost_com_fixed() override;
+	State* mqtt_error_resolved() override;
+	State* com_error_resolved() override;
 
 };
 
