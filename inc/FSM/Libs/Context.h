@@ -354,9 +354,6 @@ template <typename T>
 State* Context<T>::handleRemote(int event_value) {
     State* newState = nullptr;
     switch((RemoteControlEnum) event_value) {
-        case RemoteControlEnum::MQTT_DISCONNECTED:
-            newState = state->error_c_lost_mqtt();
-            break;
         case RemoteControlEnum::MQTT_CONNECTED:
             newState = state->mqtt_connected();
             break;
