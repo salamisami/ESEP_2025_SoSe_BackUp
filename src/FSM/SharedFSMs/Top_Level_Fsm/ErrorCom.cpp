@@ -11,7 +11,7 @@ void ErrorCom::entry(){}
 
 void ErrorCom::exit() { }
 
-State* ErrorCom::error_c_lost_mqtt_fixed() {
+State* ErrorCom::mqtt_error_resolved() {
 	if(data->is_estop){
 		State* estop = data->estop_history->top();
 		data->estop_history->pop();
@@ -21,7 +21,7 @@ State* ErrorCom::error_c_lost_mqtt_fixed() {
 	return modehandler;
 }
 
-State* ErrorCom::error_c_lost_com_fixed() {
+State* ErrorCom::com_error_resolved() {
 	if(data->is_estop){
 		State* estop = data->estop_history->top();
 		data->estop_history->pop();
