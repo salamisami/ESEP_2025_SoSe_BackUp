@@ -22,8 +22,8 @@ State* ErrorCom::mqtt_error_resolved() {
 	}
 	State* modehandler = data->modehandler_history->top();
 	return modehandler;
+  }
 }
-
 State* ErrorCom::com_error_resolved() {
   data->com_resolved = true;
   if (!data->com_resolved || !data->mqtt_resolved){
@@ -40,4 +40,5 @@ State* ErrorCom::com_error_resolved() {
 
 State* ErrorCom::clone() {
 	return new ErrorCom(data);
-}
+  }
+
