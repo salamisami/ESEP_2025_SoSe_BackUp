@@ -8,11 +8,13 @@
 #include "WaitingForComReset.h"
 
 void WaitingForComReset::entry() {
+    data->sender->send_event((int8_t) Topic::Actuator, (int) ActuatorEnum::LED_RESET_ON);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
 	PRINT_STATE;
 }
 
 void WaitingForComReset::exit() {
+    data->sender->send_event((int8_t) Topic::Actuator, (int) ActuatorEnum::LED_RESET_OFF);
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 }

@@ -12,11 +12,13 @@ EStopReleased::~EStopReleased() {}
 //===================================================== public functions =====================================================
 
 void EStopReleased::entry(){
+    data->sender->send_event((int8_t) Topic::Actuator, (int) ActuatorEnum::LED_RESET_ON);
     PRINT_STATE;
 	data->sender->send_event((int8_t)Topic::ACTUATOR,(int8_t) ActuatorEnum::TRAFFIC_RED_ON, (int8_t)EventPriority::DEFAULT);
 }
 
 void EStopReleased::exit(){
+    data->sender->send_event((int8_t) Topic::Actuator, (int) ActuatorEnum::LED_RESET_OFF);
 	data->sender->send_event((int8_t)Topic::ACTUATOR,(int8_t) ActuatorEnum::TRAFFIC_RED_OFF,(int8_t)EventPriority::DEFAULT);
     PRINT_STATE;
 }
