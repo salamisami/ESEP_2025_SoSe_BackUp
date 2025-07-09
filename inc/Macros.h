@@ -33,7 +33,7 @@
 #endif
 
 #ifdef VERBOSE_STATES
-#define PRINT_STATE //std::cout << __PRETTY_FUNCTION__ << std::endl
+#define PRINT_STATE std::cout << __PRETTY_FUNCTION__ << std::endl
 #else
 #define PRINT_STATE
 #endif
