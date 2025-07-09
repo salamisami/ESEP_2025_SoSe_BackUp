@@ -13,7 +13,7 @@ void ErrorCom::exit() { }
 
 State* ErrorCom::mqtt_error_resolved() {
   data->mqtt_error_resolved = true;
-  if (!com_error_resolved || !mqtt_error_resolved){
+  if (!com_resolved || !mqtt_resolved){
     return nullptr;
 	if(data->is_estop){
 		State* estop = data->estop_history->top();
@@ -26,7 +26,7 @@ State* ErrorCom::mqtt_error_resolved() {
 
 State* ErrorCom::com_error_resolved() {
   data->com_error_resolved = true;
-  if (!com_error_resolved || !mqtt_error_resolved){
+  if (!com_resolved || !mqtt_resolved){
     return nullptr;
   }
 	if(data->is_estop){
