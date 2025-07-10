@@ -26,6 +26,7 @@ void WaitingIM::exit() {
 State* WaitingIM::button_start_released() {
 	if(!data->config){
 		DEBUG("No config exits");
+        data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::CANT_FIND_CALB_CONF);
 		return new IdleIM(data);
 	}
 
