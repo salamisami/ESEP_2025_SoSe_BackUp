@@ -25,7 +25,7 @@ void Recorder::threadFunction() {
 
         if (status == 0) {
             RecReplayEnum event_value = (RecReplayEnum)event.value.sival_int;
-            COM_Enum COM_event_value = (COM_Enum)event.value.sival_int;
+            ADC_Enum ADC_event_value = (ADC_Enum)event.value.sival_int;
             Topic event_code = (Topic)event.code;
             if (event_code == Topic::REC_REPLAY) {
             	DEBUG("[MAIN RecReplay event erhalten]");
@@ -37,19 +37,28 @@ void Recorder::threadFunction() {
                 }
             }
             if (record_running){
-            	if(event_code == Topic::INTERRUPT || event_code == Topic::COM){
-            		//if(COM_event_value != COM_Enum::HEARTBEAT){
+            	bool ignore = false;
+            	if(event_code == Topic::ADC){
+					switch(ADC_event_value){
+					case ADC_Enum::ADC_CALIBRATE :
+					case ADC_Enum::ADC_MESURE :
+					case ADC_Enum::ADC_STOP :
+					case ADC_Enum::ADC_RESET : ignore = true; break;
 
-    					//DEBUG("Recorder Interrupt erhalten");
-    					auto now = std::chrono::system_clock::now();
-    					auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
-    					{
-    						std::lock_guard<std::mutex> lock(queue_mutex);
-    						event_queue.push({ms, event.code, event.value.sival_int});
-    					}
-    					queue_cv.notify_one();
+					}
 
-            		//}
+					if( event_code == Topic::INTERRUPT || (event_code == Topic::ADC && !ignore)){
+
+						//DEBUG("Recorder Interrupt erhalten");
+						auto now = std::chrono::system_clock::now();
+						auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
+						{
+							std::lock_guard<std::mutex> lock(queue_mutex);
+							event_queue.push({ms, event.code, event.value.sival_int});
+						}
+						queue_cv.notify_one();
+
+					}
             	}
             }
         }
