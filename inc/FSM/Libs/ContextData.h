@@ -76,7 +76,7 @@ public:
     bool workpieces = false;
     bool motor_slowed = false;
     bool motor_stopped = false;
-    bool no_error_or_warning = true;
+    // bool no_error_or_warning = true;
     bool is_estop = false;
     bool config = false;
     bool com_resolved = true;
