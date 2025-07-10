@@ -826,7 +826,7 @@ LIBMQTT_API int MQTTAsync_reconnect(MQTTAsync handle);
  * <i>protocol</i> must be <i>tcp</i> or <i>ssl</i>. For <i>host</i>, you can
  * specify either an IP address or a host name. For instance, to connect to
  * a server running on the local machines with the default MQTT port, specify
- * <i>tcp://localhost:1880</i>.
+ * <i>tcp://localhost:1883</i>.
  * @param clientId The client identifier passed to the server when the
  * client connects to it. It is a null-terminated UTF-8 encoded string.
  * @param persistence_type The type of persistence to be used by the client:
@@ -1164,7 +1164,7 @@ typedef struct
       * <i>protocol</i> must be <i>tcp</i> or <i>ssl</i>. For <i>host</i>, you can
       * specify either an IP address or a domain name. For instance, to connect to
       * a server running on the local machines with the default MQTT port, specify
-      * <i>tcp://localhost:1880</i>.
+      * <i>tcp://localhost:1883</i>.
       */
 	char* const* serverURIs;
 	/**
@@ -1728,7 +1728,7 @@ LIBMQTT_API const char* MQTTAsync_strerror(int code);
 #include <OsWrapper.h>
 #endif
 
-#define ADDRESS     "tcp://mqtt.eclipse.org:1880"
+#define ADDRESS     "tcp://mqtt.eclipse.org:1883"
 #define CLIENTID    "ExampleClientPub"
 #define TOPIC       "MQTT Examples"
 #define PAYLOAD     "Hello World!"
@@ -1899,7 +1899,7 @@ int main(int argc, char* argv[])
 #include <OsWrapper.h>
 #endif
 
-#define ADDRESS     "tcp://mqtt.eclipse.org:1880"
+#define ADDRESS     "tcp://mqtt.eclipse.org:1883"
 #define CLIENTID    "ExampleClientSub"
 #define TOPIC       "MQTT Examples"
 #define PAYLOAD     "Hello World!"
@@ -2135,12 +2135,12 @@ exit:
   * @code
     19700101 010000.000 (1152206656) (0)> MQTTClient_connect:893
     19700101 010000.000 (1152206656)  (1)> MQTTClient_connectURI:716
-    20130528 160447.479 Connecting to serverURI localhost:1880
+    20130528 160447.479 Connecting to serverURI localhost:1883
     20130528 160447.479 (1152206656)   (2)> MQTTProtocol_connect:98
     20130528 160447.479 (1152206656)    (3)> MQTTProtocol_addressPort:48
     20130528 160447.479 (1152206656)    (3)< MQTTProtocol_addressPort:73
     20130528 160447.479 (1152206656)    (3)> Socket_new:599
-    20130528 160447.479 New socket 4 for localhost, port 1880
+    20130528 160447.479 New socket 4 for localhost, port 1883
     20130528 160447.479 (1152206656)     (4)> Socket_addSocket:163
     20130528 160447.479 (1152206656)      (5)> Socket_setnonblocking:73
     20130528 160447.479 (1152206656)      (5)< Socket_setnonblocking:78 (0)

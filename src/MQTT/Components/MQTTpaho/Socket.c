@@ -1073,9 +1073,9 @@ char* Socket_getpeer(int sock)
 
 int main(int argc, char *argv[])
 {
-	Socket_connect("127.0.0.1", 1880);
-	Socket_connect("localhost", 1880);
-	Socket_connect("loadsadsacalhost", 1880);
+	Socket_connect("127.0.0.1", 1883);
+	Socket_connect("localhost", 1883);
+	Socket_connect("loadsadsacalhost", 1883);
 }
 
 #endif

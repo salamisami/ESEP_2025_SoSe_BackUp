@@ -29,7 +29,7 @@
 #include "../MQTTpaho/MQTTProtocol.h"
 #include "../MQTTpaho/MQTTProtocolClient.h"
 
-#define DEFAULT_PORT 1880
+#define DEFAULT_PORT 1883
 
 size_t MQTTProtocol_addressPort(const char* uri, int* port, const char **topic);
 void MQTTProtocol_reconnect(const char* ip_address, Clients* client);
