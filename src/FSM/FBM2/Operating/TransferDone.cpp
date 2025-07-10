@@ -56,7 +56,7 @@ State* TransferDone::laser_front_unblocked() {
 		return new Start_ADC(data);
 	}
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_APPEARED);
-	return nullptr; // Handle unexpected piece type
+	return new Pieceappeared(data);
 }
 State* TransferDone::laser_sorting_gate_blocked() {
 	return new Pieceappeared(data);

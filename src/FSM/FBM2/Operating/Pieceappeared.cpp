@@ -21,15 +21,14 @@ Pieceappeared::~Pieceappeared() {}
 void Pieceappeared::entry(){
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_APPEARED);
+	data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) data->piece_FBM2_soll->id);
+
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
 }
  
 void Pieceappeared::exit(){
-	//HState::entry() //for HState
-	//OrthState::entry() //for OrthState
-	//Action here
 	PRINT_STATE;
 }
  
@@ -40,6 +39,10 @@ State* Pieceappeared::clone(){
 }
 
 State* Pieceappeared::piece_appeared_resolved(){
+	int id_to_delete = data->piece_FBM2_soll->id;
+	data->pieces_map->erase(id_to_delete);
+	delete data->piece_FBM2_soll;
+	data->piece_FBM2_soll = nullptr;
 	return new ReadyForPiece(data);
 }
 State* Pieceappeared::request_transfer(){
