@@ -698,7 +698,7 @@ EXPECT_EQ(data->workpieceList.size(), 0);
     remote_control->send_event((int8_t) Topic::MOTOR_FAST, 1); // ID 1
     WAIT(10);
     EXPECT_STATE("Fast");
-
+EXPECT_EQ(data->workpieceList.size(), 1);
     //     // 2. System slows down -> SLOW
     //     remote_control->send_event((int8_t) Topic::MOTOR_SLOW, 100);
     //     WAIT(10);
@@ -708,6 +708,7 @@ EXPECT_EQ(data->workpieceList.size(), 0);
         // Test MOTOR_SLOW with workpiece ID 2 - should transition to Slow and update all to SLOW
     remote_control->send_event((int8_t) Topic::MOTOR_SLOW, 2); // ID 2
     WAIT(10);
+EXPECT_EQ(data->workpieceList.size(), 2);
     EXPECT_STATE("Slow");
 
     //     // 4. System resumes -> FAST
@@ -719,6 +720,7 @@ EXPECT_EQ(data->workpieceList.size(), 0);
         // Test MOTOR_STOP_FSM with workpiece ID 3 - should transition to Stop and update ALL to STOPPED
     remote_control->send_event((int8_t) Topic::MOTOR_STOP_FSM, 3); // ID 3
     WAIT(10);
+EXPECT_EQ(data->workpieceList.size(), 3);
     EXPECT_STATE("Stop");
 
     // Verify all three workpieces are now in STOPPED state

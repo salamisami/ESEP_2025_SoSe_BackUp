@@ -29,7 +29,7 @@ State *Fast::delete_w_motor()
     MotorControl::updateData(data, MotorPieceState::DELETE_W_MOTOR);
     if (data->workpieces)
     {
-        return new Fast(data);
+        return nullptr;
     }
     else
     {
