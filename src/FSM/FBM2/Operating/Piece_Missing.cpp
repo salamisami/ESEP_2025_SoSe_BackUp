@@ -20,6 +20,8 @@ Piece_Missing::~Piece_Missing() {}
 void Piece_Missing::entry(){
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) data->piece_FBM2_soll->id);
+	
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -43,6 +45,10 @@ State* Piece_Missing::request_transfer() {
 }
 
 State* Piece_Missing::piece_lost_resolved(){
+	int id_to_delete = data->piece_FBM2_soll->id;
+	data->pieces_map->erase(id_to_delete);
+	delete data->piece_FBM2_soll;
+	data->piece_FBM2_soll = nullptr;
 	return new ReadyForPiece(data);
 }
 

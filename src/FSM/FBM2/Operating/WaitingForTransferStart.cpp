@@ -59,11 +59,13 @@ State* WaitingForTransferStart::laser_back_blocked() {
 	return new Pieceappeared(data);	
 }
 
-//State* WaitingForTransferStart::id() {
-//	int piece_id = data->event_payload;
-//	//data->piece_FBM2_soll->id = piece_id;
-//	return new Transfer(data);
-//}
+State* WaitingForTransferStart::id() {
+	int piece_id = data->event_payload;
+	data->piece_FBM2_soll->id = piece_id;
+	Piece* next_piece = data->piece_FBM2_soll;
+	data->pieces_map->insert({ piece_id, next_piece });
+	return new Transfer(data);
+}
 
 State* WaitingForTransferStart::transfer_start_other(){
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
