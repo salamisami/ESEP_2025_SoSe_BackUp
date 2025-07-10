@@ -81,14 +81,17 @@ int main() {
 
     #ifndef NO_RC_REC
     while(Remote_Controller::Main_running) {
-    	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
-   
-delete hal;
-delete rec;
-delete logic;
-delete externCommunication;
-delete remcon;
+        //std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    #else
+    while(1){}
+    #endif
+
+    delete hal;
+    delete rec;
+    delete logic;
+    delete externCommunication;
+    delete remcon;
 
     delete hal_sender;
     delete hal_receiver;
@@ -108,7 +111,7 @@ delete remcon;
     delete recorder_sender;
 
     #ifndef NO_RC_REC
-    delete recorder_receiver;    
+    delete recorder_receiver;
     #endif
 
     delete fsm_sender;
