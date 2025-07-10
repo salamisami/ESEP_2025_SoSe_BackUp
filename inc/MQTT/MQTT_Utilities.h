@@ -22,7 +22,7 @@
 // Kein extern "C" notwendig, da du C++ verwendest
 
 
-#define BROKER_ADR        "tcp://192.168.101.7:1883"
+#define BROKER_ADR        "tcp://192.168.101.11:1883"
 #define NO_OF_TOPICS      10
 #define NO_OF_ITERATIONS  4
 #define STR_BUF_SIZE      100
