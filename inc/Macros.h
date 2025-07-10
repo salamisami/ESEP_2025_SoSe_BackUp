@@ -38,7 +38,7 @@
 #define PRINT_STATE
 #endif
 
-#define DISTANCE_BETWEEN_PIECES 70
+#define DISTANCE_BETWEEN_PIECES 50
 #define WAY_TO_AREA 80
 #define OVER_AREA 20
 

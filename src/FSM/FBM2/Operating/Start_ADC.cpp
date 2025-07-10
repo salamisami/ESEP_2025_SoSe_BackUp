@@ -46,17 +46,16 @@ State* Start_ADC::timer(TIMER_ID id)  {
 	auto distance = data->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_position = distance.second;
-
 	//TODO calibrate here
 	if(current_area == Area::START_ADC && current_position > DISTANCE_BETWEEN_PIECES && current_position <= (100 - PIECE_TRANSITION_TOLERANCE)) {
 		return new Start_ADC(data);
 	}
 
-	if(current_area == Area::START_ADC && current_position > (100 - 20)) {
+	if(current_area == Area::START_ADC && current_position >= (100 - 10)) {
 		return new ADC_State(data);
 	}
 
-	if(current_area != Area::START_ADC){
+	if(current_area == Area::ADC){
 		return new ADC_State(data);
 	}
 

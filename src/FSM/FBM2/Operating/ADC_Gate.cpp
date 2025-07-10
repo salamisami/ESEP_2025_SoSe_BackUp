@@ -57,12 +57,12 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 	
-	if(current_area == Area::ADC_GATE && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)){
+	if(current_area == Area::ADC_GATE && current_pos < (100 - PIECE_TRANSITION_TOLERANCE)){
 		return new Measuring(data);
 	}
-	if(current_area != Area::GATE) {
-		return new Pieceappeared(data);
-	}
+//	if(current_area != Area::GATE || current_area != Area::ADC_GATE) {
+//		return new Pieceappeared(data);
+//	}
 	auto validated_piece = validate_piece(data->scanned_piece_FBM2, data->scanned_piece_has_metal_fbm2);
 
 	switch(validated_piece) {
@@ -99,6 +99,7 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 			return new LeavingGate_PT2(data);
 			break;
 	}
+
 	return new Pieceappeared(data);
 }
 

@@ -35,10 +35,10 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
     struct timespec delay = {0, SAMPLE_DELAY_NS};
 
     std::vector<Bauteil> bauteile = {
-        { "WH", ADC_Enum::ADC_WH_DETECT, false },
         { "WF", ADC_Enum::ADC_WF_DETECT, false },
         { "W_B", ADC_Enum::ADC_W_B_DETECT, true },
-        { "W_BB", ADC_Enum::ADC_W_B_DETECT, true }
+        { "W_BB", ADC_Enum::ADC_W_B_DETECT, true },
+        { "W_BM", ADC_Enum::ADC_W_B_DETECT, true }
     };
 
     std::ofstream clear(PROFIL_DATEI, std::ios::trunc);

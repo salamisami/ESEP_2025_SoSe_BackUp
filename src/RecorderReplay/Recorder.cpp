@@ -46,6 +46,7 @@ void Recorder::threadFunction() {
 					case ADC_Enum::ADC_RESET : ignore = true; break;
 
 					}
+            	}
 
 					if( event_code == Topic::INTERRUPT || (event_code == Topic::ADC && !ignore)){
 
@@ -58,8 +59,8 @@ void Recorder::threadFunction() {
 						}
 						queue_cv.notify_one();
 
+
 					}
-            	}
             }
         }
     }
@@ -159,9 +160,9 @@ void Recorder::start_replay() {
         std::getline(iss, token, ','); evt.code = std::stoi(token);
         std::getline(iss, token, ','); evt.value = std::stoi(token);
         replay_events.push_back(evt);
-//        DEBUG(("Replay: Event gelesen ms=" + std::to_string(evt.ms) +
-//               " code=" + std::to_string(evt.code) +
-//               " value=" + std::to_string(evt.value)).c_str());
+        DEBUG(("Replay: Event gelesen ms=" + std::to_string(evt.ms) +
+               " code=" + std::to_string(evt.code) +
+               " value=" + std::to_string(evt.value)).c_str());
     }
     replay_file.close();
     replay_thread = std::thread(&Recorder::replay_loop, this);
@@ -192,6 +193,8 @@ void Recorder::replay_loop() {
         }
         local_sender->send_event(replay_events[idx].code, replay_events[idx].value);
         idx++;
+        std::cout << "Event Code: " << replay_events[idx].code
+                  << " | Value: " << replay_events[idx].value << std::endl;
     }
     DEBUG("Replay thread finished.");
 }

@@ -21,7 +21,7 @@
 
 #define REF_VOLTAGE 1.8f
 #define SAMPLE_DELAY_NS 5000000L
-#define TRIGGER_SCHRITT 0.3f
+#define TRIGGER_SCHRITT 0.6f
 #define SAMPLE_COUNT 100
 #define R25 1000.0f
 #define R26 4700.0f
