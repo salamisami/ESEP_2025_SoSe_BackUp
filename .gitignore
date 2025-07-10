@@ -47,3 +47,6 @@ tests
 time_profiles.csv
 tests[1]_tests.cmake
 tests[1]_include.cmake
+Makefile
+.cache/clangd/index
+.clangd
