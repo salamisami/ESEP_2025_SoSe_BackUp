@@ -83,6 +83,7 @@ public:
     bool mqtt_resolved = true;
     StateContainer workpieceList;
     MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
+    int8_t event_topic = -1;
 
     //PieceTrack -> PieceTrack
     bool piece_near_adc = false;

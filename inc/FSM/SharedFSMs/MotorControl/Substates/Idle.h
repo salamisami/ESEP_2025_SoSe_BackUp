@@ -4,6 +4,7 @@
 
 #include "State.h"
 #include "Fast.h"
+#include "MotorControl.h"
 
 class Idle : public State {
 public: //============================================ constructors & destructors ============================================
@@ -18,8 +19,6 @@ public: //================================================ public functions ====
     State* motor_fast() override;
     State* clone() override;
     State* motor_stop_fsm() override;
-    void updateData(MotorPieceState motorPieceState);
-
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
