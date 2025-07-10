@@ -6,7 +6,7 @@
 #include "Context.h"
 #include "Boot.h"
 #include "Event.h"
-#include "Thread_COM.h"
+
 
 #include "Mock_PM.h"
 #include <pthread.h>
@@ -18,7 +18,7 @@ void set_thread_priority(pthread_t thread, int priority) {
 
     // Set FIFO scheduling policy with specified priority
     if (pthread_setschedparam(thread, SCHED_FIFO, &param) != 0) {
-        std::cerr << "Failed to set thread priority: " << strerror(errno) << std::endl;
+        std::cerr << "Failed to set logic thread priority: " << std::endl;
     }
 
     // Optional: Set thread CPU affinity
