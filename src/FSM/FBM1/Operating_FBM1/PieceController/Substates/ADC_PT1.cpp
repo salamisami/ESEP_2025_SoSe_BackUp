@@ -15,6 +15,7 @@ void ADC_PT1::entry() {
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
 	data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) localdata_.piece->id);
+	localdata_.unblock_signal_has_been_sent = false;
 }
 
 void ADC_PT1::exit() {

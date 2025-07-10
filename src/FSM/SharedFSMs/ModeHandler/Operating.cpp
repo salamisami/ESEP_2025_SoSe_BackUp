@@ -42,9 +42,15 @@ void Operating::entry() {
 void Operating::exit() {
 	OrthState::exit();
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::ACTUATOR,
-		(int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_Q1_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_Q2_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_START_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_OFF);
 }
 
 State* Operating::clone() {
@@ -52,8 +58,7 @@ State* Operating::clone() {
 }
 
 State* Operating::button_stop_pressed() {
-	if(data->no_error_or_warning) {
-		//save history
+	if(!data->error_warning_counter->is_error_or_warning()){
 		data->operating_history->push(this->clone());
 		return new IdleIM(data);
 	}

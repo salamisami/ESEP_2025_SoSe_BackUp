@@ -5,7 +5,8 @@ Servicemode::Servicemode(ContextData* data)
     : HState(data, new IdleSM(data)) {
 }
 
-Servicemode::Servicemode(ContextData* data, State* initial_substate) : HState(data, initial_substate) 
+Servicemode::Servicemode(ContextData* data, State* initial_substate) : 
+  HState(data, initial_substate, new Modehandler(data)) 
 {}
 
 Servicemode::~Servicemode() {}

@@ -6,6 +6,7 @@
 #include "Timer.h"
 #include "QNet.h"
 #include "StateContainer.h"
+#include "ErrorWarningCounter.h"
 //#include "State.h"
 #include "Stopwatch.h"
 #include "DistanceTracker.h"
@@ -72,17 +73,19 @@ public:
 
     //rampStatus -> DistanceTracker
     bool is_ramp_full = false;
-
+    
     bool workpieces = false;
     bool motor_slowed = false;
     bool motor_stopped = false;
-    bool no_error_or_warning = true;
+    // bool no_error_or_warning = true;
     bool is_estop = false;
     bool config = false;
     bool com_resolved = true;
     bool mqtt_resolved = true;
     StateContainer workpieceList;
     MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
+    int8_t event_topic = -1;
+    ErrorWarningCounter* error_warning_counter;
 
     //PieceTrack -> PieceTrack
     bool piece_near_adc = false;

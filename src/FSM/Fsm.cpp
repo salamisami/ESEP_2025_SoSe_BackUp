@@ -9,9 +9,9 @@
 
 #ifdef FBM_1
 Fsm::Fsm(ContextData* data) : OrthState(data, {
+    new Boot(data),
     new NoRampFull(data),
     new RampNotFull(data),
-    new Boot(data),
     new SortingOrder(data),
     new MQTTNoError(data),
 	new COMNoError(data)
@@ -20,9 +20,9 @@ Fsm::Fsm(ContextData* data) : OrthState(data, {
 #else
 #ifdef FBM_2
 Fsm::Fsm(ContextData* data) : OrthState(data, {
+    new Boot(data),
     new NoRampFull(data),
     new RampNotFull(data),
-    new Boot(data),
     new IdleReset(data),
     new MQTTNoError(data),
 	new COMNoError(data)

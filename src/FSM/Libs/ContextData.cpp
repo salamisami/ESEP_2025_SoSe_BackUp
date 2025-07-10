@@ -11,6 +11,7 @@ ContextData::ContextData(I_Sender* sender) {
     timer = new Timer(sender);
     //piece_tracker = new DistanceTracker(SAVE_LOCATION_TIMEPROFILE, true);
     pieces_map = new std::unordered_map<int, Piece*>;
+    error_warning_counter = new ErrorWarningCounter();
 }
 
 
@@ -25,6 +26,7 @@ ContextData::~ContextData() {
     delete pieces_map;
    // delete piece_tracker;
     delete timer;
+    delete error_warning_counter;
     
     while(!modehandler_history->empty()) {
         current_state = modehandler_history->top();  // For stack, use top() instead of iterating
