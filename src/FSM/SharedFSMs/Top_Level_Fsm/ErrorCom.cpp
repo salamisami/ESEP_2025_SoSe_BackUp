@@ -7,38 +7,50 @@
 
 #include"ErrorCom.h"
 
-void ErrorCom::entry(){}
+void ErrorCom::entry() {}
 
-void ErrorCom::exit() { }
+void ErrorCom::exit() {}
 
 State* ErrorCom::mqtt_error_resolved() {
-  data->mqtt_resolved = true;
-  if (!data->com_resolved || !data->mqtt_resolved){
-    return nullptr;
-	if(data->is_estop){
+	data->mqtt_resolved = true;
+	if(!data->com_resolved || !data->mqtt_resolved) {
+		return nullptr;
+	}
+	if(data->is_estop) {
 		State* estop = data->estop_history->top();
 		data->estop_history->pop();
 		return estop;
 	}
 	State* modehandler = data->modehandler_history->top();
 	return modehandler;
-  }
 }
+
 State* ErrorCom::com_error_resolved() {
-  data->com_resolved = true;
-  if (!data->com_resolved || !data->mqtt_resolved){
-    return nullptr;
-  }
-	if(data->is_estop){
+	data->com_resolved = true;
+	if(!data->com_resolved || !data->mqtt_resolved) {
+		return nullptr;
+	}
+	if(data->is_estop) {
 		State* estop = data->estop_history->top();
 		data->estop_history->pop();
 		return estop;
 	}
 	State* modehandler = data->modehandler_history->top();
+	data->modehandler_history->pop();
 	return modehandler;
+}
+
+State* ErrorCom::error_c_lost_com() {
+	data->com_resolved = false;
+	return nullptr;
+}
+
+State* ErrorCom::error_c_lost_mqtt() {
+	data->mqtt_resolved = false;
+	return nullptr;
 }
 
 State* ErrorCom::clone() {
 	return new ErrorCom(data);
-  }
+}
 
