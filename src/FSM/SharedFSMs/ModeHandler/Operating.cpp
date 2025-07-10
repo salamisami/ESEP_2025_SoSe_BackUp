@@ -58,10 +58,9 @@ State* Operating::clone() {
 }
 
 State* Operating::button_stop_pressed() {
-	//if(data->no_error_or_warning) {
-		//save history
+	if(!data->error_warning_counter->is_error_or_warning()){
 		data->operating_history->push(this->clone());
 		return new IdleIM(data);
-	// }
-	// return nullptr;
+	}
+	return nullptr;
 }

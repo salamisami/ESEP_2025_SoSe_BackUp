@@ -16,6 +16,7 @@ void PieceAppearedFehlerUnquittiert::entry(){
     //TODO CODE
     data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) Error_Enum::ERROR_W_APPEARED); 
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON_FAST);
+    data->error_warning_counter->error_or_warning_occured();
 }
 
 void PieceAppearedFehlerUnquittiert::exit(){

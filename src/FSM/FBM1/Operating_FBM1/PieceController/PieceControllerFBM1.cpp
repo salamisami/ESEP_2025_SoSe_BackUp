@@ -145,6 +145,8 @@ State* PieceControllerFBM1::handle_event_using_special_function(State* (State::*
                 current_substate->exit();
                 delete current_substate;
                 it = substates.erase(it);
+				event_consumed = true;
+				break;
 
                 // If we've removed all substates, return the exit state
                 // if(substates.empty() && quit_on_empty_) {
@@ -157,6 +159,8 @@ State* PieceControllerFBM1::handle_event_using_special_function(State* (State::*
                 current_substate = newSubstate;
                 current_substate->entry();
                 ++it;
+				event_consumed = true;
+				break;
             } else {
 				//no state change
                 event_consumed = false;

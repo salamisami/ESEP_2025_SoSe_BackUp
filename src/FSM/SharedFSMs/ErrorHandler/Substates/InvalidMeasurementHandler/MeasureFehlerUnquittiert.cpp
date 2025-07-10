@@ -17,6 +17,7 @@ void MeasureFehlerUnquittiert::entry(){
     //TODO CODE
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int)ActuatorEnum::TRAFFIC_RED_ON_SLOW);
     data->sender->send_event((int8_t)Topic::MOTOR_STOP_FSM, data->event_payload);
+    data->error_warning_counter->error_or_warning_occured();
 }
 
 void MeasureFehlerUnquittiert::exit(){
