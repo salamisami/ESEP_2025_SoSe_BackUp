@@ -28,12 +28,14 @@ State* Modehandler::clone(){
 }
 
 State* Modehandler::error_c_lost_com(){
+	data->com_resolved = false;
 	State* cloned = this->clone();
 	data->modehandler_history->push(cloned);
 	return new ErrorCom(data);
 }
 
 State* Modehandler::error_c_lost_mqtt(){
+	data->mqtt_resolved = false;
 	State* cloned = this->clone();
 	data->modehandler_history->push(cloned);
 	return new ErrorCom(data);

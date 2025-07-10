@@ -33,12 +33,14 @@ State* EStop::clone() {
 }
 
 State* EStop::error_c_lost_com() {
+	data->com_resolved = false;
 	State* cloned = this->clone();
 	data->estop_history->push(cloned);
 	return new ErrorCom(data);
 }
 
 State* EStop::error_c_lost_mqtt() {
+	data->mqtt_resolved = false;
 	State* cloned = this->clone();
 	data->estop_history->push(cloned);
 	return new ErrorCom(data);
