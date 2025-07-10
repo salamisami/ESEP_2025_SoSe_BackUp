@@ -81,6 +81,7 @@ public:
     bool config = false;
     StateContainer workpieceList;
     MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
+    Topic event_topic = -1;
 
     //PieceTrack -> PieceTrack
     bool piece_near_adc = false;

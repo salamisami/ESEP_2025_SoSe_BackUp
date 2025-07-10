@@ -20,7 +20,10 @@ public: //================================================ public functions ====
     static void updateData(ContextData *data, MotorPieceState motorPieceState)
     {
         int id = data->event_payload;
-
+        int8_t topic = data->event_topic;
+        if (topic > (int8_t)Topic::DELETE_W_MOTOR || topic <(int8_t) Topic::MOTOR_STOP_FSM){
+            return;
+        }
         if (motorPieceState == MotorPieceState::DELETE_W_MOTOR)
         {
             // Remove the ID from the list if it exists
