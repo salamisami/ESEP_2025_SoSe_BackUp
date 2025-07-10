@@ -692,6 +692,7 @@ TEST_F(RealImplementationSetup, ServiceModeFullTest) {
 TEST_F(MotorControlSetup, MotorControlWorkpieceTrackingTest) {
     // Start in Idle state
     EXPECT_STATE("Idle");
+EXPECT_EQ(data->workpieceList.size(), 0);
 
     // Test MOTOR_FAST with workpiece ID 1 - should transition to Fast
     remote_control->send_event((int8_t) Topic::MOTOR_FAST, 1); // ID 1
