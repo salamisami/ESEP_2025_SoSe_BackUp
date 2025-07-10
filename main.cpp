@@ -88,10 +88,17 @@ int main() {
     #endif
 
     delete hal;
-    delete rec;
-    delete logic;
+
+    #ifndef NO_COM
     delete externCommunication;
+    #endif
+
+    #ifndef NO_RC_REC
     delete remcon;
+    delete rec;
+    #endif
+
+    delete logic;
 
     delete hal_sender;
     delete hal_receiver;
@@ -111,7 +118,7 @@ int main() {
     delete recorder_sender;
 
     #ifndef NO_RC_REC
-    delete recorder_receiver;
+    delete recorder_receiver;    
     #endif
 
     delete fsm_sender;
