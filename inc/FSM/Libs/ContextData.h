@@ -6,6 +6,7 @@
 #include "Timer.h"
 #include "QNet.h"
 #include "StateContainer.h"
+#include "ErrorWarningCounter.h"
 //#include "State.h"
 #include "Stopwatch.h"
 #include "DistanceTracker.h"
@@ -50,15 +51,18 @@ public:
 
     std::unordered_map<int, Piece*>* pieces_map;
     int available_id = 0;
-    Piece* piece_FBM2 = nullptr;
-    Piece* piece_FBM2_measured = nullptr;
+    Piece* piece_FBM2_soll = nullptr;
+    //Piece* piece_FBM2_ist = nullptr;
+
+    ScannedPiece scanned_piece_FBM2 = ScannedPiece::UNKNOWN;
+    bool scanned_piece_has_metal_fbm2 = false;
     
     // int piece_id = 0;
     // PieceEnum ist_type = PieceEnum::UNKNOWN;
     // PieceEnum soll_type = PieceEnum::UNKNOWN;
     // long sorting_time = 0;
     // DistanceTracker* piece_tracker;
-
+    long sort_out_time = 0;
 
     I_Sender* timer_sender;
     Timer* timer;
@@ -69,14 +73,19 @@ public:
 
     //rampStatus -> DistanceTracker
     bool is_ramp_full = false;
-
+    
     bool workpieces = false;
     bool motor_slowed = false;
     bool motor_stopped = false;
-    bool no_error_or_warning = true;
+    // bool no_error_or_warning = true;
     bool is_estop = false;
     bool config = false;
+    bool com_resolved = true;
+    bool mqtt_resolved = true;
     StateContainer workpieceList;
+    MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
+    int8_t event_topic = -1;
+    ErrorWarningCounter* error_warning_counter;
 
     //PieceTrack -> PieceTrack
     bool piece_near_adc = false;

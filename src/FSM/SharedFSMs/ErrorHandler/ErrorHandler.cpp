@@ -6,14 +6,10 @@ ErrorHandler::ErrorHandler(ContextData* data) : OrthState(data,
 	{
 		new PieceAppearedNoError(data),
 		new PieceLostNoError(data),
-		new MQTTNoError(data),
-		new COMNoError(data),
 		new ValidMeasure(data),
 		new RampNoError(data),
 		new CalibNoWarning(data),
-		new ReplayNoWarning(data),
-		new RampNotFull(data), //Ramp Status
-		new NoRampFull(data) //system ramp status
+		new ReplayNoWarning(data)
 	}
 	, nullptr
 	, false

@@ -19,6 +19,7 @@ public: //================================================ public functions ====
     void exit() override;
 
 	//State* laser_ramp_blocked() override;
+    State* laser_back_blocked() override;
 	State* clone() override;
     
 

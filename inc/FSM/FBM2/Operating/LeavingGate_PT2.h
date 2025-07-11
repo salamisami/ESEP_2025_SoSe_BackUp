@@ -1,29 +1,34 @@
-#ifndef Idle_H
-#define Idle_H
+#ifndef LEAVINGGATE_PT2_H
+#define LEAVINGGATE_PT2_H
 #pragma once
 
 #include "State.h"
-#include "Fast.h"
+#include "Gate_End.h"
 
-class Idle : public State {
+class LeavingGate_PT2 : public State {
 public: //============================================ constructors & destructors ============================================
-    Idle(ContextData* data) ;
-    virtual ~Idle();
+    LeavingGate_PT2(ContextData* data) ;
+    virtual ~LeavingGate_PT2();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+	State* clone() override;
+
+	State* laser_sorting_gate_unblocked() override;
+	State* timer(TIMER_ID ID) override;
+
+	State* request_transfer() override;
     
-    State* motor_fast() override;
-    State* clone() override;
-    void updateData(MotorPieceState motorPieceState);
+
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
 	//primitive types
 	//bool and char
+	//LocalDataPT1 localdata_;
    
 	
 

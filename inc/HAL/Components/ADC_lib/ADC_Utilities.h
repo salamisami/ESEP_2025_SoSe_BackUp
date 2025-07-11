@@ -21,22 +21,25 @@
 
 #define REF_VOLTAGE 1.8f
 #define SAMPLE_DELAY_NS 5000000L
-#define TRIGGER_SCHRITT 0.3f
+#define TRIGGER_SCHRITT 0.6f
 #define SAMPLE_COUNT 100
 #define R25 1000.0f
 #define R26 4700.0f
 #define VOLTAGE_DIVIDER_FACTOR ((R25 + R26) / R25)
-#define MESS_TOLERANZ  0.22f
+#define MESS_TOLERANZ  0.15f
 #define MAX_WERT 400
 
 typedef struct {
 	std::string name;
+	bool hatLoch;
 	ADC_Enum eventValue;
 	float avg;
+	float minV;
+	float stddev;
+	float range;
 	float lochMin; 
 	int lochStartIndex;
 	int lochEndIndex;
-	bool hatLoch;
 } Profil;
 
 typedef struct{

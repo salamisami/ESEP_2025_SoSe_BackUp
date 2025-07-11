@@ -20,6 +20,8 @@ public: //================================================ public functions ====
     void exit() override;
 	State* clone() override;
 
+	//State* id() override;
+
 	State* request_transfer() override;
 
 	State* laser_back_blocked() override;

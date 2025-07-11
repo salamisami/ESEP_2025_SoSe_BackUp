@@ -53,6 +53,9 @@ Sender::~Sender(){
 void Sender::send_event(int8_t event_code, int event_value, int priority) {
     MsgSendPulse(receiver_coid, priority, event_code, event_value);
 }
+int Sender::send_event_com(int8_t event_code, int event_value, int priority) {
+    return MsgSendPulse(receiver_coid, priority, event_code, event_value);
+}
 
 int Sender::getcoid(){
     return receiver_coid;

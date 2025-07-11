@@ -6,7 +6,6 @@ Recorder::Recorder(I_Receiver* local_receiver, I_Sender* local_sender)
       record_running(false), replay_running(false), running(true)
 {
     RecReplay_thread = std::thread(&Recorder::threadFunction, this);
-    std::cout << "Recorder: Main-Thread gestartet" << std::endl;
 }
 
 Recorder::~Recorder() {
@@ -26,7 +25,7 @@ void Recorder::threadFunction() {
 
         if (status == 0) {
             RecReplayEnum event_value = (RecReplayEnum)event.value.sival_int;
-            COM_Enum COM_event_value = (COM_Enum)event.value.sival_int;
+            ADC_Enum ADC_event_value = (ADC_Enum)event.value.sival_int;
             Topic event_code = (Topic)event.code;
             if (event_code == Topic::REC_REPLAY) {
             	DEBUG("[MAIN RecReplay event erhalten]");
@@ -38,20 +37,30 @@ void Recorder::threadFunction() {
                 }
             }
             if (record_running){
-            	if(event_code == Topic::INTERRUPT || event_code == Topic::COM){
-            		if(COM_event_value != COM_Enum::HEARTBEAT){
+            	bool ignore = false;
+            	if(event_code == Topic::ADC){
+					switch(ADC_event_value){
+					case ADC_Enum::ADC_CALIBRATE :
+					case ADC_Enum::ADC_MESURE :
+					case ADC_Enum::ADC_STOP :
+					case ADC_Enum::ADC_RESET : ignore = true; break;
 
-    					DEBUG("Recorder Interrupt erhalten");
-    					auto now = std::chrono::system_clock::now();
-    					auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
-    					{
-    						std::lock_guard<std::mutex> lock(queue_mutex);
-    						event_queue.push({ms, event.code, event.value.sival_int});
-    					}
-    					queue_cv.notify_one();
-
-            		}
+					}
             	}
+
+					if( event_code == Topic::INTERRUPT || (event_code == Topic::ADC && !ignore)){
+
+						//DEBUG("Recorder Interrupt erhalten");
+						auto now = std::chrono::system_clock::now();
+						auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
+						{
+							std::lock_guard<std::mutex> lock(queue_mutex);
+							event_queue.push({ms, event.code, event.value.sival_int});
+						}
+						queue_cv.notify_one();
+
+
+					}
             }
         }
     }
@@ -71,7 +80,7 @@ void Recorder::start_record() {
 
     writer_thread = std::thread(&Recorder::writer_loop, this);
     // kurz warten, bis writer_ready ist
-    while (!writer_ready) std::this_thread::yield();
+    //while (!writer_ready) std::this_thread::yield();
 }
 
 void Recorder::stop_record() {
@@ -184,6 +193,8 @@ void Recorder::replay_loop() {
         }
         local_sender->send_event(replay_events[idx].code, replay_events[idx].value);
         idx++;
+        std::cout << "Event Code: " << replay_events[idx].code
+                  << " | Value: " << replay_events[idx].value << std::endl;
     }
     DEBUG("Replay thread finished.");
 }

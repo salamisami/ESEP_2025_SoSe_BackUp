@@ -17,6 +17,8 @@ void COMFehlerUnquittiert::entry(){
     //TODO CODE
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON_FAST);
     data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) Error_Enum::ERROR_C_LOST_COM);
+    data->error_warning_counter->error_or_warning_occured();
+    
 }
 
 void COMFehlerUnquittiert::exit(){

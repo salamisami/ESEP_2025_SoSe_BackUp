@@ -43,13 +43,19 @@
 #define OVER_AREA 20
 
 #define UPDATE_PIECE_INTERVAL 100
+#define PIECE_TRANSITION_TOLERANCE_BEFORE_ADC 25
 #define PIECE_TRANSITION_TOLERANCE 25
 #define PIECE_TRANSITION_TOLERANCE_GATE 25
+#define SORT_OUT_TIME 3500
+#define ADC_TIMEOUT_TIME 1500
+#define GATE_THROUGHTIME 2000
+#define PUSH_DELAY //muss noch gemessen werden
 
-#define DEADLINE_FACTOR 1.1
-#define TIMESTAMP_FACTOR 1
+#define DEADLINE_FACTOR 1
+#define TIMESTAMP_FACTOR 0.9
+#define GATE_END_FACTOR 1.1
 
-#define FBM_1
+
 // Configuration for FBM Module 1
 #ifdef FBM_1
 	#define FBM					1
@@ -81,3 +87,23 @@
 	#define COMMAND_TOPIC		"festo/anlage2/command"
 	#define MQTT_CLIENT			"Festo_FBM2"
 #endif
+#define MACRO_PIECE_MISSING_PT1 data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);\
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);\
+	PieceEnum validated_piece = localdata_.validated_type;\
+	switch(validated_piece) {\
+		case PieceEnum::FLAT:\
+			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_FLAT);\
+			break;\
+		case PieceEnum::TALL:\
+			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL);\
+			break;\
+		case PieceEnum::TALL_WITH_METAL:\
+			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL_W_METAL);\
+			break;\
+		default:\
+			break;\
+	}\
+	Piece* piece_to_delete = localdata_.piece;\
+	data->pieces_map->erase(localdata_.piece->id);\
+	delete piece_to_delete;\
+	return State::EXIT_STATE;

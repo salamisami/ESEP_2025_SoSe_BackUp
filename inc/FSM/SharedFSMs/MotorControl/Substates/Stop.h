@@ -1,42 +1,40 @@
-#ifndef GATE_H
-#define GATE_H
-
+#ifndef Stop_H
+#define Stop_H
 #pragma once
- 
+
 #include "State.h"
-#include "Sorting_out.h"
-#include "Pieceappeared.h"
-#include "Gate_End.h"
+#include "Slow.h"
+#include "Idle.h"
+#include "Fast.h"
+#include "MotorControl.h"
 
-class Gate : public State {
+class Stop : public State {
 public: //============================================ constructors & destructors ============================================
-    Gate(ContextData* data); //for all types of states
-	//Gate(ContextData* data, State* initial_substate); //for HState
-	//Gate(ContextData* data, std::deque<State*> initial_substates); //for OrthState
-    virtual ~Gate();
+    Stop(ContextData* data) ;
+    virtual ~Stop();
+	
 
- 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-	State* clone() override;
+    
+    State* delete_w_motor() override;
+    State* motor_slow() override;
+    State* motor_fast() override;
+    State* motor_stop_fsm() override;
+    State* clone() override;
 
-  State* laser_front_blocked() override; 
-  State* laser_ramp_blocked() override;
-  State* laser_back_blocked() override;
-  State* request_transfer() override;
- 
- 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers
 	//primitive types
 	//bool and char
+   
+	
 
- 
 private: //================================================ private functions ================================================
 	//void privateFunction();
-  State* check_piece();
+	
 };
- 
+
 #endif

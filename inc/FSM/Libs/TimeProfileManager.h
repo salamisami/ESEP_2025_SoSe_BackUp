@@ -69,6 +69,7 @@ public:
 			}
 		}
 		in_file.close();
+		time_profile->fast_timestamps[4] *= GATE_END_FACTOR;
 		convert_to_deadlines(time_profile);
 	}
 

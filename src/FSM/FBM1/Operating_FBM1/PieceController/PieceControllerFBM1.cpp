@@ -41,7 +41,7 @@ State* PieceControllerFBM1::new_piece() {
 	data->pieces_map->insert({ id, next_piece });
 	//create a local data and inject the id
 	LocalDataPT1 localdata;
-	localdata.id = id;
+	localdata.piece = next_piece;
 	spawn_orthogonal_state(new Start_PT1(data, localdata));
 
 	return nullptr;
@@ -80,19 +80,19 @@ State* PieceControllerFBM1::new_piece() {
 
 //TODO check if the event is consumed or not here
 State* PieceControllerFBM1::laser_back_blocked() {
-	State* newState = OrthState::handle_event_using_function(&State::laser_back_blocked);
-	//here
+	State* newState = handle_event_using_special_function(&State::laser_back_blocked);
+
 	return newState;
 }
 
 State* PieceControllerFBM1::metal_detected() {
-	State* newState = OrthState::handle_event_using_function(&State::metal_detected);
+	State* newState = handle_event_using_special_function(&State::metal_detected);
 	//here
 	return newState;
 }
 
 State* PieceControllerFBM1::laser_sorting_gate_blocked() {
-	State* newState = OrthState::handle_event_using_function(&State::laser_sorting_gate_blocked);
+	State* newState = handle_event_using_special_function(&State::laser_sorting_gate_blocked);
 	//here
 	return newState;
 }
@@ -128,3 +128,49 @@ State* PieceControllerFBM1::laser_sorting_gate_blocked() {
 //         return nullptr;
 //     }
 
+State* PieceControllerFBM1::handle_event_using_special_function(State* (State::* handler_function)()) {
+        if(substates.empty() && quit_on_empty_) {
+            return default_exit_state_;
+        }
+
+		bool event_consumed = true;
+
+        auto it = substates.begin();
+        while(it != substates.end()) {
+            State*& current_substate = *it;
+            State* newSubstate = (current_substate->*handler_function)();
+
+            if(newSubstate == State::EXIT_STATE) {
+                // Handle exit case
+                current_substate->exit();
+                delete current_substate;
+                it = substates.erase(it);
+				event_consumed = true;
+				break;
+
+                // If we've removed all substates, return the exit state
+                // if(substates.empty() && quit_on_empty_) {
+                //     return default_exit_state_;
+                // }
+            } else if(newSubstate != nullptr) {
+                // Handle state transition only if it's a different state
+                current_substate->exit();
+                delete current_substate;
+                current_substate = newSubstate;
+                current_substate->entry();
+                ++it;
+				event_consumed = true;
+				break;
+            } else {
+				//no state change
+                event_consumed = false;
+                ++it;
+            }
+        }
+
+		if(!event_consumed){
+			data->sender->send_event((int) Topic::ERROR, (int8_t) Error_Enum::ERROR_W_APPEARED);
+		}
+
+        return nullptr;
+    }

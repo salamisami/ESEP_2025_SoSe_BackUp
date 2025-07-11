@@ -42,11 +42,15 @@ void ADC_Class::measureClassifySend() {
         return;
     }
     measure_mtx.lock();
-    bool inTime = ADC_Utilities::expect_piece(adc,tscadc,bandVoltage, &adcStopped, 1500);// TODO: 200 Ms Zeit anpassen!!
+    bool inTime = ADC_Utilities::expect_piece(adc,tscadc,bandVoltage, &adcStopped, ADC_TIMEOUT_TIME);// TODO: 200 Ms Zeit anpassen!!
     if(inTime){
     	sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_NEW_PIECE);
     	ADC_Enum name = ADC_Utilities::executeMeasurement(adc, tscadc, bandVoltage,&adcStopped);
+
     	sender->send_event((int8_t) Topic::ADC, (int) name);
+    	if(name == ADC_Enum::ADC_INVALID_MESURE){
+    		sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_INVALID_MESURE);
+    	}
     }else{
     	sender->send_event((int8_t) Topic::ADC,(int) ADC_Enum::ADC_TIMEOUT );
     }

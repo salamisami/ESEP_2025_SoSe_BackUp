@@ -55,6 +55,7 @@ Context<T>::~Context()
 
 //===================================================== private functions =====================================================
 
+
 template <typename T>
 State* Context<T>::handleInternal(int event_value) {
     State* newState = nullptr;
@@ -89,8 +90,17 @@ State* Context<T>::handleInternal(int event_value) {
         case Internal_Enum::UNBLOCK_STARTING_AREA:
             newState = state->unblock_starting_area();
             break;
+        case Internal_Enum::REMOTE_STOP:
+        	newState = state->remote_stop();
+        	break;
         case Internal_Enum::SORTED:
             newState = state->sorted();
+            break;
+        case Internal_Enum::SORTED_OUT:
+            newState = state->sorted_out();
+            break;
+        case Internal_Enum::SORTING_OUT_FBM2:
+            newState = state->sort_out_fbm2();
             break;
         default:
             break;
@@ -167,10 +177,10 @@ State* Context<T>::handleCOM(int event_value) {
             newState = state->reconnect();
             break;
         case COM_Enum::RAMP_FULL:
-            newState = state->ramp_full();
+            newState = state->com_ramp_full();
             break;
         case COM_Enum::RAMP_NOT_FULL:
-            newState = state->ramp_not_full();
+            newState = state->com_ramp_not_full();
             break;
         case COM_Enum::RESET_TO_FLAT:
             newState = state->reset_to_flat();
@@ -344,9 +354,6 @@ template <typename T>
 State* Context<T>::handleRemote(int event_value) {
     State* newState = nullptr;
     switch((RemoteControlEnum) event_value) {
-        case RemoteControlEnum::MQTT_DISCONNECTED:
-            newState = state->mqtt_disconnected();
-            break;
         case RemoteControlEnum::MQTT_CONNECTED:
             newState = state->mqtt_connected();
             break;
@@ -372,9 +379,6 @@ State* Context<T>::handleError(int event_value) {
             break;
         case Error_Enum::ERROR_W_APPEARED:
             newState = state->error_w_appear();
-            break;
-        case Error_Enum::ERROR_W_LOST_RESOLVED:
-            newState = state->piece_lost_resolved();
             break;
         case Error_Enum::ERROR_BOTH_R_FULL:
             newState = state->error_both_r_full();
@@ -438,6 +442,7 @@ void Context<T>::handleEvent(_pulse event)
     Topic event_code = (Topic)event.code;
     int event_value = event.value.sival_int;
     data->event_payload = event_value;
+    data->event_topic = (int8_t) event_code;
     switch(event_code) {
         case Topic::INTERRUPT:
             newState = handleInterrupt(event_value);
@@ -478,6 +483,8 @@ void Context<T>::handleEvent(_pulse event)
         case Topic::DELETE_W_MOTOR:
             newState = state->delete_w_motor();
             break;
+        case Topic::ID:
+            newState = state->id();
         default:
             break;
     }

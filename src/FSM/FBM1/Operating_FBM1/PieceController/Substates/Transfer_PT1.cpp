@@ -46,6 +46,7 @@ void Transfer_PT1::send_transfer_start() {
 void Transfer_PT1::entry() {
 	PRINT_STATE;
 	send_transfer_start();
+  data->sender->send_event((int8_t) Topic::ID, (int) localdata_.piece->id);
 }
 
 void Transfer_PT1::exit() {
@@ -57,33 +58,15 @@ State* Transfer_PT1::clone() {
 }
 
 State* Transfer_PT1::transfer_done() {
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
-	Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
-	data->pieces_map->erase(localdata_.id);
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);
+	Piece* piece_to_delete = localdata_.piece;
+	
+	data->pieces_map->erase(localdata_.piece->id);
 	delete piece_to_delete;
 	return State::EXIT_STATE;
 }
 
 State* Transfer_PT1::transfer_failed() {
 	DEBUG("PieceMissing! Cause: piece does not reach to FBM2.");
-	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.id);
-	PieceEnum validated_piece = localdata_.validated_type;
-	switch(validated_piece) {
-		case PieceEnum::FLAT:
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_FLAT);
-			break;
-		case PieceEnum::TALL:
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL);
-			break;
-		case PieceEnum::TALL_WITH_METAL:
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL_W_METAL);
-			break;
-		default:
-			break;
-	}
-	Piece* piece_to_delete = data->pieces_map->at(localdata_.id);
-	data->pieces_map->erase(localdata_.id);
-	delete piece_to_delete;
-	return State::EXIT_STATE;
+  MACRO_PIECE_MISSING_PT1
 }

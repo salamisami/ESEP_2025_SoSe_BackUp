@@ -1,24 +1,24 @@
-#ifndef MOTORCONTROL_H
-#define MOTORCONTROL_H
+#ifndef IDLESORTING_H
+#define IDLESORTING_H
 #pragma once
 
-#include "HState.h"
-#include "Idle.h"
-
-class MotorControl : public HState{
+#include "State.h"
+#include "PushRamp_OP.h"
+#include "OpenGate_OP.h"
+class IdleSorting : public State {
 public: //============================================ constructors & destructors ============================================
-    MotorControl(ContextData* data) ;
-    MotorControl(ContextData* data, State* initial_substate);
-    virtual ~MotorControl();
+    IdleSorting(ContextData* data) ;
+    virtual ~IdleSorting();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
+
     State* clone() override;
-    
-
-
+    State* sort_out() override;
+    State* let_through() override;
+    State* sort_out_fbm2() override;
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers

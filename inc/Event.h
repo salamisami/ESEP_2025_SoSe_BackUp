@@ -2,8 +2,8 @@
 #define EVENT_H
 #pragma once
 
-#define OPEN_GATE_SLOW_DURATION 2200
-#define OPEN_GATE_FAST_DURATION 1000
+#define OPEN_GATE_SLOW_DURATION 2500
+#define OPEN_GATE_FAST_DURATION 1500
 #define PUSH_DURATION 500
 #define ENDTOGATE_MULTIPLIER 0.70
 
@@ -84,7 +84,8 @@ enum class Topic : int8_t {
     MOTOR_STOP_FSM,
     MOTOR_SLOW,
     MOTOR_FAST,
-    DELETE_W_MOTOR
+    DELETE_W_MOTOR,
+    ID
 };
 
 enum class Internal_Enum : int {
@@ -98,7 +99,10 @@ enum class Internal_Enum : int {
     NEW_PIECE,
     SORTED,
     RAMP_FULL,
-    RAMP_NOT_FULL
+    RAMP_NOT_FULL,
+    REMOTE_STOP,
+    SORTING_OUT_FBM2,
+    SORTED_OUT
 };
 
 enum class ADC_Enum : int {
@@ -161,6 +165,7 @@ enum class TIMER_ID : int {
     GATEEND_PT1,
     PENDINGTRANSFERREQUESTNOTATEND,
     PENDINGTRANSFERREQUEST_PT1,
+    LEAVINGGATE_PT1,
     GATE_END,
     TRANSFER_FAILED,
     START_ADC,
@@ -168,7 +173,9 @@ enum class TIMER_ID : int {
     SORTING_OUT,
     IS_METAL,
     OPENGATE_OP,
-    PUSHRAMP_OP
+    PUSHRAMP_OP,
+    GATE_FBM_2,
+    LEAVINGGATE_PT2
 };
 
 enum class PieceEnum : int {
@@ -195,15 +202,14 @@ enum class ScannedPiece : int {
     HOLE
 };
 
-enum class RemoteControlEnum: int {
-	MQTT_DISCONNECTED,
-	MQTT_CONNECTED,
-	RECONNECT,
+enum class RemoteControlEnum : int {
+    MQTT_CONNECTED,
+    RECONNECT,
     REMOTE_ESTOP
 };
 
 enum class Error_Enum : int {
-    ERROR_W_LOST=1,
+    ERROR_W_LOST = -128,
     ERROR_W_APPEARED,
     ERROR_BOTH_R_FULL,
     ERROR_C_LOST_NR,
@@ -220,7 +226,8 @@ enum class Error_Enum : int {
     PIECE_LOST_RESOLVED,
     PIECES_TOO_CLOSE,
     ERROR_INVALID_MEASURE_RESOLVED,
-    ERROR_W_LOST_RESOLVED
+    ERROR_C_LOST_MQTT_OVER_COM,
+    ERROR_C_LOST_MQTT_OVER_COM_RESOLVED
 };
 
 

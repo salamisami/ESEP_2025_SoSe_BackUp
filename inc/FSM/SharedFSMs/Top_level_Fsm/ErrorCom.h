@@ -8,7 +8,7 @@
 #ifndef INC_FSM_FBM2_TOP_LEVEL_FSM_ERRORCOM_H_
 #define INC_FSM_FBM2_TOP_LEVEL_FSM_ERRORCOM_H_
 
-#include"State.h"
+#include "State.h"
 
 class ErrorCom : public State{
 	public:
@@ -20,8 +20,10 @@ class ErrorCom : public State{
 
 	State* clone() override;
 
-	State* error_c_lost_mqtt_fixed() override;
-	State* error_c_lost_com_fixed() override;
+	State* mqtt_error_resolved() override;
+	State* com_error_resolved() override;
+	State* error_c_lost_com() override;
+	State* error_c_lost_mqtt() override;
 
 };
 

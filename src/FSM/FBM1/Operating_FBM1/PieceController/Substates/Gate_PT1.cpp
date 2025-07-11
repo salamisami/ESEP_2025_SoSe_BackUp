@@ -10,7 +10,7 @@ Gate_PT1::~Gate_PT1() {}
 //===================================================== private functions =====================================================
 
 PieceEnum Gate_PT1::validate_piece(const ScannedPiece& scanned_piece, const bool& has_metal) {
-	printf("scanned piece: %d, is metal: %d",(int)scanned_piece, (int) has_metal);
+	printf("Gate_PT1: scanned piece: %d, is metal: %d\n",(int)scanned_piece, (int) has_metal);
 	PieceEnum predicted_piece = PieceEnum::UNKNOWN;
 	if(has_metal) {
 		switch(scanned_piece) {
@@ -31,14 +31,14 @@ PieceEnum Gate_PT1::validate_piece(const ScannedPiece& scanned_piece, const bool
 				break;
 		}
 	}
-	printf("predicted_piece: %d",(int)predicted_piece);
+	printf("Gate_PT1: predicted_piece: %d\n",(int)predicted_piece);
 	return predicted_piece;
 }
 
 //===================================================== public functions =====================================================
 void Gate_PT1::entry() {
 	PRINT_STATE;
-	auto piece = data->pieces_map->at(localdata_.id);
+	auto piece = localdata_.piece;
 	piece->piece_tracker->update_distance_force(Area::GATE, 0);
 	localdata_.validated_type = validate_piece(localdata_.ist_type, localdata_.is_metal);
 	data->sender->send_event((int8_t)Topic::CHECK_PIECE, (int) localdata_.validated_type);
@@ -60,10 +60,10 @@ State* Gate_PT1::sort_out() {
 State* Gate_PT1::let_through() {
 	DEBUG("Sorting Order -> PT1: Let through");
 	localdata_.sort_out_fbm2 = false;
-	return new GateEnd_PT1(data, localdata_);
+	return new LeavingGate_PT1(data, localdata_);
 }
 State* Gate_PT1::sort_out_fbm2() {
 	DEBUG("Sorting Order -> PT1: sort out fbm 2");
 	localdata_.sort_out_fbm2 = true;
-	return new GateEnd_PT1(data, localdata_);
+	return new LeavingGate_PT1(data, localdata_);
 }

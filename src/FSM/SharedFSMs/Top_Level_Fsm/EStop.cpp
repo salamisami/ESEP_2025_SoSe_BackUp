@@ -14,14 +14,18 @@ EStop::EStop(ContextData* data, State* substate) :
 void EStop::entry() {
 	PRINT_STATE;
 	data->is_estop = true;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
 	substate->entry();
 }
 
 void EStop::exit() {
 	substate->exit();
 	PRINT_STATE;
-	data->is_estop = true;
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF, (int) EventPriority::DEFAULT);
+	data->is_estop = false;
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
 }
 
 State* EStop::clone() {
@@ -29,12 +33,14 @@ State* EStop::clone() {
 }
 
 State* EStop::error_c_lost_com() {
+	data->com_resolved = false;
 	State* cloned = this->clone();
 	data->estop_history->push(cloned);
 	return new ErrorCom(data);
 }
 
 State* EStop::error_c_lost_mqtt() {
+	data->mqtt_resolved = false;
 	State* cloned = this->clone();
 	data->estop_history->push(cloned);
 	return new ErrorCom(data);

@@ -24,6 +24,7 @@ void MQTTNoError::exit(){
 
 State* MQTTNoError::error_c_lost_mqtt()
 {
+	DEBUG("ich bin in mqtt error gefangen");
     return new MQTTFehlerUnquittiert(data);
 }
 

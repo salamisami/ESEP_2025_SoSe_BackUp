@@ -1,23 +1,24 @@
-#ifndef IDLESORTING_H
-#define IDLESORTING_H
+#ifndef Idle_H
+#define Idle_H
 #pragma once
 
 #include "State.h"
-#include "PushRamp_OP.h"
-#include "OpenGate_OP.h"
-class IdleSorting : public State {
+#include "Fast.h"
+#include "MotorControl.h"
+
+class Idle : public State {
 public: //============================================ constructors & destructors ============================================
-    IdleSorting(ContextData* data) ;
-    virtual ~IdleSorting();
+    Idle(ContextData* data) ;
+    virtual ~Idle();
 	
 
 public: //================================================ public functions ================================================
     void entry() override;
     void exit() override;
-
+    
+    State* motor_fast() override;
     State* clone() override;
-    State* sort_out() override;
-    State* let_through() override;
+    State* motor_stop_fsm() override;
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
 	//pointers

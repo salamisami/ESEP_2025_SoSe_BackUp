@@ -39,7 +39,7 @@ State* Piece_Missing::clone(){
 }
 State* Piece_Missing::request_transfer() {
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
-	return new Piece_Missing(data);
+	return nullptr;
 }
 
 State* Piece_Missing::piece_lost_resolved(){

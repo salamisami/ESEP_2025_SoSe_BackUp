@@ -129,7 +129,7 @@ void Remote_Controller::threadFunctionRecive() {
                 ActuatorEnum actuator_event_value = (ActuatorEnum) event.value.sival_int;
                 InterruptEnum interrupt_event_value = (InterruptEnum) event.value.sival_int;
                 Error_Enum Error_event_value = (Error_Enum) event.value.sival_int;
-
+                Internal_Enum Internal_event_value = (Internal_Enum) event.value.sival_int;
                 Topic event_code = (Topic) event.code;
                 if(event_code == Topic::ACTUATOR) {
                     switch(actuator_event_value) {
@@ -226,39 +226,95 @@ void Remote_Controller::threadFunctionRecive() {
                         MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "notaus").c_str(), "false");
                     }
                 }
+                if(event_code == Topic::INTERNAL) {
+                    if(Internal_event_value == Internal_Enum::RAMP_FULL) {
+                        MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC, "rutsche").c_str(), "1");
+                    }
+                    if(Internal_event_value == Internal_Enum::RAMP_NOT_FULL) {
+                        MQTT_Utilities::mqtt_festo_publish(make_topic(RECEIVE_TOPIC,"rutsche").c_str(),"0");
+                    }
+                }
                 if(event_code == Topic::ERROR) {
                     std::string msg = "";
                     switch(Error_event_value) {
                         case Error_Enum::CANT_FIND_CALB_CONF:
-                            msg = std::string(ClientID) + "Es konnte keine Kalibrierungsdatei gefunden werden";
+                            msg = std::string(ClientID) + " Es konnte keine Kalibrierungsdatei gefunden werden";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
                         case Error_Enum::CANT_FIND_REP_CONF:
-                            msg = std::string(ClientID) + "Es konnte keine Replaydatei gefunden werden!";
+                            msg = std::string(ClientID) + " Es konnte keine Replaydatei gefunden werden!";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
                         case Error_Enum::ERROR_BOTH_R_FULL:
-                            msg = std::string(ClientID) + "Achtung beide Rampen Sind Voll bitte leeren!";
+                            msg = std::string(ClientID) + " Achtung beide Rampen Sind Voll bitte leeren!";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
                         case Error_Enum::ERROR_C_LOST_COM:
-                            msg = std::string(ClientID) + "Hat Keine Verbindung zur anderen Anlage!";
+                            msg = std::string(ClientID) + " Hat Keine Verbindung zur anderen Anlage!";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
                         case Error_Enum::ERROR_C_LOST_MQTT:
-                            msg = std::string(ClientID) + "MQTT Verbindung verloren!";
+                            msg = std::string(ClientID) + " MQTT Verbindung verloren!";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
                         case Error_Enum::ERROR_C_LOST_NR:
-                            msg = std::string(ClientID) + "?";
+                            msg = std::string(ClientID) + " ?";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
                         case Error_Enum::ERROR_INVALID_MESURE:
-                            msg = std::string(ClientID) + "Ungültige Höhenmessung!";
+                            msg = std::string(ClientID) + " Ungültige Höhenmessung!";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
                         case Error_Enum::ERROR_W_LOST:
-                            msg = std::string(ClientID) + "Ein Werkstück ist verschwunden!";
+                            msg = std::string(ClientID) + " Ein Werkstück ist verschwunden!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+                        case Error_Enum::ERROR_W_APPEARED:
+                            msg = std::string(ClientID) + " Ein Werkstück ist Appeared!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+                        case Error_Enum::COM_ERROR_RESOLVED:
+                            msg = std::string(ClientID) + " COM-Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::RAMP_ERROR_RESOLVED:
+                            msg = std::string(ClientID) + " Rampen-Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::MQTT_ERROR_RESOLVED:
+                            msg = std::string(ClientID) + " MQTT-Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::PIECE_APPEARED_RESOLVED:
+                            msg = std::string(ClientID) + " Werkstück Appeared Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::PIECE_LOST_RESOLVED:
+                            msg = std::string(ClientID) + " Werkstück-Verlust-Fehler wurde behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::PIECES_TOO_CLOSE:
+                            msg = std::string(ClientID) + " Werkstücke zu nah beieinander!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::ERROR_INVALID_MEASURE_RESOLVED:
+                            msg = std::string(ClientID) + " Ungültige Messung behoben!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::ERROR_C_LOST_MQTT_OVER_COM:
+                            msg = std::string(ClientID) + " MQTT-über-COM Fehler aufgetreten!";
+                            MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
+                            break;
+
+                        case Error_Enum::ERROR_C_LOST_MQTT_OVER_COM_RESOLVED:
+                            msg = std::string(ClientID) + " MQTT-über-COM Fehler behoben!";
                             MQTT_Utilities::mqtt_festo_publish("festo/anlage1-2/console", msg.c_str());
                             break;
                         default:
@@ -297,8 +353,8 @@ void Remote_Controller::threadFunctionSend() {
             case 5: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_RESET_PRESSED); break;
             case 6: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_RESET_RELEASED); break;
             case 7: local_sender->send_event(RemoteCode, (int) RemoteControlEnum::REMOTE_ESTOP); break;
-                //            case 8: //local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED); break;
-                //            		break;
+//            case 8: //local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED); break;
+//            		break;
             case 9: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REC); break;
             case 10: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::STOP_REC); break;
             case 11: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REPLAY); break;
@@ -324,6 +380,7 @@ void Remote_Controller::threadFunctionHeartbeat() {
         }
 
         if(MQTT_Utilities::connection_lost || dash_conn_lost) {
+        	_pulse event;
             DEBUG("Connection lost detected. Cleaning up ...\n");
             RemCon_send_running = false;
             RemCon_recive_running = false;
@@ -332,9 +389,9 @@ void Remote_Controller::threadFunctionHeartbeat() {
             if(RemConThreadRecive.joinable()) RemConThreadRecive.join();
             queueCV.notify_all();
             if(RemConThreadSend.joinable()) RemConThreadSend.join();
-
-            int8_t RemConCode = (int8_t) Topic::REM_CON;
-            //local_sender->send_event(RemConCode, (int) RemoteControlEnum::MQTT_DISCONNECTED);
+            DEBUG("close to send\n");
+            int8_t ErrCode = (int8_t) Topic::ERROR;
+            local_sender->send_event(ErrCode, (int) Error_Enum::ERROR_C_LOST_MQTT);
 
             MQTTClient_disconnect(MQTT_Utilities::client, 1000);
             MQTTClient_destroy(&MQTT_Utilities::client);
@@ -343,18 +400,18 @@ void Remote_Controller::threadFunctionHeartbeat() {
             DEBUG("Waiting for reconnect command ...\n");
             bool reconnect = false;
             while(!reconnect) {
-                //                _pulse event;
-                //                int status = local_receiver->receive_event(&event);
-                //                RemoteControl event_value = (RemoteControl) event.value.sival_int;
-                //                Topic event_code = (Topic) event.code;
-                //                if (status == 0 && event_code == Topic::REM_CON) {
-                //                    if(event_value == RemoteControl::RECONNECT)
-                //                        reconnect = true;
-                //                    DEBUG("Reconnect command received!\n");
-                //                }
-                                //nur zum testen
-                std::this_thread::sleep_for(std::chrono::seconds(3));
-                reconnect = true;
+				_pulse event;
+				int status = local_receiver->receive_event(&event);
+				RemoteControlEnum event_value = (RemoteControlEnum) event.value.sival_int;
+				Topic event_code = (Topic) event.code;
+				if (status == 0 && event_code == Topic::REM_CON) {
+					if(event_value == RemoteControlEnum::RECONNECT)
+						reconnect = true;
+					DEBUG("Reconnect command received!\n");
+				}
+				//nur zum testen
+                std::this_thread::sleep_for(std::chrono::milliseconds(20));
+//                reconnect = true;
             }
             MQTT_Utilities::connection_lost = false;
             dash_conn_lost = false;
