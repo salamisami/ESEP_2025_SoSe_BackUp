@@ -12,8 +12,21 @@ if(UNITY_BUILD)
     set(CMAKE_UNITY_BUILD_BATCH_SIZE 10)
 endif()
 
-# Use file globbing carefully
-file(GLOB_RECURSE MAIN_SRC LIST_DIRECTORIES false CONFIGURE_DEPENDS "src/FSM/[A-Za-z]*.cpp")
+include_directories(inc inc/QNet inc/QNet/stl)
+
+#sources in root directory
+file(GLOB MAIN_SRC 
+    LIST_DIRECTORIES false 
+    CONFIGURE_DEPENDS 
+    "src/[A-Za-z]*.cpp"
+    "src/QNet/stl/[A-Za-z]*.cpp"
+)
+
+#FSM sources
+file(GLOB_RECURSE FSM_SRC LIST_DIRECTORIES false CONFIGURE_DEPENDS "src/FSM/[A-Za-z]*.cpp")
+list(APPEND MAIN_SRC ${FSM_SRC})
+
+#Inc sources
 file(GLOB_RECURSE MAIN_INC LIST_DIRECTORIES false CONFIGURE_DEPENDS "inc/FSM/[A-Za-z]*.h")
 
 # Get include directories
@@ -30,9 +43,10 @@ target_include_directories(ProjectLib PUBLIC ${GLOB_INC_DIRS})
 
 add_compile_definitions(MOCK)
 add_compile_definitions(VERBOSE_STATES)
+add_compile_definitions(FBM_2)
 
 # Executables
-add_executable(Project main.cpp)
+add_executable(Project mock.cpp)
 
 # Platform-specific settings
 if(APPLE)

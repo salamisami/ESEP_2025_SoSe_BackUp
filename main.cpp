@@ -18,7 +18,10 @@
 #include <csignal>
 #include <atomic>
 
+#ifndef NO_RC_REC
 #include "inc/MQTT/MQTT_Utilities.h"
+#endif
+
 #define ONE_MILLISECOND 1000
 #define COUT(msg) std::cout << msg << std::endl
 using namespace std;
@@ -81,14 +84,24 @@ int main() {
 
     //#ifndef NO_RC_REC
     while(Remote_Controller::Main_running) {
-    	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
-   
-delete hal;
-delete rec;
-delete logic;
-delete externCommunication;
-delete remcon;
+        //std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    #else
+    while(1){}
+    #endif
+
+    delete hal;
+
+    #ifndef NO_COM
+    delete externCommunication;
+    #endif
+
+    #ifndef NO_RC_REC
+    delete remcon;
+    delete rec;
+    #endif
+
+    delete logic;
 
     delete hal_sender;
     delete hal_receiver;

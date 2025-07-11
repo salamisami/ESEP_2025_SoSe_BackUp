@@ -6,27 +6,13 @@
 #include "Context.h"
 #include "Boot.h"
 #include "Event.h"
-#include "Thread_COM.h"
+
 
 #include "Mock_PM.h"
-#include <pthread.h>
 #include <thread>
 
-void set_thread_priority(pthread_t thread, int priority) {
-    struct sched_param param;
-    param.sched_priority = priority;
 
-    // Set FIFO scheduling policy with specified priority
-    if (pthread_setschedparam(thread, SCHED_FIFO, &param) != 0) {
-        std::cerr << "Failed to set thread priority: " << strerror(errno) << std::endl;
-    }
 
-    // Optional: Set thread CPU affinity
-    // cpu_set_t cpuset;
-    // CPU_ZERO(&cpuset);
-    // CPU_SET(0, &cpuset);  // Pin to CPU 0
-    // pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
-}
 
 template <typename InitialState>
 class Logic {
@@ -69,6 +55,7 @@ private: //================================================ private functions ==
 //================================================= constructors & destructors =================================================
 
 
+
 template <typename InitialState>
 Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, ContextData* input_data)
     : local_receiver(local_receiver)
@@ -93,7 +80,6 @@ void Logic<InitialState>::init() {
     fsm = new Context<InitialState>(data);
     logicRunning = true;
     logicThread = std::thread(&Logic::threadFunction, this);
-    set_thread_priority(logicThread.native_handle(), 250);  // Higher priority for main thread
 }
 
 
