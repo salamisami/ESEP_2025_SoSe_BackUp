@@ -114,7 +114,7 @@ void COM::runClient() {
         }
 
         // Use the local copy outside the lock
-        while(!_client || current_client->getcoid() == -1) {
+        while(!_client || _client->getcoid() == -1) {
             try {
                 auto new_client = std::make_shared<Thread_COM::Sender>(_clientSendName);
                 if(new_client->getcoid() >= 0) {
@@ -132,7 +132,7 @@ void COM::runClient() {
             std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
         }
 
-        if(current_client->getcoid() != -1) {
+        if(current_client && current_client->getcoid() != -1) {
             checkQueues(); // Make sure checkQueues uses the local copy too
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
@@ -212,7 +212,7 @@ void COM::sendHeartbeat() {
 int COM::sendToServer(const _pulse& msg, int priority) {
     int send_event_status = 0;
     std::lock_guard<std::mutex> lock(_clientMutex);
-    if(_client->getcoid() >= 0) {
+    if(_client && _client->getcoid() >= 0) {
         send_event_status = _client->send_event_com((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
     }
     updateHeartbeat();
