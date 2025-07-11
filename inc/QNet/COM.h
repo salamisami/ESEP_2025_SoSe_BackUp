@@ -14,8 +14,9 @@
 #define COUT(msg) std::cout << msg << std::endl
 
 #define HEARTBEAT_MULTIPLIER 1
-#define TIMEOUT_COM_INTERVAL HEARTBEAT_MULTIPLIER * 10000000
-#define HEARTBEAT_INTERVAL TIMEOUT_COM_INTERVAL/2 * HEARTBEAT_MULTIPLIER
+#define TIMEOUT_COM_INTERVAL HEARTBEAT_MULTIPLIER * 100000000
+
+#define HEARTBEAT_INTERVAL TIMEOUT_COM_INTERVAL/100 * HEARTBEAT_MULTIPLIER
 
 
 
@@ -56,7 +57,7 @@ private:
     // Shared state
     I_Receiver *_server;
     const char *_clientSendName;
-    Thread_COM::Sender _client;
+    std::shared_ptr<Thread_COM::Sender>_client;
     std::mutex _clientMutex;
 
     I_Receiver *_dispatcherRec;

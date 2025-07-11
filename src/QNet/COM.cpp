@@ -107,22 +107,33 @@ void COM::runDispatcher() {
 void COM::runClient() {
     const int RETRY_DELAY_MS = 1000;
     while(running) {
-        while(_client.getcoid() == -1) {
+        std::shared_ptr<Thread_COM::Sender> current_client;
+        {
             std::lock_guard<std::mutex> lock(_clientMutex);
+            current_client = _client; // Take a local copy while holding the lock
+        }
+
+        // Use the local copy outside the lock
+        while(!_client || current_client->getcoid() == -1) {
             try {
-                _client = Thread_COM::Sender(_clientSendName);
-                if(_client.getcoid() >= 0) {
+                auto new_client = std::make_shared<Thread_COM::Sender>(_clientSendName);
+                if(new_client->getcoid() >= 0) {
+                    {
+                        std::lock_guard<std::mutex> lock(_clientMutex);
+                        _client = new_client; // Update the shared pointer
+                    }
                     COUT("Connection established successfully");
+                    current_client = new_client; // Update our local copy
                     break;
                 }
             } catch(...) {
                 std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-            continue;
         }
-        if(_client.getcoid() != -1) {
-            checkQueues();
+
+        if(current_client->getcoid() != -1) {
+            checkQueues(); // Make sure checkQueues uses the local copy too
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
     }
@@ -189,8 +200,8 @@ void COM::sendHeartbeat() {
 
     if(elapsed.count() >= HEARTBEAT_INTERVAL) {
         std::lock_guard<std::mutex> lock(_clientMutex);
-        if(_client.getcoid() != -1) {
-            _client.send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
+        if(_client->getcoid() != -1) {
+            _client->send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
         }
         updateHeartbeat();
     }
@@ -199,8 +210,8 @@ void COM::sendHeartbeat() {
 int COM::sendToServer(const _pulse& msg, int priority) {
     int send_event_status = 0;
     std::lock_guard<std::mutex> lock(_clientMutex);
-    if(_client.getcoid() >= 0) {
-        send_event_status = _client.send_event_com((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
+    if(_client->getcoid() >= 0) {
+        send_event_status = _client->send_event_com((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
     }
     updateHeartbeat();
     return send_event_status;
@@ -264,7 +275,7 @@ void COM::runServer() {
 
                 {
                     std::lock_guard<std::mutex> lock(_clientMutex);
-                    _client.setcoid(-1); //Signalize the client to reconnect
+                    _client->setcoid(-1);
                 }
                 // Timeout occurred
                 disconnected = true;
