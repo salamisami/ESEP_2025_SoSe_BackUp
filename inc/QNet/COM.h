@@ -18,6 +18,7 @@
 
 #define HEARTBEAT_INTERVAL TIMEOUT_COM_INTERVAL/100 * HEARTBEAT_MULTIPLIER
 
+#define NS_TO_MS(ns) ((ns) / 1000000.0)  // Converts nanoseconds → milliseconds (as double)
 
 
 

@@ -193,17 +193,19 @@ void COM::checkQueues() {
 }
 
 void COM::sendHeartbeat() {
+    const auto now = std::chrono::steady_clock::now();
+    const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastHeartbeat);
 
-    auto now = std::chrono::steady_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        now - lastHeartbeat);
-
-    if(elapsed.count() >= HEARTBEAT_INTERVAL) {
+    // Check if it's time to send a heartbeat (every TIMEOUT_COM_INTERVAL/10)
+    if (elapsed.count() >= (TIMEOUT_COM_INTERVAL / 10)) {
         std::lock_guard<std::mutex> lock(_clientMutex);
-        if(_client->getcoid() != -1) {
+
+        // Only send if the client is connected
+        if (_client && _client->getcoid() != -1) {
             _client->send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
         }
-        updateHeartbeat();
+
+        updateHeartbeat(); // Update lastHeartbeat to now
     }
 }
 
