@@ -107,11 +107,11 @@ void COM::runDispatcher() {
 void COM::runClient() {
     const int RETRY_DELAY_MS = 1000;
     while(running) {
-        while(_client.getcoid() == -1) {
+        while(!_client || _client->getcoid() == -1) {
             std::lock_guard<std::mutex> lock(_clientMutex);
             try {
-                _client = Thread_COM::Sender(_clientSendName);
-                if(_client.getcoid() >= 0) {
+                _client = make_unique<Thread_COM::Sender>(_clientSendName);
+                if(_client->getcoid() >= 0) {
                     COUT("Connection established successfully");
                     break;
                 }
@@ -121,7 +121,7 @@ void COM::runClient() {
             std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
             continue;
         }
-        if(_client.getcoid() != -1) {
+        if(_client && _client->getcoid() != -1) {
             checkQueues();
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
@@ -163,7 +163,7 @@ void COM::checkQueues() {
             }
         }
 
-        // Then process low priority 123
+        // Then process low priority
         for(auto& msg : lowPrioBatch) {
             if(sendToServer(msg) == -1) {
                 std::lock_guard<std::mutex> lock(queueMutex);
@@ -189,8 +189,8 @@ void COM::sendHeartbeat() {
 
     if(elapsed.count() >= HEARTBEAT_INTERVAL) {
         std::lock_guard<std::mutex> lock(_clientMutex);
-        if(_client.getcoid() != -1) {
-            _client.send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
+        if(_client->getcoid() != -1) {
+            _client->send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
         }
         updateHeartbeat();
     }
@@ -199,8 +199,8 @@ void COM::sendHeartbeat() {
 int COM::sendToServer(const _pulse& msg, int priority) {
     int send_event_status = 0;
     std::lock_guard<std::mutex> lock(_clientMutex);
-    if(_client.getcoid() >= 0) {
-        send_event_status = _client.send_event_com((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
+    if(_client) {
+        send_event_status = _client->send_event_com((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
     }
     updateHeartbeat();
     return send_event_status;
@@ -261,10 +261,9 @@ void COM::runServer() {
             }
         } else if(rcvid == -1) {
             if(errno == ETIMEDOUT) {
-
                 {
                     std::lock_guard<std::mutex> lock(_clientMutex);
-                    _client.setcoid(-1); //Signalize the client to reconnect
+                    _client.reset();
                 }
                 // Timeout occurred
                 disconnected = true;

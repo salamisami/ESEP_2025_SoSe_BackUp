@@ -31,7 +31,6 @@ public:
   virtual int send_event_com(int8_t event_code, int event_value, int priority = (int) EventPriority::DEFAULT){
     return -1;
   }
-
 	virtual int getcoid() = 0;
 };
 
