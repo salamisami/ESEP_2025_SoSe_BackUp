@@ -301,8 +301,6 @@ void COM::runServer() {
                         _client->setcoid(-1);
                     }
                     disconnected = true;
-                    updateHeartbeat();
-
                     _pulse timeoutEvent;
                     timeoutEvent.code = (int8_t)Topic::ERROR;
                     timeoutEvent.value.sival_int = (int)Error_Enum::ERROR_C_LOST_COM;
@@ -389,6 +387,20 @@ void COM::processMessage(const _pulse& msg) {
             sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
         } else if(msg.value.sival_int != (((int) COM_Enum::TIMEOUT_COM) || ((int) COM_Enum::HEARTBEAT))) {
             sendToDispatcher(msg);
+        } else if (msg.value.sival_int== (int) COM_Enum::TIMEOUT_COM){
+                // Handle timeout
+                if(_client) {
+                    std::lock_guard<std::mutex> lock(_clientMutex);
+                    _client->setcoid(-1);
+                }
+                disconnected = true;
+                updateHeartbeat();
+
+                _pulse timeoutEvent;
+                timeoutEvent.code = (int8_t)Topic::ERROR;
+                timeoutEvent.value.sival_int = (int)Error_Enum::ERROR_C_LOST_COM;
+                COUT("Sending ERROR_C_LOST_COM Notification; COM_Server");
+                sendToDispatcher(timeoutEvent, (int)EventPriority::FIRST_PRIO);
         }
     } else if(msg.code == (int) Topic::ID) {
         sendToDispatcher(msg);

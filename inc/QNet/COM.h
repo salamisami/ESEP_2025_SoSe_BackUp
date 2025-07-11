@@ -68,6 +68,7 @@ private:
     bool running;
     bool rampfull = false;
     bool mqttConnected = false;
+    bool disconnected = true;
 
     std::deque<_pulse> highPriorityQueue;
     std::deque<_pulse> lowPriorityQueue;
