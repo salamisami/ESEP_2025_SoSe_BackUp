@@ -62,9 +62,9 @@ State* Sorting_out::laser_back_blocked() {
 State* Sorting_out::laser_front_blocked() {
   return new Pieceappeared(data);
 }
-State* Sorting_out::laser_gate_blocked() {
+/* State* Sorting_out::laser_gate_blocked() {
   return new Pieceappeared(data);
-}
+} */
 State* Sorting_out::request_transfer() {
   data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
   return nullptr;
