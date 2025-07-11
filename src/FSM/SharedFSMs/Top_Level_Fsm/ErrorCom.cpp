@@ -9,12 +9,10 @@
 
 void ErrorCom::entry() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON_FAST);
 }
 
 void ErrorCom::exit() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 }
 
 State* ErrorCom::mqtt_error_resolved() {
