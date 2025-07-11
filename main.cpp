@@ -77,7 +77,7 @@ int main() {
     externCommunication->start();
     #endif
 
-    HAL* hal = new HAL(hal_receiver, hal_sender);
+    //HAL* hal = new HAL(hal_receiver, hal_sender);
 
     #ifndef NO_RC_REC
     while(Remote_Controller::Main_running) {
@@ -87,7 +87,7 @@ int main() {
     while(1){}
     #endif
 
-    delete hal;
+    //delete hal;
 
     #ifndef NO_COM
     delete externCommunication;

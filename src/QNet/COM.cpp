@@ -106,6 +106,7 @@ void COM::runDispatcher() {
 
 void COM::runClient() {
     const int RETRY_DELAY_MS = 1000;
+
     while(running) {
         std::shared_ptr<Thread_COM::Sender> current_client;
         {
@@ -223,17 +224,23 @@ int COM::sendToServer(const _pulse& msg, int priority) {
 void COM::runServer() {
     COUT("COM server started.");
     bool disconnected = true;
+    timer_t timer_id;
+        struct sigevent event;
+        struct itimerspec timer_spec = {0};
+
+        // Configure timer to send pulses
+        SIGEV_PULSE_INIT(&event, ConnectAttach(0, 0, _server->getchid(), _NTO_SIDE_CHANNEL, 0),
+                         SIGEV_PULSE_PRIO_INHERIT,(int) COM_Enum::TIMEOUT_COM, 0);
+        timer_create(CLOCK_REALTIME, &event, &timer_id);
     while(running) {
-        struct _pulse event;
+        // (Re)arm the timer (1 second timeout)
+        timer_spec.it_value.tv_sec = 1;
+        timer_settime(timer_id, 0, &timer_spec, NULL);
+
+        char msg[256];
         struct _msg_info info;
-        struct sigevent sigev;
-        uint64_t timeout_nsec = TIMEOUT_COM_INTERVAL;
-        sigev.sigev_notify = SIGEV_UNBLOCK;
-        TimerTimeout(CLOCK_MONOTONIC,
-            _NTO_TIMEOUT_RECEIVE,
-            &sigev,
-            &timeout_nsec,
-            NULL);
+
+        struct _pulse event;
         int rcvid = MsgReceive(_server->getchid(),
             &event,
             sizeof(event),
