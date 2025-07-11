@@ -34,7 +34,6 @@ int main() {
     //std::thread inputThread(wait_for_enter);
 
     cout << "Starting Program..." << endl; // prints Hello World!!!
-    system("slay gns");
     #ifdef FBM_1
     system("gns -s ");
     #else
