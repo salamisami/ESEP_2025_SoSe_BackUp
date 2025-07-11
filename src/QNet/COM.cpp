@@ -347,8 +347,8 @@ void COM::handle_QNX_pulse(_pulse* msg, int rcvid) {
 }
 void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
     _pulse timeoutEvent;
-    int8_t comCode = (int8_t) Topic::COM;
-    int value = (int) COM_Enum::TIMEOUT_COM;
+    int8_t comCode = (int8_t) Topic::ERROR;
+    int value = (int) Error_Enum::ERROR_C_LOST_COM;
     switch(msg->code) {
         case _PULSE_CODE_DISCONNECT:
             printf(" _PULSE_CODE_DISCONNECT\n");
