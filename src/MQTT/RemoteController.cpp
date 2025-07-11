@@ -78,9 +78,9 @@ void Remote_Controller::init(bool reInit) {
     bool mqtt_connected = false;
     int rc = 0;
 
-    while (!mqtt_connected) {
-        rc = MQTT_Utilities::mqtt_festo_init("tcp://192.168.101.7:1883", ClientID);
-        if (rc != 0) {
+    while(!mqtt_connected) {
+        rc = MQTT_Utilities::mqtt_festo_init(BROKER_ADR, ClientID);
+        if(rc != 0) {
             printf("MQTT init failed! Fehlercode: %d\n", rc);
             MQTT_Utilities::mqtt_festo_cleanup();
             std::this_thread::sleep_for(std::chrono::seconds(5));
