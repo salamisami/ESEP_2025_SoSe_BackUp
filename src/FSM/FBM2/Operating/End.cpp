@@ -11,8 +11,6 @@ End::~End() {}
 //===================================================== public functions =====================================================
 void End::entry() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) data->piece_FBM2_soll->id);
-
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -48,12 +46,11 @@ State* End::laser_ramp_blocked() {
 }
 
 State* End::laser_back_unblocked() {
-	int id_to_delete = data->piece_FBM2_soll->id;
-	data->pieces_map->erase(id_to_delete);
+	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) data->piece_FBM2_soll->id);
 	delete data->piece_FBM2_soll;
 	data->piece_FBM2_soll = nullptr;
 	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTED);
-
+	
 	return new ReadyForPiece(data);
 }
 

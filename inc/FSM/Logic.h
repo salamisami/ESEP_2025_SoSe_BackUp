@@ -70,7 +70,7 @@ Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender, C
 template <typename InitialState>
 Logic<InitialState>::Logic(I_Receiver* local_receiver, I_Sender* local_sender)
     : local_receiver(local_receiver)
-    , local_sender(local_sender){
+    , local_sender(local_sender) {
     init();
 }
 
@@ -89,10 +89,11 @@ template <typename InitialState>
 Logic<InitialState>::~Logic() {
     logicRunning = false;
     if(logicThread.joinable()) {
+        data->sender->send_event((int8_t) Topic::STOP_THREAD, 0 );
         logicThread.join();
     }
     delete fsm;
-    if(!contextInjected){
+    if(!contextInjected) {
         delete data;
     }
 }
@@ -105,7 +106,6 @@ void Logic<InitialState>::threadFunction() {
     while(logicRunning) {
         _pulse event;
         int status = local_receiver->receive_event(&event);
-       ;
         if(status == 0) {
             eventNo++;
             int8_t topic = event.code;

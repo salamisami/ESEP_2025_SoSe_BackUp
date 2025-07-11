@@ -164,7 +164,7 @@ void DistanceTracker::stop() {
 
 void DistanceTracker::reset() {
     DEBUG("Piece_reset called!");
-    stop();
+    //stop();
     stopwatch.reset();
     current_mode = 0;
     current_area = Area::START_ADC;

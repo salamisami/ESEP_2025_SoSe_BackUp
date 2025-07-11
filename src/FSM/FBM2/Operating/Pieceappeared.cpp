@@ -24,11 +24,9 @@ void Pieceappeared::entry() {
 
 	//TODO move following commands to action on the previous states accordingly
 	if(data->piece_FBM2_soll == nullptr) {
-		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) -1);
+		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) -1);
 	} else {
-		int id_to_delete = data->piece_FBM2_soll->id;
-		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) id_to_delete);
-		data->pieces_map->erase(id_to_delete);
+		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) data->piece_FBM2_soll->id);
 		delete data->piece_FBM2_soll;
 		data->piece_FBM2_soll = nullptr;
 	}

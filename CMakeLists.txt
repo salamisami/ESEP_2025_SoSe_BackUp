@@ -3,7 +3,7 @@ project(Project VERSION 0.1.0 LANGUAGES CXX)
 
 # Options for development
 option(UNITY_BUILD "Enable unity builds for faster compilation" OFF)
-option(USE_SANITIZERS "Enable address sanitizers" OFF)
+option(USE_SANITIZERS "Enable address sanitizers" ON)
 
 enable_testing()
 

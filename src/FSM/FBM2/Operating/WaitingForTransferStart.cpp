@@ -63,7 +63,7 @@ State* WaitingForTransferStart::id() {
 	int piece_id = data->event_payload;
 	data->piece_FBM2_soll->id = piece_id;
 	Piece* next_piece = data->piece_FBM2_soll;
-	data->pieces_map->insert({ piece_id, next_piece });
+	//data->pieces_map->insert({ piece_id, next_piece });
 	return new Transfer(data);
 }
 

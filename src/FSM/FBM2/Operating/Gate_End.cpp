@@ -76,6 +76,7 @@ State* Gate_End::laser_back_blocked() {
 	
 	if(current_area == Area::GATE_END && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)) {
 		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) data->piece_FBM2_soll->id);
+		data->piece_tracker->stop();
 		return new End(data);
 	}
 	return new Pieceappeared(data);
