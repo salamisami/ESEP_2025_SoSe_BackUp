@@ -385,7 +385,7 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
 
 void COM::processMessage(const _pulse& msg) {
     if(msg.code == ((int) Topic::COM)) {
-        if(msg.value.sival_int == ((int) COM_Enum::BUTTON_ESTOP_PRESSED || (int) COM_Enum::BUTTON_ESTOP_RELEASED || COM_Enum::TIMEOUT_COM)) {
+        if(msg.value.sival_int == ((int) COM_Enum::BUTTON_ESTOP_PRESSED || (int) COM_Enum::BUTTON_ESTOP_RELEASED || (int) COM_Enum::TIMEOUT_COM)) {
             sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
         } else if(msg.value.sival_int != (((int) COM_Enum::TIMEOUT_COM) || ((int) COM_Enum::HEARTBEAT))) {
             sendToDispatcher(msg);
