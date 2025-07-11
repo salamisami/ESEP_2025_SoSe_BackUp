@@ -47,7 +47,7 @@ State* Start_ADC::timer(TIMER_ID id)  {
 	Area current_area = distance.first;
 	auto current_position = distance.second;
 	//TODO calibrate here
-	if(current_area == Area::START_ADC && current_position > DISTANCE_BETWEEN_PIECES && current_position <= (100 - PIECE_TRANSITION_TOLERANCE)) {
+	if(current_area == Area::START_ADC && current_position > DISTANCE_BETWEEN_PIECES && current_position >= (100 - PIECE_TRANSITION_TOLERANCE)) {
 		return new Start_ADC(data);
 	}
 
