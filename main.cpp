@@ -45,21 +45,21 @@ int main() {
 
     Thread_COM::Receiver* fsm_receiver = new Thread_COM::Receiver(FBM_N_FSM);
     Thread_COM::Sender* fsm_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
-    #ifndef NO_RC_REC
+    //#ifndef NO_RC_REC
     Thread_COM::Receiver* recorder_receiver = new Thread_COM::Receiver(FBM_N_RECORDER); //comment this to test without recorder
-    #endif
+    //#endif
     Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
-    #ifndef NO_RC_REC
+    //#ifndef NO_RC_REC
     Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
-    #endif
+    //#endif
     Thread_COM::Sender* RemCon_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
     Thread_COM::Sender* com_sender_local = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
-    #ifndef NO_COM
+    //#ifndef NO_COM
     Thread_COM::Receiver* com_external_receiver = new Thread_COM::Receiver(FBM_N_COM);
     Thread_COM::Receiver* com_receiver_local = new Thread_COM::Receiver(FBM_N_COM_RECEIVER);
-    #endif
+    //#endif
 
     Thread_COM::Receiver* hal_receiver = new Thread_COM::Receiver(FBM_N_HAL);
     Thread_COM::Sender* hal_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
@@ -67,19 +67,19 @@ int main() {
 
     auto logic = new Logic<Fsm>(fsm_receiver, fsm_sender);
 
-    #ifndef NO_RC_REC
+    //#ifndef NO_RC_REC
     Recorder* rec = new Recorder(recorder_receiver, recorder_sender);
     Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
-    #endif
+    //#endif
 
-    #ifndef NO_COM
+    //#ifndef NO_COM
     COM* externCommunication = new COM(com_external_receiver, FBM_N_COM_EXT, com_receiver_local, com_sender_local);
     externCommunication->start();
-    #endif
+    //#endif
 
     HAL* hal = new HAL(hal_receiver, hal_sender);
 
-    #ifndef NO_RC_REC
+    //#ifndef NO_RC_REC
     while(Remote_Controller::Main_running) {
     	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
