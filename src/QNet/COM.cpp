@@ -274,7 +274,7 @@ void COM::runServer() {
             }
         } else if(rcvid == -1) {
             if(errno == ETIMEDOUT) {
-
+            		if (_client)
                 {
                     std::lock_guard<std::mutex> lock(_clientMutex);
                     _client->setcoid(-1);
