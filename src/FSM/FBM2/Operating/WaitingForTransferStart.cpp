@@ -73,35 +73,35 @@ State* WaitingForTransferStart::id() {
 State* WaitingForTransferStart::transfer_start_other(){
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::UNKNOWN;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_tall(){
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_flat(){
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::FLAT;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_tall_w_metal(){
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL_WITH_METAL;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_tall_sort_out(){
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL_SORT_OUT;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_tall_w_metal_sort_out(){
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL_WITH_METAL_SORT_OUT;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_flat_sort_out(){
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::FLAT_SORT_OUT;
-	return new Transfer(data);
+	return nullptr;
 }
