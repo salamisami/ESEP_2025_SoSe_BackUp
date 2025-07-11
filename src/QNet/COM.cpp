@@ -184,7 +184,7 @@ void COM::checkQueues() {
 void COM::sendHeartbeat() {
 
     auto now = std::chrono::steady_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
         now - lastHeartbeat);
 
     if(elapsed.count() >= HEARTBEAT_INTERVAL) {
