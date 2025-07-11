@@ -26,7 +26,7 @@ State* LeavingGate_PT2::clone(){
 }
 
 State* LeavingGate_PT2::laser_sorting_gate_unblocked() {
-	data->piece_tracker->update_distance_force(Area::GATE_END, 0);
+	data->piece_FBM2_soll->piece_tracker->update_distance_force(Area::GATE_END, 0);
 	return new Gate_End(data);
 }
 
@@ -36,7 +36,7 @@ State* LeavingGate_PT2::timer(TIMER_ID id) {
 	}
 
 	
-	Area current_area = data->piece_tracker->get_distance().first;
+	Area current_area = data->piece_FBM2_soll->piece_tracker->get_distance().first;
 	if(current_area == Area::GATE){
 		return new LeavingGate_PT2(data);
 	}

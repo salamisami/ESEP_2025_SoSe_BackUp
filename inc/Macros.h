@@ -52,8 +52,10 @@
 #define PUSH_DELAY //muss noch gemessen werden
 
 #define DEADLINE_FACTOR 1
-#define TIMESTAMP_FACTOR 0.9
-#define GATE_END_FACTOR 1.1
+#define TIMESTAMP_FACTOR 1
+//piece appeared: runterstellen
+//piece missing: obenstellen
+#define GATE_END_FACTOR 0.8
 
 // Configuration for FBM Module 1
 #ifdef FBM_1

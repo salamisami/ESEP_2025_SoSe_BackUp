@@ -38,70 +38,72 @@ State* WaitingForTransferStart::clone(){
 }
 
 State* WaitingForTransferStart::request_transfer() {
+	DEBUG("Request_transfer");
 	data->sender->send_event((int8_t)Topic::COM, (int)COM_Enum::FBM_2_BUSY);
 	return nullptr;
 }
 
 State* WaitingForTransferStart::laser_front_blocked() {
+	DEBUG("laser front blocked");
 	return new Pieceappeared(data);
 	
 }
 State* WaitingForTransferStart::laser_sorting_gate_blocked() {
+	DEBUG("other");
 	return new Pieceappeared(data);
 	
 }
 
 State* WaitingForTransferStart::laser_ramp_blocked() {
+	DEBUG("other");
 	return new Pieceappeared(data);
 	
 }
 State* WaitingForTransferStart::laser_back_blocked() {
+	DEBUG("other");
 	return new Pieceappeared(data);	
 }
 
-State* WaitingForTransferStart::id() {
-	int piece_id = data->event_payload;
-	data->piece_FBM2_soll->id = piece_id;
-	if(data->piece_FBM2_soll == nullptr){
-		THROW("Id comes before type!");
-	}
-	Piece* next_piece = data->piece_FBM2_soll;
-	//data->pieces_map->insert({ piece_id, next_piece });
-	return new Transfer(data);
-}
 
 State* WaitingForTransferStart::transfer_start_other(){
+	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::UNKNOWN;
-	return nullptr;
+	return new Transfer(data);
 }
 State* WaitingForTransferStart::transfer_start_tall(){
+	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL;
-	return nullptr;
+	return new Transfer(data);
 }
 State* WaitingForTransferStart::transfer_start_flat(){
+	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::FLAT;
-	return nullptr;
+	return new Transfer(data);
 }
 State* WaitingForTransferStart::transfer_start_tall_w_metal(){
+	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL_WITH_METAL;
-	return nullptr;
+	return new Transfer(data);
 }
 State* WaitingForTransferStart::transfer_start_tall_sort_out(){
+	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL_SORT_OUT;
-	return nullptr;
+	return new Transfer(data);
 }
 State* WaitingForTransferStart::transfer_start_tall_w_metal_sort_out(){
+	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL_WITH_METAL_SORT_OUT;
-	return nullptr;
+	return new Transfer(data);
 }
 State* WaitingForTransferStart::transfer_start_flat_sort_out(){
+	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::FLAT_SORT_OUT;
-	return nullptr;
+	return new Transfer(data);
 }

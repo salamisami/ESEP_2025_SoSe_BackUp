@@ -44,7 +44,7 @@ State* Is_Metal::request_transfer() {
 }
 
 State* Is_Metal::laser_sorting_gate_blocked() {
-  auto distance = data->piece_tracker->get_distance();
+  auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
   Area current_area = distance.first;
   auto current_pos = distance.second;
  
@@ -59,7 +59,7 @@ State* Is_Metal::timer(TIMER_ID id) {
 	if(id != TIMER_ID::IS_METAL) {
 		return nullptr;
 	}
-	auto distance = data->piece_tracker->get_distance();
+	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 

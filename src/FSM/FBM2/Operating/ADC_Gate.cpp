@@ -52,7 +52,7 @@ State* ADC_Gate::laser_ramp_blocked() {
 	return new Pieceappeared(data);
 }
 State* ADC_Gate::laser_sorting_gate_blocked() {
-	auto distance = data->piece_tracker->get_distance();
+	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
@@ -90,7 +90,7 @@ State* ADC_Gate::timer(TIMER_ID id) {
 	if(id != TIMER_ID::ADC_GATE) {
 		return nullptr;
 	}
-	auto distance = data->piece_tracker->get_distance();
+	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 

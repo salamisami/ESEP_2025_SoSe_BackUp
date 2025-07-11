@@ -20,7 +20,7 @@ Transfer::~Transfer() {}
 void Transfer::entry(){
 	PRINT_STATE;
 	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
-	data->piece_tracker = new DistanceTracker(&data->timeprofile, true);
+	//data->piece_FBM2_soll->piece_tracker = new DistanceTracker(&data->timeprofile, true);
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -52,10 +52,12 @@ State* Transfer::request_transfer(){
 	return nullptr;
 }
 
+
 State* Transfer::id() {
+	DEBUG("ID event comes in");
 	int piece_id = data->event_payload;
+	printf("Piece id is: %d\n", piece_id);
 	data->piece_FBM2_soll->id = piece_id;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	return nullptr;
 }
 

@@ -335,7 +335,7 @@ TEST_F(RealImplementationSetup, CompleteEStopResetTransitionTest) {
     */
 
     // TEST_F(LogicBaseTest, PieceTrackingTest) {
-    //     data->piece_tracker->debug = true;
+    //     data->piece_FBM2_soll->piece_tracker->debug = true;
     //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_BLOCKED);
     //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_FRONT_UNBLOCKED);
     //     WAIT(2000);
@@ -349,7 +349,7 @@ TEST_F(RealImplementationSetup, CompleteEStopResetTransitionTest) {
     //     WAIT(2000);
     //     remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::LASER_BACK_BLOCKED);    
     //     WAIT(1000);
-    //     auto distance = data->piece_tracker->get_distance();
+    //     auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
     //     EXPECT_EQ(distance.first, Area::GATE_END);
     //     EXPECT_GT(distance.second, 95);
     // }

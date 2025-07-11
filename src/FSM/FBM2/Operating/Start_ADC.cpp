@@ -43,7 +43,7 @@ State* Start_ADC::timer(TIMER_ID id)  {
 		return nullptr;
 	}
 
-	auto distance = data->piece_tracker->get_distance();
+	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_position = distance.second;
 	//TODO calibrate here

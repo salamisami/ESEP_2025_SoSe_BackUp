@@ -19,6 +19,7 @@ Gate_End::~Gate_End() {}
 //===================================================== public functions =====================================================
 void Gate_End::entry() {
 	PRINT_STATE;
+	data->timer->start_timer(100, TIMER_ID::GATE_END);
 }
 
 void Gate_End::exit() {
@@ -41,16 +42,14 @@ State* Gate_End::timer(TIMER_ID id) {
 	if(id != TIMER_ID::GATE_END) {
 		return nullptr;
 	}
-	auto distance = data->piece_tracker->get_distance();
+	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	Area current_area = distance.first;
 
 	if(current_area == Area::OUT_OF_RANGE) {
 		DEBUG("PieceMissing! Cause: piece is too long to reach laser back.");
-		data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);
-		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) data->piece_FBM2_soll->id);
-
 		return new Piece_Missing(data);
 	}
+
 	return new Gate_End(data);
 }
 
@@ -69,14 +68,14 @@ State* Gate_End::laser_ramp_blocked() {
 
 
 State* Gate_End::laser_back_blocked() {
-	auto distance = data->piece_tracker->get_distance();
+	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
 	
 	if(current_area == Area::GATE_END && current_pos > (100 - PIECE_TRANSITION_TOLERANCE)) {
 		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) data->piece_FBM2_soll->id);
-		data->piece_tracker->stop();
+		data->piece_FBM2_soll->piece_tracker->stop();
 		return new End(data);
 	}
 	return new Pieceappeared(data);
