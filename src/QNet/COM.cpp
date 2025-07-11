@@ -39,7 +39,7 @@ void COM::start() {
 
     // Server (Lowest Priority - Background Tasks)
     serverThread = std::thread([this, set_priority] {
-        set_priority(5);
+        set_priority(11);
         runServer();
         });
 }
@@ -224,87 +224,106 @@ int COM::sendToServer(const _pulse& msg, int priority) {
 void COM::runServer() {
     COUT("COM server started.");
     bool disconnected = true;
-    timer_t timer_id;
-        struct sigevent event;
+    timer_t timer_id = 0;
+    int coid = -1;
+
+    try {
+        // Setup timer
+        struct sigevent event = {0};
         struct itimerspec timer_spec = {0};
 
-        // Configure timer to send pulses
-        SIGEV_PULSE_INIT(&event, ConnectAttach(0, 0, _server->getchid(), _NTO_SIDE_CHANNEL, 0),
-                         SIGEV_PULSE_PRIO_INHERIT,(int) COM_Enum::TIMEOUT_COM, 0);
-        timer_create(CLOCK_REALTIME, &event, &timer_id);
-    while(running) {
-        // (Re)arm the timer (1 second timeout)
-        timer_spec.it_value.tv_sec = 1;
-        timer_settime(timer_id, 0, &timer_spec, NULL);
-
-        char msg[256];
-        struct _msg_info info;
-
-        struct _pulse event;
-        int rcvid = MsgReceive(_server->getchid(),
-            &event,
-            sizeof(event),
-            &info);
-
-        if(rcvid == 0) {
-            if(disconnected) {
-                disconnected = false;
-
-                // Send COM_CONNECTED notification
-                _pulse reconnectEvent;
-                reconnectEvent.code = static_cast<int8_t>(Topic::COM);
-                reconnectEvent.value.sival_int = static_cast<int>(COM_Enum::COM_CONNECTED);
-                sendToDispatcher(reconnectEvent, static_cast<int>(EventPriority::FIRST_PRIO));
-
-                // Prepare status events
-                _pulse rampEvent;
-                rampEvent.code = static_cast<int8_t>(Topic::COM);
-                rampEvent.value.sival_int = rampfull ? static_cast<int>(COM_Enum::RAMP_FULL)
-                    : static_cast<int>(COM_Enum::RAMP_NOT_FULL);
-                _pulse mqttEvent;
-                mqttEvent.code = static_cast<int8_t>(Topic::COM);
-                mqttEvent.value.sival_int = mqttConnected ? static_cast<int>(COM_Enum::COM_MQTT_CONNECTED)
-                    : static_cast<int>(COM_Enum::COM_MQTT_DISCONNECTED);
-                {
-                    std::lock_guard<std::mutex> lock(queueMutex);
-                    lowPriorityQueue.push_front(rampEvent);
-                    lowPriorityQueue.push_front(mqttEvent);
-                }
-            }
-
-            if((_PULSE_CODE_MINAVAIL <= event.code) && (event.code <= _PULSE_CODE_MAXAVAIL)) {
-                updateHeartbeat();
-                processMessage(event);
-            } else {
-                handle_QNX_pulse(&event, rcvid);
-                continue;
-            }
-        } else if(rcvid == -1) {
-            if(errno == ETIMEDOUT) {
-            		if (_client)
-                {
-                    std::lock_guard<std::mutex> lock(_clientMutex);
-                    _client->setcoid(-1);
-                }
-                // Timeout occurred
-                disconnected = true;
-                updateHeartbeat();
-
-                _pulse timeoutEvent;
-                int8_t comCode = (int8_t) Topic::ERROR;
-                int value = (int) Error_Enum::ERROR_C_LOST_COM;
-
-                timeoutEvent.code = comCode;
-                timeoutEvent.value.sival_int = value;
-                COUT("Sending ERROR_C_LOST_COM Notification; COM_Server");
-                sendToDispatcher(timeoutEvent, (int) EventPriority::FIRST_PRIO);
-            }
+        // Create connection for timer
+        coid = ConnectAttach(0, 0, _server->getchid(), _NTO_SIDE_CHANNEL, 0);
+        if(coid == -1) {
+            perror("ConnectAttach failed");
+            throw std::runtime_error("ConnectAttach failed");
         }
-        if((_IO_BASE <= event.type) && (event.type <= _IO_MAX)) {
-            handle_QNX_IO_msg(&event, rcvid);
-            continue;
+
+        SIGEV_PULSE_INIT(&event, coid, SIGEV_PULSE_PRIO_INHERIT, (int)Topic::COM, (int) COM_Enum::TIMEOUT_COM);
+        if(timer_create(CLOCK_REALTIME, &event, &timer_id) == -1) {
+            perror("timer_create failed");
+            throw std::runtime_error("timer_create failed");
+        }
+
+        while(running) {
+            // Arm the timer (1 second timeout)
+            timer_spec.it_value.tv_sec = 1;
+            timer_spec.it_value.tv_nsec = 0;
+            if(timer_settime(timer_id, 0, &timer_spec, NULL) == -1) {
+                perror("timer_settime failed");
+                break;
+            }
+
+            struct _pulse pulse;
+            int rcvid = MsgReceive(_server->getchid(), &pulse, sizeof(pulse), NULL);
+
+            // Disarm timer immediately after receiving anything
+            timer_spec.it_value.tv_sec = 0;
+            timer_spec.it_value.tv_nsec = 0;
+            timer_settime(timer_id, 0, &timer_spec, NULL);
+
+            if(rcvid == 0) {  // Pulse received
+                if(disconnected) {
+                    disconnected = false;
+                    // Send COM_CONNECTED notification
+                    _pulse reconnectEvent;
+                    reconnectEvent.code = static_cast<int8_t>(Topic::COM);
+                    reconnectEvent.value.sival_int = static_cast<int>(COM_Enum::COM_CONNECTED);
+                    sendToDispatcher(reconnectEvent, static_cast<int>(EventPriority::FIRST_PRIO));
+                    // Prepare status events
+                                   _pulse rampEvent;
+                                   rampEvent.code = static_cast<int8_t>(Topic::COM);
+                                   rampEvent.value.sival_int = rampfull ? static_cast<int>(COM_Enum::RAMP_FULL)
+                                       : static_cast<int>(COM_Enum::RAMP_NOT_FULL);
+                                   _pulse mqttEvent;
+                                   mqttEvent.code = static_cast<int8_t>(Topic::COM);
+                                   mqttEvent.value.sival_int = mqttConnected ? static_cast<int>(COM_Enum::COM_MQTT_CONNECTED)
+                                       : static_cast<int>(COM_Enum::COM_MQTT_DISCONNECTED);
+                                   {
+                                       std::lock_guard<std::mutex> lock(queueMutex);
+                                       lowPriorityQueue.push_front(rampEvent);
+                                       lowPriorityQueue.push_front(mqttEvent);
+                                   }
+                }
+
+                if((_PULSE_CODE_MINAVAIL <= pulse.code) && (pulse.code <= _PULSE_CODE_MAXAVAIL)) {
+                    updateHeartbeat();
+                    processMessage(pulse);
+                } else {
+                    handle_QNX_pulse(&pulse, rcvid);
+                }
+            }
+            else if(rcvid == -1) {
+                if(errno == ETIMEDOUT) {
+                    // Handle timeout
+                    if(_client) {
+                        std::lock_guard<std::mutex> lock(_clientMutex);
+                        _client->setcoid(-1);
+                    }
+                    disconnected = true;
+                    updateHeartbeat();
+
+                    _pulse timeoutEvent;
+                    timeoutEvent.code = (int8_t)Topic::ERROR;
+                    timeoutEvent.value.sival_int = (int)Error_Enum::ERROR_C_LOST_COM;
+                    COUT("Sending ERROR_C_LOST_COM Notification; COM_Server");
+                    sendToDispatcher(timeoutEvent, (int)EventPriority::FIRST_PRIO);
+                }
+                else {
+                    perror("MsgReceive failed");
+                    break;
+                }
+            }
         }
     }
+    catch(const std::exception& e) {
+        std::cerr << "COM::runServer exception: " << e.what() << std::endl;
+    }
+
+    // Cleanup
+    if(timer_id != 0) timer_delete(timer_id);
+    if(coid != -1) ConnectDetach(coid);
+    COUT("COM server stopped.");
 }
 
 void COM::handle_QNX_pulse(_pulse* msg, int rcvid) {
@@ -366,14 +385,15 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
 
 void COM::processMessage(const _pulse& msg) {
     if(msg.code == ((int) Topic::COM)) {
-        if(msg.value.sival_int == ((int) COM_Enum::BUTTON_ESTOP_PRESSED || (int) COM_Enum::BUTTON_ESTOP_RELEASED)) {
+        if(msg.value.sival_int == ((int) COM_Enum::BUTTON_ESTOP_PRESSED || (int) COM_Enum::BUTTON_ESTOP_RELEASED || COM_Enum::TIMEOUT_COM)) {
             sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
         } else if(msg.value.sival_int != (((int) COM_Enum::TIMEOUT_COM) || ((int) COM_Enum::HEARTBEAT))) {
             sendToDispatcher(msg);
         }
     } else if(msg.code == (int) Topic::ID) {
         sendToDispatcher(msg);
-    } else {
+    }
+    else {
         printf("Received non COM Topic & non id Topic from other machine: Event Code: %d, Event Value: %d\n", msg.code, msg.value.sival_int);
     }
 }
