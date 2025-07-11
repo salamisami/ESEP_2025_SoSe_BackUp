@@ -15,9 +15,9 @@
 
 #define HEARTBEAT_MULTIPLIER 1
 
-#define HEARTBEAT_INTERVAL 100 * HEARTBEAT_MULTIPLIER
+#define HEARTBEAT_INTERVAL 50 * HEARTBEAT_MULTIPLIER
 
-#define TIMEOUT_COM_INTERVAL HEARTBEAT_MULTIPLIER * 1000000000ULL; 
+#define TIMEOUT_COM_INTERVAL HEARTBEAT_MULTIPLIER * 10000000ULL;
 
 
 class COM
@@ -56,7 +56,7 @@ private:
     // Shared state
     I_Receiver *_server;
     const char *_clientSendName;
-    std::unique_ptr<I_Sender> _client;
+    Thread_COM::Sender _client;
     std::mutex _clientMutex;
 
     I_Receiver *_dispatcherRec;
