@@ -19,7 +19,6 @@ ADC_Gate::~ADC_Gate() {}
 //===================================================== public functions =====================================================
 void ADC_Gate::entry() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	data->timer->start_timer(100, TIMER_ID::ADC_GATE);
 	//Action here
 	//HState::entry() //for HState
@@ -79,9 +78,11 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 
 	if(data->piece_FBM2_soll->type == validated_piece) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
+		DEBUG("Verdict: Piece let through");
 		return new LeavingGate_PT2(data);
 	}
 	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
+	DEBUG("Verdict: Piece sort out.");
 	return new Sorting_out(data);
 }
 
@@ -95,16 +96,17 @@ State* ADC_Gate::timer(TIMER_ID id) {
 
 	//piece->piece_tracker->print_distance();
 
-	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
-		return new ADC_Gate(data);
-	}
-
-	if(current_area == Area::ADC_GATE && current_pos >= PIECE_TRANSITION_TOLERANCE) {
-		return new ADC_Gate(data);
-	}
-
-	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
-		return new ADC_Gate(data);
+	switch(current_area){
+		case Area::ADC_GATE:
+			return new ADC_Gate(data);
+			break;
+		case Area::GATE:
+			if(current_pos < PIECE_TRANSITION_TOLERANCE){
+				return new ADC_Gate(data);
+			}
+			break;
+		default:
+			break;
 	}
 	return new Piece_Missing(data);
 }
