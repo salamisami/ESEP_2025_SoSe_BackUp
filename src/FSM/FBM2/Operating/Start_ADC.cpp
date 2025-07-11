@@ -38,7 +38,7 @@ State* Start_ADC::clone() {
 	return new Start_ADC(data);
 }
 
-State* Start_ADC::timer(TIMER_ID id)  {
+State* Start_ADC::timer(TIMER_ID id) {
 	if(id != TIMER_ID::START_ADC) {
 		return nullptr;
 	}
@@ -46,20 +46,19 @@ State* Start_ADC::timer(TIMER_ID id)  {
 	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_position = distance.second;
-	//TODO calibrate here
-	if(current_area == Area::START_ADC && current_position > DISTANCE_BETWEEN_PIECES && current_position <= (100 - PIECE_TRANSITION_TOLERANCE)) {
-		return new Start_ADC(data);
+	switch(current_area) {
+		case Area::START_ADC:
+			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC) {
+				return new ADC_State(data);
+			}
+			return new Start_ADC(data);
+		case Area::ADC:
+			return new ADC_State(data);
+			break;
+		default:
+			break;
 	}
-
-	if(current_area == Area::START_ADC && current_position >= (100 - 10)) {
-		return new ADC_State(data);
-	}
-
-	if(current_area == Area::ADC){
-		return new ADC_State(data);
-	}
-
-	return new Start_ADC(data);
+	return new Piece_Missing(data);
 }
 
 State* Start_ADC::request_transfer() {
