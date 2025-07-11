@@ -18,7 +18,10 @@
 #include <csignal>
 #include <atomic>
 
+#ifndef NO_RC_REC
 #include "inc/MQTT/MQTT_Utilities.h"
+#endif
+
 #define ONE_MILLISECOND 1000
 #define COUT(msg) std::cout << msg << std::endl
 using namespace std;

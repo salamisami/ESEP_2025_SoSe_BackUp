@@ -20,7 +20,7 @@ Transfer::~Transfer() {}
 void Transfer::entry(){
 	PRINT_STATE;
 	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
-	data->piece_tracker = new DistanceTracker(&data->timeprofile);
+	data->piece_tracker = new DistanceTracker(&data->timeprofile, true);
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState

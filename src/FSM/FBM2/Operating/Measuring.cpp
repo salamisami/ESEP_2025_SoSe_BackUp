@@ -57,27 +57,32 @@ State* Measuring::laser_ramp_blocked(){
 State* Measuring::adc_wh_detect(){
 	data->scanned_piece_FBM2 = ScannedPiece::TALL;
 	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	return new ADC_Gate(data);
 }
 State* Measuring::adc_wf_detect(){
 	data->scanned_piece_FBM2 = ScannedPiece::FLAT;
 	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	return new ADC_Gate(data);
 }
 State* Measuring::adc_w_b_detect(){
 	data->scanned_piece_FBM2 = ScannedPiece::HOLE;
 	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	return new ADC_Gate(data);
 }
 State* Measuring::adc_w_not_detect(){
 	data->scanned_piece_FBM2 = ScannedPiece::UNKNOWN;
 	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	return new ADC_Gate(data);
 }
 
 State* Measuring::adc_invalid_measure(){
 	data->scanned_piece_FBM2 = ScannedPiece::UNKNOWN;
 	data->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	return new ADC_Gate(data);
 }
 
