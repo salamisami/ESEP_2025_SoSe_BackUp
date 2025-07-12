@@ -38,7 +38,7 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 	  MACRO_PIECE_MISSING_PT1
   }
 
-	if(data->piece_near_adc == 0 && distance.second >= DISTANCE_BETWEEN_PIECES ) {
+	if(data->piece_near_adc != 0 && distance.second >= DISTANCE_BETWEEN_PIECES ) {
 		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
 		return new 	PendingTransferRequestNotAtEnd(data, localdata_);
 	}
