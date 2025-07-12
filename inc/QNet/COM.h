@@ -1,24 +1,43 @@
 #ifndef COM_H
 #define COM_H
 
-#include "QNet.h"
-#include "Event.h"
-#include "Thread_COM.h"
+// --- Standard-C++ und QNX/Netzwerk-Header ---
 #include <chrono>
 #include <deque>
 #include <mutex>
 #include <condition_variable>
 #include <thread>
 #include <memory>
+#include <iostream>
+
+// QNX/Socket/Netzwerk
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <sys/select.h>
+#include <sys/neutrino.h>
+
+// Dein Projekt
+#include "QNet.h"
+#include "Event.h"
+#include "Thread_COM.h"
 
 #define COUT(msg) std::cout << msg << std::endl
 
 #define HEARTBEAT_MULTIPLIER 1
-
 #define HEARTBEAT_INTERVAL 100 * HEARTBEAT_MULTIPLIER
+#define TIMEOUT_COM_INTERVAL HEARTBEAT_MULTIPLIER * 1000000ULL;
+#define UDP_WATCHDOG_TIMEOUT;
 
-#define TIMEOUT_COM_INTERVAL HEARTBEAT_MULTIPLIER * 1000000ULL; 
-
+// ===== UDP-Watchdog Settings =====
+#define UDP_WATCHDOG_PORT       12345
+#define UDP_WATCHDOG_PERIOD_MS  500
+#define UDP_WATCHDOG_TIMEOUT_MS 2000
+#define PEER_UDP_IP "192.168.101.102" // ANPASSEN!
+#define LOCAL_UDP_IP "0.0.0.0"
+// ================================
 
 class COM
 {
@@ -31,27 +50,35 @@ public:
     void stop();
 
 private:
-    // Client side
+    // Client
     void runClient();
     void checkQueues();
     void sendHeartbeat();
     int sendToServer(const _pulse &msg, int priority = (int)EventPriority::DEFAULT);
 
     void runDispatcher();
-    
+
     // Handler functions for different topics
     void handleInterruptTopic(int originalValue, _pulse& dispatcherMsg);
     void handleInternalTopic(int originalValue, _pulse& dispatcherMsg);
     void handleComTopic(int originalValue, _pulse& dispatcherMsg);
     void handleRemConTopic(int originalValue, _pulse& dispatcherMsg);
 
-    // Server side
+    // Server
     void runServer();
     void processMessage(const _pulse &msg);
     void sendToDispatcher(const _pulse &msg, int priority = (int)EventPriority::SECOND_PRIO);
     void updateHeartbeat();
     void handle_QNX_pulse(_pulse *msg, int rcvid);
     void handle_QNX_IO_msg(_pulse *msg, int rcvid);
+
+    // --- UDP-Watchdog ---
+    std::thread udpWatchdogThread;
+    bool udpWatchdogRunning;
+    bool udpWatchdogLost;
+    void runUdpWatchdog();
+    void notifyUdpLost();
+    void notifyUdpRestored();
 
     // Shared state
     I_Receiver *_server;

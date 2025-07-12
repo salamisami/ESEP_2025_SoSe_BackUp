@@ -39,7 +39,7 @@ int main() {
     #else
     system("gns -c");
     #endif
-
+    
     Dispatcher* dispatcher = new Dispatcher();
     std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
 
@@ -50,7 +50,7 @@ int main() {
     #endif
     Thread_COM::Sender* recorder_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
     #ifndef NO_RC_REC
-    Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
+    //Thread_COM::Receiver* RemCon_receiver = new Thread_COM::Receiver(FBM_N_REMOTE); //comment this to test without RC
     #endif
     Thread_COM::Sender* RemCon_sender = new Thread_COM::Sender(FBM_N_DISPATCHER);
 
@@ -112,7 +112,7 @@ int main() {
     delete RemCon_sender;
 
     #ifndef NO_RC_REC
-    delete RemCon_receiver;
+    //delete RemCon_receiver;
     #endif
 
     delete recorder_sender;
