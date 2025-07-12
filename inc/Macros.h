@@ -63,7 +63,7 @@
 #define TIMESTAMP_FACTOR 1
 //piece appeared: runterstellen
 //piece missing: hochstellen
-#define GATE_END_FACTOR 1.1
+#define GATE_END_FACTOR 1.05
 
 // Configuration for FBM Module 1
 #ifdef FBM_1
