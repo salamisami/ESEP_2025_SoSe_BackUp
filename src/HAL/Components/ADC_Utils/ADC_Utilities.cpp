@@ -67,6 +67,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
 
             if (bauteilErkannt) {
                 werte.push_back(sensorVoltage);
+                int messpunkte = werte.size();
                 if ((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && messpunkte >= W_SIZE) {
                     break;
                 }
