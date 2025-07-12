@@ -410,13 +410,13 @@ void COM::handleInternalTopic(int originalValue, _pulse& dispatcherMsg) {
             break;
         case Internal_Enum::RAMP_NOT_FULL:
             dispatcherMsg.code = static_cast<int>(Topic::COM);
-            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_RAMP_FULL);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_RAMP_NOT_FULL);
             lowPriorityQueue.push_back(dispatcherMsg);
             rampfull = false;
             break;
         case Internal_Enum::RAMP_FULL:
             dispatcherMsg.code = static_cast<int>(Topic::COM);
-            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_RAMP_NOT_FULL);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_RAMP_FULL);
             lowPriorityQueue.push_back(dispatcherMsg);
             rampfull = true;
             break;
