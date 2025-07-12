@@ -485,6 +485,7 @@ void Context<T>::handleEvent(_pulse event)
             break;
         case Topic::ID:
             newState = state->id();
+            break;
         default:
             break;
     }

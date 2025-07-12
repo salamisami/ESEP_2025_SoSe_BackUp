@@ -19,19 +19,18 @@ Sorting_out::~Sorting_out() {}
 //===================================================== public functions =====================================================
 void Sorting_out::entry() {
   PRINT_STATE;
-  data->timer->start_timer(1000, TIMER_ID::SORTING_OUT);
+  data->timer->start_timer(SORT_OUT_TIME, TIMER_ID::SORTING_OUT);
   data->stopwatch.start();
 
   //Action here
   //HState::entry() //for HState
   //OrthState::entry() //for OrthState
 }
- 
-void Sorting_out::exit(){
-	//HState::entry() //for HState
-	//OrthState::entry() //for OrthState
-	//Action here
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, data->piece_FBM2_soll->id);
+
+void Sorting_out::exit() {
+  //HState::entry() //for HState
+  //OrthState::entry() //for OrthState
+  //Action here
   PRINT_STATE;
 }
 
@@ -49,10 +48,13 @@ State* Sorting_out::timer(TIMER_ID id) {
 }
 
 State* Sorting_out::laser_ramp_blocked() {
-   data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTED_OUT);
+  data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTED_OUT);
   data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) data->piece_FBM2_soll->id);
   data->piece_FBM2_soll->sorting_time = data->stopwatch.stop();
   printf("Piece ID: %d has sorting time of %ld ms\n", data->piece_FBM2_soll->id, data->piece_FBM2_soll->sorting_time);
+  //cannot delete here?
+  delete data->piece_FBM2_soll;
+  data->piece_FBM2_soll = nullptr;
   return new ReadyForPiece(data);
 };
 

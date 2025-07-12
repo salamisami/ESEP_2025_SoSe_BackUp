@@ -64,7 +64,7 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 		data->scanned_piece_has_metal_fbm2 = false;
 		return new LeavingGate_PT2(data);
 	}
-	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
+	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
 	DEBUG("Verdict: Piece sort out.");
 	data->scanned_piece_has_metal_fbm2 = false;
 	return new Sorting_out(data);

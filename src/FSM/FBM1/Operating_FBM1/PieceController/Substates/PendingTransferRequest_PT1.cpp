@@ -35,6 +35,8 @@ State* PendingTransferRequest_PT1::fbm_2_ready() {
 	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 	send_transfer_start();
 	data->sender->send_event((int8_t) Topic::ID, (int) localdata_.piece->id);
+	DEBUG("ID is sent to fbm2");
+	DEBUG(localdata_.piece->id);
 	return new Transfer_PT1(data, localdata_);
 }
 
