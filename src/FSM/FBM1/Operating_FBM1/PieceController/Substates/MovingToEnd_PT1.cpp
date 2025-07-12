@@ -12,7 +12,6 @@ MovingToEnd_PT1::~MovingToEnd_PT1() {}
 
 //===================================================== public functions =====================================================
 void MovingToEnd_PT1::entry(){
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 	PRINT_STATE;
 }
 
