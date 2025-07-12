@@ -30,7 +30,6 @@ void ADC_Gate::exit() {
 	//OrthState::entry() //for OrthState
 	//Action here
 	PRINT_STATE;
-	data->scanned_piece_has_metal_fbm2 = false;
 }
 
 State* ADC_Gate::clone() {
@@ -62,10 +61,12 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 	if(data->piece_FBM2_soll->type == validated_piece) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
 		DEBUG("Verdict: Piece let through");
+		data->scanned_piece_has_metal_fbm2 = false;
 		return new LeavingGate_PT2(data);
 	}
 	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
 	DEBUG("Verdict: Piece sort out.");
+	data->scanned_piece_has_metal_fbm2 = false;
 	return new Sorting_out(data);
 }
 
