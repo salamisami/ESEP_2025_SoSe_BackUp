@@ -45,11 +45,11 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC) {
 				return new ADC_PT1(data, localdata_);
 			}
-			break;
+			return new StartADC_PT1(data, localdata_);
 		default:
 			break;
 	}
-	return new StartADC_PT1(data, localdata_);
+	return new ADC_PT1(data, localdata_);
 }
 
 // State* StartADC_PT1::timer(TIMER_ID id) {
