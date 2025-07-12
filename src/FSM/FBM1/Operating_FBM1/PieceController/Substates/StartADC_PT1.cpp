@@ -39,7 +39,7 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 	
 
 	//TODO calibrate here
-	if(current_area == Area::START_ADC && current_position > DISTANCE_BETWEEN_PIECES && current_position <= (100 - PIECE_TRANSITION_TOLERANCE)) {
+	if(current_area == Area::START_ADC && current_position > DISTANCE_BETWEEN_PIECES && current_position <= (100 - PIECE_TRANSITION_TOLERANCE_BEFORE_ADC)) {
 		if(!localdata_.unblock_signal_has_been_sent) {
 			localdata_.unblock_signal_has_been_sent = true;
 			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
