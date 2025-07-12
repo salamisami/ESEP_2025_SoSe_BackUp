@@ -28,7 +28,7 @@ void Recorder::threadFunction() {
             ADC_Enum ADC_event_value = (ADC_Enum)event.value.sival_int;
             Topic event_code = (Topic)event.code;
             if (event_code == Topic::REC_REPLAY) {
-            	DEBUG("[MAIN RecReplay event erhalten]");
+            	//DEBUG("[MAIN RecReplay event erhalten]");
                 switch (event_value) {
                     case RecReplayEnum::START_REC: start_record(); break;
                     case RecReplayEnum::STOP_REC: stop_record(); break;
@@ -68,6 +68,7 @@ void Recorder::threadFunction() {
 
 
 void Recorder::start_record() {
+	 stop_replay();
 	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
 	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_ON);
     std::lock_guard<std::mutex> lock(rec_mutex);
@@ -75,7 +76,6 @@ void Recorder::start_record() {
         DEBUG("Record already running!");
         return;
     }
-    stop_replay();
     record_running = true; // **jetzt erst true**
 
     writer_thread = std::thread(&Recorder::writer_loop, this);
@@ -97,7 +97,7 @@ void Recorder::stop_record() {
 }
 
 void Recorder::writer_loop() {
-    DEBUG("Recorder write Thread started.");
+    DEBUG("Recorder write started.");
     file.open(RECORDER_CSV, std::ios::out);
 
     if (!file.is_open() || file.fail()) {
@@ -122,10 +122,11 @@ void Recorder::writer_loop() {
         file.flush();
     }
     file.close();
-    DEBUG("Recorder write Thread stopped.");
+    DEBUG("Recorder write stopped.");
 }
 
 void Recorder::start_replay() {
+	stop_record();
 	int8_t ErrorCode = (int8_t) Topic::ERROR;
 	int8_t ActuatorCode = (int8_t) Topic::ACTUATOR;
 	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_ON);
@@ -134,7 +135,6 @@ void Recorder::start_replay() {
         DEBUG("Replay already running!");
         return;
     }
-    stop_record(); // Parallelbetrieb vermeiden!
     replay_events.clear();
     replay_running = true;
 
@@ -160,13 +160,12 @@ void Recorder::start_replay() {
         std::getline(iss, token, ','); evt.code = std::stoi(token);
         std::getline(iss, token, ','); evt.value = std::stoi(token);
         replay_events.push_back(evt);
-        DEBUG(("Replay: Event gelesen ms=" + std::to_string(evt.ms) +
-               " code=" + std::to_string(evt.code) +
-               " value=" + std::to_string(evt.value)).c_str());
+//        DEBUG(("Replay: Event gelesen ms=" + std::to_string(evt.ms) +
+//               " code=" + std::to_string(evt.code) +
+//               " value=" + std::to_string(evt.value)).c_str());
     }
     replay_file.close();
     replay_thread = std::thread(&Recorder::replay_loop, this);
-    DEBUG("Replay Thread gestartet");
 }
 
 void Recorder::stop_replay() {
@@ -180,7 +179,7 @@ void Recorder::stop_replay() {
 }
 
 void Recorder::replay_loop() {
-    DEBUG("Replay thread started.");
+    DEBUG("Replay started.");
     if (replay_events.empty()) return;
     auto replay_start = std::chrono::steady_clock::now();
     size_t idx = 0;
@@ -196,7 +195,7 @@ void Recorder::replay_loop() {
         std::cout << "Event Code: " << replay_events[idx].code
                   << " | Value: " << replay_events[idx].value << std::endl;
     }
-    DEBUG("Replay thread finished.");
+    DEBUG("Replay finished.");
 }
 
 std::string Recorder::interruptEnumToString(int value) {
