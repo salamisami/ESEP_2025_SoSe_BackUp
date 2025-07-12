@@ -88,7 +88,7 @@ public:
     ErrorWarningCounter* error_warning_counter;
 
     //PieceTrack -> PieceTrack
-    int piece_near_adc = 0;
+    bool piece_near_adc = false;
 };
 
 #endif
