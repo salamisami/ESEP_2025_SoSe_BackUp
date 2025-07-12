@@ -49,7 +49,7 @@ State* Sorting_out::timer(TIMER_ID id) {
 
 State* Sorting_out::laser_ramp_blocked() {
   data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTED_OUT);
-  data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) data->piece_FBM2_soll->id);
+  data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) data->piece_FBM2_soll->id);
   data->piece_FBM2_soll->sorting_time = data->stopwatch.stop();
   printf("Piece ID: %d has sorting time of %ld ms\n", data->piece_FBM2_soll->id, data->piece_FBM2_soll->sorting_time);
   //cannot delete here?
