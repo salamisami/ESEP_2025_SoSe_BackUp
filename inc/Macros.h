@@ -50,14 +50,14 @@
 #define PIECE_TRANSITION_TOLERANCE_GATE 25
 
 #ifdef FBM_1
-#define MOTOR_SLOW_POS_AT_START_ADC 80
+#define MOTOR_SLOW_POS_AT_START_ADC 100
 #endif
 #ifdef FBM_2
 #define MOTOR_SLOW_POS_AT_START_ADC 80
 #endif
 
 #define SORT_OUT_TIME 3500
-#define ADC_TIMEOUT_TIME 1500
+#define ADC_TIMEOUT_TIME 2000
 #define GATE_THROUGHTIME 2000
 #define PUSH_DELAY //muss noch gemessen werden
 
