@@ -134,9 +134,14 @@ void COM::runClient()
     int backoff = 1;
     while (running)
     {
-        if (disconnected)
+        if (!_client || _client->getcoid() == -1)
         {
             std::lock_guard<std::mutex> lock(_clientMutex);
+            if (_client)
+            {
+                name_close(_client->getcoid());
+                _client.reset();
+            }
             try
             {
                 _client = std::unique_ptr<Thread_COM::Sender>(new Thread_COM::Sender(_clientSendName));
@@ -273,7 +278,7 @@ int COM::sendToServer(const _pulse &msg, int priority)
 void COM::runServer()
 {
     std::cout << "COM server started." << std::endl;
-    //bool disconnected = true;
+    bool disconnected = true;
     while (running)
     {
         struct _pulse event;
@@ -424,7 +429,6 @@ void COM::runUdpWatchdog()
 void COM::notifyUdpLost()
 {
     std::cerr << "[UDP-Watchdog] Verbindung zur Gegenseite verloren!" << std::endl;
-    coid
     disconnected = true;
     _pulse lostComEvent;
     lostComEvent.code = static_cast<int8_t>(Topic::ERROR);
@@ -434,7 +438,7 @@ void COM::notifyUdpLost()
 
 void COM::notifyUdpRestored()
 {
-    
+
 
     disconnected = false;
 

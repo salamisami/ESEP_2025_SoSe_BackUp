@@ -39,7 +39,8 @@ int main() {
     #else
     system("gns -c");
     #endif
-    
+
+
     Dispatcher* dispatcher = new Dispatcher();
     std::thread dispatcher_thread = std::thread(&Dispatcher::run_dispatcher, dispatcher);
 
@@ -72,7 +73,7 @@ int main() {
     //Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
     #endif
 
-    #ifndef NO_COM
+	#ifndef NO_COM
     COM* externCommunication = new COM(com_external_receiver, FBM_N_COM_EXT, com_receiver_local, com_sender_local);
     externCommunication->start();
     #endif
