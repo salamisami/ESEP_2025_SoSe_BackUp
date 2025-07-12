@@ -14,8 +14,6 @@ StartADC_PT1::~StartADC_PT1() {}
 void StartADC_PT1::entry() {
 	PRINT_STATE;
 	data->timer->start_timer(UPDATE_PIECE_INTERVAL, TIMER_ID::STARTADC_PT1);
-	data->piece_near_adc = true;
-	
 }
 
 void StartADC_PT1::exit() {
@@ -36,26 +34,21 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 	Area current_area = distance.first;
 	auto current_position = distance.second;
 
-	
+	switch(current_area) {
+		case Area::START_ADC:
+			if(current_position > DISTANCE_BETWEEN_PIECES && !localdata_.unblock_signal_has_been_sent) {
+				localdata_.unblock_signal_has_been_sent = true;
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
+				return new StartADC_PT1(data);
+			}
 
-	//TODO calibrate here
-	if(current_area == Area::START_ADC && current_position > DISTANCE_BETWEEN_PIECES && current_position <= (100 - PIECE_TRANSITION_TOLERANCE_BEFORE_ADC)) {
-		if(!localdata_.unblock_signal_has_been_sent) {
-			localdata_.unblock_signal_has_been_sent = true;
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
-		}
-		//piece->piece_tracker->print_distance();
-		return new StartADC_PT1(data, localdata_);
+			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC) {
+				return new ADC_PT1(data, localdata_);
+			}
+			break;
+		default:
+			break;
 	}
-
-	if(current_area == Area::START_ADC && current_position > (100 - 5)) {
-		return new ADC_PT1(data, localdata_);
-	}
-
-	if(current_area != Area::START_ADC){
-		return new ADC_PT1(data, localdata_);
-	}
-
 	return new StartADC_PT1(data, localdata_);
 }
 

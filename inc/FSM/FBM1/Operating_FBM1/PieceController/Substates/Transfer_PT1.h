@@ -32,7 +32,7 @@ private: //================================================ private variables ==
 
 private: //================================================ private functions ================================================
 	//void privateFunction();
-	void send_transfer_start();
+	
 	
 };
 

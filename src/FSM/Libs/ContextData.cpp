@@ -41,9 +41,6 @@ ContextData::~ContextData() {
         estop_history->pop();
     }
     delete estop_history;
-    if(piece_tracker != nullptr){
-        delete piece_tracker;
-    }
     
 }
 

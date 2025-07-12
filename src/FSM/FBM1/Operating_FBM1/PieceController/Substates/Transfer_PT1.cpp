@@ -10,43 +10,13 @@ Transfer_PT1::~Transfer_PT1() {}
 //===================================================== private functions =====================================================
 
 
-void Transfer_PT1::send_transfer_start() {
-	PieceEnum validated_piece = localdata_.validated_type;
-	COM_Enum transfer_enum = COM_Enum::TRANSFER_START_OTHER;
-	switch(validated_piece) {
-		case PieceEnum::FLAT:
-			if(localdata_.sort_out_fbm2) {
-				transfer_enum = COM_Enum::TRANSFER_START_FLAT_SORT_OUT;
-			} else {
-				transfer_enum = COM_Enum::TRANSFER_START_FLAT;
-			}
-			break;
-		case PieceEnum::TALL:
-			if(localdata_.sort_out_fbm2) {
-				transfer_enum = COM_Enum::TRANSFER_START_TALL_SORT_OUT;
-			} else {
-				transfer_enum = COM_Enum::TRANSFER_START_TALL;
-			}
-			break;
-		case PieceEnum::TALL_WITH_METAL:
-			if(localdata_.sort_out_fbm2) {
-				transfer_enum = COM_Enum::TRANSFER_START_TALL_W_METAL_SORT_OUT;
-			} else {
-				transfer_enum = COM_Enum::TRANSFER_START_TALL_W_METAL;
-			}
-			break;
-		default:
-			break;
-	}
-	data->sender->send_event((int8_t) Topic::COM, (int) transfer_enum);
-}
+
 
 
 //===================================================== public functions =====================================================
 void Transfer_PT1::entry() {
 	PRINT_STATE;
-	send_transfer_start();
-  data->sender->send_event((int8_t) Topic::ID, (int) localdata_.piece->id);
+
 }
 
 void Transfer_PT1::exit() {

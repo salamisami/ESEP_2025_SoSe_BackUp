@@ -19,14 +19,6 @@ ReadyForPiece::~ReadyForPiece() {}
 //===================================================== public functions =====================================================
 void ReadyForPiece::entry() {
 	PRINT_STATE;
-	if(data->piece_tracker != nullptr){
-		delete data->piece_tracker;
-		data->piece_tracker = nullptr;
-	}
-	if(data->piece_FBM2_soll != nullptr) {
-		delete data->piece_FBM2_soll;
-		data->piece_FBM2_soll = nullptr;
-	}
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState

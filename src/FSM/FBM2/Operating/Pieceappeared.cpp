@@ -52,5 +52,5 @@ State* Pieceappeared::piece_appeared_resolved() {
 }
 State* Pieceappeared::request_transfer() {
 	data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
-	return new Pieceappeared(data);
+	return nullptr;
 }

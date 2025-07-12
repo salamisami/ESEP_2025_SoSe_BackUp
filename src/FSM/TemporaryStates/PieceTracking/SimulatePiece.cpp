@@ -19,7 +19,7 @@ SimulatePiece::~SimulatePiece() {}
 //===================================================== public functions =====================================================
 void SimulatePiece::entry(){
 	PRINT_STATE;
-	data->piece_tracker->reset();
+	data->piece_FBM2_soll->piece_tracker->reset();
 
 	//Anlage 11
 	// TimeProfile fast_profile = { { 2084, 2459, 3473, 3955, 5741, 3699 } };
@@ -34,9 +34,9 @@ void SimulatePiece::entry(){
 void SimulatePiece::exit(){
 	OrthState::exit();
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
-	auto distance = data->piece_tracker->get_distance();
+	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	std::cout << "Area: " << (int) distance.first << ", " << "Position: " << (double) distance.second << std::endl;
-	//delete data->piece_tracker;
+	//delete data->piece_FBM2_soll->piece_tracker;
 	PRINT_STATE;
 }
 

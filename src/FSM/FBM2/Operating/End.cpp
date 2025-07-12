@@ -30,7 +30,7 @@ State* End::clone() {
 }
 State* End::request_transfer() {
 	data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
-	return new End(data);
+	return nullptr;
 }
 
 State* End::laser_front_blocked() {

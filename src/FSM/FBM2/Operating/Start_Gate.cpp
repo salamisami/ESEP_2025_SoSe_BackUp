@@ -42,7 +42,7 @@ State* Start_Gate::request_transfer(){
 	return nullptr;
 }
 State* Start_Gate::laser_sorting_gate_blocked(){
-	auto distance = data->piece_tracker->get_distance();
+	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	if ( distance.first == Area::GATE) {
 		return new LeavingGate_PT2(data);
 	} else {

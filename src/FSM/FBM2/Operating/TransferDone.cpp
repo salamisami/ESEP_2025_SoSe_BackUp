@@ -42,7 +42,7 @@ State* TransferDone::request_transfer() {
 	return nullptr;
 }
 State* TransferDone::laser_front_unblocked() {
-	data->piece_tracker->fast();
+	data->piece_FBM2_soll->piece_tracker->fast();
 	if(data->piece_FBM2_soll->type == PieceEnum::FLAT_SORT_OUT ||
 		data->piece_FBM2_soll->type == PieceEnum::TALL_SORT_OUT ||
 		data->piece_FBM2_soll->type == PieceEnum::TALL_WITH_METAL_SORT_OUT ||
