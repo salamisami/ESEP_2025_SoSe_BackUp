@@ -56,17 +56,39 @@ State* ADC_Gate::laser_sorting_gate_blocked() {
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
-	bool is_valid = false;
-	switch(current_area) {
-		case Area::ADC:
+	switch(validated_piece) {
+		case PieceEnum::TALL:
+			if(data->piece_FBM2_soll->type == PieceEnum::TALL) {
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
+				return new LeavingGate_PT2(data);
+			} else {
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
+				return new Sorting_out(data);
+
+				
+			}
 			break;
-		case Area::ADC_GATE:
-			is_valid = (current_pos > (100 - PIECE_TRANSITION_TOLERANCE));
+		case PieceEnum::TALL_WITH_METAL:
+			if(data->piece_FBM2_soll->type == PieceEnum::TALL_WITH_METAL) {
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
+				return new LeavingGate_PT2(data);
+			} else {
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
+				return new Sorting_out(data);
+			}
 			break;
-		case Area::GATE:
-			is_valid = true;
+		case PieceEnum::FLAT:
+			if(data->piece_FBM2_soll->type == PieceEnum::FLAT) {
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::LET_THROUGH);
+				return new LeavingGate_PT2(data);
+			} else {
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
+				return new Sorting_out(data);
+			}
 			break;
 		default:
+			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
+			return new Sorting_out(data);
 			break;
 	}
 

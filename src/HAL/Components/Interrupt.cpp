@@ -283,6 +283,7 @@ void Interrupt::sendEvent(int causing_pin, int pin_status) {
                 actuator->local_estop_deactivate();
             }
             sender->send_event((int8_t) Topic::INTERRUPT, (int) event, (int) EventPriority::FIRST_PRIO);
+            sender->send_event((int8_t) Topic::REC_REPLAY, (int) RecReplayEnum::STOP_REPLAY, (int) EventPriority::SECOND_PRIO);
             return;
             //break;
         case LASER_SORTING_BIT:

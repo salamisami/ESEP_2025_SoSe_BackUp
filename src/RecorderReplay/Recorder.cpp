@@ -200,31 +200,43 @@ void Recorder::replay_loop() {
 }
 
 std::string Recorder::interruptEnumToString(int value) {
-    switch(static_cast<InterruptEnum>(value)) {
-        case InterruptEnum::LASER_FRONT_BLOCKED: return "LASER_FRONT_BLOCKED";
-        case InterruptEnum::LASER_FRONT_UNBLOCKED: return "LASER_FRONT_UNBLOCKED";
-        case InterruptEnum::LASER_BACK_BLOCKED: return "LASER_BACK_BLOCKED";
-        case InterruptEnum::LASER_BACK_UNBLOCKED: return "LASER_BACK_UNBLOCKED";
-        case InterruptEnum::BUTTON_START_PRESSED: return "BUTTON_START_PRESSED";
-        case InterruptEnum::BUTTON_START_RELEASED: return "BUTTON_START_RELEASED";
-        case InterruptEnum::BUTTON_STOP_PRESSED: return "BUTTON_STOP_PRESSED";
-        case InterruptEnum::BUTTON_STOP_RELEASED: return "BUTTON_STOP_RELEASED";
-        case InterruptEnum::BUTTON_RESET_PRESSED: return "BUTTON_RESET_PRESSED";
-        case InterruptEnum::BUTTON_RESET_RELEASED: return "BUTTON_RESET_RELEASED";
-        case InterruptEnum::BUTTON_ESTOP_PRESSED: return "BUTTON_ESTOP_PRESSED";
-        case InterruptEnum::BUTTON_ESTOP_RELEASED: return "BUTTON_ESTOP_RELEASED";
-        case InterruptEnum::METAL_DETECTED: return "METAL_DETECTED";
-        case InterruptEnum::METAL_NOT_DETECTED: return "METAL_NOT_DETECTED";
-        case InterruptEnum::LASER_SORTING_GATE_BLOCKED: return "LASER_SORTING_GATE_BLOCKED";
-        case InterruptEnum::LASER_SORTING_GATE_UNBLOCKED: return "LASER_SORTING_GATE_UNBLOCKED";
-        case InterruptEnum::LASER_RAMP_BLOCKED: return "LASER_RAMP_BLOCKED";
-        case InterruptEnum::LASER_RAMP_UNBLOCKED: return "LASER_RAMP_UNBLOCKED";
-        case InterruptEnum::ADC_TOP_AREA_BLOCKED: return "ADC_TOP_AREA_BLOCKED";
-        case InterruptEnum::ADC_TOP_AREA_UNBLOCKED: return "ADC_TOP_AREA_UNBLOCKED";
-        case InterruptEnum::ADC_SIDE_AREA_BLOCKED: return "ADC_SIDE_AREA_BLOCKED";
-        case InterruptEnum::ADC_SIDE_AREA_UNBLOCKED: return "ADC_SIDE_AREA_UNBLOCKED";
-        case InterruptEnum::IS_SWITCH: return "IS_SWITCH";
-        case InterruptEnum::IS_PUSHER: return "IS_PUSHER";
-        default: return "UNKNOWN";
+    if (value < 0xFFA0){
+		switch(static_cast<InterruptEnum>(value)) {
+			case InterruptEnum::LASER_FRONT_BLOCKED: return "LASER_FRONT_BLOCKED";
+			case InterruptEnum::LASER_FRONT_UNBLOCKED: return "LASER_FRONT_UNBLOCKED";
+			case InterruptEnum::LASER_BACK_BLOCKED: return "LASER_BACK_BLOCKED";
+			case InterruptEnum::LASER_BACK_UNBLOCKED: return "LASER_BACK_UNBLOCKED";
+			case InterruptEnum::BUTTON_START_PRESSED: return "BUTTON_START_PRESSED";
+			case InterruptEnum::BUTTON_START_RELEASED: return "BUTTON_START_RELEASED";
+			case InterruptEnum::BUTTON_STOP_PRESSED: return "BUTTON_STOP_PRESSED";
+			case InterruptEnum::BUTTON_STOP_RELEASED: return "BUTTON_STOP_RELEASED";
+			case InterruptEnum::BUTTON_RESET_PRESSED: return "BUTTON_RESET_PRESSED";
+			case InterruptEnum::BUTTON_RESET_RELEASED: return "BUTTON_RESET_RELEASED";
+			case InterruptEnum::BUTTON_ESTOP_PRESSED: return "BUTTON_ESTOP_PRESSED";
+			case InterruptEnum::BUTTON_ESTOP_RELEASED: return "BUTTON_ESTOP_RELEASED";
+			case InterruptEnum::METAL_DETECTED: return "METAL_DETECTED";
+			case InterruptEnum::METAL_NOT_DETECTED: return "METAL_NOT_DETECTED";
+			case InterruptEnum::LASER_SORTING_GATE_BLOCKED: return "LASER_SORTING_GATE_BLOCKED";
+			case InterruptEnum::LASER_SORTING_GATE_UNBLOCKED: return "LASER_SORTING_GATE_UNBLOCKED";
+			case InterruptEnum::LASER_RAMP_BLOCKED: return "LASER_RAMP_BLOCKED";
+			case InterruptEnum::LASER_RAMP_UNBLOCKED: return "LASER_RAMP_UNBLOCKED";
+			case InterruptEnum::ADC_TOP_AREA_BLOCKED: return "ADC_TOP_AREA_BLOCKED";
+			case InterruptEnum::ADC_TOP_AREA_UNBLOCKED: return "ADC_TOP_AREA_UNBLOCKED";
+			case InterruptEnum::ADC_SIDE_AREA_BLOCKED: return "ADC_SIDE_AREA_BLOCKED";
+			case InterruptEnum::ADC_SIDE_AREA_UNBLOCKED: return "ADC_SIDE_AREA_UNBLOCKED";
+			case InterruptEnum::IS_SWITCH: return "IS_SWITCH";
+			case InterruptEnum::IS_PUSHER: return "IS_PUSHER";
+			default: return "Fehlerhafter Eintrag !!";
+		}
+    }else{
+        switch(static_cast<ADC_Enum>(value)){
+			case ADC_Enum::ADC_WF_DETECT: return "DC_WF_DETECT";
+			case ADC_Enum::ADC_W_B_DETECT:return "ADC_W_B_DETECT";
+			case ADC_Enum::ADC_W_NOT_DETECT:return "ADC_W_NOT_DETECT";
+			case ADC_Enum::ADC_INVALID_MESURE:return "ADC_INVALID_MESURE";
+			case ADC_Enum::ADC_NEW_PIECE:return "ADC_NEW_PIECE";
+			case ADC_Enum::ADC_TIMEOUT: return "ADC_TIMEOUT";
+			default: return "Fehlerhafter Eintrag !!";
+    	}
     }
 }

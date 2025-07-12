@@ -295,7 +295,7 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
 //					std::cout << "Profil erkannt ✅: " << p.name  << "\n";
 //					return bestEvent;
 			}
-				if (bestScore >= 3) {
+				if (bestScore > 2) {
 					std::cout << "Profil erkannt ✅: " << p.name << "Score:" << bestScore << "\n";
 					return bestEvent;
         }
