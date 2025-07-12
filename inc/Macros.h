@@ -29,7 +29,7 @@
 #define PROFIL_DATEI "ESEP-Team-1-1_25/profile_calibration.csv"
 #define SAVE_LOCATION_TIMEPROFILE "ESEP-Team-1-1_25/time_profiles.csv"
 
-#define BROKER_ADR "tcp://192.168.101.1:1883"
+#define BROKER_ADR "tcp://192.168.101.12:1883"
 
 #define DEBUG(msg) std::cout << msg << std::endl
 #endif
@@ -61,7 +61,7 @@
 #define TIMESTAMP_FACTOR 1
 //piece appeared: runterstellen
 //piece missing: hochstellen
-#define GATE_END_FACTOR 1.05
+#define GATE_END_FACTOR 1.07
 
 // Configuration for FBM Module 1
 #ifdef FBM_1
