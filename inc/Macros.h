@@ -29,7 +29,7 @@
 #define PROFIL_DATEI "ESEP-Team-1-1_25/profile_calibration.csv"
 #define SAVE_LOCATION_TIMEPROFILE "ESEP-Team-1-1_25/time_profiles.csv"
 
-#define BROKER_ADR "tcp://192.168.101.12:1883"
+#define BROKER_ADR "tcp://192.168.101.1:1883"
 
 #define DEBUG(msg) std::cout << msg << std::endl
 #endif
@@ -50,7 +50,7 @@
 #define PIECE_TRANSITION_TOLERANCE_GATE 25
 
 #ifdef FBM_1
-#define MOTOR_SLOW_POS_AT_START_ADC 90
+#define MOTOR_SLOW_POS_AT_START_ADC 80
 #endif
 #ifdef FBM_2
 #define MOTOR_SLOW_POS_AT_START_ADC 80

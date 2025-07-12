@@ -49,7 +49,7 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 //		return new ADCGate_PT1(data, localdata_);
 //	}
 
-	if (current_area == Area::GATE_END){// && current_pos > PIECE_TRANSITION_TOLERANCE + 5){
+	if (current_area == Area::GATE_END && current_pos >= PIECE_TRANSITION_TOLERANCE){
 	DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
 	MACRO_PIECE_MISSING_PT1
 	}

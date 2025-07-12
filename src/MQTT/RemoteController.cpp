@@ -400,18 +400,18 @@ void Remote_Controller::threadFunctionHeartbeat() {
             DEBUG("Waiting for reconnect command ...\n");
             bool reconnect = false;
             while(!reconnect) {
-				_pulse event;
-				int status = local_receiver->receive_event(&event);
-				RemoteControlEnum event_value = (RemoteControlEnum) event.value.sival_int;
-				Topic event_code = (Topic) event.code;
-				if (status == 0 && event_code == Topic::REM_CON) {
-					if(event_value == RemoteControlEnum::RECONNECT)
-						reconnect = true;
-					DEBUG("Reconnect command received!\n");
-				}
-				//nur zum testen
-                std::this_thread::sleep_for(std::chrono::milliseconds(20));
-//                reconnect = true;
+//				_pulse event;
+//				int status = local_receiver->receive_event(&event);
+//				RemoteControlEnum event_value = (RemoteControlEnum) event.value.sival_int;
+//				Topic event_code = (Topic) event.code;
+//				if (status == 0 && event_code == Topic::REM_CON) {
+//					if(event_value == RemoteControlEnum::RECONNECT)
+//						reconnect = true;
+//					DEBUG("Reconnect command received!\n");
+//				}
+//				//nur zum testen
+                std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                reconnect = true;
             }
             MQTT_Utilities::connection_lost = false;
             dash_conn_lost = false;

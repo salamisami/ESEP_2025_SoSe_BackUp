@@ -55,10 +55,10 @@ State* GateEnd_PT1::laser_back_blocked() {
 		data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
 		return new PendingTransferRequest_PT1(data, localdata_);
 	}
-	// if(current_area == Area::OUT_OF_RANGE&& distance.second <= PIECE_TRANSITION_TOLERANCE) {
-	// 	data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
-	// 	return new PendingTransferRequest_PT1(data, localdata_);
-	// }
+	 if(current_area == Area::OUT_OF_RANGE) {
+	 	data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
+	 	return new PendingTransferRequest_PT1(data, localdata_);
+	 }
 
 	return nullptr;
 }
