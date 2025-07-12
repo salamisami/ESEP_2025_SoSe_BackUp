@@ -69,7 +69,7 @@ int main() {
 
     #ifndef NO_RC_REC
     Recorder* rec = new Recorder(recorder_receiver, recorder_sender);
-    Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
+    //Remote_Controller* remcon = new Remote_Controller(RemCon_receiver, RemCon_sender); //comment this to test without RC
     #endif
 
     #ifndef NO_COM
@@ -94,7 +94,7 @@ int main() {
     #endif
 
     #ifndef NO_RC_REC
-    delete remcon;
+    //delete remcon;
     delete rec;
     #endif
 
