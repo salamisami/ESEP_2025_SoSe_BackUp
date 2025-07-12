@@ -235,16 +235,15 @@ void COM::runServer() {
         updateHeartbeat();
         processMessage(event);
       }
-        continue;
-
+      continue;
     }
-          if (event.code == _PULSE_CODE_DISCONNECT ||
-              event.code == _PULSE_CODE_COIDDEATH) {
-            ConnectDetach(event.scoid);
-            std::cout << "Server: Disconnect oder COIDDEATH erkannt und detach "
-                         "ausgeführt."
-                      << std::endl;
-          }
+    if (event.code == _PULSE_CODE_DISCONNECT ||
+        event.code == _PULSE_CODE_COIDDEATH) {
+      ConnectDetach(event.scoid);
+      std::cout << "Server: Disconnect oder COIDDEATH erkannt und detach "
+                   "ausgeführt."
+                << std::endl;
+    }
     if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX)) {
       handle_QNX_IO_msg(&event, rcvid);
       continue;
@@ -291,7 +290,7 @@ void COM::runUdpWatchdog() {
   struct timeval tv;
 
   auto lastReceived = std::chrono::steady_clock::now();
-  udpWatchdogLost = false;
+  udpWatchdogLost = true;
 
   while (udpWatchdogRunning) {
     sendto(sockfd, msg, sizeof(msg), 0, (sockaddr *)&peerAddr,
@@ -312,7 +311,6 @@ void COM::runUdpWatchdog() {
         lastReceived = std::chrono::steady_clock::now();
         if (udpWatchdogLost) {
           notifyUdpRestored();
-          disconnected = false;
           udpWatchdogLost = false;
         }
       }
