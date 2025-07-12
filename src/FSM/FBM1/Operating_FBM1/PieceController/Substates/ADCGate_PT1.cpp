@@ -80,22 +80,6 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 }
 
 State* ADCGate_PT1::metal_detected() {
-	auto piece = localdata_.piece;
-	auto distance = piece->piece_tracker->get_distance();
-	Area current_area = distance.first;
-	auto current_pos = distance.second;
-
-	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
-		return nullptr;
-	}
-
-	//before expected
-	if(current_area == Area::ADC_GATE && current_pos >= (100 - PIECE_TRANSITION_TOLERANCE)) {
-		return new IsMetal_PT1(data, localdata_);
-	}
-
-	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
-		return new IsMetal_PT1(data, localdata_);
-	}
+	localdata_.is_metal = true;
 	return nullptr;
 }
