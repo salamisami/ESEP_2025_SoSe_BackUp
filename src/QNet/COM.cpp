@@ -234,21 +234,22 @@ void COM::runServer() {
           (event.code <= _PULSE_CODE_MAXAVAIL)) {
         updateHeartbeat();
         processMessage(event);
-      } else {
-        if (event.code == _PULSE_CODE_DISCONNECT ||
-            event.code == _PULSE_CODE_COIDDEATH) {
-          ConnectDetach(event.scoid);
-          std::cout << "Server: Disconnect oder COIDDEATH erkannt und detach "
-                       "ausgeführt."
-                    << std::endl;
-        }
-        continue;
       }
+        continue;
+
     }
+          if (event.code == _PULSE_CODE_DISCONNECT ||
+              event.code == _PULSE_CODE_COIDDEATH) {
+            ConnectDetach(event.scoid);
+            std::cout << "Server: Disconnect oder COIDDEATH erkannt und detach "
+                         "ausgeführt."
+                      << std::endl;
+          }
     if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX)) {
       handle_QNX_IO_msg(&event, rcvid);
       continue;
     }
+
     else {
       std::cerr << "MsgReceive error: " << strerror(errno) << std::endl;
     }
