@@ -32,7 +32,7 @@ using namespace std;
 int main() {
 
     //std::thread inputThread(wait_for_enter);
-
+system("slay gns");
     cout << "Starting Program..." << endl; // prints Hello World!!!
     #ifdef FBM_1
     system("gns -s ");
