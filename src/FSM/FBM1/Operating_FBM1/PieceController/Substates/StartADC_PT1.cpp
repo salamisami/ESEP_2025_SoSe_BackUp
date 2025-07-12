@@ -39,7 +39,7 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 			if(current_position > DISTANCE_BETWEEN_PIECES && !localdata_.unblock_signal_has_been_sent) {
 				localdata_.unblock_signal_has_been_sent = true;
 				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
-				return new StartADC_PT1(data);
+				return new StartADC_PT1(data, localdata_);
 			}
 
 			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC) {
