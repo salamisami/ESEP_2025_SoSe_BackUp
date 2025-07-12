@@ -74,8 +74,6 @@ private:
 
     // --- UDP-Watchdog ---
     std::thread udpWatchdogThread;
-    bool udpWatchdogRunning;
-    bool udpWatchdogLost;
     void runUdpWatchdog();
     void notifyUdpLost();
     void notifyUdpRestored();
@@ -89,8 +87,11 @@ private:
     I_Receiver *_dispatcherRec;
     I_Sender *_dispatcherSen;
     std::chrono::steady_clock::time_point lastHeartbeat;
+
     bool disconnected = true;
-    bool running;
+    bool running=false;
+    bool udpWatchdogRunning;
+    bool udpWatchdogLost;
     bool rampfull = false;
     bool mqttConnected = false;
 

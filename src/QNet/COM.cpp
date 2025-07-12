@@ -125,6 +125,7 @@ void COM::runClient() {
       } catch (...) {
         std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
       }
+      std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
       continue;
     }
     if (_client->getcoid() != -1) {
