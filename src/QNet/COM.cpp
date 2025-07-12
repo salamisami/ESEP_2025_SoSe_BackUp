@@ -128,23 +128,48 @@ void COM::runDispatcher()
     }
 }
 
-void COM::runClient() {
-    const int RETRY_DELAY_MS = 1000;
-    while(running) {
-        while(_client.getcoid() == -1) {
+void COM::runClient()
+{
+    const int RETRY_DELAY_MS_BASE = 1000;
+    int backoff = 1;
+    while (running)
+    {
+        if (!_client || _client->getcoid() == -1)
+        {
             std::lock_guard<std::mutex> lock(_clientMutex);
-            try {
-                _client = Thread_COM::Sender(_clientSendName);
-                if(_client.getcoid() >= 0) {
-                    COUT("Connection established successfully");
-                    break;
+            if (_client)
+            {
+                name_close(_client->getcoid());
+                _client.reset();
+            }
+            try
+            {
+                _client = std::unique_ptr<Thread_COM::Sender>(new Thread_COM::Sender(_clientSendName));
+                if (_client->getcoid() >= 0)
+                {
+                    std::cout << "Connection established successfully" << std::endl;
+                    backoff = 1;
                 }
-            } catch(...) {
-                std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
+                else
+                {
+                    _client.reset();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS_BASE * backoff));
+                    if (backoff < 10)
+                        backoff++;
+                }
+            }
+            catch (...)
+            {
+                std::cerr << "Error creating Sender in runClient" << std::endl;
+                _client.reset();
+                std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS_BASE * backoff));
+                if (backoff < 10)
+                    backoff++;
             }
             continue;
         }
-        if(_client.getcoid() != -1) {
+        if (_client && _client->getcoid() != -1)
+        {
             checkQueues();
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
@@ -223,8 +248,10 @@ void COM::sendHeartbeat()
     if (elapsed.count() >= HEARTBEAT_INTERVAL)
     {
         std::lock_guard<std::mutex> lock(_clientMutex);
-        if(_client.getcoid() != -1) {
-            _client.send_event((int8_t) Topic::COM, (int) COM_Enum::HEARTBEAT);
+        if (_client && _client->getcoid() != -1)
+        {
+            _client->send_event((int8_t)Topic::COM, (int)COM_Enum::HEARTBEAT);
+            std::cout << "Sending Heartbeat, elapsed ms: " << elapsed.count() << std::endl;
         }
         updateHeartbeat();
     }
@@ -234,8 +261,15 @@ int COM::sendToServer(const _pulse &msg, int priority)
 {
     int send_event_status = 0;
     std::lock_guard<std::mutex> lock(_clientMutex);
-    if(_client.getcoid() >= 0) {
-        send_event_status = _client.send_event_com((int8_t) msg.code, (int) msg.value.sival_int, (int) priority);
+    if (_client)
+    {
+        send_event_status = _client->send_event_com((int8_t)msg.code, (int)msg.value.sival_int, (int)priority);
+        if (send_event_status == -1)
+        {
+            name_close(_client->getcoid());
+            _client.reset();
+            std::cerr << "send_event_com failed, client detached and reset" << std::endl;
+        }
     }
     updateHeartbeat();
     return send_event_status;
@@ -286,12 +320,19 @@ void COM::runServer()
                 }
                 continue;
             }
-        } else if(rcvid == -1) {
-            if(errno == ETIMEDOUT) {
-
+        }
+        /* else if (rcvid == -1)
+        {
+            if (errno == ETIMEDOUT)
+            {
+                if (!disconnected)
                 {
-                    std::lock_guard<std::mutex> lock(_clientMutex);
-                    _client.setcoid(-1); //Signalize the client to reconnect
+                    disconnected = true;
+                    _pulse lostComEvent;
+                    lostComEvent.code = static_cast<int8_t>(Topic::ERROR);
+                    lostComEvent.value.sival_int = static_cast<int>(Error_Enum::ERROR_C_LOST_COM);
+                    sendToDispatcher(lostComEvent, static_cast<int>(EventPriority::FIRST_PRIO));
+                    std::cerr << "Timeout: COM connection lost" << std::endl;
                 }
             }
             else

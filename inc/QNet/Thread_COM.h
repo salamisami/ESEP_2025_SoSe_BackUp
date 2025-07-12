@@ -85,7 +85,6 @@ namespace Thread_COM {
 		 * @brief returns connection ID
 		 */
 		int getcoid() override;
-		void setcoid(int coid) ;
 
 
 	private: //================================================ private variables ================================================

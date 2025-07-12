@@ -83,7 +83,7 @@ private:
     // Shared state
     I_Receiver *_server;
     const char *_clientSendName;
-    Thread_COM::Sender _client;
+    std::unique_ptr<I_Sender> _client;
     std::mutex _clientMutex;
 
     I_Receiver *_dispatcherRec;
