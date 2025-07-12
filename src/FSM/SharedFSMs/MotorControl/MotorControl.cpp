@@ -2,7 +2,7 @@
 
 
 //================================================= constructors & destructors =================================================
-MotorControl::MotorControl(ContextData* data) : HState(data, new Idle(data)){}
+MotorControl::MotorControl(ContextData* data) : HState(data, new Idle(data)) {}
 MotorControl::MotorControl(ContextData* data, State* initial_state) : HState(data, initial_state) {}
 
 MotorControl::~MotorControl() {}
@@ -13,15 +13,18 @@ MotorControl::~MotorControl() {}
 //===================================================== public functions =====================================================
 void MotorControl::entry() {
 	PRINT_STATE;
-	
 	HState::entry();
 }
 
 void MotorControl::exit() {
 	HState::exit();
 	PRINT_STATE;
+	for(auto& pair : *data->pieces_map) {
+		Piece* piece = pair.second; // pair.second is the value (Piece*)
+		piece->piece_tracker->stop();
+	}
 }
 
-State* MotorControl::clone(){
-  return new MotorControl(data, substate->clone());
+State* MotorControl::clone() {
+	return new MotorControl(data, substate->clone());
 }
