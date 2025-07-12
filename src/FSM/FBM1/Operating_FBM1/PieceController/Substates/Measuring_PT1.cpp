@@ -13,7 +13,7 @@ Measuring_PT1::~Measuring_PT1() {}
 //===================================================== public functions =====================================================
 void Measuring_PT1::entry() {
 	PRINT_STATE;
-	data->piece_near_adc = false;
+	data->piece_near_adc--;
 }
 
 void Measuring_PT1::exit() {
