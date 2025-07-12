@@ -50,3 +50,4 @@ tests
 tests[1]_tests.cmake
 tests[1]_include.cmake
 Makefile
+.cache/clangd/index

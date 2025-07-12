@@ -84,6 +84,11 @@ Receiver::~Receiver(){
 }
 
 
+void Sender::setcoid(int coid){
+	receiver_coid = coid;
+}
+
+
 
 
 void Receiver::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
