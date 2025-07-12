@@ -83,8 +83,10 @@ void COM::runDispatcher() {
                         handleRemConTopic(originalValue, dispatcherMsg);
                         break;
                     case Topic::ID:
+                    if (FBM==1){
                         lowPriorityQueue.push_back(dispatcherMsg);
                         break;
+                      }
                     case Topic::ERROR:
                         if(originalValue == (int) Error_Enum::ERROR_C_LOST_MQTT) {
                             mqttConnected = false;
@@ -383,10 +385,10 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
 
 void COM::processMessage(const _pulse& msg) {
     if(msg.code == ((int) Topic::COM)) {
-        if(msg.value.sival_int == ((int) COM_Enum::BUTTON_ESTOP_PRESSED || (int) COM_Enum::BUTTON_ESTOP_RELEASED || (int) COM_Enum::TIMEOUT_COM)) {
+        if(msg.value.sival_int == ((int) COM_Enum::BUTTON_ESTOP_PRESSED || (int) COM_Enum::BUTTON_ESTOP_RELEASED)) {
             sendToDispatcher(msg, (int) EventPriority::FIRST_PRIO);
         } else if (msg.value.sival_int== (int) COM_Enum::TIMEOUT_COM){
-            // Handle timeout
+            // Handle timeout; Timer sent this message TIMEOUT_COM:
             if(_client) {
                 std::lock_guard<std::mutex> lock(_clientMutex);
                 _client->setcoid(-1);
