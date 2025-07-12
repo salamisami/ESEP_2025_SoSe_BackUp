@@ -47,6 +47,7 @@ State* TransferDone::laser_front_unblocked() {
 		data->piece_FBM2_soll->type == PieceEnum::TALL_SORT_OUT ||
 		data->piece_FBM2_soll->type == PieceEnum::TALL_WITH_METAL_SORT_OUT ||
 		data->piece_FBM2_soll->type == PieceEnum::UNKNOWN) {
+		DEBUG("No Need to measure the piece. Piece muss raus!");
 		return new Start_Gate(data);
 	}
 	

@@ -19,7 +19,7 @@ Sorting_out::~Sorting_out() {}
 //===================================================== public functions =====================================================
 void Sorting_out::entry() {
   PRINT_STATE;
-  data->timer->start_timer(1000, TIMER_ID::SORTING_OUT);
+  data->timer->start_timer(SORT_OUT_TIME, TIMER_ID::SORTING_OUT);
   data->stopwatch.start();
 
   //Action here
