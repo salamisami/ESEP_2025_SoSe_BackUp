@@ -45,9 +45,10 @@ public: //================================================ public functions
       data->motor_slowed = false;
       data->motor_stopped = false;
 
+      auto allIds = data ->workpieceList.getAllIds();
       // Iterate through all workpieces to check their states
-      for (const auto &workpiece : data->workpieceList) {
-        MotorPieceState state = workpiece.second;
+      for (int workpieceId : allIds) {
+        MotorPieceState state = data->workpieceList.getState(workpieceId);
         if (state == MotorPieceState::SLOW) {
           data->motor_slowed = true;
         } else if (state == MotorPieceState::STOPPED) {
