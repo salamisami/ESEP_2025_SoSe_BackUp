@@ -244,12 +244,15 @@ void COM::runServer() {
         }
         continue;
       }
-      } else {
-        std::cerr << "MsgReceive error: " << strerror(errno) << std::endl;
+      if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX)) {
+        handle_QNX_IO_msg(&event, rcvid);
+        continue;
       }
+    } else {
+      std::cerr << "MsgReceive error: " << strerror(errno) << std::endl;
     }
   }
-
+}
 
 void COM::updateHeartbeat() {
   lastHeartbeat = std::chrono::steady_clock::now();
@@ -508,4 +511,40 @@ void COM::processMessage(const _pulse &msg) {
 
 void COM::sendToDispatcher(const _pulse &msg, int priority) {
   _dispatcherSen->send_event(msg.code, (int)msg.value.sival_int, priority);
+}
+
+void COM::handle_QNX_IO_msg(_pulse *msg, int rcvid) {
+  _pulse timeoutEvent;
+  int8_t comCode = (int8_t)Topic::COM;
+  int value = (int)COM_Enum::TIMEOUT_COM;
+  switch (msg->code) {
+  case _PULSE_CODE_DISCONNECT:
+    printf(" _PULSE_CODE_DISCONNECT\n");
+    /* A client disconnected all its connections (called
+     * name_close() for each name_open() of our name) or
+     * terminated. */
+
+    timeoutEvent.code = comCode;
+    timeoutEvent.value.sival_int = value;
+    COUT("Sending Timeout Notification");
+    sendToDispatcher(timeoutEvent); // Andere Maschine disconeccted -> Timeout
+    ConnectDetach(msg->scoid);
+    break;
+  case _PULSE_CODE_UNBLOCK:
+    printf(" received _PULSE_CODE_UNBLOCK\n");
+    /* REPLY blocked client wants to unblock (was hit by
+     * a signal or timed out). It's up to you if you
+     * reply now or later. */
+    break;
+  case 12:
+    printf(" Sending EOK, connect\n");
+    MsgReply(rcvid, EOK, NULL, 0);
+    break;
+  default:
+    /* A pulse sent by the kernel like
+     * _PULSE_CODE_COIDDEATH or _PULSE_CODE_THREADDEATH
+     * from the kernel? */
+    printf(" received some other QNX pulse msg code: %d\n", msg->code);
+    break;
+  }
 }
