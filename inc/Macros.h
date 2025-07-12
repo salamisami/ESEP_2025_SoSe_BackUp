@@ -67,34 +67,34 @@
 
 // Configuration for FBM Module 1
 #ifdef FBM_1
-	#define FBM					1
-	#define FBM_N_HAL       	"Hal_1"
-	#define FBM_N_FSM       	"Fsm_1"
-	#define FBM_N_COM       	"Com_1"
-	#define FBM_N_COM_EXT		"Com_2"
-	#define FBM_N_COM_RECEIVER	"Com_receiver_1"
-	#define FBM_N_RECORDER  	"Rec_1"
-	#define FBM_N_REMOTE    	"Rem_1"
-	#define FBM_N_DISPATCHER 	"Dis_1"
-	#define RECEIVE_TOPIC		"festo/anlage1/status/"
-	#define COMMAND_TOPIC		"festo/anlage1/command"
-	#define MQTT_CLIENT			"Festo_FBM1"
+#define FBM					1
+#define FBM_N_HAL       	"Hal_1"
+#define FBM_N_FSM       	"Fsm_1"
+#define FBM_N_COM       	"Com_1"
+#define FBM_N_COM_EXT		"Com_2"
+#define FBM_N_COM_RECEIVER	"Com_receiver_1"
+#define FBM_N_RECORDER  	"Rec_1"
+#define FBM_N_REMOTE    	"Rem_1"
+#define FBM_N_DISPATCHER 	"Dis_1"
+#define RECEIVE_TOPIC		"festo/anlage1/status/"
+#define COMMAND_TOPIC		"festo/anlage1/command"
+#define MQTT_CLIENT			"Festo_FBM1"
 #endif
 
 #ifdef FBM_2
 	// Default to FBM Module 2
-	#define FBM					2
-	#define FBM_N_HAL       	"Hal_2"
-	#define FBM_N_FSM       	"Fsm_2"
-	#define FBM_N_COM       	"Com_2"
-	#define FBM_N_COM_EXT		"Com_1"
-	#define FBM_N_COM_RECEIVER 	"Com_receiver_2"
-	#define FBM_N_RECORDER  	"Rec_2"
-	#define FBM_N_REMOTE   		"Rem_2"
-	#define FBM_N_DISPATCHER 	"Dis_2"
-	#define RECEIVE_TOPIC		"festo/anlage2/status/"
-	#define COMMAND_TOPIC		"festo/anlage2/command"
-	#define MQTT_CLIENT			"Festo_FBM2"
+#define FBM					2
+#define FBM_N_HAL       	"Hal_2"
+#define FBM_N_FSM       	"Fsm_2"
+#define FBM_N_COM       	"Com_2"
+#define FBM_N_COM_EXT		"Com_1"
+#define FBM_N_COM_RECEIVER 	"Com_receiver_2"
+#define FBM_N_RECORDER  	"Rec_2"
+#define FBM_N_REMOTE   		"Rem_2"
+#define FBM_N_DISPATCHER 	"Dis_2"
+#define RECEIVE_TOPIC		"festo/anlage2/status/"
+#define COMMAND_TOPIC		"festo/anlage2/command"
+#define MQTT_CLIENT			"Festo_FBM2"
 #endif
 #define MACRO_PIECE_MISSING_PT1 data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);\
 	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);\
@@ -115,4 +115,6 @@
 	Piece* piece_to_delete = localdata_.piece;\
 	data->pieces_map->erase(localdata_.piece->id);\
 	delete piece_to_delete;\
+	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA); \
+	data->piece_near_adc = true; \
 	return State::EXIT_STATE;

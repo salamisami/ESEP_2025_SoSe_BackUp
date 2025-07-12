@@ -18,7 +18,6 @@ void StartADC_PT1::entry() {
 
 void StartADC_PT1::exit() {
 	PRINT_STATE;
-	data->piece_near_adc = true;
 }
 
 State* StartADC_PT1::clone() {
