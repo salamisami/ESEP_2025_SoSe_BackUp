@@ -26,18 +26,6 @@ State* Start_PT1::clone() {
 
 State* Start_PT1::laser_front_unblocked() {
 	Piece* piece = localdata_.piece;
-	switch(data->current_motor_speed) {
-		case MotorPieceState::FAST:
-			piece->piece_tracker->fast();
-			break;
-		case MotorPieceState::SLOW:
-			piece->piece_tracker->slow();
-			break;
-		case MotorPieceState::STOPPED:
-			piece->piece_tracker->stop();
-			break;
-		default:
-			break;
-	}
+	piece->piece_tracker->update_distance_force(Area::START_ADC, 0);
 	return new StartADC_PT1(data, localdata_);
 }
