@@ -30,13 +30,14 @@ State* PendingTransferRequestNotAtEnd::fbm_2_busy() {
 }
 
 State* PendingTransferRequestNotAtEnd::fbm_2_ready() {
+  data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
   return new MovingToEnd_PT1(data, localdata_);
 }
 
 
 
 State* PendingTransferRequestNotAtEnd::timer(TIMER_ID id) {
-  if(id != TIMER_ID::PENDINGTRANSFERREQUESTNOTATEND){
+  if(id != TIMER_ID::PENDINGTRANSFERREQUESTNOTATEND) {
     return nullptr;
   }
   return new PendingTransferRequestNotAtEnd(data, localdata_);

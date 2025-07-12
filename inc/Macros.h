@@ -110,9 +110,8 @@
 		default:\
 			break;\
 	}\
-	Piece* piece_to_delete = localdata_.piece;\
 	data->pieces_map->erase(localdata_.piece->id);\
-	delete piece_to_delete;\
+	delete localdata_.piece;\
 	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA); \
 	data->piece_near_adc = false; \
 	return State::EXIT_STATE;
