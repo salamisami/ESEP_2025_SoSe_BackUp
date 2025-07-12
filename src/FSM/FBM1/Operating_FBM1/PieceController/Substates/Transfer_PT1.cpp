@@ -46,7 +46,7 @@ void Transfer_PT1::send_transfer_start() {
 void Transfer_PT1::entry() {
 	PRINT_STATE;
 	send_transfer_start();
-  data->sender->send_event((int8_t) Topic::ID, (int) localdata_.piece->id);
+  	data->sender->send_event((int8_t) Topic::ID, (int) localdata_.piece->id);
 }
 
 void Transfer_PT1::exit() {
