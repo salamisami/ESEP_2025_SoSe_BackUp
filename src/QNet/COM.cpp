@@ -83,8 +83,10 @@ void COM::runDispatcher() {
                         handleRemConTopic(originalValue, dispatcherMsg);
                         break;
                     case Topic::ID:
+                    if (FBM==1){
                         lowPriorityQueue.push_back(dispatcherMsg);
                         break;
+                      }
                     case Topic::ERROR:
                         if(originalValue == (int) Error_Enum::ERROR_C_LOST_MQTT) {
                             mqttConnected = false;
