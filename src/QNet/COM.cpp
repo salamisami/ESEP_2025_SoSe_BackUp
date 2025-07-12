@@ -278,7 +278,7 @@ int COM::sendToServer(const _pulse &msg, int priority)
 void COM::runServer()
 {
     std::cout << "COM server started." << std::endl;
-    bool disconnected = true;
+    //bool disconnected = true;
     while (running)
     {
         struct _pulse event;
@@ -429,6 +429,7 @@ void COM::runUdpWatchdog()
 void COM::notifyUdpLost()
 {
     std::cerr << "[UDP-Watchdog] Verbindung zur Gegenseite verloren!" << std::endl;
+    coid
     disconnected = true;
     _pulse lostComEvent;
     lostComEvent.code = static_cast<int8_t>(Topic::ERROR);

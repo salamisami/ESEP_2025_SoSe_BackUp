@@ -28,8 +28,8 @@
 
 #define HEARTBEAT_MULTIPLIER 1
 #define HEARTBEAT_INTERVAL 100 * HEARTBEAT_MULTIPLIER
-#define TIMEOUT_COM_INTERVAL HEARTBEAT_MULTIPLIER * 1000000ULL;
-#define UDP_WATCHDOG_TIMEOUT;
+#define TIMEOUT_COM_INTERVAL HEARTBEAT_MULTIPLIER * 1000000ULL
+#define UDP_WATCHDOG_TIMEOUT 1
 
 // ===== UDP-Watchdog Settings =====
 #define UDP_WATCHDOG_PORT       12345
@@ -89,6 +89,7 @@ private:
     I_Receiver *_dispatcherRec;
     I_Sender *_dispatcherSen;
     std::chrono::steady_clock::time_point lastHeartbeat;
+    bool disconnected = true;
     bool running;
     bool rampfull = false;
     bool mqttConnected = false;
