@@ -19,7 +19,7 @@ Transfer::~Transfer() {}
 //===================================================== public functions =====================================================
 void Transfer::entry(){
 	PRINT_STATE;
-	data->timer->start_timer(1000,TIMER_ID::TRANSFER_FAILED);
+	data->timer->start_timer(PIECE_TRANSFER_DURATION,TIMER_ID::TRANSFER_FAILED);
 	//data->piece_FBM2_soll->piece_tracker = new DistanceTracker(&data->timeprofile, true);
 	//Action here
 	//HState::entry() //for HState

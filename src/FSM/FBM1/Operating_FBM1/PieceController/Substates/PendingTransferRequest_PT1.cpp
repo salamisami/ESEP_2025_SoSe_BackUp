@@ -14,7 +14,6 @@ PendingTransferRequest_PT1::~PendingTransferRequest_PT1() {}
 void PendingTransferRequest_PT1::entry() {
 	PRINT_STATE;
 	data->timer->start_timer(500, TIMER_ID::PENDINGTRANSFERREQUEST_PT1);
-	data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, localdata_.piece->id);
 	data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::REQUEST_TRANSFER);
 }
 

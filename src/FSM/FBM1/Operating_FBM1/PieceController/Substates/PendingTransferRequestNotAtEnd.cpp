@@ -13,6 +13,7 @@ PendingTransferRequestNotAtEnd::~PendingTransferRequestNotAtEnd() {}
 //===================================================== public functions =====================================================
 void PendingTransferRequestNotAtEnd::entry() {
   PRINT_STATE;
+  data->timer->start_timer(500, TIMER_ID::PENDINGTRANSFERREQUESTNOTATEND);
   data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::REQUEST_TRANSFER);
 }
 
@@ -25,7 +26,6 @@ State* PendingTransferRequestNotAtEnd::clone() {
 }
 
 State* PendingTransferRequestNotAtEnd::fbm_2_busy() {
-  data->timer->start_timer(500, TIMER_ID::PENDINGTRANSFERREQUESTNOTATEND);
   return nullptr;
 }
 
