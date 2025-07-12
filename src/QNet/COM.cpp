@@ -244,11 +244,12 @@ void COM::runServer() {
         }
         continue;
       }
-      if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX)) {
-        handle_QNX_IO_msg(&event, rcvid);
-        continue;
-      }
-    } else {
+    }
+    if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX)) {
+      handle_QNX_IO_msg(&event, rcvid);
+      continue;
+    }
+    else {
       std::cerr << "MsgReceive error: " << strerror(errno) << std::endl;
     }
   }
