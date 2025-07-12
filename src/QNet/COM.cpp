@@ -115,7 +115,7 @@ void COM::runDispatcher() {
 void COM::runClient() {
   const int RETRY_DELAY_MS = 1000;
   while (running) {
-    while (disconnected || _client->getcoid < 0) {
+    while (disconnected || _client->getcoid <= 1) {
       std::lock_guard<std::mutex> lock(_clientMutex);
       try {
         _client = Thread_COM::Sender(_clientSendName);
