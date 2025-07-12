@@ -75,5 +75,6 @@ void PendingTransferRequest_PT1::send_transfer_start() {
 		default:
 			break;
 	}
+	DEBUG("Transfer start event is sent");
 	data->sender->send_event((int8_t) Topic::COM, (int) transfer_enum);
 }
