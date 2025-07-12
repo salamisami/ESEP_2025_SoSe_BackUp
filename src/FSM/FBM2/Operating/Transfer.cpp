@@ -58,6 +58,7 @@ State* Transfer::id() {
 	int piece_id = data->event_payload;
 	printf("Piece id is: %d\n", piece_id);
 	data->piece_FBM2_soll->id = piece_id;
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
 	return nullptr;
 }
 
