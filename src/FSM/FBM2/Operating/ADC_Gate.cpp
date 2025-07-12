@@ -30,6 +30,7 @@ void ADC_Gate::exit() {
 	//OrthState::entry() //for OrthState
 	//Action here
 	PRINT_STATE;
+	data->scanned_piece_has_metal_fbm2 = false;
 }
 
 State* ADC_Gate::clone() {

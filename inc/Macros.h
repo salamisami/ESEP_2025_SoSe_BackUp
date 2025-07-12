@@ -46,7 +46,14 @@
 #define PIECE_TRANSITION_TOLERANCE_BEFORE_ADC 25
 #define PIECE_TRANSITION_TOLERANCE 25
 #define PIECE_TRANSITION_TOLERANCE_GATE 25
+
+#ifdef FBM_1
 #define MOTOR_SLOW_POS_AT_START_ADC 90
+#endif
+#ifdef FBM_2
+#define MOTOR_SLOW_POS_AT_START_ADC 80
+#endif
+
 #define SORT_OUT_TIME 3500
 #define ADC_TIMEOUT_TIME 1500
 #define GATE_THROUGHTIME 2000
@@ -55,8 +62,8 @@
 #define DEADLINE_FACTOR 1
 #define TIMESTAMP_FACTOR 1
 //piece appeared: runterstellen
-//piece missing: obenstellen
-#define GATE_END_FACTOR 1
+//piece missing: hochstellen
+#define GATE_END_FACTOR 1.1
 
 // Configuration for FBM Module 1
 #ifdef FBM_1

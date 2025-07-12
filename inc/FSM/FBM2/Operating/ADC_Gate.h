@@ -6,7 +6,7 @@
 #include "State.h"
 #include "Pieceappeared.h"
 #include "ADC_State.h"
-#include "Is_Metal.h"
+
 
 #include "Sorting_out.h"
 #include "LeavingGate_PT2.h"
