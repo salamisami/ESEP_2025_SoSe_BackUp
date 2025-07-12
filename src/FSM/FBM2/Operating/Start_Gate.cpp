@@ -45,12 +45,12 @@ State* Start_Gate::laser_sorting_gate_blocked() {
 	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	switch(distance.first) {
 		case Area::GATE:
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
+			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
 			data->scanned_piece_has_metal_fbm2 = false;
 			return new Sorting_out(data);
 		case Area::ADC_GATE:
 			if(distance.second < (100 - PIECE_TRANSITION_TOLERANCE)) {
-				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORTING_OUT_FBM2);
+				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
 				data->scanned_piece_has_metal_fbm2 = false;
 				return new Sorting_out(data);
 			}
