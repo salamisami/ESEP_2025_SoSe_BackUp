@@ -64,46 +64,55 @@ State* WaitingForTransferStart::laser_back_blocked() {
 	return new Pieceappeared(data);	
 }
 
+State* WaitingForTransferStart::id() {
+	DEBUG("ID event comes in");
+	int piece_id = data->event_payload;
+	printf("Piece id is: %d\n", piece_id);
+	data->piece_FBM2_soll->id = piece_id;
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
+	return new Transfer(data);
+}
+
 
 State* WaitingForTransferStart::transfer_start_other(){
 	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::UNKNOWN;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_tall(){
 	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_flat(){
 	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::FLAT;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_tall_w_metal(){
 	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL_WITH_METAL;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_tall_sort_out(){
 	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL_SORT_OUT;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_tall_w_metal_sort_out(){
 	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::TALL_WITH_METAL_SORT_OUT;
-	return new Transfer(data);
+	return nullptr;
 }
 State* WaitingForTransferStart::transfer_start_flat_sort_out(){
 	DEBUG("transfer start event comes in");
 	data->piece_FBM2_soll = new Piece(&data->timeprofile);
 	data->piece_FBM2_soll->type = PieceEnum::FLAT_SORT_OUT;
-	return new Transfer(data);
+	return nullptr;
 }

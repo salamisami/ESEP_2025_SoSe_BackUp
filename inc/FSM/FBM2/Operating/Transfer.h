@@ -29,7 +29,6 @@ public: //================================================ public functions ====
 	State* laser_ramp_blocked() override;
 	State* laser_front_blocked() override;
 	State* timer(TIMER_ID id) override;
-	State* id() override;
 
 
 

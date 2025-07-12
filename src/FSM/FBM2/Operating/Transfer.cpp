@@ -53,16 +53,6 @@ State* Transfer::request_transfer(){
 }
 
 
-State* Transfer::id() {
-	DEBUG("ID event comes in");
-	int piece_id = data->event_payload;
-	printf("Piece id is: %d\n", piece_id);
-	data->piece_FBM2_soll->id = piece_id;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, data->piece_FBM2_soll->id);
-	return nullptr;
-}
-
-
 State* Transfer::laser_back_blocked(){
 	return new Pieceappeared(data);
 }
