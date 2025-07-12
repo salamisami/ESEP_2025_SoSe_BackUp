@@ -85,11 +85,11 @@ State* PieceControllerFBM1::laser_back_blocked() {
 	return newState;
 }
 
-State* PieceControllerFBM1::metal_detected() {
-	State* newState = handle_event_using_special_function(&State::metal_detected);
-	//here
-	return newState;
-}
+// State* PieceControllerFBM1::metal_detected() {
+// 	State* newState = handle_event_using_special_function(&State::metal_detected);
+// 	//here
+// 	return newState;
+// }
 
 State* PieceControllerFBM1::laser_sorting_gate_blocked() {
 	State* newState = handle_event_using_special_function(&State::laser_sorting_gate_blocked);
