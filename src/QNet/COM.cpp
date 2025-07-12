@@ -314,6 +314,7 @@ void COM::runUdpWatchdog() {
         lastReceived = std::chrono::steady_clock::now();
         if (udpWatchdogLost) {
           notifyUdpRestored();
+          disconnected = false;
           udpWatchdogLost = false;
         }
       }
