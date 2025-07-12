@@ -29,7 +29,7 @@
 #define PROFIL_DATEI "ESEP-Team-1-1_25/profile_calibration.csv"
 #define SAVE_LOCATION_TIMEPROFILE "ESEP-Team-1-1_25/time_profiles.csv"
 
-#define BROKER_ADR "tcp://192.168.101.1:1883"
+#define BROKER_ADR "tcp://192.168.101.12:1883"
 
 #define DEBUG(msg) std::cout << msg << std::endl
 #endif
@@ -47,7 +47,7 @@
 #define UPDATE_PIECE_INTERVAL 100
 #define PIECE_TRANSITION_TOLERANCE_BEFORE_ADC 35
 #define PIECE_TRANSITION_TOLERANCE 35
-#define PIECE_TRANSITION_TOLERANCE_GATE 25
+#define PIECE_TRANSITION_TOLERANCE_GATE 35
 #define SORT_OUT_TIME 3500
 #define ADC_TIMEOUT_TIME 1500
 #define GATE_THROUGHTIME 2000
