@@ -134,14 +134,9 @@ void COM::runClient()
     int backoff = 1;
     while (running)
     {
-        if (!_client || _client->getcoid() == -1)
+        if (disconnected)
         {
             std::lock_guard<std::mutex> lock(_clientMutex);
-            if (_client)
-            {
-                name_close(_client->getcoid());
-                _client.reset();
-            }
             try
             {
                 _client = std::unique_ptr<Thread_COM::Sender>(new Thread_COM::Sender(_clientSendName));
