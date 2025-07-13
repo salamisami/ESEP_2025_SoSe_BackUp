@@ -14,7 +14,7 @@ PieceAppearedFehlerQuittiert::~PieceAppearedFehlerQuittiert() {}
 //===================================================== public functions =====================================================
 void PieceAppearedFehlerQuittiert::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON_SLOW);
 }
 
@@ -23,7 +23,7 @@ void PieceAppearedFehlerQuittiert::exit(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::PIECE_APPEARED_RESOLVED);
     data->error_warning_counter->error_or_warning_resolved();
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

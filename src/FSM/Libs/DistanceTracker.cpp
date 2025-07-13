@@ -104,7 +104,7 @@ void DistanceTracker::start_debug_thread() {
 }
 //===================================================== public functions =====================================================
 
-//TODO send piece to ramps
+
 
 //updates area and pos from the last time.
 std::pair<Area, double> DistanceTracker::calculate_area_pos(const Area& last_area, const double& last_pos, const uint8_t& mode) {
