@@ -29,25 +29,29 @@ void Fast::exit() { PRINT_STATE; }
 State *Fast::delete_w_motor() {
   MotorControl::updateData(data, MotorPieceState::DELETE_W_MOTOR);
   if (data->workpieces) {
-    return nullptr;
+    return AREA_AS_INT_TO_STATE(
+        data,
+        MotorControl::motorTransition(data, MotorPieceState::DELETE_W_MOTOR));
   } else {
     return new Idle(data);
   }
 }
 
-State *Fast::motor_slow() {
-  data->workpieceList.updateState(data->event_payload, MotorPieceState::SLOW);
-  return new Slow(data);
-}
 State *Fast::motor_fast() {
-  data->workpieceList.updateState(data->event_payload, MotorPieceState::FAST);
-  return new Fast(data);
+  data->workpieceList.updateDataMotorFlags(
+      data->workpieceList, data->motor_stopped, data->motor_slowed);
+  return AREA_AS_INT_TO_STATE(
+      data, MotorControl::motorTransition(data, MotorPieceState::FAST));
 }
 
 State *Fast::motor_stop_fsm() {
-  data->workpieceList.updateState(data->event_payload,
-                                  MotorPieceState::STOPPED);
-  return new Stop(data);
+  return AREA_AS_INT_TO_STATE(
+      data, MotorControl::motorTransition(data, MotorPieceState::STOPPED));
+}
+
+State *Fast::motor_slow() {
+  return AREA_AS_INT_TO_STATE(
+      data, MotorControl::motorTransition(data, MotorPieceState::SLOW));
 }
 
 State *Fast::clone() { return new Fast(data); }
