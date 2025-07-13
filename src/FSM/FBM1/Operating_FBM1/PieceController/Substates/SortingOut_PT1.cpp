@@ -14,8 +14,8 @@ SortingOut_PT1::~SortingOut_PT1() {}
 void SortingOut_PT1::entry() {
   PRINT_STATE;
   data->timer->start_timer(SORT_OUT_TIME, TIMER_ID::SORTINGOUT_PT1);
+  data->stopwatch.reset();
   data->stopwatch.start();
-
 }
 
 void SortingOut_PT1::exit() {

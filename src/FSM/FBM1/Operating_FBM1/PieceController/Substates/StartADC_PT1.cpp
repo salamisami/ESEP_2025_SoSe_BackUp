@@ -44,12 +44,18 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 			}
 
 			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC) {
+				data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
+				data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) localdata_.piece->id);
+				localdata_.unblock_signal_has_been_sent = false;
 				return new ADC_PT1(data, localdata_);
 			}
 			return new StartADC_PT1(data, localdata_);
 		default:
 			break;
 	}
+	data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
+	data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) localdata_.piece->id);
+	localdata_.unblock_signal_has_been_sent = false;
 	return new ADC_PT1(data, localdata_);
 }
 

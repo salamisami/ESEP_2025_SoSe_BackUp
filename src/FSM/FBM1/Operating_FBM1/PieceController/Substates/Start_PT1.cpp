@@ -13,7 +13,6 @@ Start_PT1::~Start_PT1() {}
 //===================================================== public functions =====================================================
 void Start_PT1::entry() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 }
 
 void Start_PT1::exit() {

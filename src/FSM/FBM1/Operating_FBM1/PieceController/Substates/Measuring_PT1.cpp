@@ -13,14 +13,11 @@ Measuring_PT1::~Measuring_PT1() {}
 //===================================================== public functions =====================================================
 void Measuring_PT1::entry() {
 	PRINT_STATE;
-	data->piece_near_adc = false;
+
 }
 
 void Measuring_PT1::exit() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
-	Piece* piece = localdata_.piece;
-	piece->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
 }
 
 State* Measuring_PT1::clone() {
@@ -33,7 +30,8 @@ State* Measuring_PT1::laser_sorting_gate_blocked() {
 	Area current_area = distance.first;
 
 	if(current_area == Area::GATE) {
-		DEBUG("Typisierung schief gelaufen");
+		printf("Typisierung schief gelaufen"\n);
+		data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 		return new Gate_PT1(data, localdata_);
 	}
 
@@ -64,5 +62,8 @@ State* Measuring_PT1::adc_invalid_measure() {
 }
 
 State* Measuring_PT1::goto_adcgate() {
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
+	Piece* piece = localdata_.piece;
+	piece->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
 	return new ADCGate_PT1(data, localdata_);
 }

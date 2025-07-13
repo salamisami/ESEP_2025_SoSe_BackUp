@@ -43,7 +43,7 @@ State* PieceControllerFBM1::new_piece() {
 	LocalDataPT1 localdata;
 	localdata.piece = next_piece;
 	spawn_orthogonal_state(new Start_PT1(data, localdata));
-
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) id);
 	return nullptr;
 }
 
