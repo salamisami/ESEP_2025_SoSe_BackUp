@@ -33,9 +33,7 @@ State* LeavingGate_PT2::laser_sorting_gate_unblocked() {
 State* LeavingGate_PT2::timer(TIMER_ID id) {
 	if(id != TIMER_ID::LEAVINGGATE_PT2) {
 		return nullptr;
-
 	}
-
 	auto distance = data->piece_FBM2_soll->piece_tracker->get_distance();
 	auto current_area = distance.first;
 	auto current_pos = distance.second;
@@ -60,4 +58,16 @@ State* LeavingGate_PT2::timer(TIMER_ID id) {
 State* LeavingGate_PT2::request_transfer() {
 	data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::FBM_2_BUSY);
 	return nullptr;
+}
+
+State* LeavingGate_PT2::laser_front_blocked() {
+	return new Pieceappeared(data);
+}
+
+State* LeavingGate_PT2::laser_back_blocked() {
+	return new Pieceappeared(data);
+}
+
+State* LeavingGate_PT2::laser_ramp_blocked() {
+	return new Pieceappeared(data);
 }
