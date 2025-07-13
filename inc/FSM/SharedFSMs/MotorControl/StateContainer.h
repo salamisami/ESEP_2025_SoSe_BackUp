@@ -69,6 +69,25 @@ public:
   size_t size() const { return container.size(); }
 
   bool isEmpty() const { return container.empty(); }
+
+  // Helper function to update both motor states based on all workpieces
+  void updateMotorStates(StateContainer &workpieceList, bool &motor_stopped,
+                         bool &motor_slowed) {
+    motor_stopped = false;
+    motor_slowed = false;
+
+    // Get all IDs and check their states
+    auto ids = workpieceList.getAllIds();
+    for (int id : ids) {
+      MotorPieceState state = workpieceList.getState(id);
+
+      if (state == MotorPieceState::STOPPED) {
+        motor_stopped = true;
+      } else if (state == MotorPieceState::SLOW) {
+        motor_slowed = true;
+      }
+    }
+  }
 };
 
 #endif // STATECONTAINER_H
