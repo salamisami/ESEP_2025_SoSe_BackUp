@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-enum class MotorPieceState { FAST, SLOW, STOPPED, DELETE_W_MOTOR };
+enum class MotorPieceState { FAST = 0, SLOW, STOPPED, DELETE_W_MOTOR };
 
 class StateContainer {
   std::unordered_map<int, MotorPieceState> container;
@@ -71,8 +71,8 @@ public:
   bool isEmpty() const { return container.empty(); }
 
   // Helper function to update both motor states based on all workpieces
-  void updateMotorStates(StateContainer &workpieceList, bool &motor_stopped,
-                         bool &motor_slowed) {
+  void updateDataMotorFlags(StateContainer &workpieceList, bool &motor_stopped,
+                            bool &motor_slowed) {
     motor_stopped = false;
     motor_slowed = false;
 

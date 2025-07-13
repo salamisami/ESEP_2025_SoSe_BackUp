@@ -1,9 +1,9 @@
 #ifndef MOTORCONTROL_H
 #define MOTORCONTROL_H
 #pragma once
-
 #include "HState.h"
 #include "Idle.h"
+#include <stdbool.h>
 
 class MotorControl : public HState {
 public: //============================================ constructors &
@@ -17,49 +17,70 @@ public: //================================================ public functions
   void entry() override;
   void exit() override;
   State *clone() override;
+  static bool slowed(ContextData *data, MotorPieceState pieceRequest) {
+    return data->motor_slowed || pieceRequest == MotorPieceState::SLOW;
+  }
 
-  static void updateData(ContextData *data, MotorPieceState motorPieceState) {
+  static bool stopped(ContextData *data, MotorPieceState pieceRequest) {
+    return data->motor_stopped || pieceRequest == MotorPieceState::STOPPED;
+  }
+
+  static int motorTransition(ContextData *data, MotorPieceState pieceRequest) {
+    if (stopped(data, pieceRequest)) {
+      return (int)MotorPieceState::STOPPED;
+    }
+    if (slowed(data, pieceRequest)) {
+      return (int)MotorPieceState::SLOW;
+    }
+    return (int)MotorPieceState::FAST;
+  }
+
+  static void updateData(
+      ContextData *data,
+      MotorPieceState motorPieceRequest) { // Goals: 1.Set the workpiece to the
+                                           // 2nd requirement
+                                           // 2. Set MotorSlowed/MotorStopped if
+                                           // any of the workpieces request it
     int id = data->event_payload;
     int8_t topic = data->event_topic;
     if (topic > (int8_t)Topic::DELETE_W_MOTOR ||
         topic < (int8_t)Topic::MOTOR_STOP_FSM) {
-      return;
+      return; // Topics größer als DELETE_W_MOTOR
+              // sind keine Motortopics; Topics kleiner
+              // als MotorStop sind auch keine Motortopics
     }
-    if (motorPieceState == MotorPieceState::DELETE_W_MOTOR) {
+    if (motorPieceRequest == MotorPieceState::DELETE_W_MOTOR) {
       // Remove the ID from the list if it exists
       if (data->workpieceList.contains(id)) {
         data->workpieceList.remove(id);
+        data->workpieceList.updateDataMotorFlags(
+            data->workpieceList, data->motor_stopped, data->motor_slowed);
+        data->workpieces = !data->workpieceList.isEmpty();
       } else {
-        printf("Warning: Trying to delete ID %d that doesn't exist in "
-               "workpiece list\n",
-               id);
+        throw("ID %d doesn't exist in workpiece list\n", id);
       }
     } else {
-      data->current_motor_speed = motorPieceState;
-      // Add the ID if it doesn't exist, then update ALL workpieces to new state
+      // Request =/= speed
       if (!data->workpieceList.contains(id)) {
-        data->workpieceList.add(id, motorPieceState);
+        data->workpieceList.add(id, motorPieceRequest);
       }
-      data->workpieceList.updateState(id, motorPieceState);
-      // Reset flags before checking
-      data->motor_slowed = false;
-      data->motor_stopped = false;
+      data->workpieceList.updateState(id, motorPieceRequest);
 
-      auto allIds = data ->workpieceList.getAllIds();
-      // Iterate through all workpieces to check their states
-      for (int workpieceId : allIds) {
-        MotorPieceState state = data->workpieceList.getState(workpieceId);
-        if (state == MotorPieceState::SLOW) {
-          data->motor_slowed = true;
-        } else if (state == MotorPieceState::STOPPED) {
-          data->motor_stopped = true;
-        }
+      data->workpieceList.updateDataMotorFlags(
+          data->workpieceList, data->motor_stopped, data->motor_slowed);
+
+      if (data->motor_stopped) {
+        data->current_motor_speed = MotorPieceState::STOPPED;
+      } else if (data->motor_slowed) {
+        data->current_motor_speed = MotorPieceState::SLOW;
+      } else {
+        data->current_motor_speed = MotorPieceState::FAST;
       }
       for (auto &pair : *data->pieces_map) {
         Piece *piece = pair.second; // pair.second is the value (Piece*)
 
         // Switch case for motor states
-        switch (motorPieceState) {
+        switch (data->current_motor_speed) {
         case MotorPieceState::FAST:
           piece->piece_tracker->fast();
           break;
@@ -70,12 +91,10 @@ public: //================================================ public functions
           piece->piece_tracker->stop();
           break;
         default:
-          // Handle unexpected states if needed
           break;
         }
       }
     }
-    data->workpieces = !data->workpieceList.isEmpty();
   }
 
 private: //================================================ private variables
