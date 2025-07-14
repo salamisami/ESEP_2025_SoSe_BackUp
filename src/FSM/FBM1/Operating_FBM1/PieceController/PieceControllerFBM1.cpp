@@ -13,14 +13,6 @@ PieceControllerFBM1::PieceControllerFBM1(ContextData* data) : OrthState(data,
 PieceControllerFBM1::PieceControllerFBM1(ContextData* data, std::deque<State*> substates) :OrthState(data, substates, nullptr, false, false) {}
 
 PieceControllerFBM1::~PieceControllerFBM1() {
-	for (auto &pair : *data->pieces_map){
-		if(pair.second != nullptr){
-			delete pair.second;
-			pair.second = nullptr;
-		}
-		int id_to_delete = pair.first;
-		data->pieces_map->erase(id_to_delete);
-	}
 }
 
 
