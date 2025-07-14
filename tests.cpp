@@ -1190,19 +1190,15 @@ TEST_F(RampErrorHandlerSetup, RampErrorUnquittiertTest) {
  * mit quittierung des Fehlers
  */
 TEST_F(RampErrorHandlerSetup, RampComErrorTest) {
-  // teste
-  remote_control->send_event((int8_t)Topic::ERROR,
-                             (int)Error_Enum::ERROR_BOTH_R_FULL);
-  EXPECT_STATE("RampErrorUnquittiert");
-  remote_control->send_event((int8_t)Topic::INTERRUPT,
-                             (int)InterruptEnum::BUTTON_RESET_RELEASED);
-  EXPECT_STATE("RampErrorQuittiert");
-  remote_control->send_event((int8_t)Topic::COM,
-                             (int)COM_Enum::COM_RAMP_NOT_FULL);
-  EXPECT_STATE("RampErrorResolved");
-  remote_control->send_event((int8_t)Topic::INTERRUPT,
-                             (int)InterruptEnum::BUTTON_RESET_RELEASED);
-  EXPECT_STATE("RampNoError");
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_BOTH_R_FULL);
+    EXPECT_STATE("RampErrorUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("RampErrorQuittiert");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::COM_RAMP_NOT_FULL);
+    EXPECT_STATE("RampErrorResolved");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("RampNoError");
 }
 
 /**
@@ -1210,16 +1206,13 @@ TEST_F(RampErrorHandlerSetup, RampComErrorTest) {
  * ohne quittierung des Fehlers
  */
 TEST_F(RampErrorHandlerSetup, RampComErrorUnquittiertTest) {
-  // teste
-  remote_control->send_event((int8_t)Topic::ERROR,
-                             (int)Error_Enum::ERROR_BOTH_R_FULL);
-  EXPECT_STATE("RampErrorUnquittiert");
-  remote_control->send_event((int8_t)Topic::COM,
-                             (int)COM_Enum::COM_RAMP_NOT_FULL);
-  EXPECT_STATE("RampErrorResolvedUnquittiert");
-  remote_control->send_event((int8_t)Topic::INTERRUPT,
-                             (int)InterruptEnum::BUTTON_RESET_RELEASED);
-  EXPECT_STATE("RampNoError");
+    //teste
+    remote_control->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_BOTH_R_FULL);
+    EXPECT_STATE("RampErrorUnquittiert");
+    remote_control->send_event((int8_t) Topic::COM, (int) COM_Enum::COM_RAMP_NOT_FULL);
+    EXPECT_STATE("RampErrorResolvedUnquittiert");
+    remote_control->send_event((int8_t) Topic::INTERRUPT, (int) InterruptEnum::BUTTON_RESET_RELEASED);
+    EXPECT_STATE("RampNoError");
 }
 
 /**

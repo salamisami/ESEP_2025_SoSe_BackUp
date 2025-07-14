@@ -13,7 +13,7 @@ IdleSM::~IdleSM() {}
 //===================================================== public functions =====================================================
 void IdleSM::entry() {
 	PRINT_STATE;
-	printf("Please put Flat Piece!\n");
+	printf("Please put W_F.\n");
 }
 
 void IdleSM::exit() {
