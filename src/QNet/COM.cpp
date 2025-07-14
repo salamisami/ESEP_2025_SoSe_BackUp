@@ -121,278 +121,6 @@ void COM::runDispatcher()
     }
 }
 
-// void COM::runClient()
-// {
-//     const int RETRY_DELAY_MS = 1000;
-//     while (running)
-//     {
-//        /*  while (disconnected || _client->getcoid() <= 1)
-//         {
-//             std::lock_guard<std::mutex> lock(_clientMutex);
-//             try
-//             {
-//                 _client = make_unique<Thread_COM::Sender>(_clientSendName);
-//                 if (_client->getcoid() >= 0)
-//                 {
-//                     COUT("Connection established successfully");
-//                     break;
-//                 }
-//             }
-//             catch (...)
-//             {
-//                 std::cerr << "Error creating Sender in run client com.cpp" << std::endl;
-//             }
-//             std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-//             continue;
-//         }
-//         if (_client->getcoid() != -1)
-//         {
-//             checkQueues();
-//             std::this_thread::sleep_for(std::chrono::milliseconds(1));
-//         } */
-//         // Nur nach UDP-Restore weiter machen
-//         if (!disconnected)
-//         {
-//             // ... wie gehabt ...
-//             if (_client && _client->getcoid() >= 0)
-//             {
-//                 // normal weiter
-//                 checkQueues();
-//                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
-//             }
-//             else
-//             {
-//                 std::lock_guard<std::mutex> lock(_clientMutex);
-//                 if (_client)
-//                 {
-//                     name_close(_client->getcoid());
-//                     _client.reset();
-//                 }
-//                 // Neuer Name-Open-Retry-Loop
-//                 bool clientReady = false;
-//                 for (int retry = 0; retry < 20 && running && !clientReady && !disconnected; ++retry)
-//                 {
-//                     try
-//                     {
-//                         _client = make_unique<Thread_COM::Sender>(_clientSendName);
-//                         if (_client->getcoid() >= 0)
-//                         {
-//                             std::cout << "Connection established successfully" << std::endl;
-//                             clientReady = true;
-//                         }
-//                         else
-//                         {
-//                             _client.reset();
-//                         }
-//                     }
-//                     catch (...)
-//                     {
-//                         _client.reset();
-//                     }
-//                     if (!clientReady)
-//                         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-//                 }
-//                 if (!clientReady)
-//                 {
-//                     std::cerr << "Could not establish QNet-Connection after UDP restore!" << std::endl;
-//                     disconnected = true; // Oder eigenen Fehler-Status/Retry auslösen
-//                 }
-//             }
-//         }
-//         else
-//         {
-//             // Bei Disconnect: Client sauber schließen und warten
-//             std::lock_guard<std::mutex> lock(_clientMutex);
-//             if (_client)
-//             {
-//                 name_close(_client->getcoid());
-//                 _client.reset();
-//             }
-//             std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-//         }
-//     }
-// }
-
-/* void COM::runClient() {
-    const int RETRY_DELAY_MS_BASE = 1000;
-    int backoff = 1;
-    bool firstConnect = true;
-
-    while (running) {
-        if (!disconnected) {
-            // Versuche Verbindung herzustellen, falls _client fehlt oder ungültig
-            if (!_client || _client->getcoid() < 0) {
-                std::lock_guard<std::mutex> lock(_clientMutex);
-                if (_client) {
-                    name_close(_client->getcoid());
-                    _client.reset();
-                }
-
-                // Nach UDP-Restore: Mehrfach versuchen, Namen zu finden!
-                bool clientReady = false;
-                for (int retry = 0; retry < 20 && running && !clientReady && !disconnected; ++retry) {
-                    try {
-                        _client = make_unique<Thread_COM::Sender>(_clientSendName);
-                        if (_client->getcoid() >= 0) {
-                            std::cout << "Connection established successfully" << std::endl;
-                            clientReady = true;
-                            backoff = 1;
-                        } else {
-                            _client.reset();
-                        }
-                    } catch (...) {
-                        std::cerr << "Error creating Sender in runClient" << std::endl;
-                        _client.reset();
-                    }
-                    if (!clientReady) {
-                        std::cerr << "name_open failed, will retry..." << std::endl;
-                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-                    }
-                }
-
-                if (!clientReady) {
-                    std::cerr << "Could not establish QNet-Connection after UDP restore!" << std::endl;
-                    disconnected = true; // Oder Fehler melden
-                    continue;
-                }
-            }
-
-            // Wenn verbunden, Events abarbeiten
-            if (_client && _client->getcoid() >= 0) {
-                checkQueues();
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            }
-        } else {
-            // Bei Disconnect: Client sauber schließen und warten
-            std::lock_guard<std::mutex> lock(_clientMutex);
-            if (_client) {
-                name_close(_client->getcoid());
-                _client.reset();
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS_BASE));
-        }
-    }
-} */
-
-/* void COM::runClient() {
-    const int RETRY_DELAY_MS = 1000;
-
-    while (running) {
-        if (disconnected) {
-            // Verbindung verloren: Client schließen und warten
-            std::lock_guard<std::mutex> lock(_clientMutex);
-            if (_client) {
-                name_close(_client->getcoid());
-                _client.reset();
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-            continue;
-        }
-
-        // Verbunden, aber _client fehlt oder fehlerhaft?
-        if (!_client || _client->getcoid() < 0) {
-            std::lock_guard<std::mutex> lock(_clientMutex);
-            if (_client) {
-                name_close(_client->getcoid());
-                _client.reset();
-            }
-            // Retry-Loop mit kleiner Verzögerung
-            bool clientReady = false;
-            for (int retry = 0; retry < 20 && running && !disconnected; ++retry) {
-                try {
-                    _client = make_unique<Thread_COM::Sender>(_clientSendName);
-                    if (_client->getcoid() >= 0) {
-                        std::cout << "Connection established successfully" << std::endl;
-                        clientReady = true;
-                        break;
-                    } else {
-                        _client.reset();
-                    }
-                } catch (...) {
-                    std::cerr << "Error creating Sender in runClient" << std::endl;
-                    _client.reset();
-                }
-                std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            }
-            if (!clientReady) {
-                std::cerr << "Could not establish QNet-Connection after UDP restore!" << std::endl;
-                disconnected = true;
-                continue;
-            }
-        }
-
-        // Hier: Verbindung steht sicher! Events abarbeiten
-        checkQueues();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-} */
-
-/* void COM::runClient()
-{
-    const int RETRY_DELAY_MS = 1000;
-
-    while (running)
-    {
-        if (disconnected)
-        {
-            // Verbindung verloren: Client schließen und warten
-            std::lock_guard<std::mutex> lock(_clientMutex);
-            if (_client)
-            {
-                name_close(_client->getcoid());
-                _client.reset();
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(RETRY_DELAY_MS));
-            continue;
-        }
-
-        // Verbunden, aber _client fehlt oder fehlerhaft?
-        if (!_client || _client->getcoid() < 0)
-        {
-            std::lock_guard<std::mutex> lock(_clientMutex);
-            if (_client)
-            {
-                name_close(_client->getcoid());
-                _client.reset();
-            }
-
-            // ENDLOSE Schleife, solange UDP "ok"!
-            bool clientReady = false;
-            while (running && !disconnected && !clientReady)
-            {
-                try
-                {
-                    _client = make_unique<Thread_COM::Sender>(_clientSendName);
-                    if (_client->getcoid() >= 0)
-                    {
-                        std::cout << "Connection established successfully" << std::endl;
-                        clientReady = true;
-                    }
-                    else
-                    {
-                        _client.reset();
-                    }
-                }
-                catch (...)
-                {
-                    std::cerr << "Error creating Sender in runClient" << std::endl;
-                    _client.reset();
-                }
-                if (!clientReady)
-                {
-                    std::cerr << "name_open failed, will retry..." << std::endl;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-                }
-            }
-            // Falls UDP wieder verloren, läuft die äußere while sowieso neu los!
-            continue;
-        }
-
-        // Hier: Verbindung steht sicher! Events abarbeiten
-        checkQueues();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-} */
 
 void COM::runClient()
 {
@@ -444,29 +172,26 @@ void COM::checkQueues()
         { // Locked scope
             std::unique_lock<std::mutex> lock(queueMutex);
 
-            if (true)
+            // Move items to local batches
+            auto move_batch = [](std::deque<_pulse> &src, std::deque<_pulse> &dest, size_t max)
             {
-                // Move items to local batches
-                auto move_batch = [](std::deque<_pulse> &src, std::deque<_pulse> &dest, size_t max)
-                {
-                    auto end = src.size() > max ? src.begin() + max : src.end();
-                    dest.insert(dest.end(), std::make_move_iterator(src.begin()),
-                                std::make_move_iterator(end));
-                    src.erase(src.begin(), end);
-                };
+                auto end = src.size() > max ? src.begin() + max : src.end();
+                dest.insert(dest.end(), std::make_move_iterator(src.begin()),
+                            std::make_move_iterator(end));
+                src.erase(src.begin(), end);
+            };
 
-                if (!highPriorityQueue.empty())
-                {
-                    move_batch(highPriorityQueue, highPrioBatch, MAX_BATCH);
-                }
-                else if (!lowPriorityQueue.empty())
-                {
-                    move_batch(lowPriorityQueue, lowPrioBatch, MAX_BATCH);
-                }
-                else
-                {
-                    break; // Both queues empty
-                }
+            if (!highPriorityQueue.empty())
+            {
+                move_batch(highPriorityQueue, highPrioBatch, MAX_BATCH);
+            }
+            else if (!lowPriorityQueue.empty())
+            {
+                move_batch(lowPriorityQueue, lowPrioBatch, MAX_BATCH);
+            }
+            else
+            {
+                break; // Both queues empty
             }
 
         } // Lock released
@@ -536,55 +261,6 @@ int COM::sendToServer(const _pulse &msg, int priority)
     return send_event_status;
 }
 
-/* void COM::runServer()
-{
-    std::cout << "COM server started." << std::endl;
-    disconnected = true;
-    while (running)
-    {
-        struct _pulse event;
-        int rcvid = MsgReceive(_server->getchid(), &event, sizeof(event), NULL);
-
-        if (rcvid == 0)
-        {
-             if (disconnected)
-            {
-                disconnected = false;
-                _pulse reconnectEvent;
-                reconnectEvent.code = static_cast<int8_t>(Topic::COM);
-                reconnectEvent.value.sival_int =
-            static_cast<int>(COM_Enum::COM_CONNECTED);
-                sendToDispatcher(reconnectEvent,
-            static_cast<int>(EventPriority::FIRST_PRIO));
-            }
-            if ((_PULSE_CODE_MINAVAIL <= event.code) &&
-                (event.code <= _PULSE_CODE_MAXAVAIL))
-            {
-                updateHeartbeat();
-                processMessage(event);
-            }
-            continue;
-        }
-        if (event.code == _PULSE_CODE_DISCONNECT ||
-            event.code == _PULSE_CODE_COIDDEATH)
-        {
-            ConnectDetach(event.scoid);
-            std::cout << "Server: Disconnect oder COIDDEATH erkannt und detach "
-                         "ausgeführt."
-                      << std::endl;
-        }
-        if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX))
-        {
-            handle_QNX_IO_msg(&event, rcvid);
-            continue;
-        }
-        else
-        {
-            std::cerr << "MsgReceive error: " << strerror(errno) << std::endl;
-        }
-    }
-} */
-
 // Server side implementation
 void COM::runServer()
 {
@@ -648,26 +324,7 @@ void COM::runServer()
                 handle_QNX_pulse(&event, rcvid);
                 continue;
             }
-        } /* else if(rcvid == -1) {
-            if(errno == ETIMEDOUT) {
-                {
-                    std::lock_guard<std::mutex> lock(_clientMutex);
-                    _client.reset();
-                }
-                // Timeout occurred
-                disconnected = true;
-                updateHeartbeat();
-
-                _pulse timeoutEvent;
-                int8_t comCode = (int8_t) Topic::ERROR;
-                int value = (int) Error_Enum::ERROR_C_LOST_COM;
-
-                timeoutEvent.code = comCode;
-                timeoutEvent.value.sival_int = value;
-                COUT("Sending ERROR_C_LOST_COM Notification; COM_Server");
-                sendToDispatcher(timeoutEvent, (int) EventPriority::FIRST_PRIO);
-            }
-        } */
+        } 
         if ((_IO_BASE <= event.type) && (event.type <= _IO_MAX))
         {
             handle_QNX_IO_msg(&event, rcvid);
@@ -791,8 +448,8 @@ void COM::notifyUdpRestored()
     _pulse rampEvent;
     rampEvent.code = static_cast<int8_t>(Topic::COM);
     rampEvent.value.sival_int = rampfull
-                                    ? static_cast<int>(COM_Enum::RAMP_FULL)
-                                    : static_cast<int>(COM_Enum::RAMP_NOT_FULL);
+                                    ? static_cast<int>(COM_Enum::COM_RAMP_FULL)
+                                    : static_cast<int>(COM_Enum::COM_RAMP_NOT_FULL);
     _pulse mqttEvent;
     mqttEvent.code = static_cast<int8_t>(Topic::COM);
     mqttEvent.value.sival_int =
@@ -859,13 +516,13 @@ void COM::handleInternalTopic(int originalValue, _pulse &dispatcherMsg)
         break;
     case Internal_Enum::RAMP_NOT_FULL:
         dispatcherMsg.code = static_cast<int>(Topic::COM);
-        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_NOT_FULL);
+        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_RAMP_NOT_FULL);
         lowPriorityQueue.push_back(dispatcherMsg);
         rampfull = false;
         break;
     case Internal_Enum::RAMP_FULL:
         dispatcherMsg.code = static_cast<int>(Topic::COM);
-        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_FULL);
+        dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_RAMP_FULL);
         lowPriorityQueue.push_back(dispatcherMsg);
         rampfull = true;
         break;
@@ -879,8 +536,8 @@ void COM::handleComTopic(int originalValue, _pulse &dispatcherMsg)
     if (originalValue == static_cast<int>(COM_Enum::TIMEOUT_COM) ||
         originalValue == static_cast<int>(COM_Enum::COM_CONNECTED) ||
         originalValue == static_cast<int>(COM_Enum::HEARTBEAT) ||
-        originalValue == static_cast<int>(COM_Enum::RAMP_FULL) ||
-        originalValue == static_cast<int>(COM_Enum::RAMP_NOT_FULL) ||
+        originalValue == static_cast<int>(COM_Enum::COM_RAMP_FULL) ||
+        originalValue == static_cast<int>(COM_Enum::COM_RAMP_NOT_FULL) ||
         originalValue == static_cast<int>(COM_Enum::RESET_TO_FLAT) ||
         originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL) ||
         originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL) ||
