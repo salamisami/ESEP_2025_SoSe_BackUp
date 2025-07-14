@@ -65,5 +65,6 @@ State* Measuring_PT1::goto_adcgate() {
 	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 	Piece* piece = localdata_.piece;
 	piece->piece_tracker->update_distance_force(Area::ADC_GATE, 0);
+	data->piece_near_adc = false;
 	return new ADCGate_PT1(data, localdata_);
 }

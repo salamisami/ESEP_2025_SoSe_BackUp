@@ -14,11 +14,11 @@ StartADC_PT1::~StartADC_PT1() {}
 void StartADC_PT1::entry() {
 	PRINT_STATE;
 	data->timer->start_timer(UPDATE_PIECE_INTERVAL, TIMER_ID::STARTADC_PT1);
-	data->piece_near_adc = true;
 }
 
 void StartADC_PT1::exit() {
 	PRINT_STATE;
+	data->piece_near_adc = true;
 }
 
 State* StartADC_PT1::clone() {
