@@ -42,7 +42,7 @@ public: //================================================ public functions
                                            // 2. Set MotorSlowed/MotorStopped if
                                            // any of the workpieces request it
     int id = data->event_payload;
-    int8_t topic = data->event_topic;
+    int8_t topic = data->motorpieceRequest;
     motorPieceRequest = TOPIC_TO_MOTOR_STATE(topic);
     if (topic > (int8_t)Topic::DELETE_W_MOTOR ||
         topic < (int8_t)Topic::MOTOR_STOP_FSM) {
