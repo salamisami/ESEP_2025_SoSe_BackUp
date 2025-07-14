@@ -49,37 +49,42 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 //		return new ADCGate_PT1(data, localdata_);
 //	}
 
-	if (current_area == Area::GATE_END && current_pos >= PIECE_TRANSITION_TOLERANCE){
-	DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
-	MACRO_PIECE_MISSING_PT1
+	if(current_area == Area::GATE_END && current_pos >= PIECE_TRANSITION_TOLERANCE) {
+		DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
+		MACRO_PIECE_MISSING_PT1
 	}
 	return new ADCGate_PT1(data, localdata_);
 }
 
 State* ADCGate_PT1::laser_sorting_gate_blocked() {
+	DEBUG("sorting gate blocked.");
+
 	auto piece = localdata_.piece;
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
-	if(current_area == Area::GATE || current_area == Area::ADC_GATE){
+	if(current_area == Area::GATE || current_area == Area::ADC_GATE) {
+		DEBUG("Laser sorting gate is expected. Let's go to Gate_PT1");
 		return new Gate_PT1(data, localdata_);
 	}
-//	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
-//		return nullptr;
-//	}
-//
-//	//before expected
-//	if(current_area == Area::ADC_GATE && current_pos >= (100 - PIECE_TRANSITION_TOLERANCE)) {
-//		return new Gate_PT1(data, localdata_);
-//	}
-//
-//	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
-//		return new Gate_PT1(data, localdata_);
-//	}
+	//	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
+	//		return nullptr;
+	//	}
+	//
+	//	//before expected
+	//	if(current_area == Area::ADC_GATE && current_pos >= (100 - PIECE_TRANSITION_TOLERANCE)) {
+	//		return new Gate_PT1(data, localdata_);
+	//	}
+	//
+	//	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE) {
+	//		return new Gate_PT1(data, localdata_);
+	//	}
+	DEBUG("This sorting gate is not blocked");
 	return nullptr;
 }
 
 State* ADCGate_PT1::metal_detected() {
+	DEBUG("Metal Detected.");
 	localdata_.is_metal = true;
 	return nullptr;
 }

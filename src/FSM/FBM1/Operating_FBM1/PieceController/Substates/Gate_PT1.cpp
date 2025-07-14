@@ -42,7 +42,6 @@ void Gate_PT1::entry() {
 	piece->piece_tracker->update_distance_force(Area::GATE, 0);
 	localdata_.validated_type = validate_piece(localdata_.ist_type, localdata_.is_metal);
 	data->sender->send_event((int8_t)Topic::CHECK_PIECE, (int) localdata_.validated_type);
-	printf("PT1 -> Sorting Order: %d\n", (int) localdata_.validated_type);
 }
 
 void Gate_PT1::exit() {
