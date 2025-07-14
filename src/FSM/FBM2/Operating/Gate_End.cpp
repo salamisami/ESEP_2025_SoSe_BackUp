@@ -19,7 +19,7 @@ Gate_End::~Gate_End() {}
 //===================================================== public functions =====================================================
 void Gate_End::entry() {
 	PRINT_STATE;
-	data->timer->start_timer(100, TIMER_ID::GATE_END);
+	data->timer->start_timer(1000, TIMER_ID::GATE_END);
 }
 
 void Gate_End::exit() {
@@ -47,6 +47,7 @@ State* Gate_End::timer(TIMER_ID id) {
 
 	if(current_area == Area::OUT_OF_RANGE) {
 		DEBUG("PieceMissing! Cause: piece is too long to reach laser back.");
+		printf("Error: Piece takes too long to reach Laser Back of FBM2\n");
 		return new Piece_Missing(data);
 	}
 

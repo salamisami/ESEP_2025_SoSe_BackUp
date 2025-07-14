@@ -43,6 +43,7 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 			}
 		case Area::OUT_OF_RANGE: {
 				DEBUG("PieceMissing! Cause: piece is too long to reach laser back.");
+				printf("Error: Piece takes too long to reach laser back.\n");
 				MACRO_PIECE_MISSING_PT1
 					break;
 			}

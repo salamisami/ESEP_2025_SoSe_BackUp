@@ -13,6 +13,7 @@ PieceTallWithMetal::~PieceTallWithMetal() {}
 //===================================================== public functions =====================================================
 void PieceTallWithMetal::entry() {
 	PRINT_STATE;
+	std::cout << "Current Sortingorder: PieceTall with hole and metal" << std::endl;
 }
 
 void PieceTallWithMetal::exit() {

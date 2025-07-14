@@ -27,6 +27,7 @@ State* WaitingIM::button_start_released() {
 	if(!data->config){
         data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::CANT_FIND_CALB_CONF);
 		DEBUG("No config exits");
+        printf("No config data! Please calibrate first.\n");
 		return new IdleIM(data);
 	}
 

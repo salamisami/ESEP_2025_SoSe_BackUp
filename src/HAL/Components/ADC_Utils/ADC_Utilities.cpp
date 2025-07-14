@@ -7,6 +7,7 @@
 //===================================================== private functions =====================================================
 
 //void ADC_Calibration::privateFunction(){}
+int ADC_Utilities::minMesspunkte(0);
 
 //===================================================== public functions =====================================================
 
@@ -64,13 +65,19 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
                 bauteilErkannt = true;
                 std::cout << "Bauteil erkannt – Messung startet\n";
             }
-
+            bool first = true;
             if (bauteilErkannt) {
                 werte.push_back(sensorVoltage);
                 int messpunkte = werte.size();
-                if (sensorVoltage > bandVoltage - TRIGGER_SCHRITT){// && messpunkte >= W_SIZE) {
+                if ((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && (messpunkte >= (minMesspunkte - 5))) {
+                	std::cout << "Mespunkte Kalibrierung: " << messpunkte << std::endl;
+                	if(first){
+                		ADC_Utilities::minMesspunkte = werte.size();
+                		first = false;
+                	}
                     break;
                 }
+
             }
             nanosleep(&delay, NULL);
         }
@@ -137,37 +144,10 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
 }
 
 
-//std::vector<Profil> ADC_Utilities::loadProfile() {
-//	if (!FILE_EXISTS(PROFIL_DATEI)) {
-//		//Event: noch keine Datei erstellt
-//	}
-//    std::ifstream file(PROFIL_DATEI);
-//    std::vector<Profil> result;
-//    std::string line;
-//    while(std::getline(file, line)) {
-//        std::istringstream ss(line);
-//        Profil p;
-//        std::getline(ss, p.name, ',');
-//
-//        int codeInt;
-//        ss >> codeInt; ss.ignore();
-//        p.eventValue = static_cast<ADC_Enum>(codeInt);
-//
-//        ss >> p.hatLoch; ss.ignore();
-//        ss >> p.avg; ss.ignore();
-//        ss >> p.lochMin; ss.ignore();
-//        ss >> p.lochStartIndex; ss.ignore();
-//        ss >> p.lochEndIndex; ss.ignore();
-//        result.push_back(p);
-//    }
-//    return result;
-//}
-
 std::vector<Profil> ADC_Utilities::loadProfile() {
     std::vector<Profil> result;
 
     if (!FILE_EXISTS(PROFIL_DATEI)) {
-        //Event: noch keine Datei erstellt
         return result;
     }
 
@@ -180,7 +160,7 @@ std::vector<Profil> ADC_Utilities::loadProfile() {
         Profil p;
         std::string token;
 
-        // Reihenfolge muss zu Speicherfunktion passen!
+        // Laden der Profiele aus CSV Datei
         std::getline(ss, p.name, ',');
 
         int codeInt = 0;
@@ -220,7 +200,7 @@ std::vector<Profil> ADC_Utilities::loadProfile() {
 ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vector<Profil>& profile) {
     if (value.empty()) return ADC_Enum::ADC_W_NOT_DETECT;
 
-    // --- Feature-Berechnung für die aktuelle Messung ---
+    // Berechnung für die aktuelle Messung
     float sum = 0, sumSquares = 0, minV = value[0], maxV = value[0];
     int minIndex = 0;
     for (size_t i = 0; i < value.size(); ++i) {
@@ -234,11 +214,10 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     float stddev = std::sqrt(sumSquares / value.size() - avg * avg);
     float range = maxV - minV;
 
-    // --- Loch-Check: Prüfen, ob ein ausgeprägtes Loch im Signal ist ---
-    // Definiere, wie tief und breit das "Loch" sein muss (anpassbar!)
-    constexpr float LOCH_TIEFE_MIN = 0.25f;    // min. Abstand avg - minV für echtes Loch
-    constexpr int   LOCH_BREITE_MIN = 3;       // min. wie viele Werte "nahe Minimum" für echtes Loch
-    constexpr float LOCH_NAEHE = 0.05f;        // Toleranz um minV herum für Loch-Breite
+    // Loch-Check: Prüfen, ob ein ausgeprägtes Loch im Signal ist
+    constexpr float LOCH_TIEFE_MIN = 0.75f;    // min. Abstand avg - minV für echtes Loch
+    constexpr int   LOCH_BREITE_MIN = 20;       // min. wie viele Werte "nahe Minimum" für echtes Loch
+    constexpr float LOCH_NAEHE = 0.2f;        // Toleranz um minV herum für Loch-Breite
 
     // Zähle, wie viele Werte nahe dem Minimum liegen (für "Loch-Breite")
     int lochBreite = 0;
@@ -247,11 +226,15 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     }
     bool hatEchtesLoch = ((avg - minV) > LOCH_TIEFE_MIN) && (lochBreite >= LOCH_BREITE_MIN);
 
-    // --- Debug-Ausgabe ---
+    // Debug-Ausgabe für den Anwender
     std::cout << "avg: " << avg << ", minV: " << minV << ", stddev: " << stddev << ", range: " << range << "\n";
-    std::cout << "Loch erkannt? " << (hatEchtesLoch ? "JA" : "NEIN") << ", LochBreite: " << lochBreite << "\n";
-
-    // --- Zuerst Profile OHNE Loch prüfen, wenn kein echtes Loch vorliegt ---
+    std::cout << "Loch erkannt? ";
+    if(hatEchtesLoch){
+    	std::cout << "JA, LochBreite: " << (value.size()-lochBreite) << std::endl;
+    }else{
+    	std::cout << "NEIN \n";
+    }
+    // Zuerst Profile OHNE Loch prüfen, wenn kein echtes Loch vorliegt ---
     if (!hatEchtesLoch) {
         for (const auto& p : profile) {
             if (!p.hatLoch) {
@@ -263,11 +246,11 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
         }
     }
 
-    // --- Profile MIT Loch prüfen, wenn ein Loch erkannt wurde ---
+    // Profile MIT Loch prüfen, wenn ein Loch erkannt wurde
     if (hatEchtesLoch) {
         for (const auto& p : profile) {
             if (p.hatLoch) {
-                // Loch-Match: Mindesttiefe, Position & Bereichsvergleich
+//                Loch-Match: Mindesttiefe, Position & Bereichsvergleich
 //                bool tiefeOK = std::fabs(minV - p.lochMin) < 0.3f;
 //                bool indexOK = (minIndex >= p.lochStartIndex - 2 && minIndex <= p.lochEndIndex + 2);
                 bool avgOK = std::fabs(avg - p.avg) < 0.3f;
@@ -279,7 +262,7 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
         }
     }
 
-    // --- Fallback: Profil mit höchstem Score (optional) ---
+    // Fallback: Profil mit höchstem Score
     int bestScore = -1;
     ADC_Enum bestEvent = ADC_Enum::ADC_W_NOT_DETECT;
     for (const auto& p : profile) {
@@ -352,11 +335,11 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
 
         werte.push_back(sensorVoltage);
         int messpunkte = werte.size();
-        if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT){//} && messpunkte >= W_SIZE) {
+        if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT  && (messpunkte >= (minMesspunkte - 5))){
+        	std::cout << "Mespunkte Operating: " << messpunkte << std::endl;
             break;
         }
         if(werte.size() >= MAX_WERT) {
-            //Error Event Ergänzen
             return ADC_Enum::ADC_INVALID_MESURE;
         }
         
