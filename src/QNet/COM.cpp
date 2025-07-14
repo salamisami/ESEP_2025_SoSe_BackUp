@@ -241,8 +241,8 @@ void COM::runServer() {
                 // Prepare status events
                 _pulse rampEvent;
                 rampEvent.code = static_cast<int8_t>(Topic::COM);
-                rampEvent.value.sival_int = rampfull ? static_cast<int>(COM_Enum::RAMP_FULL)
-                    : static_cast<int>(COM_Enum::RAMP_NOT_FULL);
+                rampEvent.value.sival_int = rampfull ? static_cast<int>(COM_Enum::COM_RAMP_FULL)
+                    : static_cast<int>(COM_Enum::COM_RAMP_NOT_FULL);
                 _pulse mqttEvent;
                 mqttEvent.code = static_cast<int8_t>(Topic::COM);
                 mqttEvent.value.sival_int = mqttConnected ? static_cast<int>(COM_Enum::COM_MQTT_CONNECTED)
@@ -410,13 +410,13 @@ void COM::handleInternalTopic(int originalValue, _pulse& dispatcherMsg) {
             break;
         case Internal_Enum::RAMP_NOT_FULL:
             dispatcherMsg.code = static_cast<int>(Topic::COM);
-            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_NOT_FULL);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_RAMP_NOT_FULL);
             lowPriorityQueue.push_back(dispatcherMsg);
             rampfull = false;
             break;
         case Internal_Enum::RAMP_FULL:
             dispatcherMsg.code = static_cast<int>(Topic::COM);
-            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::RAMP_FULL);
+            dispatcherMsg.value.sival_int = static_cast<int>(COM_Enum::COM_RAMP_FULL);
             lowPriorityQueue.push_back(dispatcherMsg);
             rampfull = true;
             break;
@@ -429,8 +429,8 @@ void COM::handleComTopic(int originalValue, _pulse& dispatcherMsg) {
     if(originalValue == static_cast<int>(COM_Enum::TIMEOUT_COM) ||
         originalValue == static_cast<int>(COM_Enum::COM_CONNECTED) ||
         originalValue == static_cast<int>(COM_Enum::HEARTBEAT) ||
-        originalValue == static_cast<int>(COM_Enum::RAMP_FULL) ||
-        originalValue == static_cast<int>(COM_Enum::RAMP_NOT_FULL) ||
+        originalValue == static_cast<int>(COM_Enum::COM_RAMP_FULL) ||
+        originalValue == static_cast<int>(COM_Enum::COM_RAMP_NOT_FULL) ||
         originalValue == static_cast<int>(COM_Enum::RESET_TO_FLAT) ||
         originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL) ||
         originalValue == static_cast<int>(COM_Enum::RESET_TO_TALL_W_METAL) ||
