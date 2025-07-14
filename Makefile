@@ -35,7 +35,11 @@ CCFLAGS_profile += -g -O0 -finstrument-functions
 LIBS_profile += -lprofilingS
 
 #Generic compiler flags (which include build type flags)
+<<<<<<< HEAD
 CCFLAGS_all += -Wall -fmessage-length=0 -DFBM_2 -DVERBOSE_STATES -DNO_RC_REC #-DNO_COM
+=======
+CCFLAGS_all += -Wall -fmessage-length=0 -DFBM_1 -DVERBOSE_STATES -DNO_RC_REC #-DNO_COM
+>>>>>>> 92de4befda558bdb92a13c8eb0b03747aee14fdf
 CCFLAGS_all += $(CCFLAGS_$(BUILD_PROFILE))
 #Shared library has to be compiled with -fPIC
 #CCFLAGS_all += -fPIC
