@@ -24,71 +24,74 @@ class State;
 
 
 class ContextData {
-    //============================================ constructors & destructors ============================================
+  //============================================ constructors & destructors ============================================
 public:
-    /**
-     * @brief Creates a context data by injecting the sender interface
-     * @param sender to send events out
-     */
-    ContextData(I_Sender* sender);
-    ContextData();
-    virtual ~ContextData();
+  /**
+   * @brief Creates a context data by injecting the sender interface
+   * @param sender to send events out
+   */
+  ContextData(I_Sender* sender);
+  ContextData();
+  virtual ~ContextData();
 
-    //================================================ public functions ================================================
+  //================================================ public functions ================================================
 public:
 
 
 
-    //================================================ private variables ================================================
+  //================================================ private variables ================================================
 public:
-    int event_payload;
-    Stopwatch stopwatch;
-    TimeProfile timeprofile;
-    //DistanceTracker* piece_tracker = nullptr; // = DistanceTracker(true);
-    std::stack<State*>* operating_history;
-    std::stack<State*>* modehandler_history;
-    std::stack<State*>* estop_history;
+  int event_payload;
+  Stopwatch stopwatch;
+  TimeProfile timeprofile;
+  //DistanceTracker* piece_tracker = nullptr; // = DistanceTracker(true);
+  std::stack<State*>* operating_history;
+  std::stack<State*>* modehandler_history;
+  std::stack<State*>* estop_history;
 
-    std::unordered_map<int, Piece*>* pieces_map;
-    int available_id = 1;
-    Piece* piece_FBM2_soll = nullptr;
-    //Piece* piece_FBM2_ist = nullptr;
+  std::unordered_map<int, Piece*>* pieces_map;
+  int available_id = 1;
+  Piece* piece_FBM2_soll = nullptr;
+  //Piece* piece_FBM2_ist = nullptr;
 
-    ScannedPiece scanned_piece_FBM2 = ScannedPiece::UNKNOWN;
-    bool scanned_piece_has_metal_fbm2 = false;
-    
-    // int piece_id = 0;
-    // PieceEnum ist_type = PieceEnum::UNKNOWN;
-    // PieceEnum soll_type = PieceEnum::UNKNOWN;
-    // long sorting_time = 0;
-    // DistanceTracker* piece_tracker;
-    long sort_out_time = 0;
+  ScannedPiece scanned_piece_FBM2 = ScannedPiece::UNKNOWN;
+  bool scanned_piece_has_metal_fbm2 = false;
 
-    I_Sender* timer_sender;
-    Timer* timer;
-    I_Sender* sender;
+  // int piece_id = 0;
+  // PieceEnum ist_type = PieceEnum::UNKNOWN;
+  // PieceEnum soll_type = PieceEnum::UNKNOWN;
+  // long sorting_time = 0;
+  // DistanceTracker* piece_tracker;
+  long sort_out_time = 0;
 
-    //adc -> boot
-    bool is_switch = false;
+  I_Sender* timer_sender;
+  Timer* timer;
+  I_Sender* sender;
 
-    //rampStatus -> DistanceTracker
-    bool is_ramp_full = false;
-    
-    bool workpieces = false;
-    bool motor_slowed = false;
-    bool motor_stopped = false;
-    // bool no_error_or_warning = true;
-    bool is_estop = false;
-    bool config = false;
-    bool com_resolved = true;
-    bool mqtt_resolved = true;
-    StateContainer workpieceList;
-    MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
-    int8_t event_topic = -1;
-    ErrorWarningCounter* error_warning_counter;
+  //adc -> boot
+  bool is_switch = false;
 
-    //PieceTrack -> PieceTrack
-    bool piece_near_adc = false;
+  //rampStatus -> DistanceTracker
+  bool is_ramp_full = false;
+
+  bool workpieces = false;
+  bool motor_slowed = false;
+  bool motor_stopped = false;
+  int8_t motorpieceRequest = -1;
+  // bool no_error_or_warning = true;
+  bool is_estop = false;
+  bool config = false;
+  bool com_resolved = true;
+  bool mqtt_resolved = true;
+  StateContainer workpieceList;
+  MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
+  int8_t event_topic = -1;
+  ErrorWarningCounter* error_warning_counter;
+
+
+
+  //PieceTrack -> PieceTrack
+  bool piece_near_adc = false;
 };
 
 #endif
