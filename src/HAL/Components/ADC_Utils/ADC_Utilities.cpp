@@ -236,10 +236,9 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     float range = maxV - minV;
 
     // --- Loch-Check: Prüfen, ob ein ausgeprägtes Loch im Signal ist ---
-    // Definiere, wie tief und breit das "Loch" sein muss (anpassbar!)
-    constexpr float LOCH_TIEFE_MIN = 0.25f;    // min. Abstand avg - minV für echtes Loch
-    constexpr int   LOCH_BREITE_MIN = 3;       // min. wie viele Werte "nahe Minimum" für echtes Loch
-    constexpr float LOCH_NAEHE = 0.05f;        // Toleranz um minV herum für Loch-Breite
+    constexpr float LOCH_TIEFE_MIN = 0.9f;    // min. Abstand avg - minV für echtes Loch
+    constexpr int   LOCH_BREITE_MIN = 20;       // min. wie viele Werte "nahe Minimum" für echtes Loch
+    constexpr float LOCH_NAEHE = 0.2f;        // Toleranz um minV herum für Loch-Breite
 
     // Zähle, wie viele Werte nahe dem Minimum liegen (für "Loch-Breite")
     int lochBreite = 0;
@@ -250,8 +249,12 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
 
     // --- Debug-Ausgabe ---
     std::cout << "avg: " << avg << ", minV: " << minV << ", stddev: " << stddev << ", range: " << range << "\n";
-    std::cout << "Loch erkannt? " << (hatEchtesLoch ? "JA" : "NEIN") << ", LochBreite: " << lochBreite << "\n";
-
+    std::cout << "Loch erkannt? ";
+    if(hatEchtesLoch){
+    	std::cout << "JA, LochBreite: " << lochBreite << std::endl;
+    }else{
+    	std::cout << "NEIN \n" << lochBreite << std::endl;
+    }
     // --- Zuerst Profile OHNE Loch prüfen, wenn kein echtes Loch vorliegt ---
     if (!hatEchtesLoch) {
         for (const auto& p : profile) {
