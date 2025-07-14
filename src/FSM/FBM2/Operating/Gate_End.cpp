@@ -47,6 +47,7 @@ State* Gate_End::timer(TIMER_ID id) {
 
 	if(current_area == Area::OUT_OF_RANGE) {
 		DEBUG("PieceMissing! Cause: piece is too long to reach laser back.");
+		printf("Error: Piece takes too long to reach Laser Back of FBM2\n");
 		return new Piece_Missing(data);
 	}
 

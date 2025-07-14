@@ -32,5 +32,6 @@ State* ADC_PT1::adc_new_piece() {
 
 State* ADC_PT1::adc_timeout() {
 	DEBUG("PieceMissing! Cause: piece is too long in ADC.");
+	printf("Error: Piece takes too long in ADC!\n");
   MACRO_PIECE_MISSING_PT1
 }

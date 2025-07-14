@@ -13,6 +13,7 @@ PieceFlat::~PieceFlat() {}
 //===================================================== public functions =====================================================
 void PieceFlat::entry(){
 	PRINT_STATE;
+	std::cout << "Current Sortingorder: PieceFlat" << std::endl;
 }
 
 void PieceFlat::exit(){

@@ -53,6 +53,7 @@ State* LeavingGate_PT2::timer(TIMER_ID id) {
 	}
 
 	DEBUG("PieceMissing! Cause: piece is too long in leaving the Gate.");
+	printf("Error: Piece takes too long to leave the Gate.\n");
 	return new Piece_Missing(data);
 }
 

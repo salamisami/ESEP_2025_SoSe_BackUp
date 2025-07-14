@@ -38,5 +38,6 @@ State* Transfer_PT1::transfer_done() {
 
 State* Transfer_PT1::transfer_failed() {
 	DEBUG("PieceMissing! Cause: piece does not reach to FBM2.");
+	printf("Error: Piece did not reach FBM2.\n");
   MACRO_PIECE_MISSING_PT1
 }

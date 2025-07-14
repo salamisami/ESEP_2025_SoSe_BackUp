@@ -41,6 +41,7 @@ State* SortingOut_PT1::laser_ramp_blocked() {
 State* SortingOut_PT1::timer(TIMER_ID id) {
   if(id == TIMER_ID::SORTINGOUT_PT1) {
     DEBUG("PieceMissing! Cause: piece is too long to reach ramp.");
+    printf("Error: Piece takes too long to reach ramp.\n");
     MACRO_PIECE_MISSING_PT1
   }
   return nullptr;
