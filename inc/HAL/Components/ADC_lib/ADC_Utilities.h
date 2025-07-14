@@ -75,6 +75,7 @@ private: //================================================ private functions ==
 	
 	static void saveProfile(const Profil& p);
 	static std::vector<Profil> loadProfile();
+	static int minMesspunkte;
 
 
 
