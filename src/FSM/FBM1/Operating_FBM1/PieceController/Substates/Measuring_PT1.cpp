@@ -30,7 +30,7 @@ State* Measuring_PT1::laser_sorting_gate_blocked() {
 	Area current_area = distance.first;
 
 	if(current_area == Area::GATE) {
-		printf("Typisierung schief gelaufen"\n);
+		printf("Typisierung schief gelaufen\n");
 		data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 		return new Gate_PT1(data, localdata_);
 	}
