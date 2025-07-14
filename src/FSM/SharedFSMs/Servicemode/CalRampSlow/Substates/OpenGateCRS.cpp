@@ -17,7 +17,6 @@ void OpenGateCRS::entry(){
 		data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::SORTING_ON);
 	}
 	
-	//TODO magic number
 	data->timer->start_timer(OPEN_GATE_SLOW_DURATION, TIMER_ID::CAL_GATE_RAMP2);
 }
 

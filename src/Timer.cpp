@@ -18,7 +18,6 @@ Timer::~Timer() {
 //===================================================== public functions =====================================================
 
 void Timer::start_timer(int miliseconds, TIMER_ID id) {
-    //TODO @Lucas please edit here
     timerThread = std::thread(&Timer::threadFunction, this, miliseconds, id);
     timerThread.detach();
 }

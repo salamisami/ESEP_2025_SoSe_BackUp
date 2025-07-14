@@ -19,10 +19,6 @@ ADC_State::~ADC_State() {}
 //===================================================== public functions =====================================================
 void ADC_State::entry(){
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
-	//TODO motor slow here does not slow the piece
-	data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) data->piece_FBM2_soll->id);
-	data->piece_FBM2_soll->piece_tracker->slow();
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState

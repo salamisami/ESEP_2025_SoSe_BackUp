@@ -12,7 +12,7 @@ CalDistanceFast::CalDistanceFast(ContextData* data) : OrthState(data,
 ) {
 }
 
-CalDistanceFast::CalDistanceFast(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {
+CalDistanceFast::CalDistanceFast(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates, new CalRampFast(data), true) {
 }
 
 CalDistanceFast::~CalDistanceFast() {}

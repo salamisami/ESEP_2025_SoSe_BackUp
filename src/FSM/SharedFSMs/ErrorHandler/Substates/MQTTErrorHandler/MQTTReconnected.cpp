@@ -24,7 +24,7 @@ void MQTTReconnected::exit(){
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::MQTT_ERROR_RESOLVED);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_OFF);
     data->error_warning_counter->error_or_warning_resolved();
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

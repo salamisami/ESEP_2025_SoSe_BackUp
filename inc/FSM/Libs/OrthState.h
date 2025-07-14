@@ -36,6 +36,9 @@ public:
             delete current_substate;
             ++it;
         }
+        if(default_exit_state_ != nullptr) {
+            delete default_exit_state_;
+        }
     }
 
     //================================================ public functions ================================================
@@ -114,13 +117,18 @@ public:
                 current_substate->exit();
                 delete current_substate;
                 it = substates.erase(it);
-
                 if(direct_exit_) {
-                    return default_exit_state_;
+                    if(default_exit_state_ != nullptr) {
+                        return default_exit_state_->clone();
+                    }
+                    return default_exit_state_; //TODO setting this to clone fails the test.
                 }
 
                 // If we've removed all substates, return the exit state
                 if(substates.empty() && quit_on_empty_) {
+                    if(default_exit_state_ != nullptr) {
+                        return default_exit_state_->clone();
+                    }
                     return default_exit_state_;
                 }
             } else if(newSubstate != nullptr) {
@@ -180,11 +188,17 @@ protected:
                 it = substates.erase(it);
 
                 if(direct_exit_) {
-                    return default_exit_state_;
+                    if(default_exit_state_ != nullptr) {
+                        return default_exit_state_->clone();
+                    }
+                    return default_exit_state_; //TODO setting this to clone fails the test.
                 }
 
                 // If we've removed all substates, return the exit state
                 if(substates.empty() && quit_on_empty_) {
+                    if(default_exit_state_ != nullptr) {
+                        return default_exit_state_->clone();
+                    }
                     return default_exit_state_;
                 }
             } else if(newSubstate != nullptr) {
