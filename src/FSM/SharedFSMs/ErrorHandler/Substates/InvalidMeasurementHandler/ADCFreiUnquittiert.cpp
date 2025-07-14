@@ -14,7 +14,7 @@ ADCFreiUnquittiert::~ADCFreiUnquittiert() {}
 //===================================================== public functions =====================================================
 void ADCFreiUnquittiert::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void ADCFreiUnquittiert::exit(){
@@ -22,7 +22,7 @@ void ADCFreiUnquittiert::exit(){
     data->sender->send_event((int8_t)Topic::DELETE_W_MOTOR, data->event_payload);
     data->sender->send_event((int8_t)Topic::ERROR, (int) Error_Enum::ERROR_INVALID_MEASURE_RESOLVED);
     data->error_warning_counter->error_or_warning_resolved();
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

@@ -15,11 +15,11 @@ NoRampFull::~NoRampFull() {}
 //===================================================== public functions =====================================================
 void NoRampFull::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void NoRampFull::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

@@ -50,7 +50,7 @@ public:
     std::stack<State*>* estop_history;
 
     std::unordered_map<int, Piece*>* pieces_map;
-    int available_id = 0;
+    int available_id = 1;
     Piece* piece_FBM2_soll = nullptr;
     //Piece* piece_FBM2_ist = nullptr;
 

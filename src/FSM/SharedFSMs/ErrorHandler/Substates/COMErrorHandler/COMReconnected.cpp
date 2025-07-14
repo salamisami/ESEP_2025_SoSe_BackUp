@@ -15,7 +15,7 @@ COMReconnected::~COMReconnected() {}
 //===================================================== public functions =====================================================
 void COMReconnected::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void COMReconnected::exit(){
@@ -24,7 +24,7 @@ void COMReconnected::exit(){
 
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::COM_ERROR_RESOLVED);
     data->error_warning_counter->error_or_warning_resolved();
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

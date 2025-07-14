@@ -15,12 +15,11 @@ BothRampsFull::~BothRampsFull() {}
 //===================================================== public functions =====================================================
 void BothRampsFull::entry(){
 	PRINT_STATE;
-    data->sender->send_event((int8_t)Topic::ERROR, (int) Error_Enum::ERROR_BOTH_R_FULL);
-    //TODO CODE
+    
 }
 
 void BothRampsFull::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

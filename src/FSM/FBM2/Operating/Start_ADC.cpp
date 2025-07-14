@@ -49,10 +49,16 @@ State* Start_ADC::timer(TIMER_ID id) {
 	switch(current_area) {
 		case Area::START_ADC:
 			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC) {
+				data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
+				data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) data->piece_FBM2_soll->id);
+				data->piece_FBM2_soll->piece_tracker->slow();
 				return new ADC_State(data);
 			}
 			return new Start_ADC(data);
 		case Area::ADC:
+			data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
+			data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) data->piece_FBM2_soll->id);
+			data->piece_FBM2_soll->piece_tracker->slow();
 			return new ADC_State(data);
 			break;
 		default:

@@ -180,7 +180,7 @@ void Actuator::handle_actuator_event(int event_value) {
     }
 }
 
-//TODO simplify the spagetti code based on SoC (separate Actuator and Traffic)
+
 void Actuator::trafficGreen(double frequency) {
     if(frequency <= 0) {
         throw std::invalid_argument("Frequency must be positive");

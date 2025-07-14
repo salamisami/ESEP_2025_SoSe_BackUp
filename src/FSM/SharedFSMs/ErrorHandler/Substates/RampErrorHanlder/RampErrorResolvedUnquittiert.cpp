@@ -9,7 +9,7 @@ RampErrorResolvedUnquittiert::~RampErrorResolvedUnquittiert() {
 
 void RampErrorResolvedUnquittiert::entry() {
     PRINT_STATE;
-    //TODO CODE
+    
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int)ActuatorEnum::TRAFFIC_RED_ON_SLOW);
 }
 
@@ -18,7 +18,7 @@ void RampErrorResolvedUnquittiert::exit(){
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::RAMP_ERROR_RESOLVED);
     data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) Error_Enum::ERROR_BOTH_R_FULL);
     data->error_warning_counter->error_or_warning_resolved();
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

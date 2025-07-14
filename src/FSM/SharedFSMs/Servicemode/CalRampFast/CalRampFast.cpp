@@ -13,7 +13,7 @@ CalRampFast::CalRampFast(ContextData* data) : OrthState(data,
     //substate = new SubState(data);
 }
 
-CalRampFast::CalRampFast(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {
+CalRampFast::CalRampFast(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates, new ReadyForCDS(data), true) {
 }
 
 CalRampFast::~CalRampFast() {}
