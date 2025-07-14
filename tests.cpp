@@ -66,7 +66,12 @@ protected:
     to_self_sender = new Mock_PM::Sender(logic_receiver);
     data = new ContextData(to_self_sender);
     logic = new Logic<InitialState>(logic_receiver, to_self_sender, data);
-
+    data->timeprofile = {
+        .fast_timestamps = {2000, 2100, 3600, 4000, 6000, 3800},
+        .slow_timestamps = {6060, 7183, 10309, 11780, 17207, 10552}
+        // deadlines will be automatically initialized to 0
+    };
+    data->config = true;
     // Boot sequence
     remote_control->send_event((int8_t)Topic::INTERRUPT,
                                (int)InterruptEnum::IS_SWITCH);
@@ -822,7 +827,40 @@ TEST_F(RealImplementationSetup, ServiceModeFullTest) {
 //     PieceAppearedNoError PieceLostNoError ValidMeasure RampNoError
 //     CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
 // }
+TEST_F(RealImplementationSetup, MotorControlDeepHistory) {
+  EXPECT_STATE_CONTAINS("IdleIM");
+  remote_control->send_event((int8_t)Topic::INTERRUPT,
+                             (int)InterruptEnum::BUTTON_START_PRESSED);
+  WAIT(10);
+  remote_control->send_event((int8_t)Topic::INTERRUPT,
+                             (int)InterruptEnum::BUTTON_START_RELEASED);
+  EXPECT_STATE_CONTAINS("Idle");
+  remote_control->send_event((int8_t)Topic::MOTOR_FAST, 1);
+  EXPECT_STATE_CONTAINS("Fast");
+  remote_control->send_event((int8_t)Topic::INTERRUPT,
+                             (int)InterruptEnum::BUTTON_STOP_PRESSED);
+  EXPECT_STATE_CONTAINS("IdleIM");
+  remote_control->send_event((int8_t)Topic::INTERRUPT,
+                             (int)InterruptEnum::BUTTON_START_PRESSED);
+  WAIT(10);
+  remote_control->send_event((int8_t)Topic::INTERRUPT,
+                             (int)InterruptEnum::BUTTON_START_RELEASED);
+  WAIT(10);
 
+  EXPECT_STATE_CONTAINS("Fast");
+
+  remote_control->send_event((int8_t)Topic::MOTOR_SLOW, 1);
+  EXPECT_STATE_CONTAINS("Slow");
+  remote_control->send_event((int8_t)Topic::DELETE_W_MOTOR, 1);
+  WAIT(10);
+  EXPECT_STATE_CONTAINS("Idle");
+  EXPECT_FALSE(data->workpieces);
+
+  EXPECT_EQ(data->current_motor_speed, MotorPieceState::STOPPED);
+  EXPECT_FALSE(data->motor_slowed);
+  EXPECT_FALSE(data->motor_stopped);
+  EXPECT_EQ(data->workpieceList.size(), 0);
+}
 TEST_F(MotorControlSetup, SingleWorkpieceLifecycle) {
   // Initial state
   EXPECT_STATE("Idle");
