@@ -19,13 +19,7 @@ public:
     }
   }
 
-  void remove(int id) {
-    if (container.erase(id) == 0) {
-#ifdef TEST_MOTOR_THROW
-      throw std::runtime_error("ID not found");
-#endif
-    }
-  }
+  void remove(int id) { container.erase(id); }
 
   void updateState(int id, MotorPieceState newState) {
     auto it = container.find(id);
@@ -72,10 +66,22 @@ public:
 
   // Helper function to update both motor states based on all workpieces
   void updateDataMotorFlags(StateContainer &workpieceList, bool &motor_stopped,
-                            bool &motor_slowed) {
+                            bool &motor_slowed, MotorPieceState requestedState,
+                            int8_t pieceId) {
     motor_stopped = false;
     motor_slowed = false;
-
+    if (requestedState != MotorPieceState::DELETE_W_MOTOR) {
+      if (!workpieceList.contains(pieceId)) {
+        workpieceList.add(pieceId, requestedState);
+      }
+      workpieceList.updateState(pieceId, requestedState);
+    } else {
+      if (workpieceList.contains(pieceId)) {
+        workpieceList.remove(pieceId);
+      }
+      {
+      }
+    }
     // Get all IDs and check their states
     auto ids = workpieceList.getAllIds();
     for (int id : ids) {

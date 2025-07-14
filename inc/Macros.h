@@ -126,3 +126,15 @@
   : ((state_int) == 1) ? static_cast<State *>(new Slow(data))                  \
   : ((state_int) == 2) ? static_cast<State *>(new Stop(data))                  \
                        : nullptr
+
+// MotorControl//MotorControl//MotorControl//MotorControl//MotorControl//MotorControl//MotorControl
+#define TOPIC_TO_MOTOR_STATE(topic)                                            \
+  ((topic) == static_cast<int8_t>(Topic::MOTOR_STOP_FSM)                       \
+       ? MotorPieceState::STOPPED                                              \
+       : ((topic) == static_cast<int8_t>(Topic::MOTOR_SLOW)                    \
+              ? MotorPieceState::SLOW                                          \
+              : ((topic) == static_cast<int8_t>(Topic::MOTOR_FAST)             \
+                     ? MotorPieceState::FAST                                   \
+                     : ((topic) == static_cast<int8_t>(Topic::DELETE_W_MOTOR)  \
+                            ? MotorPieceState::DELETE_W_MOTOR                  \
+                            : static_cast<MotorPieceState>(-1)))))

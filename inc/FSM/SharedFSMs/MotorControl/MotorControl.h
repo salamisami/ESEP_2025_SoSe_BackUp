@@ -43,21 +43,23 @@ public: //================================================ public functions
                                            // any of the workpieces request it
     int id = data->event_payload;
     int8_t topic = data->event_topic;
+    motorPieceRequest = TOPIC_TO_MOTOR_STATE(topic);
     if (topic > (int8_t)Topic::DELETE_W_MOTOR ||
         topic < (int8_t)Topic::MOTOR_STOP_FSM) {
       return; // Topics größer als DELETE_W_MOTOR
               // sind keine Motortopics; Topics kleiner
               // als MotorStop sind auch keine Motortopics
     }
-    if (motorPieceRequest == MotorPieceState::DELETE_W_MOTOR) {
+    if (topic == (int8_t)Topic::DELETE_W_MOTOR) {
       // Remove the ID from the list if it exists
       if (data->workpieceList.contains(id)) {
         data->workpieceList.remove(id);
         data->workpieceList.updateDataMotorFlags(
-            data->workpieceList, data->motor_stopped, data->motor_slowed);
+            data->workpieceList, data->motor_stopped, data->motor_slowed,
+            MotorPieceState::DELETE_W_MOTOR, id);
         data->workpieces = !data->workpieceList.isEmpty();
       } else {
-        throw("ID %d doesn't exist in workpiece list\n", id);
+        throw("ID doesn't exist in workpiece list\n");
       }
     } else {
       // Request =/= speed
@@ -67,7 +69,8 @@ public: //================================================ public functions
       data->workpieceList.updateState(id, motorPieceRequest);
 
       data->workpieceList.updateDataMotorFlags(
-          data->workpieceList, data->motor_stopped, data->motor_slowed);
+          data->workpieceList, data->motor_stopped, data->motor_slowed,
+          motorPieceRequest, id);
 
       if (data->motor_stopped) {
         data->current_motor_speed = MotorPieceState::STOPPED;
@@ -95,6 +98,7 @@ public: //================================================ public functions
         }
       }
     }
+    data->workpieces = !data->workpieceList.isEmpty();
   }
 
 private: //================================================ private variables

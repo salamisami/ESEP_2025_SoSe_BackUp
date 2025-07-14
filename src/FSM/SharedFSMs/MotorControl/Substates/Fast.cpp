@@ -14,8 +14,12 @@ Fast::~Fast() {}
 //===================================================== public functions
 //=====================================================
 void Fast::entry() {
+  data->current_motor_speed = MotorPieceState::FAST;
+  if ((int)data->event_topic != (int)Topic::DELETE_W_MOTOR) {
+    MotorControl::updateData(data, MotorPieceState::FAST);
+  }
   PRINT_STATE;
-  MotorControl::updateData(data, MotorPieceState::FAST);
+
   data->sender->send_event((int8_t)Topic::ACTUATOR,
                            (int)ActuatorEnum::MOTOR_SLOW_OFF,
                            (int)EventPriority::SECOND_PRIO);
@@ -39,17 +43,25 @@ State *Fast::delete_w_motor() {
 
 State *Fast::motor_fast() {
   data->workpieceList.updateDataMotorFlags(
-      data->workpieceList, data->motor_stopped, data->motor_slowed);
+      data->workpieceList, data->motor_stopped, data->motor_slowed,
+      MotorPieceState::FAST, data->event_payload);
   return AREA_AS_INT_TO_STATE(
       data, MotorControl::motorTransition(data, MotorPieceState::FAST));
 }
 
 State *Fast::motor_stop_fsm() {
+  data->workpieceList.updateDataMotorFlags(
+      data->workpieceList, data->motor_stopped, data->motor_slowed,
+      MotorPieceState::STOPPED, data->event_payload);
+
   return AREA_AS_INT_TO_STATE(
       data, MotorControl::motorTransition(data, MotorPieceState::STOPPED));
 }
 
 State *Fast::motor_slow() {
+  data->workpieceList.updateDataMotorFlags(
+      data->workpieceList, data->motor_stopped, data->motor_slowed,
+      MotorPieceState::SLOW, data->event_payload);
   return AREA_AS_INT_TO_STATE(
       data, MotorControl::motorTransition(data, MotorPieceState::SLOW));
 }
