@@ -19,13 +19,11 @@ StartingAreaTracker::~StartingAreaTracker() {}
 //===================================================== public functions =====================================================
 void StartingAreaTracker::entry(){
 	PRINT_STATE;
-    //TODO CODE
     HState::entry();
 }
 
 void StartingAreaTracker::exit(){
     HState::exit();
-    //TODO CODE
 	PRINT_STATE;
 }
 

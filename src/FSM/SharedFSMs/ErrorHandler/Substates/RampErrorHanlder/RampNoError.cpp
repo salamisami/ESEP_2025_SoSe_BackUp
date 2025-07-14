@@ -13,11 +13,11 @@ RampNoError::~RampNoError() {}
 //===================================================== public functions =====================================================
 void RampNoError::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void RampNoError::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

@@ -22,7 +22,7 @@ void Pieceappeared::entry() {
 	PRINT_STATE;
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_APPEARED);
 
-	//TODO move following commands to action on the previous states accordingly
+	//TODO move following commands to action on the previous states accordingly, in order to work with deep history
 	if(data->piece_FBM2_soll == nullptr) {
 		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) -1);
 	} else {

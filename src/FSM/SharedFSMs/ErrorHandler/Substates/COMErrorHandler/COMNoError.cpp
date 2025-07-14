@@ -14,11 +14,11 @@ COMNoError::~COMNoError() {}
 //===================================================== public functions =====================================================
 void COMNoError::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void COMNoError::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

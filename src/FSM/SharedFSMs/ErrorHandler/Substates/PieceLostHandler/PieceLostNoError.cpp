@@ -14,11 +14,11 @@ PieceLostNoError::~PieceLostNoError() {}
 //===================================================== public functions =====================================================
 void PieceLostNoError::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void PieceLostNoError::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

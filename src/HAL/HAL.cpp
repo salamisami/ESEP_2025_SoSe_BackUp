@@ -43,7 +43,7 @@ HAL::~HAL() {
 //===================================================== private functions =====================================================
 void HAL::init() {
     adc = new ADC_Class(local_sender);
-    //TODO rethink SoC regarding the ESTOP
+    
     actuator = new Actuator(adc);
     interrupt = new Interrupt(local_sender, actuator);
 
@@ -222,7 +222,6 @@ void HAL::test_ins_ADC() {
                             DEBUG("ADC_W_NOT_DETECT");
                             break;
                         case ADC_Enum::ADC_INVALID_MESURE:
-                            //TODO implement this event
                             break;
                         default:
                             break;

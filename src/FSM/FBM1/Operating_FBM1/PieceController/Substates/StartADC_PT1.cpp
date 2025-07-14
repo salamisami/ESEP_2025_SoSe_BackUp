@@ -44,12 +44,18 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 			}
 
 			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC) {
+				data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
+				data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) localdata_.piece->id);
+				localdata_.unblock_signal_has_been_sent = false;
 				return new ADC_PT1(data, localdata_);
 			}
 			return new StartADC_PT1(data, localdata_);
 		default:
 			break;
 	}
+	data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
+	data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) localdata_.piece->id);
+	localdata_.unblock_signal_has_been_sent = false;
 	return new ADC_PT1(data, localdata_);
 }
 
@@ -65,7 +71,7 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 
 // 	switch(current_area) {
 // 		case Area::START_ADC:
-// 			if(current_position > DISTANCE_BETWEEN_PIECES){ // && !localdata_.unblock_signal_has_been_sent) { //TODO set the flag here
+// 			if(current_position > DISTANCE_BETWEEN_PIECES){ // && !localdata_.unblock_signal_has_been_sent) { 
 // 				piece->piece_tracker->print_distance();
 // 				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
 // 				localdata_.unblock_signal_has_been_sent = true;

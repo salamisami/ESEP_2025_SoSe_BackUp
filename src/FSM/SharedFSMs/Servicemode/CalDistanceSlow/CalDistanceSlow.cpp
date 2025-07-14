@@ -13,7 +13,7 @@ CalDistanceSlow::CalDistanceSlow(ContextData* data) : OrthState(data,
 	//substate = new SubState(data);
 }
 
-CalDistanceSlow::CalDistanceSlow(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {
+CalDistanceSlow::CalDistanceSlow(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates, new CalRampSlow(data), true) {
 }
 
 CalDistanceSlow::~CalDistanceSlow() {}

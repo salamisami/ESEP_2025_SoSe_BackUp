@@ -14,11 +14,11 @@ PieceAppearedNoError::~PieceAppearedNoError() {}
 //===================================================== public functions =====================================================
 void PieceAppearedNoError::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void PieceAppearedNoError::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 
