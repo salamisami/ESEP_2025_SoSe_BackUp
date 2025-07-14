@@ -89,13 +89,13 @@ public:
 		input_timetable->fast_deadlines[4] = input_timetable->fast_timestamps[(int) Timestamp::END] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_UNBLOCKED];
 		input_timetable->fast_deadlines[5] = input_timetable->fast_timestamps[(int) Timestamp::LASER_RAMP_BLOCKED] - input_timetable->fast_timestamps[(int) Timestamp::LASER_GATE_BLOCKED];
 
-		for(auto& current_deadline : input_timetable->fast_deadlines) {
-			//std::cout << "Fast deadline: " << current_deadline << std::endl;
-		}
+		// for(auto& current_deadline : input_timetable->fast_deadlines) {
+		// 	//std::cout << "Fast deadline: " << current_deadline << std::endl;
+		// }
 
-		for(auto& current_deadline : input_timetable->slow_deadlines) {
-			//std::cout << "Slow deadline: " << current_deadline << std::endl;
-		}
+		// for(auto& current_deadline : input_timetable->slow_deadlines) {
+		// 	//std::cout << "Slow deadline: " << current_deadline << std::endl;
+		// }
 	}
 };
 
