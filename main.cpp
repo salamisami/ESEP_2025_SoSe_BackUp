@@ -91,7 +91,7 @@ int main() {
     delete hal;
 
     #ifndef NO_COM
-    delete externCommunication;
+    //delete externCommunication;
     #endif
 
     #ifndef NO_RC_REC

@@ -147,7 +147,9 @@ enum class COM_Enum : int {
     BUTTON_RESET_PRESSED,
     COM_MQTT_CONNECTED,
     COM_MQTT_DISCONNECTED,
-    RECONNECT
+    RECONNECT,
+    COM_RAMP_FULL,
+    COM_RAMP_NOT_FULL
 };
 
 enum class TIMER_ID : int {
