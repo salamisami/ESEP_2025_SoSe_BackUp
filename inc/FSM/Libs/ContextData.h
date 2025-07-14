@@ -71,7 +71,8 @@ public:
   bool workpieces = false;
   bool motor_slowed = false;
   bool motor_stopped = false;
-  int8_t event_topic = -1;
+  int8_t motorpieceRequest = -1;
+
   StateContainer workpieceList;
   MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
 

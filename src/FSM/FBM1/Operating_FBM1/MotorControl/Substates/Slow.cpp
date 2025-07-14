@@ -15,7 +15,7 @@ Slow::~Slow() {}
 //=====================================================
 void Slow::entry() {
   data->current_motor_speed = MotorPieceState::SLOW;
-  if ((int)data->event_topic != (int)Topic::DELETE_W_MOTOR) {
+  if ((int)data->motorpieceRequest != (int)Topic::DELETE_W_MOTOR) {
     MotorControl::updateData(data, MotorPieceState::SLOW);
   }
 
