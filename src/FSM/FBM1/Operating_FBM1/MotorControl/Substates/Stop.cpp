@@ -14,8 +14,11 @@ Stop::~Stop() {}
 //===================================================== public functions
 //=====================================================
 void Stop::entry() {
+  data->current_motor_speed = MotorPieceState::STOPPED;
   PRINT_STATE;
-  MotorControl::updateData(data, MotorPieceState::STOPPED);
+  if ((int)data->event_topic != (int)Topic::DELETE_W_MOTOR) {
+    MotorControl::updateData(data, MotorPieceState::STOPPED);
+  }
   data->sender->send_event((int8_t)Topic::ACTUATOR,
                            (int)ActuatorEnum::MOTOR_SLOW_OFF,
                            (int)EventPriority::SECOND_PRIO);
@@ -29,31 +32,36 @@ void Stop::exit() { PRINT_STATE; }
 State *Stop::delete_w_motor() {
   MotorControl::updateData(data, MotorPieceState::DELETE_W_MOTOR);
   if (data->workpieces) {
-    return nullptr;
+    return AREA_AS_INT_TO_STATE(
+        data,
+        MotorControl::motorTransition(data, MotorPieceState::DELETE_W_MOTOR));
   } else {
-
     return new Idle(data);
   }
 }
 
-State *Stop::motor_slow() {
-  data->workpieceList.updateState(data->event_payload, MotorPieceState::SLOW);
-  if (data->motor_stopped) {
-    return new Stop(data);
-  } else {
-    return new Slow(data);
-  }
-}
-
 State *Stop::motor_fast() {
-  data->workpieceList.updateState(data->event_payload, MotorPieceState::FAST);
-  if (data->motor_stopped) {
-    return new Stop(data);
-  } else {
-    return new Fast(data);
-  }
+  data->workpieceList.updateDataMotorFlags(
+      data->workpieceList, data->motor_stopped, data->motor_slowed,
+      MotorPieceState::FAST, data->event_payload);
+  return AREA_AS_INT_TO_STATE(
+      data, MotorControl::motorTransition(data, MotorPieceState::FAST));
 }
 
-State *Stop::motor_stop_fsm() { return new Stop(data); }
+State *Stop::motor_stop_fsm() {
+  data->workpieceList.updateDataMotorFlags(
+      data->workpieceList, data->motor_stopped, data->motor_slowed,
+      MotorPieceState::STOPPED, data->event_payload);
+  return AREA_AS_INT_TO_STATE(
+      data, MotorControl::motorTransition(data, MotorPieceState::STOPPED));
+}
+
+State *Stop::motor_slow() {
+  data->workpieceList.updateDataMotorFlags(
+      data->workpieceList, data->motor_stopped, data->motor_slowed,
+      MotorPieceState::SLOW, data->event_payload);
+  return AREA_AS_INT_TO_STATE(
+      data, MotorControl::motorTransition(data, MotorPieceState::SLOW));
+}
 
 State *Stop::clone() { return new Stop(data); }
