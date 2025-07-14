@@ -5,6 +5,7 @@
 #include "ErrorWarningCounter.h"
 #include "QNet.h"
 #include "StateContainer.h"
+#include "Timer.h"
 // #include "State.h"
 #include "DistanceTracker.h"
 #include "Piece.h"
