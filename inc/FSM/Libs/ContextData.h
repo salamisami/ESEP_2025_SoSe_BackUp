@@ -64,25 +64,23 @@ public:
   I_Sender *sender;
 
   // adc -> boot
-  bool com_resolved = true;
-  bool mqtt_resolved = true;
+  bool is_switch = false;
 
   // rampStatus -> DistanceTracker
   bool is_ramp_full = false;
-  // MotorControl
+
   bool workpieces = false;
   bool motor_slowed = false;
   bool motor_stopped = false;
-  int8_t motorpieceRequest = -1;
-
   StateContainer workpieceList;
   MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
-  bool is_switch = false;
-  ErrorWarningCounter *error_warning_counter;
-
-  bool no_error_or_warning = true;
+  int8_t motorpieceRequest = -1;
+  // bool no_error_or_warning = true;
   bool is_estop = false;
   bool config = false;
+  bool com_resolved = true;
+  bool mqtt_resolved = true;
+  ErrorWarningCounter *error_warning_counter;
 
   // PieceTrack -> PieceTrack
   bool piece_near_adc = false;

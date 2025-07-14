@@ -93,6 +93,8 @@
 #define COMMAND_TOPIC "festo/anlage2/command"
 #define MQTT_CLIENT "Festo_FBM2"
 #endif
+
+
 #define MACRO_PIECE_MISSING_PT1                                                \
   data->sender->send_event((int8_t)Topic::ERROR,                               \
                            (int)Error_Enum::ERROR_W_LOST);                     \
