@@ -15,6 +15,7 @@ BothRampsFull::~BothRampsFull() {}
 //===================================================== public functions =====================================================
 void BothRampsFull::entry(){
 	PRINT_STATE;
+    data->sender->send_event((int8_t)Topic::ERROR, (int) Error_Enum::ERROR_BOTH_R_FULL);
     
 }
 
@@ -33,16 +34,15 @@ State* BothRampsFull::ramp_not_full()
     return new ComRampFull(data);
 }
 
-State* BothRampsFull::sorting_out()
+State* BothRampsFull::sort_out()
 {
-    data->sender->send_event((int8_t)Topic::ERROR, (int) Error_Enum::ERROR_BOTH_R_FULL);
     return new BothRampsFull(data);
 }
 
-State* BothRampsFull::error_both_r_full()
-{
-    return new BothRampsFull(data);
-}
+//State* BothRampsFull::error_both_r_full()
+//{
+//    return new BothRampsFull(data);
+//}
 
 State* BothRampsFull::clone() {
     return new BothRampsFull(data);
