@@ -68,7 +68,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
             if (bauteilErkannt) {
                 werte.push_back(sensorVoltage);
                 int messpunkte = werte.size();
-                if ((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && messpunkte >= W_SIZE) {
+                if (sensorVoltage > bandVoltage - TRIGGER_SCHRITT){// && messpunkte >= W_SIZE) {
                     break;
                 }
             }
@@ -352,7 +352,7 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
 
         werte.push_back(sensorVoltage);
         int messpunkte = werte.size();
-        if((sensorVoltage > bandVoltage) - TRIGGER_SCHRITT && messpunkte >= W_SIZE) {
+        if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT){//} && messpunkte >= W_SIZE) {
             break;
         }
         if(werte.size() >= MAX_WERT) {
