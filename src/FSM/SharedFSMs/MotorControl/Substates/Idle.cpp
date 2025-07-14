@@ -19,6 +19,7 @@ void Idle::entry() {
   if (data->motorpieceRequest != (int8_t)Topic::DELETE_W_MOTOR) {
     MotorControl::updateData(data, MotorPieceState::STOPPED);
   } else {
+
     data->current_motor_speed = MotorPieceState::STOPPED;
   }
   data->sender->send_event((int8_t)Topic::ACTUATOR,

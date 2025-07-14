@@ -32,6 +32,7 @@ void Fast::exit() { PRINT_STATE; }
 
 State *Fast::delete_w_motor() {
   MotorControl::updateData(data, MotorPieceState::DELETE_W_MOTOR);
+
   if (data->workpieces) {
     return AREA_AS_INT_TO_STATE(
         data,
