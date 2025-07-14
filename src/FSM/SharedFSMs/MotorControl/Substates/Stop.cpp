@@ -16,7 +16,7 @@ Stop::~Stop() {}
 void Stop::entry() {
   data->current_motor_speed = MotorPieceState::STOPPED;
   PRINT_STATE;
-  if ((int)data->event_topic != (int)Topic::DELETE_W_MOTOR) {
+  if ((int)data->motorpieceRequest != (int)Topic::DELETE_W_MOTOR) {
     MotorControl::updateData(data, MotorPieceState::STOPPED);
   }
   data->sender->send_event((int8_t)Topic::ACTUATOR,
