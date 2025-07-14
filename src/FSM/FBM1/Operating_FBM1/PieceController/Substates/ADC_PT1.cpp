@@ -24,7 +24,6 @@ State* ADC_PT1::clone() {
 }
 
 State* ADC_PT1::adc_new_piece() {
-	data->piece_near_adc = false;
 	return new Measuring_PT1(data, localdata_);
 }
 

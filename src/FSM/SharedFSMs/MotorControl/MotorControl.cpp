@@ -23,6 +23,7 @@ void MotorControl::exit() {
 		Piece* piece = pair.second; // pair.second is the value (Piece*)
 		piece->piece_tracker->stop();
 	}
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::MOTOR_STOP);
 }
 
 State* MotorControl::clone() {
