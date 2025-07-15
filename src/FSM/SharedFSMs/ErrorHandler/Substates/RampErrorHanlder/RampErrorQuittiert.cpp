@@ -12,10 +12,11 @@ void RampErrorQuittiert::entry() {
     PRINT_STATE;
     
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int)ActuatorEnum::TRAFFIC_RED_ON);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_ON);
 }
 
 void RampErrorQuittiert::exit() {
-    
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_OFF);
 	PRINT_STATE;
 }
 
