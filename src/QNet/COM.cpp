@@ -294,7 +294,7 @@ void COM::updateHeartbeat() {
 
 // ================ UDP-Watchdog ================
 void COM::runUdpWatchdog() {
-    std::cerr << "[UDP-Watchdog] Sende und empfange..." << std::endl;
+    //std::cerr << "[UDP-Watchdog] Sende und empfange..." << std::endl;
 
     int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if(sockfd < 0) {
