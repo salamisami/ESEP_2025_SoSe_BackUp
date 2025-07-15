@@ -67,7 +67,8 @@ public:
   bool is_switch = false;
 
   // rampStatus -> DistanceTracker
-  bool is_ramp_full = false;
+  bool is_ramp_full_local = false;
+  bool is_ramp_full_com = false;
 
   bool workpieces = false;
   bool motor_slowed = false;

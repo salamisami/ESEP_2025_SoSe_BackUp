@@ -26,7 +26,7 @@ State* PieceFlat::clone() {
 
 
 State* PieceFlat::tall_w_metal_piece() {
-	if (data->is_ramp_full) {
+	if (data->is_ramp_full_local) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
 	} else {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
@@ -36,7 +36,7 @@ State* PieceFlat::tall_w_metal_piece() {
 }
 
 State* PieceFlat::tall_piece()  {
-	if (data->is_ramp_full) {
+	if (data->is_ramp_full_local) {
 		DEBUG("tall_piece: Sorting Order -> PT1: Sort out fbm2");
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
 	} else {
@@ -54,7 +54,7 @@ State* PieceFlat::flat_piece() {
 }
 
 State* PieceFlat::unknown_piece() {
-	if(data->is_ramp_full) {
+	if(data->is_ramp_full_local) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
 	} else {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);

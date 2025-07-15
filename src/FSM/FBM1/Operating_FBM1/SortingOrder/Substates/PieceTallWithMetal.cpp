@@ -38,7 +38,7 @@ State* PieceTallWithMetal::tall_w_metal_piece() {
 }
 
 State* PieceTallWithMetal::flat_piece() {
-	if(data->is_ramp_full) {
+	if(data->is_ramp_full_local) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
 	} else {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
@@ -48,7 +48,7 @@ State* PieceTallWithMetal::flat_piece() {
 }
 
 State* PieceTallWithMetal::tall_piece() {
-	if(data->is_ramp_full) {
+	if(data->is_ramp_full_local) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
 	} else {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
@@ -58,7 +58,7 @@ State* PieceTallWithMetal::tall_piece() {
 }
 
 State* PieceTallWithMetal::unknown_piece() {
-	if(data->is_ramp_full) {
+	if(data->is_ramp_full_local) {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT_FBM2);
 	} else {
 		data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::SORT_OUT);
