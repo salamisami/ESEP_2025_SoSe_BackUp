@@ -30,7 +30,6 @@ State *BothRampsFull::ramp_not_full() {
   return new ComRampFull(data);
 }
 
-State *BothRampsFull::sort_out() { return new BothRampsFull(data); }
 
 State* BothRampsFull::sort_out()
 {
