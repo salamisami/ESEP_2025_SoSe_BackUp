@@ -5,452 +5,452 @@
 #include "ContextData.h"
 #include "Event.h"
 
-#include <typeinfo>
 #include <cxxabi.h>
+#include <typeinfo>
 
 class State {
-public: //============================================ constructors & destructors ============================================
-    /**
-     * @brief State is a very basic state, containing only entry and exit. It does not contain any substates or orthogonal states.
-     * @param data a global context data, which should be visible across the states
-     */
-    State(ContextData* data) : data(data) {};
-    //Disable copy constructor, because we're going to use clone() instead
-    State(const State& other) = delete;
-    virtual ~State() = default;
-
-
-public: //================================================ public functions ================================================
-    /**
-     * @brief Enters the state. This function must be overidden by the child state.
-     */
-    virtual void entry() = 0;
-    /**
-     * @brief Exits the state. This function must be overidden by the child state.
-     */
-    virtual void exit() = 0;
-    /**
-     * @brief Clones the current state.
-     * @return Cloned state, which is already allocated to heap
-     */
-    virtual State* clone() = 0;
-    /**
-     * @brief Returns the name of the current state.
-     * @return The name of current state as string
-     */
-    virtual std::string get_current_state() {
-        const char* state_name = typeid(*this).name();
-        return demangle(state_name);
-    }
-
-    //================================================ internal events ================================================
-    virtual State* timer(TIMER_ID id) {
-        return nullptr;
-    }
-
-    virtual State* id() {
-        return handle_event_using_function(&State::id);
-    }
-
-    static State* EXIT_STATE;
-
-    virtual State* new_piece() {
-        return handle_event_using_function(&State::new_piece);
-    }
-
-    virtual State* unknown_piece() {
-        return handle_event_using_function(&State::unknown_piece);
-    }
-
-    virtual State* flat_piece() {
-        return handle_event_using_function(&State::flat_piece);
-    }
-
-    virtual State* tall_piece() {
-        return handle_event_using_function(&State::tall_piece);
-    }
-
-    virtual State* tall_w_metal_piece() {
-        return handle_event_using_function(&State::tall_w_metal_piece);
-    }
-
-    virtual State* sort_out() {
-        return handle_event_using_function(&State::sort_out);
-    }
-
-    virtual State* sort_out_fbm2() {
-        return handle_event_using_function(&State::sort_out_fbm2);
-    }
-
-    virtual State* let_through() {
-        return handle_event_using_function(&State::let_through);
-    }
-
-    virtual State* reset_to_flat() {
-        return handle_event_using_function(&State::reset_to_flat);
-    }
-
-    virtual State* reset_to_tall() {
-        return handle_event_using_function(&State::reset_to_tall);
-    }
-
-    virtual State* reset_to_tall_w_metal() {
-        return handle_event_using_function(&State::reset_to_tall_w_metal);
-    }
-
-    virtual State* sorted() {
-        return handle_event_using_function(&State::sorted);
-    }
-
-   virtual State* sorting_out_fbm2() {
-        return handle_event_using_function(&State::sorted);
-   }
-    virtual State* sorted_out(){
-      return handle_event_using_function(&State::sorted_out);
-    }
-
-    //====================================================MotorPiece======================================================
-    virtual State* delete_w_motor() {
-        return handle_event_using_function(&State::delete_w_motor);
-    }
-    virtual State* motor_slow() {
-        return handle_event_using_function(&State::motor_slow);
-    }
-    virtual State* motor_fast() {
-        return handle_event_using_function(&State::motor_fast);
-    }
-    virtual State* motor_stop_fsm() {
-        return handle_event_using_function(&State::motor_stop_fsm);
-    }
-
-
-    //================================================ external events ================================================
-
-
-    virtual State* laser_front_blocked() {
-        return handle_event_using_function(&State::laser_front_blocked);
-    }
-
-    virtual State* laser_front_unblocked() {
-        return handle_event_using_function(&State::laser_front_unblocked);
-    }
-
-    virtual State* laser_back_blocked() {
-        return handle_event_using_function(&State::laser_back_blocked);
-    }
-    virtual State* laser_back_unblocked() {
-        return handle_event_using_function(&State::laser_back_unblocked);
-    }
-
-    virtual State* button_start_pressed() {
-        return handle_event_using_function(&State::button_start_pressed);
-    }
-
-    virtual State* button_start_released() {
-        return handle_event_using_function(&State::button_start_released);
-    }
-
-    virtual State* button_stop_pressed() {
-        return handle_event_using_function(&State::button_stop_pressed);
-    }
-
-    virtual State* button_stop_released() {
-        return handle_event_using_function(&State::button_stop_released);
-    }
-
-    virtual State* button_reset_pressed() {
-        return handle_event_using_function(&State::button_reset_pressed);
-    }
-
-    virtual State* button_reset_released() {
-        return handle_event_using_function(&State::button_reset_released);
-    }
-
-    virtual State* button_estop_pressed() {
-        return handle_event_using_function(&State::button_estop_pressed);
-    }
-
-    virtual State* button_estop_released() {
-        return handle_event_using_function(&State::button_estop_released);
-    }
-
-    virtual State* metal_detected() {
-        return handle_event_using_function(&State::metal_detected);
-    }
-
-    virtual State* metal_not_detected() {
-        return handle_event_using_function(&State::metal_not_detected);
-    }
-
-    virtual State* laser_sorting_gate_blocked() {
-        return handle_event_using_function(&State::laser_sorting_gate_blocked);
-    }
-
-    virtual State* laser_sorting_gate_unblocked() {
-        return handle_event_using_function(&State::laser_sorting_gate_unblocked);
-    }
-
-    virtual State* laser_ramp_blocked() {
-        return handle_event_using_function(&State::laser_ramp_blocked);
-    }
-
-    virtual State* laser_ramp_unblocked() {
-        return handle_event_using_function(&State::laser_ramp_unblocked);
-    }
-
-    virtual State* adc_new_piece() {
-        return handle_event_using_function(&State::adc_new_piece);
-    }
-
-    virtual State* adc_timeout() {
-        return handle_event_using_function(&State::adc_timeout);
-    }
-
-    virtual State* adc_top_area_blocked() {
-        return handle_event_using_function(&State::adc_top_area_blocked);
-    }
-
-    virtual State* adc_top_area_unblocked() {
-        return handle_event_using_function(&State::adc_top_area_unblocked);
-    }
-
-    virtual State* adc_side_area_blocked() {
-        return handle_event_using_function(&State::adc_side_area_blocked);
-    }
-
-    virtual State* adc_side_area_unblocked() {
-        return handle_event_using_function(&State::adc_side_area_unblocked);
-    }
-
-    virtual State* adc_wh_detect() {
-        return handle_event_using_function(&State::adc_wh_detect);
-    }
-
-    virtual State* adc_wf_detect() {
-        return handle_event_using_function(&State::adc_wf_detect);
-    }
-
-    virtual State* adc_w_b_detect() {
-        return handle_event_using_function(&State::adc_w_b_detect);
-    }
-
-    virtual State* adc_w_not_detect() {
-        return handle_event_using_function(&State::adc_w_not_detect);
-    }
-
-    virtual State* com_button_estop_pressed() {
-        return handle_event_using_function(&State::com_button_estop_pressed);
-    }
-
-    virtual State* com_button_estop_released() {
-        return handle_event_using_function(&State::com_button_estop_released);
-    }
-
-    virtual State* com_button_reset_pressed() {
-        return handle_event_using_function(&State::com_button_reset_pressed);
-    }
-
-    virtual State* heartbeat() {
-        return handle_event_using_function(&State::heartbeat);
-    }
-
-    virtual State* timeout_com() {
-        return handle_event_using_function(&State::timeout_com);
-    }
-
-    virtual State* reconnect() {
-        return handle_event_using_function(&State::reconnect);
-    }
-
-    virtual State* ramp_full() {
-        return handle_event_using_function(&State::ramp_full);
-    }
-
-    virtual State* ramp_not_full() {
-        return handle_event_using_function(&State::ramp_not_full);
-    }
-
-    virtual State* fbm_2_ready() {
-        return handle_event_using_function(&State::fbm_2_ready);
-    }
-
-    virtual State* fbm_2_busy() {
-        return handle_event_using_function(&State::fbm_2_busy);
-    }
-
-    virtual State* request_transfer() {
-        return handle_event_using_function(&State::request_transfer);
-    }
-
-    virtual State* transfer_done() {
-        return handle_event_using_function(&State::transfer_done);
-    }
-
-    virtual State* transfer_failed() {
-        return handle_event_using_function(&State::transfer_failed);
-    }
-
-    virtual State* transfer_start_tall() {
-        return handle_event_using_function(&State::transfer_start_tall);
-    }
-
-    virtual State* transfer_start_tall_w_metal() {
-        return handle_event_using_function(&State::transfer_start_tall_w_metal);
-    }
-
-    virtual State* transfer_start_flat() {
-        return handle_event_using_function(&State::transfer_start_flat);
-    }
-
-    virtual State* transfer_start_other() {
-        return handle_event_using_function(&State::transfer_start_other);
-    }
-    virtual State* transfer_start_tall_sort_out() {
-        return handle_event_using_function(&State::transfer_start_tall_sort_out);
-    }
-    virtual State* transfer_start_tall_w_metal_sort_out() {
-        return handle_event_using_function(&State::transfer_start_tall_w_metal_sort_out);
-    }
-    virtual State* transfer_start_flat_sort_out() {
-        return handle_event_using_function(&State::transfer_start_flat_sort_out);
-    }
-
-    virtual State* adc_calibration_done() {
-        return handle_event_using_function(&State::adc_calibration_done);
-    }
-
-    virtual State* is_pusher() {
-        return handle_event_using_function(&State::is_pusher);
-    }
-
-    virtual State* is_switch() {
-        return handle_event_using_function(&State::is_switch);
-    }
-
-    virtual State* sorting_out() {
-        return handle_event_using_function(&State::sorting_out);
-    }
-    virtual State* error_pieces_too_close_fixed() {
-        return handle_event_using_function(&State::error_pieces_too_close_fixed);
-    }
-    virtual State* unblock_starting_area() {
-        return handle_event_using_function(&State::unblock_starting_area);
-    }
-
-    // Neue COM States
-    virtual State* com_ramp_full() {
-        return handle_event_using_function(&State::com_ramp_full);
-    }
-    virtual State* com_ramp_not_full() {
-        return handle_event_using_function(&State::com_ramp_not_full);
-    }
-
-    virtual State* com_mqtt_connected() {
-        return handle_event_using_function(&State::com_mqtt_connected);
-    }
-
-    virtual State* com_mqtt_disconnected() {
-        return handle_event_using_function(&State::com_mqtt_disconnected);
-    }
-    // States für ErrorHandler
-    virtual State* error_c_lost_com() {
-        return handle_event_using_function(&State::error_c_lost_com);
-    }
-    virtual State* error_c_lost_nr() {
-        return handle_event_using_function(&State::error_c_lost_nr);
-    }
-    virtual State* error_c_lost_mqtt() {
-        return handle_event_using_function(&State::error_c_lost_mqtt);
-    }
-    virtual State* com_connected() {
-        return handle_event_using_function(&State::com_connected);
-    }
-    virtual State* mqtt_connected() {
-        return handle_event_using_function(&State::mqtt_connected);
-    }
-    virtual State* adc_invalid_measure() {
-        return handle_event_using_function(&State::adc_invalid_measure);
-    }
-    virtual State* cant_find_calb_conf() {
-        return handle_event_using_function(&State::cant_find_calb_conf);
-    }
-    virtual State* cant_find_rep_conf() {
-        return handle_event_using_function(&State::cant_find_rep_conf);
-    }
-    virtual State* error_w_lost() {
-        return handle_event_using_function(&State::error_w_lost);
-    }
-    virtual State* error_w_appear() {
-        return handle_event_using_function(&State::error_w_appear);
-    }
-    virtual State* error_both_r_full() {
-        return handle_event_using_function(&State::error_both_r_full);
-    }
-    virtual State* com_error_resolved() {
-        return handle_event_using_function(&State::com_error_resolved);
-    }
-    virtual State* ramp_error_resolved() {
-        return handle_event_using_function(&State::ramp_error_resolved);
-    }
-    virtual State* mqtt_error_resolved() {
-        return handle_event_using_function(&State::mqtt_error_resolved);
-    }
-    virtual State* piece_appeared_resolved() {
-        return handle_event_using_function(&State::piece_appeared_resolved);
-    }
-    virtual State* piece_lost_resolved() {
-        return handle_event_using_function(&State::piece_lost_resolved);
-    }
-    virtual State* pieces_too_close() {
-        return handle_event_using_function(&State::pieces_too_close);
-    }
-    virtual State* error_invalid_meassure_resolved() {
-        return handle_event_using_function(&State::error_invalid_meassure_resolved);
-    }
-
-
-    virtual State* remote_stop() {
-        return handle_event_using_function(&State::remote_stop);
-    }
-
-
-
-    //Fehlende States für Operating_FBM_2 
-    virtual State* error_w_lost_fixed() {
-        return handle_event_using_function(&State::error_w_lost_fixed);
-    }
-    virtual State* laser_gate_blocked() {
-        return handle_event_using_function(&State::laser_gate_blocked);
-    }
-
-
-
-
-
-protected: //================================================ protected ================================================
-    //classes, STL containers, and structs
-    //pointers
-    ContextData* data;
-    //primitive types
-    //bool and char
-
-    virtual State* handle_event_using_function(State* (State::* handler_function)()) {
-        return nullptr;
-    }
-
-    std::string demangle(const char* mangled) {
-        int status;
-        char* demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
-        std::string result = (status == 0) ? demangled : mangled;
-        free(demangled);
-        return result;
-    }
-
-
-
-private: //================================================ private functions ================================================
-
-
+public: //============================================ constructors &
+        // destructors ============================================
+  /**
+   * @brief State is a very basic state, containing only entry and exit. It does
+   * not contain any substates or orthogonal states.
+   * @param data a global context data, which should be visible across the
+   * states
+   */
+  State(ContextData *data) : data(data) {};
+  // Disable copy constructor, because we're going to use clone() instead
+  State(const State &other) = delete;
+  virtual ~State() = default;
+
+public: //================================================ public functions
+        //================================================
+  /**
+   * @brief Enters the state. This function must be overidden by the child
+   * state.
+   */
+  virtual void entry() = 0;
+  /**
+   * @brief Exits the state. This function must be overidden by the child state.
+   */
+  virtual void exit() = 0;
+  /**
+   * @brief Clones the current state.
+   * @return Cloned state, which is already allocated to heap
+   */
+  virtual State *clone() = 0;
+  /**
+   * @brief Returns the name of the current state.
+   * @return The name of current state as string
+   */
+  virtual std::string get_current_state() {
+    const char *state_name = typeid(*this).name();
+    return demangle(state_name);
+  }
+
+  //================================================ internal events
+  //================================================
+  virtual State *timer(TIMER_ID id) { return nullptr; }
+
+  virtual State *id() { return handle_event_using_function(&State::id); }
+
+  static State *EXIT_STATE;
+
+  virtual State *new_piece() {
+    return handle_event_using_function(&State::new_piece);
+  }
+
+  virtual State *unknown_piece() {
+    return handle_event_using_function(&State::unknown_piece);
+  }
+
+  virtual State *flat_piece() {
+    return handle_event_using_function(&State::flat_piece);
+  }
+
+  virtual State *tall_piece() {
+    return handle_event_using_function(&State::tall_piece);
+  }
+
+  virtual State *tall_w_metal_piece() {
+    return handle_event_using_function(&State::tall_w_metal_piece);
+  }
+
+  virtual State *sort_out() {
+    return handle_event_using_function(&State::sort_out);
+  }
+
+  virtual State *sort_out_fbm2() {
+    return handle_event_using_function(&State::sort_out_fbm2);
+  }
+
+  virtual State *let_through() {
+    return handle_event_using_function(&State::let_through);
+  }
+
+  virtual State *reset_to_flat() {
+    return handle_event_using_function(&State::reset_to_flat);
+  }
+
+  virtual State *reset_to_tall() {
+    return handle_event_using_function(&State::reset_to_tall);
+  }
+
+  virtual State *reset_to_tall_w_metal() {
+    return handle_event_using_function(&State::reset_to_tall_w_metal);
+  }
+
+  virtual State *sorted() {
+    return handle_event_using_function(&State::sorted);
+  }
+
+  virtual State *sorting_out_fbm2() {
+    return handle_event_using_function(&State::sorted);
+  }
+  virtual State *sorted_out() {
+    return handle_event_using_function(&State::sorted_out);
+  }
+
+  //====================================================MotorPiece======================================================
+  virtual State *delete_w_motor() {
+    return handle_event_using_function(&State::delete_w_motor);
+  }
+  virtual State *motor_slow() {
+    return handle_event_using_function(&State::motor_slow);
+  }
+  virtual State *motor_fast() {
+    return handle_event_using_function(&State::motor_fast);
+  }
+  virtual State *motor_stop_fsm() {
+    return handle_event_using_function(&State::motor_stop_fsm);
+  }
+
+  //================================================ external events
+  //================================================
+
+  virtual State *laser_front_blocked() {
+    return handle_event_using_function(&State::laser_front_blocked);
+  }
+
+  virtual State *laser_front_unblocked() {
+    return handle_event_using_function(&State::laser_front_unblocked);
+  }
+
+  virtual State *laser_back_blocked() {
+    return handle_event_using_function(&State::laser_back_blocked);
+  }
+  virtual State *laser_back_unblocked() {
+    return handle_event_using_function(&State::laser_back_unblocked);
+  }
+
+  virtual State *button_start_pressed() {
+    return handle_event_using_function(&State::button_start_pressed);
+  }
+
+  virtual State *button_start_released() {
+    return handle_event_using_function(&State::button_start_released);
+  }
+
+  virtual State *button_stop_pressed() {
+    return handle_event_using_function(&State::button_stop_pressed);
+  }
+
+  virtual State *button_stop_released() {
+    return handle_event_using_function(&State::button_stop_released);
+  }
+
+  virtual State *button_reset_pressed() {
+    return handle_event_using_function(&State::button_reset_pressed);
+  }
+
+  virtual State *button_reset_released() {
+    return handle_event_using_function(&State::button_reset_released);
+  }
+
+  virtual State *button_estop_pressed() {
+    return handle_event_using_function(&State::button_estop_pressed);
+  }
+
+  virtual State *button_estop_released() {
+    return handle_event_using_function(&State::button_estop_released);
+  }
+
+  virtual State *metal_detected() {
+    return handle_event_using_function(&State::metal_detected);
+  }
+
+  virtual State *metal_not_detected() {
+    return handle_event_using_function(&State::metal_not_detected);
+  }
+
+  virtual State *laser_sorting_gate_blocked() {
+    return handle_event_using_function(&State::laser_sorting_gate_blocked);
+  }
+
+  virtual State *laser_sorting_gate_unblocked() {
+    return handle_event_using_function(&State::laser_sorting_gate_unblocked);
+  }
+
+  virtual State *laser_ramp_blocked() {
+    return handle_event_using_function(&State::laser_ramp_blocked);
+  }
+
+  virtual State *laser_ramp_unblocked() {
+    return handle_event_using_function(&State::laser_ramp_unblocked);
+  }
+
+  virtual State *adc_new_piece() {
+    return handle_event_using_function(&State::adc_new_piece);
+  }
+
+  virtual State *adc_timeout() {
+    return handle_event_using_function(&State::adc_timeout);
+  }
+
+  virtual State *adc_top_area_blocked() {
+    return handle_event_using_function(&State::adc_top_area_blocked);
+  }
+
+  virtual State *adc_top_area_unblocked() {
+    return handle_event_using_function(&State::adc_top_area_unblocked);
+  }
+
+  virtual State *adc_side_area_blocked() {
+    return handle_event_using_function(&State::adc_side_area_blocked);
+  }
+
+  virtual State *adc_side_area_unblocked() {
+    return handle_event_using_function(&State::adc_side_area_unblocked);
+  }
+
+  virtual State *adc_wh_detect() {
+    return handle_event_using_function(&State::adc_wh_detect);
+  }
+
+  virtual State *adc_wf_detect() {
+    return handle_event_using_function(&State::adc_wf_detect);
+  }
+
+  virtual State *adc_w_b_detect() {
+    return handle_event_using_function(&State::adc_w_b_detect);
+  }
+
+  virtual State *adc_w_not_detect() {
+    return handle_event_using_function(&State::adc_w_not_detect);
+  }
+
+  virtual State *com_button_estop_pressed() {
+    return handle_event_using_function(&State::com_button_estop_pressed);
+  }
+
+  virtual State *com_button_estop_released() {
+    return handle_event_using_function(&State::com_button_estop_released);
+  }
+  virtual State *com_button_reset_pressed() {
+    return handle_event_using_function(&State::com_button_reset_pressed);
+  }
+  virtual State *com_reset_flat() {
+    return handle_event_using_function(&State::com_reset_flat);
+  }
+  virtual State *com_reset_tall() {
+    return handle_event_using_function(&State::com_reset_tall);
+  }
+  virtual State *com_reset_to_tall_w_metal() {
+    return handle_event_using_function(&State::com_reset_to_tall_w_metal);
+  }
+  virtual State *heartbeat() {
+    return handle_event_using_function(&State::heartbeat);
+  }
+
+  virtual State *timeout_com() {
+    return handle_event_using_function(&State::timeout_com);
+  }
+
+  virtual State *reconnect() {
+    return handle_event_using_function(&State::reconnect);
+  }
+
+  virtual State *ramp_full() {
+    return handle_event_using_function(&State::ramp_full);
+  }
+
+  virtual State *ramp_not_full() {
+    return handle_event_using_function(&State::ramp_not_full);
+  }
+
+  virtual State *fbm_2_ready() {
+    return handle_event_using_function(&State::fbm_2_ready);
+  }
+
+  virtual State *fbm_2_busy() {
+    return handle_event_using_function(&State::fbm_2_busy);
+  }
+
+  virtual State *request_transfer() {
+    return handle_event_using_function(&State::request_transfer);
+  }
+
+  virtual State *transfer_done() {
+    return handle_event_using_function(&State::transfer_done);
+  }
+
+  virtual State *transfer_failed() {
+    return handle_event_using_function(&State::transfer_failed);
+  }
+
+  virtual State *transfer_start_tall() {
+    return handle_event_using_function(&State::transfer_start_tall);
+  }
+
+  virtual State *transfer_start_tall_w_metal() {
+    return handle_event_using_function(&State::transfer_start_tall_w_metal);
+  }
+
+  virtual State *transfer_start_flat() {
+    return handle_event_using_function(&State::transfer_start_flat);
+  }
+
+  virtual State *transfer_start_other() {
+    return handle_event_using_function(&State::transfer_start_other);
+  }
+  virtual State *transfer_start_tall_sort_out() {
+    return handle_event_using_function(&State::transfer_start_tall_sort_out);
+  }
+  virtual State *transfer_start_tall_w_metal_sort_out() {
+    return handle_event_using_function(
+        &State::transfer_start_tall_w_metal_sort_out);
+  }
+  virtual State *transfer_start_flat_sort_out() {
+    return handle_event_using_function(&State::transfer_start_flat_sort_out);
+  }
+
+  virtual State *adc_calibration_done() {
+    return handle_event_using_function(&State::adc_calibration_done);
+  }
+
+  virtual State *is_pusher() {
+    return handle_event_using_function(&State::is_pusher);
+  }
+
+  virtual State *is_switch() {
+    return handle_event_using_function(&State::is_switch);
+  }
+
+  virtual State *sorting_out() {
+    return handle_event_using_function(&State::sorting_out);
+  }
+  virtual State *error_pieces_too_close_fixed() {
+    return handle_event_using_function(&State::error_pieces_too_close_fixed);
+  }
+  virtual State *unblock_starting_area() {
+    return handle_event_using_function(&State::unblock_starting_area);
+  }
+
+  // Neue COM States
+  virtual State *com_ramp_full() {
+    return handle_event_using_function(&State::com_ramp_full);
+  }
+  virtual State *com_ramp_not_full() {
+    return handle_event_using_function(&State::com_ramp_not_full);
+  }
+
+  virtual State *com_mqtt_connected() {
+    return handle_event_using_function(&State::com_mqtt_connected);
+  }
+
+  virtual State *com_mqtt_disconnected() {
+    return handle_event_using_function(&State::com_mqtt_disconnected);
+  }
+  // States für ErrorHandler
+  virtual State *error_c_lost_com() {
+    return handle_event_using_function(&State::error_c_lost_com);
+  }
+  virtual State *error_c_lost_nr() {
+    return handle_event_using_function(&State::error_c_lost_nr);
+  }
+  virtual State *error_c_lost_mqtt() {
+    return handle_event_using_function(&State::error_c_lost_mqtt);
+  }
+  virtual State *com_connected() {
+    return handle_event_using_function(&State::com_connected);
+  }
+  virtual State *mqtt_connected() {
+    return handle_event_using_function(&State::mqtt_connected);
+  }
+  virtual State *adc_invalid_measure() {
+    return handle_event_using_function(&State::adc_invalid_measure);
+  }
+  virtual State *cant_find_calb_conf() {
+    return handle_event_using_function(&State::cant_find_calb_conf);
+  }
+  virtual State *cant_find_rep_conf() {
+    return handle_event_using_function(&State::cant_find_rep_conf);
+  }
+  virtual State *error_w_lost() {
+    return handle_event_using_function(&State::error_w_lost);
+  }
+  virtual State *error_w_appear() {
+    return handle_event_using_function(&State::error_w_appear);
+  }
+  virtual State *error_both_r_full() {
+    return handle_event_using_function(&State::error_both_r_full);
+  }
+  virtual State *com_error_resolved() {
+    return handle_event_using_function(&State::com_error_resolved);
+  }
+  virtual State *ramp_error_resolved() {
+    return handle_event_using_function(&State::ramp_error_resolved);
+  }
+  virtual State *mqtt_error_resolved() {
+    return handle_event_using_function(&State::mqtt_error_resolved);
+  }
+  virtual State *piece_appeared_resolved() {
+    return handle_event_using_function(&State::piece_appeared_resolved);
+  }
+  virtual State *piece_lost_resolved() {
+    return handle_event_using_function(&State::piece_lost_resolved);
+  }
+  virtual State *pieces_too_close() {
+    return handle_event_using_function(&State::pieces_too_close);
+  }
+  virtual State *error_invalid_meassure_resolved() {
+    return handle_event_using_function(&State::error_invalid_meassure_resolved);
+  }
+
+  virtual State *remote_stop() {
+    return handle_event_using_function(&State::remote_stop);
+  }
+
+  // Fehlende States für Operating_FBM_2
+  virtual State *error_w_lost_fixed() {
+    return handle_event_using_function(&State::error_w_lost_fixed);
+  }
+  virtual State *laser_gate_blocked() {
+    return handle_event_using_function(&State::laser_gate_blocked);
+  }
+
+protected: //================================================ protected
+           //================================================
+  // classes, STL containers, and structs
+  // pointers
+  ContextData *data;
+  // primitive types
+  // bool and char
+
+  virtual State *
+  handle_event_using_function(State *(State::*handler_function)()) {
+    return nullptr;
+  }
+
+  std::string demangle(const char *mangled) {
+    int status;
+    char *demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
+    std::string result = (status == 0) ? demangled : mangled;
+    free(demangled);
+    return result;
+  }
+
+private: //================================================ private functions
+         //================================================
 };
 
 #endif
