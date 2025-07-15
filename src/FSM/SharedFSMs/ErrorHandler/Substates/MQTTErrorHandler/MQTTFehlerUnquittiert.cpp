@@ -20,6 +20,7 @@ void MQTTFehlerUnquittiert::entry(){
     data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) Error_Enum::ERROR_C_LOST_MQTT);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_ON);
     data->error_warning_counter->error_or_warning_occured();
+    printf("Error: MQTT Connection Error.");
 }
 
 void MQTTFehlerUnquittiert::exit(){

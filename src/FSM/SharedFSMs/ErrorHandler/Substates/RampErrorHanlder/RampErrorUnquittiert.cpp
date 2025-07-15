@@ -13,6 +13,7 @@ void RampErrorUnquittiert::entry() {
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int)ActuatorEnum::TRAFFIC_RED_ON_FAST);
     data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) Error_Enum::ERROR_BOTH_R_FULL); 
     data->error_warning_counter->error_or_warning_occured();
+    printf("Error: Both Ramps full. Please empty both Ramps and then press the Reset Button.\n");
 }
 
 void RampErrorUnquittiert::exit() {

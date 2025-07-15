@@ -17,6 +17,7 @@ void ReplayWarning::entry(){
     //TODO CODE
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON_FAST);
     data->error_warning_counter->error_or_warning_occured();
+    printf("Warning: No data to read for Replay.\n");
 }
 
 void ReplayWarning::exit(){

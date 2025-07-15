@@ -13,7 +13,7 @@ PieceTall::~PieceTall() {}
 //===================================================== public functions =====================================================
 void PieceTall::entry() {
 	PRINT_STATE;
-	std::cout << "Current Sortingorder: PieceTall with hole" << std::endl;
+	std::cout << "Current Sortingorder: Tall piece with hole" << std::endl;
 }
 
 void PieceTall::exit() {

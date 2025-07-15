@@ -14,6 +14,7 @@ RampErrorResolved::~RampErrorResolved() {}
 void RampErrorResolved::entry(){
 	PRINT_STATE;
     //TODO CODE
+    printf("Please press the Reset Button.\n");
 }
 
 void RampErrorResolved::exit(){
