@@ -18,6 +18,8 @@ public: //================================================ public functions ====
     void exit() override;
 	State* clone() override;
 
+	State* fbm_2_ready() override;
+
 	State* timer(TIMER_ID id) override;
     
 

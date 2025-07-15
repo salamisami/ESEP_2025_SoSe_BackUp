@@ -35,7 +35,7 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 
 	switch(current_area) {
 		case Area::GATE_END: {
-				if(distance.second > 70) {
+				if(distance.second > 60) {
 					data->piece_near_end = true;
 				}
 				break;
