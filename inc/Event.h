@@ -88,7 +88,6 @@ enum class Topic : int8_t {
 };
 
 enum class Internal_Enum : int {
-<<<<<<< HEAD
     SORT_OUT,
     SORT_OUT_FBM2,
     LET_THROUGH,
@@ -104,22 +103,6 @@ enum class Internal_Enum : int {
     SORTING_OUT_FBM2,
     SORTED_OUT,
 	PIECE_SWITCHED
-=======
-  SORT_OUT,
-  SORT_OUT_FBM2,
-  LET_THROUGH,
-  RESET_TO_FLAT,
-  RESET_TO_TALL,
-  RESET_TO_TALL_W_METAL,
-  UNBLOCK_STARTING_AREA,
-  NEW_PIECE,
-  SORTED,
-  RAMP_FULL,
-  RAMP_NOT_FULL,
-  REMOTE_STOP,
-  SORTING_OUT_FBM2,
-  SORTED_OUT
->>>>>>> 16b64900943a81411be3e0517fdaf3cbac3cd383
 };
 
 enum class ADC_Enum : int {
