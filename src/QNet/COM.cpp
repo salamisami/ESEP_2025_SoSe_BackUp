@@ -248,11 +248,11 @@ void COM::runServer() {
             if(disconnected) {
                 disconnected = false;
 
-                /* // Send COM_CONNECTED notification
+                 // Send COM_CONNECTED notification
                 _pulse reconnectEvent;
                 reconnectEvent.code = static_cast<int8_t>(Topic::COM);
                 reconnectEvent.value.sival_int = static_cast<int>(COM_Enum::COM_CONNECTED);
-                sendToDispatcher(reconnectEvent, static_cast<int>(EventPriority::FIRST_PRIO)); */
+                sendToDispatcher(reconnectEvent, static_cast<int>(EventPriority::FIRST_PRIO));
 
                 // Prepare status events
                 _pulse rampEvent;
@@ -383,10 +383,10 @@ void COM::notifyUdpRestored() {
 
     std::cout << "[UDP-Watchdog] Verbindung zur Gegenseite wiederhergestellt!"
         << std::endl;
-    _pulse reconnectEvent;
+    /*_pulse reconnectEvent;
     reconnectEvent.code = static_cast<int8_t>(Topic::COM);
     reconnectEvent.value.sival_int = static_cast<int>(COM_Enum::COM_CONNECTED);
-    sendToDispatcher(reconnectEvent, static_cast<int>(EventPriority::FIRST_PRIO));
+    sendToDispatcher(reconnectEvent, static_cast<int>(EventPriority::FIRST_PRIO));*/
 
     // Prepare status events
     _pulse rampEvent;
