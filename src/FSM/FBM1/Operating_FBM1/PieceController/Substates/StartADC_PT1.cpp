@@ -18,7 +18,6 @@ void StartADC_PT1::entry() {
 
 void StartADC_PT1::exit() {
 	PRINT_STATE;
-	data->piece_near_adc = true;
 }
 
 State* StartADC_PT1::clone() {
@@ -41,6 +40,13 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 				localdata_.unblock_signal_has_been_sent = true;
 				data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA);
 				return new StartADC_PT1(data, localdata_);
+			}
+
+			
+			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC && data->piece_near_end){
+				data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
+				localdata_.unblock_signal_has_been_sent = false;
+				return new PendingTransferRequestNotAtEnd(data, localdata_);
 			}
 
 			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC) {

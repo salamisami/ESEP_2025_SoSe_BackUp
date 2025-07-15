@@ -5,6 +5,7 @@
 #include "State.h"
 #include "ADC_PT1.h"
 #include "LocalDataPT1.h"
+#include "PendingTransferRequestNotAtEnd.h"
 
 class StartADC_PT1 : public State {
 public: //============================================ constructors & destructors ============================================
