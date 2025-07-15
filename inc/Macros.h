@@ -58,7 +58,7 @@
 
 //piece missing: runterstellen
 //piece appeared: hochstellen
-#define POSITION_FACTOR 1
+#define POSITION_FACTOR 0.95
 
 
 #define TIMESTAMP_FACTOR 1

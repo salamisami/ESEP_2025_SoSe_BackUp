@@ -183,10 +183,10 @@ void DistanceTracker::reset() {
 
 std::pair<Area, double> DistanceTracker::get_distance() {
     update();
-    return {current_area, current_position};
+    return {current_area, (double) (current_position * POSITION_FACTOR)};
 }
 
 void DistanceTracker::print_distance() {
     update();
-    std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) current_position << " Mode: " << (int) current_mode << std::endl;
+    std::cout << "Area: " << (int) current_area << ", " << "Position: " << (double) (current_position * POSITION_FACTOR) << " Mode: " << (int) current_mode << std::endl;
 }
