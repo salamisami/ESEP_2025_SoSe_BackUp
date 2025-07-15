@@ -25,6 +25,7 @@ void PieceLostFehlerUnquittiert::entry(){
 void PieceLostFehlerUnquittiert::exit(){
     
 	PRINT_STATE;
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_OFF);
 }
 
 State* PieceLostFehlerUnquittiert::button_reset_released()
