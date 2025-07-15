@@ -16,7 +16,7 @@ PiecesTooClose::~PiecesTooClose() {}
 void PiecesTooClose::entry(){
 	PRINT_STATE;
     
-    data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::PIECES_TOO_CLOSE);
+    data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_APPEARED);
 }
 
 void PiecesTooClose::exit(){
@@ -24,11 +24,10 @@ void PiecesTooClose::exit(){
 	PRINT_STATE;
 }
 
-
-State* PiecesTooClose::error_pieces_too_close_fixed()
-{
+State* PiecesTooClose::piece_appeared_resolved() {
     return new StartingAreaBlocked(data);
 }
+
 
 State* PiecesTooClose::clone() {
     return new PiecesTooClose(data);
