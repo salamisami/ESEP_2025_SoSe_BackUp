@@ -36,6 +36,7 @@
 #define DEBUG(msg) std::cout << msg << std::endl
 #endif
 
+
 #ifdef VERBOSE_STATES
 #define PRINT_STATE std::cout << __PRETTY_FUNCTION__ << std::endl
 #else
