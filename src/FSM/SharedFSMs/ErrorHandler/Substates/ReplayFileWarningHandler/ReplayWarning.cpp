@@ -19,6 +19,7 @@ void ReplayWarning::entry(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_ON);
     printf("can't find replay-file\n");
     data->error_warning_counter->error_or_warning_occured();
+    printf("Warning: No data to read for Replay.\n");
 }
 
 void ReplayWarning::exit(){

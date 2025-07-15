@@ -17,6 +17,7 @@ void CalibWarning::entry(){
     
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON_FAST);
     data->error_warning_counter->error_or_warning_occured();
+    printf("Warning: No config data. Please first Calibrate.\n");
 }
 
 void CalibWarning::exit(){

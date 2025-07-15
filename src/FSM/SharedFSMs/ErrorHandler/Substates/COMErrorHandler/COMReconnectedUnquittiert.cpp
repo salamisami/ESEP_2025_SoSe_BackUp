@@ -17,6 +17,7 @@ void COMReconnectedUnquittiert::entry(){
 	PRINT_STATE;
     
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON_SLOW);
+    printf("Communication Reconnected.\n");
 }
 
 void COMReconnectedUnquittiert::exit(){
