@@ -47,5 +47,6 @@ State* LeavingGate_PT1::timer(TIMER_ID id) {
 	}
 
 	DEBUG("PieceMissing! Cause: piece is too long in leaving the Gate.");
+	printf("Error: Piece takes too long to leave the Gate.\n");
 MACRO_PIECE_MISSING_PT1
 }

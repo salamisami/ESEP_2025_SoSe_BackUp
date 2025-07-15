@@ -15,7 +15,7 @@ Fsm::Fsm(ContextData* data) : OrthState(data, {
     new SortingOrder(data),
     new MQTTNoError(data),
 	new COMNoError(data)
-
+    //TODO new NoMqttConnection(data)
 }) {};
 #else
 #ifdef FBM_2
@@ -26,6 +26,7 @@ Fsm::Fsm(ContextData* data) : OrthState(data, {
     new IdleReset(data),
     new MQTTNoError(data),
 	new COMNoError(data)
+    //TODO new NoMqttConnection(data)
 }) {};
 
 #endif

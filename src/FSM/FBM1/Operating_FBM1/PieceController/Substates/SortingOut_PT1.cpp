@@ -13,7 +13,7 @@ SortingOut_PT1::~SortingOut_PT1() {}
 //===================================================== public functions =====================================================
 void SortingOut_PT1::entry() {
   PRINT_STATE;
-  data->timer->start_timer(SORT_OUT_TIME, TIMER_ID::SORTINGOUT_PT1);
+  data->timer->start_timer(SORT_OUT_TIME, (TIMER_ID) localdata_.piece->id);
   data->stopwatch.reset();
   data->stopwatch.start();
 }
@@ -39,8 +39,10 @@ State* SortingOut_PT1::laser_ramp_blocked() {
 }
 
 State* SortingOut_PT1::timer(TIMER_ID id) {
-  if(id == TIMER_ID::SORTINGOUT_PT1) {
+  int casted_id = (int) id;
+  if(casted_id == localdata_.piece->id ) {
     DEBUG("PieceMissing! Cause: piece is too long to reach ramp.");
+    printf("Error: Piece takes too long to reach ramp.\n");
     MACRO_PIECE_MISSING_PT1
   }
   return nullptr;

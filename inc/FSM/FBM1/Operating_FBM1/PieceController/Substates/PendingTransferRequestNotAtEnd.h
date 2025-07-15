@@ -6,6 +6,7 @@
 #include "LocalDataPT1.h"
 #include "Macros.h"
 #include "MovingToEnd_PT1.h"
+#include "ADC_PT1.h"
 
 class PendingTransferRequestNotAtEnd : public State {
 public: //============================================ constructors & destructors ============================================

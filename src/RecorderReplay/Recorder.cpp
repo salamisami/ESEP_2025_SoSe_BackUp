@@ -73,7 +73,7 @@ void Recorder::start_record() {
 	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_ON);
     std::lock_guard<std::mutex> lock(rec_mutex);
     if (record_running) {
-        DEBUG("Record already running!");
+        printf("Recorder already running!\n");
         return;
     }
     record_running = true; // **jetzt erst true**
@@ -94,6 +94,7 @@ void Recorder::stop_record() {
     if (writer_thread.joinable()) writer_thread.join();
     if (file.is_open()) file.close();
     DEBUG("Recorder: Recording gestoppt");
+    printf("Recorder: Recording stopped\n");
 }
 
 void Recorder::writer_loop() {
@@ -132,7 +133,7 @@ void Recorder::start_replay() {
 	local_sender->send_event(ActuatorCode, (int) ActuatorEnum::LED_Q1_ON);
     std::lock_guard<std::mutex> lock(rep_mutex);
     if (replay_running) {
-        DEBUG("Replay already running!");
+        printf("Replay already running!\n");
         return;
     }
     replay_events.clear();
@@ -176,10 +177,11 @@ void Recorder::stop_replay() {
     replay_running = false;
     if (replay_thread.joinable()) replay_thread.join();
     DEBUG("Replay Thread gestoppt");
+    printf("Replay stopped.\n");
 }
 
 void Recorder::replay_loop() {
-    DEBUG("Replay started.");
+    printf("Replay started.\n");
     if (replay_events.empty()) return;
     auto replay_start = std::chrono::steady_clock::now();
     size_t idx = 0;
@@ -195,7 +197,7 @@ void Recorder::replay_loop() {
         std::cout << "Event Code: " << replay_events[idx].code
                   << " | Value: " << replay_events[idx].value << std::endl;
     }
-    DEBUG("Replay finished.");
+    printf("Replay finished.\n");
 }
 
 std::string Recorder::interruptEnumToString(int value) {
@@ -229,7 +231,7 @@ std::string Recorder::interruptEnumToString(int value) {
 		}
     }else{
         switch(static_cast<ADC_Enum>(value)){
-			case ADC_Enum::ADC_WF_DETECT: return "DC_WF_DETECT";
+			case ADC_Enum::ADC_WF_DETECT: return "ADC_WF_DETECT";
 			case ADC_Enum::ADC_W_B_DETECT:return "ADC_W_B_DETECT";
 			case ADC_Enum::ADC_W_NOT_DETECT:return "ADC_W_NOT_DETECT";
 			case ADC_Enum::ADC_INVALID_MESURE:return "ADC_INVALID_MESURE";

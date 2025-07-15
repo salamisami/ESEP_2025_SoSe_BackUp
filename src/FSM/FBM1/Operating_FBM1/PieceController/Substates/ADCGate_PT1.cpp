@@ -51,6 +51,7 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 
 	if(current_area == Area::GATE_END && current_pos >= PIECE_TRANSITION_TOLERANCE) {
 		DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
+		printf("Error: Piece takes too long to leave ADC-Gate.\n");
 		MACRO_PIECE_MISSING_PT1
 	}
 	return new ADCGate_PT1(data, localdata_);
@@ -89,6 +90,7 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 
 State* ADCGate_PT1::metal_detected() {
 	DEBUG("Metal Detected.");
+	printf("Metal Detected.\n");
 	localdata_.is_metal = true;
 	return nullptr;
 }

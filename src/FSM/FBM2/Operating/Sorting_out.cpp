@@ -19,7 +19,7 @@ Sorting_out::~Sorting_out() {}
 //===================================================== public functions =====================================================
 void Sorting_out::entry() {
   PRINT_STATE;
-  data->timer->start_timer(SORT_OUT_TIME, TIMER_ID::SORTING_OUT);
+  data->timer->start_timer(SORT_OUT_TIME, (TIMER_ID) data->piece_FBM2_soll->id);
   data->stopwatch.start();
 
   //Action here
@@ -41,7 +41,10 @@ State* Sorting_out::clone() {
 }
 
 State* Sorting_out::timer(TIMER_ID id) {
-  if(id == TIMER_ID::SORTING_OUT) {
+ int casted_id = (int) id;
+  if(casted_id == data->piece_FBM2_soll->id ) {
+    DEBUG("PieceMissing! Cause: piece is too long to reach ramp.");
+    printf("Error: Piece takes too long to reach ramp.\n");
     return new Piece_Missing(data);
   }
   return nullptr;
