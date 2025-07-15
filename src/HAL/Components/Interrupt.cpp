@@ -192,7 +192,7 @@ void Interrupt::threadFunction() {
     ThreadCtl(_NTO_TCTL_IO, 0);	//Request IO privileges
     _pulse msg;
     interruptRunning = true;
-    printf("Message thread started.\n");
+    //printf("Message thread started.\n");
     while(interruptRunning) {
         int recvid = MsgReceivePulse(internalChannelID, &msg, sizeof(_pulse), nullptr);
         if(recvid < 0) {
@@ -210,7 +210,7 @@ void Interrupt::threadFunction() {
             // Do not ignore OS pulses!
         }
     }
-    printf("Message thread stops...\n");
+    //printf("Message thread stops...\n");
 }
 
 void Interrupt::isr(void) {

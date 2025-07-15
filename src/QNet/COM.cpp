@@ -210,7 +210,7 @@ int COM::sendToServer(const _pulse& msg, int priority) {
 
 // Server side implementation
 void COM::runServer() {
-    COUT("COM server started.");
+    DEBUG("COM server started.");
     bool disconnected = true;
     while(running) {
         struct _pulse event;
