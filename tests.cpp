@@ -1229,7 +1229,7 @@ TEST_F(RampErrorHandlerSetup, RampComErrorUnquittiertTest) {
 // {
 //     remote_control->send_event((int8_t)Topic::COM,
 //     (int)COM_Enum::REQUEST_TRANSFER);
-//     EXPECT_STATE_INSTANT("WaitingForTransferStart");
+//     EXPECT_STATE_INSTANT("ReadyForPiece");
 //     remote_control->send_event((int8_t)Topic::COM,
 //     (int)COM_Enum::TRANSFER_START_TALL); EXPECT_STATE_INSTANT("Transfer");
 //     remote_control->send_event((int8_t)Topic::INTERRUPT,
