@@ -172,13 +172,13 @@ template <typename T> State *Context<T>::handleCOM(int event_value) {
     newState = state->com_ramp_not_full();
     break;
   case COM_Enum::RESET_TO_FLAT:
-    newState = state->com_reset_to_flat();
+    newState = state->reset_to_flat();
     break;
   case COM_Enum::RESET_TO_TALL:
-    newState = state->com_reset_to_tall();
+    newState = state->reset_to_tall();
     break;
   case COM_Enum::RESET_TO_TALL_W_METAL:
-    newState = state->com_reset_to_tall_w_metal();
+    newState = state->reset_to_tall_w_metal();
     break;
   case COM_Enum::FBM_2_READY:
     newState = state->fbm_2_ready();
