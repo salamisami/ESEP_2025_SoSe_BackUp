@@ -20,6 +20,9 @@ public: //================================================ public functions ====
 	State* timer(TIMER_ID id) override;
 	State* laser_sorting_gate_blocked() override;
 	State* metal_detected() override;
+
+	State* fbm_2_busy() override;
+	State* fbm_2_ready() override;
     
 
 

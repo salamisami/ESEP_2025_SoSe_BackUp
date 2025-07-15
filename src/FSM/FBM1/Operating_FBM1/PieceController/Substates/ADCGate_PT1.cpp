@@ -35,19 +35,9 @@ State* ADCGate_PT1::timer(TIMER_ID id) {
 	Area current_area = distance.first;
 	auto current_pos = distance.second;
 
-	//piece->piece_tracker->print_distance();
-
-//	if(current_area == Area::ADC_GATE && current_pos < PIECE_TRANSITION_TOLERANCE){
-//		return new ADCGate_PT1(data, localdata_);
-//	}
-//
-//	if(current_area == Area::ADC_GATE && current_pos >= PIECE_TRANSITION_TOLERANCE){
-//		return new ADCGate_PT1(data, localdata_);
-//	}
-//
-//	if(current_area == Area::GATE && current_pos < PIECE_TRANSITION_TOLERANCE){
-//		return new ADCGate_PT1(data, localdata_);
-//	}
+	if(current_area == Area::ADC_GATE && data->piece_near_end){
+		data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::REQUEST_TRANSFER);
+	}
 
 	if(current_area == Area::GATE_END && current_pos >= PIECE_TRANSITION_TOLERANCE) {
 		DEBUG("PieceMissing! Cause: piece is too long in ADC -> Gate.");
@@ -120,3 +110,15 @@ PieceEnum ADCGate_PT1::validate_piece(const ScannedPiece& scanned_piece, const b
 	}
 	return predicted_piece;
 }
+
+State* ADCGate_PT1::fbm_2_ready() {
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
+	return nullptr;
+}
+
+State* ADCGate_PT1::fbm_2_busy() {
+	data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
+	return nullptr;
+}
+
+
