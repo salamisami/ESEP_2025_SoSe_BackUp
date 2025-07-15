@@ -146,3 +146,6 @@
                      : ((topic) == static_cast<int8_t>(Topic::DELETE_W_MOTOR)  \
                             ? MotorPieceState::DELETE_W_MOTOR                  \
                             : static_cast<MotorPieceState>(-1)))))
+
+
+#endif
