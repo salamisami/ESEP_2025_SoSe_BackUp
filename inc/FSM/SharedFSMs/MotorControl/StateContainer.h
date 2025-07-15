@@ -94,6 +94,15 @@ public:
       }
     }
   }
+
+  void clean(){
+    auto id_list = getAllIds();
+    for(int& id: id_list){
+      remove(id);
+    }
+  }
+
+  
 };
 
 #endif // STATECONTAINER_H

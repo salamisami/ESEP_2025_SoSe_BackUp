@@ -85,6 +85,10 @@ public:
   // PieceTrack -> PieceTrack
   bool piece_near_adc = false;
   bool piece_near_end = false;
+
+  
+  void clean();
+  
 };
 
 #endif
