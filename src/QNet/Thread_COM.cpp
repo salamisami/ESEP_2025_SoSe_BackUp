@@ -42,7 +42,7 @@ Sender::Sender(const char* name) {
         }
 	}
     else {
-                std::cout << "Success: Name '" << name << "' connected" << std::endl;
+                //std::cout << "Success: Name '" << name << "' connected" << std::endl;
                 // Verify the name exists or handle missing resource
     }
 }

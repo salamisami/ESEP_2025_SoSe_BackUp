@@ -23,8 +23,8 @@
 #include "QNet.h"
 #include "Event.h"
 #include "Thread_COM.h"
+#include "Macros.h"
 
-#define COUT(msg) std::cout << msg << std::endl
 
 #define HEARTBEAT_MULTIPLIER 1
 #define HEARTBEAT_INTERVAL 100 * HEARTBEAT_MULTIPLIER
