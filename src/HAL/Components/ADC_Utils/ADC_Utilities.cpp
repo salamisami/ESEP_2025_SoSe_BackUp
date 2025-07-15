@@ -348,9 +348,9 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
 
         werte.push_back(sensorVoltage);
         int messpunkte = werte.size();
-        if((sensorVoltage > bandVoltage - TRIGGER_SCHRITT)  && (messpunkte >= (minSize - 5))){
+        if((sensorVoltage > bandVoltage - TRIGGER_SCHRITT)  && (messpunkte >= (minSize + W_SIZE_TOLERANZ))){
         	std::cout << "Mespunkte Operating: " << messpunkte << std::endl;
-        	std::cout << "Min Vorgabe Operating: " << minSize << std::endl;
+        	std::cout << "Min Vorgabe Operating: " << (minSize + W_SIZE_TOLERANZ) << std::endl;
             break;
         }
         if(werte.size() >= MAX_WERT) {
