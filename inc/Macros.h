@@ -51,7 +51,7 @@
 #define MOTOR_SLOW_POS_AT_START_ADC 80
 
 #define PIECE_TRANSFER_DURATION 2000
-#define SORT_OUT_TIME 10000
+#define SORT_OUT_TIME 4000
 #define ADC_TIMEOUT_TIME 2000
 #define GATE_THROUGHTIME 2000
 #define PUSH_DELAY // muss noch gemessen werden
