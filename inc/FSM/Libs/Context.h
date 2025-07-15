@@ -97,6 +97,9 @@ template <typename T> State *Context<T>::handleInternal(int event_value) {
   case Internal_Enum::SORTING_OUT_FBM2:
     newState = state->sort_out_fbm2();
     break;
+  case Internal_Enum::PIECE_SWITCHED:
+      newState = state->piece_switched();
+      break;
   default:
     break;
   }
@@ -172,13 +175,13 @@ template <typename T> State *Context<T>::handleCOM(int event_value) {
     newState = state->com_ramp_not_full();
     break;
   case COM_Enum::RESET_TO_FLAT:
-    newState = state->reset_to_flat();
+    newState = state->com_reset_to_flat();
     break;
   case COM_Enum::RESET_TO_TALL:
-    newState = state->reset_to_tall();
+    newState = state->com_reset_to_tall();
     break;
   case COM_Enum::RESET_TO_TALL_W_METAL:
-    newState = state->reset_to_tall_w_metal();
+    newState = state->com_reset_to_tall_w_metal();
     break;
   case COM_Enum::FBM_2_READY:
     newState = state->fbm_2_ready();

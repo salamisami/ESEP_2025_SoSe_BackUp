@@ -352,7 +352,7 @@ void Remote_Controller::threadFunctionSend() {
             case 4: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_STOP_RELEASED); break;
             case 5: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_RESET_PRESSED); break;
             case 6: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_RESET_RELEASED); break;
-            case 7: local_sender->send_event(RemoteCode, (int) RemoteControlEnum::REMOTE_ESTOP); break;
+            case 7: local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_PRESSED); break;
 //            case 8: //local_sender->send_event(InterruptCode, (int) InterruptEnum::BUTTON_ESTOP_RELEASED); break;
 //            		break;
             case 9: local_sender->send_event(RecReplayCode, (int) RecReplayEnum::START_REC); break;
