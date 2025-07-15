@@ -15,14 +15,15 @@ RampNotFull::~RampNotFull() {}
 //===================================================== public functions =====================================================
 void RampNotFull::entry(){
 	PRINT_STATE;
-    //TODO CODE
+
+	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
     data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RAMP_NOT_FULL);
     //HState::entry();
 }
 
 void RampNotFull::exit(){
     //HState::exit();
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

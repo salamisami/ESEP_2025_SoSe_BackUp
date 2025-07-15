@@ -52,7 +52,7 @@
 #define MOTOR_SLOW_POS_AT_START_ADC 80
 
 #define PIECE_TRANSFER_DURATION 2000
-#define SORT_OUT_TIME 3500
+#define SORT_OUT_TIME 10000
 #define ADC_TIMEOUT_TIME 2000
 #define GATE_THROUGHTIME 2000
 #define PUSH_DELAY //muss noch gemessen werden
@@ -94,24 +94,50 @@
 #define COMMAND_TOPIC		"festo/anlage2/command"
 #define MQTT_CLIENT			"Festo_FBM2"
 #endif
-#define MACRO_PIECE_MISSING_PT1 data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_LOST);\
-	data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) localdata_.piece->id);\
-	PieceEnum validated_piece = localdata_.validated_type;\
-	switch(validated_piece) {\
-		case PieceEnum::FLAT:\
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_FLAT);\
-			break;\
-		case PieceEnum::TALL:\
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL);\
-			break;\
-		case PieceEnum::TALL_WITH_METAL:\
-			data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::RESET_TO_TALL_W_METAL);\
-			break;\
-		default:\
-			break;\
-	}\
-	data->pieces_map->erase(localdata_.piece->id);\
-	delete localdata_.piece;\
-	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::UNBLOCK_STARTING_AREA); \
-	data->piece_near_adc = false; \
-	return State::EXIT_STATE;
+
+
+#define MACRO_PIECE_MISSING_PT1                                                \
+  data->sender->send_event((int8_t)Topic::ERROR,                               \
+                           (int)Error_Enum::ERROR_W_LOST);                     \
+  data->sender->send_event((int8_t)Topic::DELETE_W_MOTOR,                      \
+                           (int)localdata_.piece->id);                         \
+  PieceEnum validated_piece = localdata_.validated_type;                       \
+  switch (validated_piece) {                                                   \
+  case PieceEnum::FLAT:                                                        \
+    data->sender->send_event((int8_t)Topic::INTERNAL,                          \
+                             (int)Internal_Enum::RESET_TO_FLAT);               \
+    break;                                                                     \
+  case PieceEnum::TALL:                                                        \
+    data->sender->send_event((int8_t)Topic::INTERNAL,                          \
+                             (int)Internal_Enum::RESET_TO_TALL);               \
+    break;                                                                     \
+  case PieceEnum::TALL_WITH_METAL:                                             \
+    data->sender->send_event((int8_t)Topic::INTERNAL,                          \
+                             (int)Internal_Enum::RESET_TO_TALL_W_METAL);       \
+    break;                                                                     \
+  default:                                                                     \
+    break;                                                                     \
+  }                                                                            \
+  Piece *piece_to_delete = localdata_.piece;                                   \
+  data->pieces_map->erase(localdata_.piece->id);                               \
+  delete piece_to_delete;                                                      \
+  return State::EXIT_STATE;
+
+// In your MotorStateMacros.h or similar header
+#define AREA_AS_INT_TO_STATE(data, state_int)                                  \
+  ((state_int) == 0)   ? static_cast<State *>(new Fast(data))                  \
+  : ((state_int) == 1) ? static_cast<State *>(new Slow(data))                  \
+  : ((state_int) == 2) ? static_cast<State *>(new Stop(data))                  \
+                       : nullptr
+
+// MotorControl//MotorControl//MotorControl//MotorControl//MotorControl//MotorControl//MotorControl
+#define TOPIC_TO_MOTOR_STATE(topic)                                            \
+  ((topic) == static_cast<int8_t>(Topic::MOTOR_STOP_FSM)                       \
+       ? MotorPieceState::STOPPED                                              \
+       : ((topic) == static_cast<int8_t>(Topic::MOTOR_SLOW)                    \
+              ? MotorPieceState::SLOW                                          \
+              : ((topic) == static_cast<int8_t>(Topic::MOTOR_FAST)             \
+                     ? MotorPieceState::FAST                                   \
+                     : ((topic) == static_cast<int8_t>(Topic::DELETE_W_MOTOR)  \
+                            ? MotorPieceState::DELETE_W_MOTOR                  \
+                            : static_cast<MotorPieceState>(-1)))))

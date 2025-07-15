@@ -10,7 +10,7 @@ CalRampSlow::CalRampSlow(ContextData* data) : OrthState(data,
     //substate = new SubState(data);
 }
 
-CalRampSlow::CalRampSlow(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates) {
+CalRampSlow::CalRampSlow(ContextData* data, std::deque<State*> initial_substates) : OrthState(data, initial_substates, new CalibrationFinished(data), true) {
 }
 
 CalRampSlow::~CalRampSlow() {}

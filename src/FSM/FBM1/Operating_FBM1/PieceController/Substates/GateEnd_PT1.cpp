@@ -35,7 +35,7 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 
 	switch(current_area) {
 		case Area::GATE_END: {
-				if(data->piece_near_adc) {
+				if(data->piece_near_adc && distance.second > 70) {
 					data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
 					return new PendingTransferRequestNotAtEnd(data, localdata_);
 				}

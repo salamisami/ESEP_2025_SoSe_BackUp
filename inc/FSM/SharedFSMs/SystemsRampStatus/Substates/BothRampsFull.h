@@ -20,7 +20,7 @@ public: //================================================ public functions ====
     
 	State* com_ramp_not_full() override;
 	State* ramp_not_full() override;
-	State* sorting_out() override;
+	State* sort_out() override;
 	//State* error_both_r_full() override;
 
 private: //================================================ private variables ================================================

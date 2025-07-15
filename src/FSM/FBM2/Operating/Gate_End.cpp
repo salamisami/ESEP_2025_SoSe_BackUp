@@ -19,7 +19,7 @@ Gate_End::~Gate_End() {}
 //===================================================== public functions =====================================================
 void Gate_End::entry() {
 	PRINT_STATE;
-	data->timer->start_timer(100, TIMER_ID::GATE_END);
+	data->timer->start_timer(1000, TIMER_ID::GATE_END);
 }
 
 void Gate_End::exit() {

@@ -16,11 +16,11 @@ ComRampFull::~ComRampFull() {}
 void ComRampFull::entry(){
     //data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON_FAST);
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void ComRampFull::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

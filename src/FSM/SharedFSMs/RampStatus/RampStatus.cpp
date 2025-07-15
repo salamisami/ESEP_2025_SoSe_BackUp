@@ -15,10 +15,10 @@ RampStatus::~RampStatus() {}
 //===================================================== public functions =====================================================
 void RampStatus::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
 }
 
 void RampStatus::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }

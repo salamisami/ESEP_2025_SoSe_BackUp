@@ -15,12 +15,12 @@ PiecesTooClose::~PiecesTooClose() {}
 //===================================================== public functions =====================================================
 void PiecesTooClose::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::PIECES_TOO_CLOSE);
 }
 
 void PiecesTooClose::exit(){
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

@@ -16,12 +16,12 @@ SystemsRampStatus::~SystemsRampStatus() {}
 //===================================================== public functions =====================================================
 void SystemsRampStatus::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
     HState::entry();
 }
 
 void SystemsRampStatus::exit(){
     HState::exit();
-    //TODO CODE
+    
 	PRINT_STATE;
 }

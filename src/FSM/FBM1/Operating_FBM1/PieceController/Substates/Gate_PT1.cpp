@@ -9,39 +9,11 @@ Gate_PT1::~Gate_PT1() {}
 
 //===================================================== private functions =====================================================
 
-PieceEnum Gate_PT1::validate_piece(const ScannedPiece& scanned_piece, const bool& has_metal) {
-	printf("Gate_PT1: scanned piece: %d, is metal: %d\n",(int)scanned_piece, (int) has_metal);
-	PieceEnum predicted_piece = PieceEnum::UNKNOWN;
-	if(has_metal) {
-		switch(scanned_piece) {
-			case ScannedPiece::HOLE:
-				predicted_piece = PieceEnum::TALL_WITH_METAL;
-				break;
-			default:
-				break;
-		}
-	} else {
-		switch(scanned_piece) {
-			case ScannedPiece::FLAT:
-				predicted_piece = PieceEnum::FLAT;
-				break;
-			case ScannedPiece::HOLE:
-				predicted_piece = PieceEnum::TALL;
-			default:
-				break;
-		}
-	}
-	printf("Gate_PT1: predicted_piece: %d\n",(int)predicted_piece);
-	return predicted_piece;
-}
+
 
 //===================================================== public functions =====================================================
 void Gate_PT1::entry() {
 	PRINT_STATE;
-	auto piece = localdata_.piece;
-	piece->piece_tracker->update_distance_force(Area::GATE, 0);
-	localdata_.validated_type = validate_piece(localdata_.ist_type, localdata_.is_metal);
-	data->sender->send_event((int8_t)Topic::CHECK_PIECE, (int) localdata_.validated_type);
 }
 
 void Gate_PT1::exit() {

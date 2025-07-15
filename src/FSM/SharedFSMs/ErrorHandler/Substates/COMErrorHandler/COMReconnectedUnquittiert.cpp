@@ -15,7 +15,7 @@ COMReconnectedUnquittiert::~COMReconnectedUnquittiert() {}
 //===================================================== public functions =====================================================
 void COMReconnectedUnquittiert::entry(){
 	PRINT_STATE;
-    //TODO CODE
+    
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON_SLOW);
 }
 
@@ -25,7 +25,7 @@ void COMReconnectedUnquittiert::exit(){
 
     data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::COM_ERROR_RESOLVED);
     data->error_warning_counter->error_or_warning_resolved();
-    //TODO CODE
+    
 	PRINT_STATE;
 }
 

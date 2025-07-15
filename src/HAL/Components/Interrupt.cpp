@@ -182,7 +182,7 @@ void Interrupt::clean_internal_pulse_message() {
 
 int Interrupt::registerToBit(uint32_t inputRegister) {
     if(inputRegister == 0 || (inputRegister & (inputRegister - 1)) != 0) {
-        DEBUG("Cannot convert register to bit offset, value is not a power of 2");
+        DEBUG("[Warning] Interrupt: Cannot convert register to bit offset, value is not a power of 2");
         return -1;
     }
     return __builtin_ctz(inputRegister);  // Count trailing zeros

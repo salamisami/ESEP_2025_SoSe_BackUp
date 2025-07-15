@@ -17,6 +17,12 @@ void EStop::entry() {
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
 	data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+
+	for(auto& pair : *data->pieces_map) {
+		delete pair.second;
+	}
+	data->pieces_map->clear();  // clear entire map at once
+	
 	substate->entry();
 }
 
