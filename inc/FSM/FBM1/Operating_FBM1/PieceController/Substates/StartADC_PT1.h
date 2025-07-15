@@ -19,6 +19,7 @@ public: //================================================ public functions ====
 	State* clone() override;
 
 	State* fbm_2_ready() override;
+	State* fbm_2_busy() override;
 
 	State* timer(TIMER_ID id) override;
     

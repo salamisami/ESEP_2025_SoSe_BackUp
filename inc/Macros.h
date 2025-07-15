@@ -30,7 +30,7 @@
 
 #define BROKER_ADR "tcp://192.168.101.8:1883"
 
-#define DEBUG(msg) //std::cout << msg << std::endl
+#define DEBUG(msg) std::cout << msg << std::endl
 #endif
 
 #ifdef VERBOSE_STATES

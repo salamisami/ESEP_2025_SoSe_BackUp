@@ -43,10 +43,8 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 			}
 
 
-			if(data->piece_near_end) {
-				data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
+			if(data->piece_near_end && current_position < MOTOR_SLOW_POS_AT_START_ADC) {
 				data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::REQUEST_TRANSFER);
-				return new StartADC_PT1(data, localdata_);
 			}
 
 			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC) {
@@ -66,14 +64,14 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 }
 
 State* StartADC_PT1::fbm_2_ready() {
-	if(data->piece_near_end) {
-		data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
-		return new ADC_PT1(data, localdata_);
-	}
+	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
 	return nullptr;
 }
 
-
+State* StartADC_PT1::fbm_2_busy() {
+	data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
+	return nullptr;
+}
 // State* StartADC_PT1::timer(TIMER_ID id) {
 // 	if(id != TIMER_ID::STARTADC_PT1) {
 // 		return nullptr;
