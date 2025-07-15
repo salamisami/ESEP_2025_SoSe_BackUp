@@ -248,11 +248,11 @@ public: //================================================ public functions
   virtual State *com_button_reset_pressed() {
     return handle_event_using_function(&State::com_button_reset_pressed);
   }
-  virtual State *com_reset_flat() {
-    return handle_event_using_function(&State::com_reset_flat);
+  virtual State *com_reset_to_flat() {
+    return handle_event_using_function(&State::com_reset_to_flat);
   }
-  virtual State *com_reset_tall() {
-    return handle_event_using_function(&State::com_reset_tall);
+  virtual State *com_reset_to_tall() {
+    return handle_event_using_function(&State::com_reset_to_tall);
   }
   virtual State *com_reset_to_tall_w_metal() {
     return handle_event_using_function(&State::com_reset_to_tall_w_metal);
