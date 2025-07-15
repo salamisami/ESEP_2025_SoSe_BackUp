@@ -10,7 +10,7 @@ ADC_Class::ADC_Class(I_Sender* sender)
     running(false) {
     ThreadCtl(_NTO_TCTL_IO, 0);
     bandVoltage = ADC_Utilities::define_band_voltage(adc, tscadc);
-    std::cout << "Bandvoltage :" << bandVoltage << std::endl;
+    //std::cout << "Bandvoltage :" << bandVoltage << std::endl;
 }
 
 ADC_Class::~ADC_Class() {
