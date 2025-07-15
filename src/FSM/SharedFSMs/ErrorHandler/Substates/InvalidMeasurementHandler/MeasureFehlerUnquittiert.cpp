@@ -16,7 +16,7 @@ void MeasureFehlerUnquittiert::entry(){
 	PRINT_STATE;
     
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int)ActuatorEnum::TRAFFIC_RED_ON_SLOW);
-    data->sender->send_event((int8_t)Topic::MOTOR_STOP_FSM, Error_Enum::ERROR_INVALID_MESURE);
+    data->sender->send_event((int8_t)Topic::MOTOR_STOP_FSM, (int) Error_Enum::ERROR_INVALID_MESURE);
     data->error_warning_counter->error_or_warning_occured();
 }
 
