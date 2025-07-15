@@ -71,7 +71,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
             if (bauteilErkannt) {
                 werte.push_back(sensorVoltage);
                 int messpunkte = werte.size();
-                if ((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && (messpunkte >= (minMesspunkte - 3))) {
+                if ((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && (messpunkte >= (minMesspunkte + W_SIZE_TOLERANZ))) {
                 	std::cout << "Mespunkte Kalibrierung: " << messpunkte << std::endl;
                 	if(first){
                 		minMesspunkte = werte.size();

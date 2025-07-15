@@ -36,7 +36,7 @@
 #define UDP_WATCHDOG_PORT       12345
 #define UDP_WATCHDOG_PERIOD_MS  100
 #define UDP_WATCHDOG_TIMEOUT_MS 200
-#define PEER_UDP_IP "192.168.101.105" // ANPASSEN!
+#define PEER_UDP_IP "192.168.101.108" // ANPASSEN!
 #define LOCAL_UDP_IP "0.0.0.0"
 // ================================
 
