@@ -59,7 +59,7 @@
 
 //piece appeared: runterstellen
 //piece missing: hochstellen
-#define TIMESTAMP_FACTOR 1
+#define TIMESTAMP_FACTOR 1.05
 #define GATE_END_FACTOR 1.05
 
 
