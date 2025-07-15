@@ -31,7 +31,7 @@
 #define BROKER_ADR "tcp://192.168.101.8:1883"
 
 #define DEBUG(msg) std::cout << msg << std::endl
-#endif
+
 
 #ifdef VERBOSE_STATES
 #define PRINT_STATE std::cout << __PRETTY_FUNCTION__ << std::endl
@@ -143,3 +143,6 @@
                      : ((topic) == static_cast<int8_t>(Topic::DELETE_W_MOTOR)  \
                             ? MotorPieceState::DELETE_W_MOTOR                  \
                             : static_cast<MotorPieceState>(-1)))))
+
+
+#endif
