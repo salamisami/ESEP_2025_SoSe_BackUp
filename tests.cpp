@@ -828,6 +828,7 @@ TEST_F(RealImplementationSetup, ServiceModeFullTest) {
 //     CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
 // }
 TEST_F(RealImplementationSetup, MotorControlDeepHistory) {
+
   EXPECT_STATE_CONTAINS("IdleIM");
   remote_control->send_event((int8_t)Topic::INTERRUPT,
                              (int)InterruptEnum::BUTTON_START_PRESSED);
@@ -835,6 +836,12 @@ TEST_F(RealImplementationSetup, MotorControlDeepHistory) {
   remote_control->send_event((int8_t)Topic::INTERRUPT,
                              (int)InterruptEnum::BUTTON_START_RELEASED);
   EXPECT_STATE_CONTAINS("Idle");
+
+  remote_control->send_event((int8_t)Topic::INTERRUPT,
+                             (int)InterruptEnum::LASER_FRONT_BLOCKED);
+  WAIT(10);
+  EXPECT_STATE_CONTAINS("StartingAreaBlocked");
+  EXPECT_STATE_CONTAINS("Start_PT1");
   remote_control->send_event((int8_t)Topic::MOTOR_FAST, 1);
   EXPECT_STATE_CONTAINS("Fast");
   remote_control->send_event((int8_t)Topic::INTERRUPT,
@@ -1222,7 +1229,7 @@ TEST_F(RampErrorHandlerSetup, RampComErrorUnquittiertTest) {
 // {
 //     remote_control->send_event((int8_t)Topic::COM,
 //     (int)COM_Enum::REQUEST_TRANSFER);
-//     EXPECT_STATE_INSTANT("WaitingForTransferStart");
+//     EXPECT_STATE_INSTANT("ReadyForPiece");
 //     remote_control->send_event((int8_t)Topic::COM,
 //     (int)COM_Enum::TRANSFER_START_TALL); EXPECT_STATE_INSTANT("Transfer");
 //     remote_control->send_event((int8_t)Topic::INTERRUPT,

@@ -5,6 +5,7 @@
 #include "State.h"
 #include "ADC_PT1.h"
 #include "LocalDataPT1.h"
+#include "PendingTransferRequestNotAtEnd.h"
 
 class StartADC_PT1 : public State {
 public: //============================================ constructors & destructors ============================================
@@ -16,6 +17,9 @@ public: //================================================ public functions ====
     void entry() override;
     void exit() override;
 	State* clone() override;
+
+	State* fbm_2_ready() override;
+	State* fbm_2_busy() override;
 
 	State* timer(TIMER_ID id) override;
     

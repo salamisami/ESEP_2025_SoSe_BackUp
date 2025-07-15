@@ -21,7 +21,7 @@ public:
 	void entry() override;
 	void exit() override;
 	State* clone() override {return nullptr;};
-	State* error_c_lost_mqtt() override;
+	State* com_mqtt_disconnected() override;
 };
 
 

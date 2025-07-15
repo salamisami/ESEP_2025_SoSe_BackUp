@@ -30,8 +30,9 @@ State* PendingTransferRequestNotAtEnd::fbm_2_busy() {
 }
 
 State* PendingTransferRequestNotAtEnd::fbm_2_ready() {
-  data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) localdata_.piece->id);
-  return new MovingToEnd_PT1(data, localdata_);
+  data->sender->send_event((int8_t) Topic::ADC, (int) ADC_Enum::ADC_MESURE);
+  data->sender->send_event((int8_t) Topic::MOTOR_SLOW, (int) localdata_.piece->id);
+  return new ADC_PT1(data, localdata_);
 }
 
 

@@ -11,10 +11,10 @@
 #include "SortingOrder.h"
 #include "StartingAreaTracker.h"
 #include "ErrorHandler.h"
-#include "ReadyForPiece.h"
 #include "IdleSorting.h"
 #include "RampNotFull.h"
 #include "NoRampFull.h"
+#include "ReadyForPiece.h"
 
 class Operating : public OrthState {
 //============================================ constructors & destructors ============================================

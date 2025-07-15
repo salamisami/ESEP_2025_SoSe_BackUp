@@ -56,7 +56,6 @@ State* TransferDone::laser_front_unblocked() {
 		data->piece_FBM2_soll->type == PieceEnum::TALL_WITH_METAL) {
 		return new Start_ADC(data);
 	}
-	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_APPEARED);
 	return new Pieceappeared(data);
 }
 State* TransferDone::laser_sorting_gate_blocked() {

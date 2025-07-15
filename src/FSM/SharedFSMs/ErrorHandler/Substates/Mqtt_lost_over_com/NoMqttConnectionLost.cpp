@@ -17,6 +17,6 @@ void NoMqttConnectionLost::entry(){}
 
 void NoMqttConnectionLost::exit() {}
 
-State* NoMqttConnectionLost::error_c_lost_mqtt(){
+State* NoMqttConnectionLost::com_mqtt_disconnected(){
 	return new MqttConnectionLostOverCom(data);
 }
