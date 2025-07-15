@@ -34,6 +34,7 @@
 #define DEBUG(msg)
 #else
 #define DEBUG(msg) std::cout << msg << std::endl
+#endif
 
 
 #ifdef VERBOSE_STATES
