@@ -19,6 +19,7 @@ Start_Gate::~Start_Gate() {}
 //===================================================== public functions =====================================================
 void Start_Gate::entry() {
 	PRINT_STATE;
+	data->timer->start_timer(UPDATE_PIECE_INTERVAL, TIMER_ID::START_GATE);
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
@@ -68,4 +69,20 @@ State* Start_Gate::laser_front_blocked() {
 }
 State* Start_Gate::laser_ramp_blocked() {
 	return new Pieceappeared(data);
+}
+
+
+State* Start_Gate::timer(TIMER_ID id) {
+	if(id != TIMER_ID::START_GATE) {
+		return nullptr;
+	}
+	auto piece = data->piece_FBM2_soll;
+	auto distance = piece->piece_tracker->get_distance();
+	Area current_area = distance.first;
+
+	if(current_area == Area::GATE_END){
+		return new Piece_Missing(data);
+	}
+
+	return new Start_Gate(data);
 }

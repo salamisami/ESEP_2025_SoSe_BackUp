@@ -545,14 +545,14 @@ RampNoError CalibNoWarning ReplayNoWarning RampTimer NoRampFull");
 
 TEST_F(SortingOrderSetup, SortingOrderPositiveTest) {
   EXPECT_STATE("PieceFlat");
-  data->is_ramp_full = false;
+  data->is_ramp_full_local = false;
   remote_control->send_event((int8_t)Topic::CHECK_PIECE, (int)PieceEnum::FLAT);
   EXPECT_STATE("PieceTall");
-  data->is_ramp_full = false;
+  data->is_ramp_full_local = false;
 
   remote_control->send_event((int8_t)Topic::CHECK_PIECE, (int)PieceEnum::TALL);
   EXPECT_STATE("PieceTallWithMetal");
-  data->is_ramp_full = false;
+  data->is_ramp_full_local = false;
   remote_control->send_event((int8_t)Topic::CHECK_PIECE,
                              (int)PieceEnum::TALL_WITH_METAL);
   EXPECT_STATE("PieceFlat");
@@ -561,7 +561,7 @@ TEST_F(SortingOrderSetup, SortingOrderPositiveTest) {
 TEST_F(SortingOrderSetup, SortingOrderNegativeTest) {
   // test PieceFlat
   EXPECT_STATE("PieceFlat");
-  data->is_ramp_full = false;
+  data->is_ramp_full_local = false;
   remote_control->send_event((int8_t)Topic::CHECK_PIECE,
                              (int)PieceEnum::UNKNOWN);
   EXPECT_STATE("PieceFlat");

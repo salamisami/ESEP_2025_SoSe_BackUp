@@ -59,7 +59,7 @@ public: //================================================ public functions
             MotorPieceState::DELETE_W_MOTOR, id);
         data->workpieces = !data->workpieceList.isEmpty();
       } else {
-        throw("ID doesn't exist in workpiece list\n");
+        DEBUG("ID doesn't exist in workpiece list");
       }
     } else {
       // Request =/= speed

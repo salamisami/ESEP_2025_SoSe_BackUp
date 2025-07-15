@@ -24,10 +24,10 @@ ContextData::~ContextData() {
     }
     delete operating_history;
     delete pieces_map;
-   // delete piece_tracker;
+    // delete piece_tracker;
     delete timer;
     delete error_warning_counter;
-    
+
     while(!modehandler_history->empty()) {
         current_state = modehandler_history->top();  // For stack, use top() instead of iterating
         delete current_state;
@@ -41,8 +41,29 @@ ContextData::~ContextData() {
         estop_history->pop();
     }
     delete estop_history;
-    
+
 }
+
+void ContextData::clean() {
+    workpieceList.clean();
+
+    piece_near_adc = false;
+    piece_near_end = false;
+
+    workpieces = false;
+    motor_slowed = false;
+    motor_stopped = false;
+
+    MotorPieceState current_motor_speed = MotorPieceState::STOPPED;
+
+    for(auto& piece: *pieces_map){
+        delete piece.second;
+    }
+    pieces_map->clear();
+
+}
+
+
 
 //===================================================== private functions =====================================================
 

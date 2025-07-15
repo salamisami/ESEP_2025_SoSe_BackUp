@@ -22,7 +22,7 @@ void PieceAppearedFehlerUnquittiert::entry(){
 }
 
 void PieceAppearedFehlerUnquittiert::exit(){
-    
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_OFF);
 	PRINT_STATE;
 }
 

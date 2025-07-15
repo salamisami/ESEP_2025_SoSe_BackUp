@@ -64,12 +64,12 @@ void ADC_Class::measureClassifySend() {
 
 void ADC_Class::adc_estop() {
     adcStopped = true;
-    std::cout << "Estop erhalten. Stoppe die ADC gerade 🛑" << std::endl;
+    //std::cout << "Estop erhalten. Stoppe die ADC gerade 🛑" << std::endl;
 }
 
 void ADC_Class::adc_reset() {
     adcStopped = false;
-    std::cout << "Reset Erhalten. ADC funktionen wieder verfügbar ✅" << std::endl;
+    //std::cout << "Reset Erhalten. ADC funktionen wieder verfügbar ✅" << std::endl;
 }
 
 //TODO the event handling must be asynchronous

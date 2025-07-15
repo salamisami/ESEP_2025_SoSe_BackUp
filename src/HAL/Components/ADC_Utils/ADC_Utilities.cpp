@@ -233,13 +233,13 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     bool hatEchtesLoch = ((avg - minV) > LOCH_TIEFE_MIN) && (lochBreite >= LOCH_BREITE_MIN);
 
     // Debug-Ausgabe für den Anwender
-    std::cout << "avg: " << avg << ", minV: " << minV << ", stddev: " << stddev << ", range: " << range << "\n";
-    std::cout << "Loch erkannt? ";
-    if(hatEchtesLoch){
-    	std::cout << "JA, LochBreite: " << (value.size()-lochBreite) << std::endl;
-    }else{
-    	std::cout << "NEIN \n";
-    }
+    //std::cout << "avg: " << avg << ", minV: " << minV << ", stddev: " << stddev << ", range: " << range << "\n";
+    //std::cout << "Loch erkannt? ";
+    // if(hatEchtesLoch){
+    // 	std::cout << "JA, LochBreite: " << (value.size()-lochBreite) << std::endl;
+    // }else{
+    // 	std::cout << "NEIN \n";
+    // }
     // Zuerst Profile OHNE Loch prüfen, wenn kein echtes Loch vorliegt ---
     if (!hatEchtesLoch) {
         for (const auto& p : profile) {
@@ -349,8 +349,8 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
         werte.push_back(sensorVoltage);
         int messpunkte = werte.size();
         if((sensorVoltage > bandVoltage - TRIGGER_SCHRITT)  && (messpunkte >= (minSize + W_SIZE_TOLERANZ))){
-        	std::cout << "Mespunkte Operating: " << messpunkte << std::endl;
-        	std::cout << "Min Vorgabe Operating: " << (minSize + W_SIZE_TOLERANZ) << std::endl;
+        	//std::cout << "Mespunkte Operating: " << messpunkte << std::endl;
+        	//std::cout << "Min Vorgabe Operating: " << (minSize + W_SIZE_TOLERANZ) << std::endl;
             break;
         }
         if(werte.size() >= MAX_WERT) {

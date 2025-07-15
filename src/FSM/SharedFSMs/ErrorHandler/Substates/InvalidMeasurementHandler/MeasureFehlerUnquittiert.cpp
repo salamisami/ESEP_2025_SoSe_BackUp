@@ -17,11 +17,12 @@ void MeasureFehlerUnquittiert::entry(){
     
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int)ActuatorEnum::TRAFFIC_RED_ON_SLOW);
     data->sender->send_event((int8_t)Topic::MOTOR_STOP_FSM, (int) Error_Enum::ERROR_INVALID_MESURE);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_ON);
     data->error_warning_counter->error_or_warning_occured();
 }
 
 void MeasureFehlerUnquittiert::exit(){
-    
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_OFF);
 	PRINT_STATE;
 }
 

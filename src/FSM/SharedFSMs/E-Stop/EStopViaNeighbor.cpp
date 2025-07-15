@@ -16,6 +16,7 @@ void EStopViaNeighbor::entry(){
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_RED_ON_SLOW);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_OFF);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_OFF);
+    printf("E-Stop Pressed on FBM2!\n");
 }
 
 void EStopViaNeighbor::exit(){
