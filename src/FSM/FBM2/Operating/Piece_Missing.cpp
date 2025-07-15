@@ -28,6 +28,7 @@ void Piece_Missing::entry() {
 		delete data->piece_FBM2_soll;
 		data->piece_FBM2_soll = nullptr;
 	}
+	printf("Piece Missing. Please press the Reset Button.\n");
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
