@@ -102,25 +102,25 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         float stddev = std::sqrt(sumSquares / werte.size() - avg * avg);
         float range = maxV - minV;
 
-        float lochMin = 0;
-        int start = 0, ende = 0;
-        if (hatLoch) {
-            int safeStart = std::min<int>(10, werte.size() - 1);
-            lochMin = werte[safeStart];
-            int minIdx = safeStart;
-            for (size_t i = 0; i < werte.size(); ++i) {
-                if (werte[i] < lochMin) { lochMin = werte[i]; minIdx = i; }
-            }
-            float lochSchwelle = lochMin + 0.05f;
-            start = -1; ende = -1;
-            for (size_t i = 0; i < werte.size(); ++i) {
-                if (werte[i] <= lochSchwelle) {
-                    if (start == -1) start = i;
-                    ende = i;
-                }
-            }
-            if (start == -1) { start = minIdx; ende = minIdx; }
-        }
+//        float lochMin = 0;
+//        int start = 0, ende = 0;
+//        if (hatLoch) {
+//            int safeStart = std::min<int>(10, werte.size() - 1);
+//            lochMin = werte[safeStart];
+//            int minIdx = safeStart;
+//            for (size_t i = 0; i < werte.size(); ++i) {
+//                if (werte[i] < lochMin) { lochMin = werte[i]; minIdx = i; }
+//            }
+//            float lochSchwelle = lochMin + 0.05f;
+//            start = -1; ende = -1;
+//            for (size_t i = 0; i < werte.size(); ++i) {
+//                if (werte[i] <= lochSchwelle) {
+//                    if (start == -1) start = i;
+//                    ende = i;
+//                }
+//            }
+//            if (start == -1) { start = minIdx; ende = minIdx; }
+//        }
 
         Profil p;
         p.name = name;
@@ -132,15 +132,15 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         p.range = range;
         p.minSize = minMesspunkte;
 
-        if (hatLoch) {
-            p.lochMin = lochMin;
-            p.lochStartIndex = start;
-            p.lochEndIndex = ende;
-        } else {
-            p.lochMin = 0.0f;
-            p.lochStartIndex = 0;
-            p.lochEndIndex = 0;
-        }
+//        if (hatLoch) {
+//            p.lochMin = lochMin;
+//            p.lochStartIndex = start;
+//            p.lochEndIndex = ende;
+//        } else {
+//            p.lochMin = 0.0f;
+//            p.lochStartIndex = 0;
+//            p.lochEndIndex = 0;
+//        }
 
         saveProfile(p);
     }
@@ -257,8 +257,8 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
         for (const auto& p : profile) {
             if (p.hatLoch) {
                 //Loch-Match: Mindesttiefe, Position & Bereichsvergleich
-                bool tiefeOK = std::fabs(minV - p.lochMin) < 0.6f;
-                bool indexOK = (minIndex >= p.lochStartIndex - 2 && minIndex <= p.lochEndIndex + 2);
+//                bool tiefeOK = std::fabs(minV - p.lochMin) < 0.6f;
+//                bool indexOK = (minIndex >= p.lochStartIndex - 10 && minIndex <= p.lochEndIndex + 10);
                 bool avgOK = std::fabs(avg - p.avg) < 0.3f;
                 if (avgOK) {
                     std::cout << "Profil erkannt✅: " << p.name << " (mit Loch)\n";
