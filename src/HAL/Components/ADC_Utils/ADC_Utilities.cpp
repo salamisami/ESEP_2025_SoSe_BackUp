@@ -35,10 +35,10 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
     struct timespec delay = {0, SAMPLE_DELAY_NS};
 
     std::vector<Bauteil> bauteile = {
-        { "WF", ADC_Enum::ADC_WF_DETECT, false },
-        { "W_B", ADC_Enum::ADC_W_B_DETECT, true },
-        { "W_BB", ADC_Enum::ADC_W_B_DETECT, true },
-        { "W_BM", ADC_Enum::ADC_W_B_DETECT, true }
+        { "Flat Piece", ADC_Enum::ADC_WF_DETECT, false },
+        { "Tall Piece with Hole", ADC_Enum::ADC_W_B_DETECT, true },
+        { "Tall Piece with Big Hole", ADC_Enum::ADC_W_B_DETECT, true },
+        { "Tall Piece with Hole and Metal", ADC_Enum::ADC_W_B_DETECT, true }
     };
 
     std::ofstream clear(PROFIL_DATEI, std::ios::trunc);

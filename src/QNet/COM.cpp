@@ -333,7 +333,7 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
              * reply now or later. */
             break;
         case 12:
-            printf(" Sending EOK, connect\n");
+            DEBUG(" Sending EOK, connect\n");
             MsgReply(rcvid, EOK, NULL, 0);
             break;
         default:
