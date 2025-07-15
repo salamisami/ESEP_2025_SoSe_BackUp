@@ -10,7 +10,7 @@ ADC_Class::ADC_Class(I_Sender* sender)
     running(false) {
     ThreadCtl(_NTO_TCTL_IO, 0);
     bandVoltage = ADC_Utilities::define_band_voltage(adc, tscadc);
-    std::cout << "Bandvoltage :" << bandVoltage << std::endl;
+    //std::cout << "Bandvoltage :" << bandVoltage << std::endl;
 }
 
 ADC_Class::~ADC_Class() {
@@ -64,12 +64,12 @@ void ADC_Class::measureClassifySend() {
 
 void ADC_Class::adc_estop() {
     adcStopped = true;
-    std::cout << "Estop erhalten. Stoppe die ADC gerade 🛑" << std::endl;
+    //std::cout << "Estop erhalten. Stoppe die ADC gerade 🛑" << std::endl;
 }
 
 void ADC_Class::adc_reset() {
     adcStopped = false;
-    std::cout << "Reset Erhalten. ADC funktionen wieder verfügbar ✅" << std::endl;
+    //std::cout << "Reset Erhalten. ADC funktionen wieder verfügbar ✅" << std::endl;
 }
 
 //TODO the event handling must be asynchronous

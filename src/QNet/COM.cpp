@@ -124,7 +124,7 @@ void COM::runClient() {
             try {
                 _client = make_unique<Thread_COM::Sender>(_clientSendName);
                 if(_client->getcoid() >= 0) {
-                    COUT("Connection established successfully");
+                    DEBUG("Connection established successfully");
                     break;
                 }
             } catch(...) {
@@ -226,7 +226,7 @@ int COM::sendToServer(const _pulse& msg, int priority) {
 
 // Server side implementation
 void COM::runServer() {
-    COUT("COM server started.");
+    DEBUG("COM server started.");
     bool disconnected = true;
     while(running) {
         struct _pulse event;
@@ -294,7 +294,7 @@ void COM::updateHeartbeat() {
 
 // ================ UDP-Watchdog ================
 void COM::runUdpWatchdog() {
-    std::cerr << "[UDP-Watchdog] Sende und empfange..." << std::endl;
+    //std::cerr << "[UDP-Watchdog] Sende und empfange..." << std::endl;
 
     int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if(sockfd < 0) {
@@ -584,7 +584,7 @@ void COM::handle_QNX_IO_msg(_pulse* msg, int rcvid) {
 
             timeoutEvent.code = comCode;
             timeoutEvent.value.sival_int = value;
-            COUT("Sending Timeout Notification");
+            DEBUG("Sending Timeout Notification");
             sendToDispatcher(timeoutEvent); // Andere Maschine disconeccted -> Timeout
             ConnectDetach(msg->scoid);
             break;

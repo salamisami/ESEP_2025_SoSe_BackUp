@@ -2,7 +2,7 @@
 
 //================================================= constructors & destructors
 //=================================================
-Idle::Idle(ContextData *data) : State(data) {
+Idle::Idle(ContextData* data) : State(data) {
   // substate = new SubState(data);
 }
 
@@ -14,47 +14,52 @@ Idle::~Idle() {}
 //===================================================== public functions
 //=====================================================
 void Idle::entry() {
-
+  PRINT_STATE;
   data->current_motor_speed = MotorPieceState::STOPPED;
-  if (data->motorpieceRequest != (int8_t)Topic::DELETE_W_MOTOR) {
+  if(data->motorpieceRequest != (int8_t) Topic::DELETE_W_MOTOR) {
     MotorControl::updateData(data, MotorPieceState::STOPPED);
   } else {
 
     data->current_motor_speed = MotorPieceState::STOPPED;
   }
-  data->sender->send_event((int8_t)Topic::ACTUATOR,
-                           (int)ActuatorEnum::MOTOR_STOP,
-                           (int)EventPriority::SECOND_PRIO);
-  data->sender->send_event((int8_t)Topic::ACTUATOR,
-                           (int)ActuatorEnum::MOTOR_SLOW_OFF,
-                           (int)EventPriority::SECOND_PRIO);
-  PRINT_STATE;
+  data->sender->send_event((int8_t) Topic::ACTUATOR,
+    (int) ActuatorEnum::MOTOR_STOP,
+    (int) EventPriority::SECOND_PRIO);
+  data->sender->send_event((int8_t) Topic::ACTUATOR,
+    (int) ActuatorEnum::MOTOR_SLOW_OFF,
+    (int) EventPriority::SECOND_PRIO);
+
+  for(auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second; // pair.second is the value (Piece*)
+    // Switch case for motor states
+    piece->piece_tracker->stop();
+  }
 }
 
 void Idle::exit() { PRINT_STATE; }
 
-State *Idle::motor_fast() {
+State* Idle::motor_fast() {
   data->workpieceList.updateDataMotorFlags(
-      data->workpieceList, data->motor_stopped, data->motor_slowed,
-      MotorPieceState::FAST, data->event_payload);
+    data->workpieceList, data->motor_stopped, data->motor_slowed,
+    MotorPieceState::FAST, data->event_payload);
   return AREA_AS_INT_TO_STATE(
-      data, MotorControl::motorTransition(data, MotorPieceState::FAST));
+    data, MotorControl::motorTransition(data, MotorPieceState::FAST));
 }
 
-State *Idle::motor_stop_fsm() {
+State* Idle::motor_stop_fsm() {
   data->workpieceList.updateDataMotorFlags(
-      data->workpieceList, data->motor_stopped, data->motor_slowed,
-      MotorPieceState::STOPPED, data->event_payload);
+    data->workpieceList, data->motor_stopped, data->motor_slowed,
+    MotorPieceState::STOPPED, data->event_payload);
   return AREA_AS_INT_TO_STATE(
-      data, MotorControl::motorTransition(data, MotorPieceState::STOPPED));
+    data, MotorControl::motorTransition(data, MotorPieceState::STOPPED));
 }
 
-State *Idle::motor_slow() {
+State* Idle::motor_slow() {
   data->workpieceList.updateDataMotorFlags(
-      data->workpieceList, data->motor_stopped, data->motor_slowed,
-      MotorPieceState::SLOW, data->event_payload);
+    data->workpieceList, data->motor_stopped, data->motor_slowed,
+    MotorPieceState::SLOW, data->event_payload);
   return AREA_AS_INT_TO_STATE(
-      data, MotorControl::motorTransition(data, MotorPieceState::SLOW));
+    data, MotorControl::motorTransition(data, MotorPieceState::SLOW));
 }
 
-State *Idle::clone() { return new Idle(data); }
+State* Idle::clone() { return new Idle(data); }

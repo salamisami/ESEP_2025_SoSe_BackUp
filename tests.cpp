@@ -545,14 +545,14 @@ RampNoError CalibNoWarning ReplayNoWarning RampTimer NoRampFull");
 
 TEST_F(SortingOrderSetup, SortingOrderPositiveTest) {
   EXPECT_STATE("PieceFlat");
-  data->is_ramp_full = false;
+  data->is_ramp_full_local = false;
   remote_control->send_event((int8_t)Topic::CHECK_PIECE, (int)PieceEnum::FLAT);
   EXPECT_STATE("PieceTall");
-  data->is_ramp_full = false;
+  data->is_ramp_full_local = false;
 
   remote_control->send_event((int8_t)Topic::CHECK_PIECE, (int)PieceEnum::TALL);
   EXPECT_STATE("PieceTallWithMetal");
-  data->is_ramp_full = false;
+  data->is_ramp_full_local = false;
   remote_control->send_event((int8_t)Topic::CHECK_PIECE,
                              (int)PieceEnum::TALL_WITH_METAL);
   EXPECT_STATE("PieceFlat");
@@ -561,7 +561,7 @@ TEST_F(SortingOrderSetup, SortingOrderPositiveTest) {
 TEST_F(SortingOrderSetup, SortingOrderNegativeTest) {
   // test PieceFlat
   EXPECT_STATE("PieceFlat");
-  data->is_ramp_full = false;
+  data->is_ramp_full_local = false;
   remote_control->send_event((int8_t)Topic::CHECK_PIECE,
                              (int)PieceEnum::UNKNOWN);
   EXPECT_STATE("PieceFlat");
@@ -828,7 +828,7 @@ TEST_F(RealImplementationSetup, ServiceModeFullTest) {
 //     CalibNoWarning ReplayNoWarning RampNotFull NoRampFull");
 // }
 TEST_F(RealImplementationSetup, MotorControlDeepHistory) {
-
+  int id = data->available_id;
   EXPECT_STATE_CONTAINS("IdleIM");
   remote_control->send_event((int8_t)Topic::INTERRUPT,
                              (int)InterruptEnum::BUTTON_START_PRESSED);
@@ -842,8 +842,9 @@ TEST_F(RealImplementationSetup, MotorControlDeepHistory) {
   WAIT(10);
   EXPECT_STATE_CONTAINS("StartingAreaBlocked");
   EXPECT_STATE_CONTAINS("Start_PT1");
-  remote_control->send_event((int8_t)Topic::MOTOR_FAST, 1);
+  remote_control->send_event((int8_t)Topic::MOTOR_FAST, id);
   EXPECT_STATE_CONTAINS("Fast");
+  EXPECT_EQ(data->workpieceList.size(), 1);
   remote_control->send_event((int8_t)Topic::INTERRUPT,
                              (int)InterruptEnum::BUTTON_STOP_PRESSED);
   EXPECT_STATE_CONTAINS("IdleIM");
@@ -856,13 +857,14 @@ TEST_F(RealImplementationSetup, MotorControlDeepHistory) {
 
   EXPECT_STATE_CONTAINS("Fast");
 
-  remote_control->send_event((int8_t)Topic::MOTOR_SLOW, 1);
+  EXPECT_EQ(data->workpieceList.size(), 1);
+
+  remote_control->send_event((int8_t)Topic::MOTOR_SLOW, id);
   EXPECT_STATE_CONTAINS("Slow");
-  remote_control->send_event((int8_t)Topic::DELETE_W_MOTOR, 1);
+  remote_control->send_event((int8_t)Topic::DELETE_W_MOTOR, id);
   WAIT(10);
   EXPECT_STATE_CONTAINS("Idle");
   EXPECT_FALSE(data->workpieces);
-
   EXPECT_EQ(data->current_motor_speed, MotorPieceState::STOPPED);
   EXPECT_FALSE(data->motor_slowed);
   EXPECT_FALSE(data->motor_stopped);
@@ -995,6 +997,16 @@ TEST_F(MotorControlSetup, EdgeCases) {
   remote_control->send_event((int8_t)Topic::DELETE_W_MOTOR, 1);
   WAIT(10);
   EXPECT_STATE("Idle");
+  EXPECT_EQ(data->workpieceList.size(), 0);
+
+  data->sender->send_event((int8_t)Topic::MOTOR_STOP_FSM,
+                           (int)Error_Enum::ERROR_W_APPEARED);
+  WAIT(10);
+  EXPECT_EQ(data->workpieceList.size(), 1);
+
+  data->sender->send_event((int8_t)Topic::DELETE_W_MOTOR,
+                           (int)Error_Enum::ERROR_W_APPEARED);
+  WAIT(10);
   EXPECT_EQ(data->workpieceList.size(), 0);
 }
 

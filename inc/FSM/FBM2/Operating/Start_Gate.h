@@ -19,6 +19,8 @@ public: //================================================ public functions ====
     void exit() override;
 	State* clone() override;
 
+	State* timer(TIMER_ID id) override;
+
 	State* request_transfer() override;
 	State* laser_back_blocked() override;
 	State* laser_front_blocked() override;

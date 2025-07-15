@@ -63,8 +63,8 @@ State* PieceControllerFBM1::laser_sorting_gate_blocked() {
 }
 
 State* PieceControllerFBM1::handle_event_using_special_function(State* (State::* handler_function)()) {
-        if(substates.empty() && quit_on_empty_) {
-            return default_exit_state_;
+        if(substates.empty()) {
+            data->sender->send_event((int) Topic::ERROR, (int8_t) Error_Enum::ERROR_W_APPEARED);
         }
 
 		bool event_consumed = true;

@@ -28,7 +28,7 @@
 #define VOLTAGE_DIVIDER_FACTOR ((R25 + R26) / R25)
 #define MESS_TOLERANZ  0.15f
 #define MAX_WERT 400
-#define W_SIZE 100
+#define W_SIZE_TOLERANZ -5
 
 typedef struct {
 	std::string name;
@@ -38,9 +38,10 @@ typedef struct {
 	float minV;
 	float stddev;
 	float range;
-	float lochMin; 
+	float lochMin;
 	int lochStartIndex;
 	int lochEndIndex;
+	int minSize;
 } Profil;
 
 typedef struct{
@@ -75,7 +76,6 @@ private: //================================================ private functions ==
 	
 	static void saveProfile(const Profil& p);
 	static std::vector<Profil> loadProfile();
-	static int minMesspunkte;
 
 
 

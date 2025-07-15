@@ -26,6 +26,13 @@ void Fast::entry() {
   data->sender->send_event((int8_t)Topic::ACTUATOR,
                            (int)ActuatorEnum::MOTOR_RIGHT_START,
                            (int)EventPriority::SECOND_PRIO);
+
+
+for(auto& pair : *data->pieces_map) {
+    Piece* piece = pair.second; // pair.second is the value (Piece*)
+    // Switch case for motor states
+    piece->piece_tracker->fast();
+    }
 }
 
 void Fast::exit() { PRINT_STATE; }

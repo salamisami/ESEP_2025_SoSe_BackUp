@@ -59,7 +59,7 @@ public: //================================================ public functions
             MotorPieceState::DELETE_W_MOTOR, id);
         data->workpieces = !data->workpieceList.isEmpty();
       } else {
-        throw("ID doesn't exist in workpiece list\n");
+        DEBUG("ID doesn't exist in workpiece list");
       }
     } else {
       // Request =/= speed
@@ -78,24 +78,6 @@ public: //================================================ public functions
         data->current_motor_speed = MotorPieceState::SLOW;
       } else {
         data->current_motor_speed = MotorPieceState::FAST;
-      }
-      for (auto &pair : *data->pieces_map) {
-        Piece *piece = pair.second; // pair.second is the value (Piece*)
-
-        // Switch case for motor states
-        switch (data->current_motor_speed) {
-        case MotorPieceState::FAST:
-          piece->piece_tracker->fast();
-          break;
-        case MotorPieceState::SLOW:
-          piece->piece_tracker->slow();
-          break;
-        case MotorPieceState::STOPPED:
-          piece->piece_tracker->stop();
-          break;
-        default:
-          break;
-        }
       }
     }
     data->workpieces = !data->workpieceList.isEmpty();

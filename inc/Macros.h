@@ -30,6 +30,9 @@
 
 #define BROKER_ADR "tcp://192.168.101.8:1883"
 
+#ifdef NO_DEBUG
+#define DEBUG(msg)
+#else
 #define DEBUG(msg) std::cout << msg << std::endl
 
 
@@ -39,7 +42,7 @@
 #define PRINT_STATE
 #endif
 
-#define DISTANCE_BETWEEN_PIECES 50
+#define DISTANCE_BETWEEN_PIECES 75
 #define WAY_TO_AREA 80
 #define OVER_AREA 20
 
@@ -54,6 +57,7 @@
 #define SORT_OUT_TIME 4000
 #define ADC_TIMEOUT_TIME 2000
 #define GATE_THROUGHTIME 2000
+#define RAMP_FULL_TIMER 500
 #define PUSH_DELAY // muss noch gemessen werden
 
 

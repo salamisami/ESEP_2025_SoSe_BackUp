@@ -18,7 +18,7 @@ public: //================================================ public functions ====
 
 	State* clone() override;
     
-	State* error_pieces_too_close_fixed() override;
+	State* piece_appeared_resolved() override;
 
 private: //================================================ private variables ================================================
 	//classes, STL containers, and structs
