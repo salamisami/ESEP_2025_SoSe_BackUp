@@ -37,7 +37,7 @@ Sender::Sender(const char* name) {
                 // Verify the name exists or handle missing resource
                 break;
             default:
-                std::cerr << "Error: Unknown error in name_open(): " << strerror(errno) << std::endl;
+                //std::cerr << "Error: Unknown error in name_open(): " << strerror(errno) << std::endl;
                 break;
         }
 	}
