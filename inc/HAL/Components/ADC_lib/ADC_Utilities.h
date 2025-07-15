@@ -38,9 +38,10 @@ typedef struct {
 	float minV;
 	float stddev;
 	float range;
-	float lochMin; 
+	float lochMin;
 	int lochStartIndex;
 	int lochEndIndex;
+	int minSize;
 } Profil;
 
 typedef struct{
@@ -75,7 +76,6 @@ private: //================================================ private functions ==
 	
 	static void saveProfile(const Profil& p);
 	static std::vector<Profil> loadProfile();
-	static int minMesspunkte;
 
 
 

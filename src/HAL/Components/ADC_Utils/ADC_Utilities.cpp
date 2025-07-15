@@ -7,7 +7,6 @@
 //===================================================== private functions =====================================================
 
 //void ADC_Calibration::privateFunction(){}
-int ADC_Utilities::minMesspunkte(0);
 
 //===================================================== public functions =====================================================
 
@@ -27,13 +26,15 @@ void ADC_Utilities::saveProfile(const Profil& p) {
          << p.range << ","
          << p.lochMin << ","
          << p.lochStartIndex << ","
-         << p.lochEndIndex << "\n";
+         << p.lochEndIndex << ","
+		 << p.minSize << "\n";
 
     std::cout << "Profil erfolgreich gespeichert: " << p.name << "\n";
 }
 
 void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
     struct timespec delay = {0, SAMPLE_DELAY_NS};
+    int minMesspunkte = 0;
 
     std::vector<Bauteil> bauteile = {
         { "WF", ADC_Enum::ADC_WF_DETECT, false },
@@ -54,6 +55,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         std::vector<float> werte;
         bool bauteilErkannt = false;
 
+
         while (!*adcStopped) {
             adc.sample();
             usleep(1000);
@@ -69,10 +71,10 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
             if (bauteilErkannt) {
                 werte.push_back(sensorVoltage);
                 int messpunkte = werte.size();
-                if ((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && (messpunkte >= (minMesspunkte - 5))) {
+                if ((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && (messpunkte >= (minMesspunkte - 3))) {
                 	std::cout << "Mespunkte Kalibrierung: " << messpunkte << std::endl;
                 	if(first){
-                		ADC_Utilities::minMesspunkte = werte.size();
+                		minMesspunkte = werte.size();
                 		first = false;
                 	}
                     break;
@@ -128,6 +130,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         p.minV = minV;
         p.stddev = stddev;
         p.range = range;
+        p.minSize = minMesspunkte;
 
         if (hatLoch) {
             p.lochMin = lochMin;
@@ -192,6 +195,9 @@ std::vector<Profil> ADC_Utilities::loadProfile() {
         std::getline(ss, token, ',');
         p.lochEndIndex = std::stoi(token);
 
+        std::getline(ss, token, ',');
+        p.minSize = std::stoi(token);
+
         result.push_back(p);
     }
     return result;
@@ -250,9 +256,9 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     if (hatEchtesLoch) {
         for (const auto& p : profile) {
             if (p.hatLoch) {
-//                Loch-Match: Mindesttiefe, Position & Bereichsvergleich
-//                bool tiefeOK = std::fabs(minV - p.lochMin) < 0.3f;
-//                bool indexOK = (minIndex >= p.lochStartIndex - 2 && minIndex <= p.lochEndIndex + 2);
+                //Loch-Match: Mindesttiefe, Position & Bereichsvergleich
+                bool tiefeOK = std::fabs(minV - p.lochMin) < 0.6f;
+                bool indexOK = (minIndex >= p.lochStartIndex - 2 && minIndex <= p.lochEndIndex + 2);
                 bool avgOK = std::fabs(avg - p.avg) < 0.3f;
                 if (avgOK) {
                     std::cout << "Profil erkannt✅: " << p.name << " (mit Loch)\n";
@@ -325,6 +331,13 @@ bool ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bo
 
 ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
     std::vector<float> werte;
+    auto profiles = loadProfile();
+    int minSize = 0;
+
+    if (!profiles.empty()) {
+        minSize = profiles.front().minSize;
+    }
+
     struct timespec delay = { 0, SAMPLE_DELAY_NS };
     while(!*adcStopped) {
         adc.sample();
@@ -335,8 +348,9 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
 
         werte.push_back(sensorVoltage);
         int messpunkte = werte.size();
-        if(sensorVoltage > bandVoltage - TRIGGER_SCHRITT  && (messpunkte >= (minMesspunkte - 5))){
+        if((sensorVoltage > bandVoltage - TRIGGER_SCHRITT)  && (messpunkte >= (minSize - 5))){
         	std::cout << "Mespunkte Operating: " << messpunkte << std::endl;
+        	std::cout << "Min Vorgabe Operating: " << minSize << std::endl;
             break;
         }
         if(werte.size() >= MAX_WERT) {
@@ -346,8 +360,7 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
         nanosleep(&delay, NULL);
     }
 
-    auto profile = loadProfile();
-    return classify(werte, profile);
+    return classify(werte, profiles);
 }
 
 float ADC_Utilities::define_band_voltage(ADC& adc, TSCADC& tscadc) {
