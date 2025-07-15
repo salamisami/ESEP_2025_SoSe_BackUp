@@ -85,6 +85,7 @@ public: //================================================ public functions
         // Switch case for motor states
         switch (data->current_motor_speed) {
         case MotorPieceState::FAST:
+          DEBUG("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
           piece->piece_tracker->fast();
           break;
         case MotorPieceState::SLOW:
