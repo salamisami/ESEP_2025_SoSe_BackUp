@@ -30,7 +30,7 @@
 
 #define BROKER_ADR "tcp://192.168.101.8:1883"
 
-#define DEBUG(msg) std::cout << msg << std::endl
+#define DEBUG(msg) //std::cout << msg << std::endl
 #endif
 
 #ifdef VERBOSE_STATES
@@ -56,10 +56,15 @@
 #define GATE_THROUGHTIME 2000
 #define PUSH_DELAY // muss noch gemessen werden
 
-#define DEADLINE_FACTOR 1
-#define TIMESTAMP_FACTOR 1.05
-// piece appeared: runterstellen
-// piece missing: hochstellen
+//piece missing: runterstellen
+//piece appeared: hochstellen
+#define POSITION_FACTOR 1
+
+
+#define TIMESTAMP_FACTOR 1
+
+//piece appeared: runterstellen
+//piece missing: hochstellen
 #define GATE_END_FACTOR 1.05
 
 // Configuration for FBM Module 1

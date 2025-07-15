@@ -59,6 +59,7 @@ std::pair<Area, double> DistanceTracker::timestamp_to_area_pos(const long& times
     for(int i = 1; i < TIMESTAMP_LENGTH - 1; ++i) {
         if(timestamp < timestamps[i]) {
             double pos = (timestamp - timestamps[i - 1]) * 100.0 / (timestamps[i] - timestamps[i - 1]);
+            pos *= POSITION_FACTOR;
             return { static_cast<Area>(i), pos };
         }
     }
