@@ -37,9 +37,5 @@ State* BothRampsFull::sort_out()
     return new BothRampsFull(data);
 }
 
-//State* BothRampsFull::error_both_r_full()
-//{
-//     return new BothRampsFull(data);
-// }
 
 State *BothRampsFull::clone() { return new BothRampsFull(data); }
