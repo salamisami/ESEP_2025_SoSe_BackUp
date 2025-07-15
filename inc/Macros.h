@@ -57,6 +57,7 @@
 #define SORT_OUT_TIME 4000
 #define ADC_TIMEOUT_TIME 2000
 #define GATE_THROUGHTIME 2000
+#define RAMP_FULL_TIMER 500
 #define PUSH_DELAY // muss noch gemessen werden
 
 

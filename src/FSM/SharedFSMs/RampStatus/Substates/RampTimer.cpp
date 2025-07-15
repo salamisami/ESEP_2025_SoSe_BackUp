@@ -15,7 +15,7 @@ RampTimer::~RampTimer() {}
 void RampTimer::entry(){
 	PRINT_STATE;
     
-    data->timer->start_timer(1000, TIMER_ID::RAMP_TIMER);
+    data->timer->start_timer(RAMP_FULL_TIMER, TIMER_ID::RAMP_TIMER);
 }
 
 void RampTimer::exit(){
