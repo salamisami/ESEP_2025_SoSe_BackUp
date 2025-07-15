@@ -43,7 +43,7 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 			}
 
 			
-			if(current_position >= MOTOR_SLOW_POS_AT_START_ADC && data->piece_near_end){
+			if(data->piece_near_end){
 				data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) localdata_.piece->id);
 				localdata_.unblock_signal_has_been_sent = false;
 				return new PendingTransferRequestNotAtEnd(data, localdata_);
