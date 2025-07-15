@@ -5,7 +5,6 @@
 #include "EStopTest.h"
 #include "SimulatePiece.h"
 #include "Piece.h"
-#include "WaitingForTransferStart.h"
 #include "Fsm.h"
 
 #include <iostream>
