@@ -14,6 +14,7 @@ ADCFreiUnquittiert::~ADCFreiUnquittiert() {}
 //===================================================== public functions =====================================================
 void ADCFreiUnquittiert::entry(){
 	PRINT_STATE;
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_ON);
     
 }
 
@@ -21,6 +22,7 @@ void ADCFreiUnquittiert::exit(){
     data->sender->send_event((int8_t)Topic::ACTUATOR, (int)ActuatorEnum::TRAFFIC_RED_OFF);
     data->sender->send_event((int8_t)Topic::DELETE_W_MOTOR, (int) Error_Enum::ERROR_INVALID_MESURE);
     data->sender->send_event((int8_t)Topic::ERROR, (int) Error_Enum::ERROR_INVALID_MEASURE_RESOLVED);
+    data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_OFF);
     data->error_warning_counter->error_or_warning_resolved();
     
 	PRINT_STATE;

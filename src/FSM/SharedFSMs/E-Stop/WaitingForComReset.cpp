@@ -11,6 +11,7 @@ void WaitingForComReset::entry() {
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_RESET_ON);
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_YELLOW_ON);
 	PRINT_STATE;
+	printf("Please press Reset Button on FBM2.\n");
 }
 
 void WaitingForComReset::exit() {
