@@ -30,6 +30,9 @@
 
 #define BROKER_ADR "tcp://192.168.101.7:1883"
 
+#ifdef NO_DEBUG
+#define DEBUG(msg)
+#else
 #define DEBUG(msg) std::cout << msg << std::endl
 #endif
 
