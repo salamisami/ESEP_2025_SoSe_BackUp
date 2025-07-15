@@ -43,7 +43,7 @@ target_include_directories(ProjectLib PUBLIC ${GLOB_INC_DIRS})
 
 add_compile_definitions(MOCK)
 add_compile_definitions(VERBOSE_STATES)
-add_compile_definitions(FBM_2)
+add_compile_definitions(FBM_1)
 
 # Executables
 add_executable(Project mock.cpp)
