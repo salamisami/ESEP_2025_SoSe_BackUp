@@ -102,7 +102,8 @@ enum class Internal_Enum : int {
     RAMP_NOT_FULL,
     REMOTE_STOP,
     SORTING_OUT_FBM2,
-    SORTED_OUT
+    SORTED_OUT,
+	PIECE_SWITCHED
 };
 
 enum class ADC_Enum : int {

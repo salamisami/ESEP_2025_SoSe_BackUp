@@ -22,6 +22,7 @@ public:
 	State* clone() override;
 
 	State* error_w_lost() override;
+	State* piece_switched() override;
 	State* sorted() override;
 };
 

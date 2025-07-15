@@ -99,6 +99,10 @@ public: //================================================ public functions
     return handle_event_using_function(&State::reset_to_tall_w_metal);
   }
 
+  virtual State *piece_switched() {
+      return handle_event_using_function(&State::piece_switched);
+    }
+
   virtual State *sorted() {
     return handle_event_using_function(&State::sorted);
   }

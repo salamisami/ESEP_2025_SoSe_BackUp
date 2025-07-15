@@ -28,7 +28,7 @@
 #define PROFIL_DATEI "ESEP-Team-1-1_25/profile_calibration.csv"
 #define SAVE_LOCATION_TIMEPROFILE "ESEP-Team-1-1_25/time_profiles.csv"
 
-#define BROKER_ADR "tcp://192.168.101.11:1883"
+#define BROKER_ADR "tcp://192.168.101.10:1883"
 
 #ifdef NO_DEBUG
 #define DEBUG(msg)
@@ -64,7 +64,7 @@
 //piece appeared: runterstellen
 //piece missing: hochstellen
 #define TIMESTAMP_FACTOR 1.05
-#define GATE_END_FACTOR 1.1
+#define GATE_END_FACTOR 1.05
 
 
 #define DEADLINE_FACTOR 1

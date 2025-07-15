@@ -97,6 +97,9 @@ template <typename T> State *Context<T>::handleInternal(int event_value) {
   case Internal_Enum::SORTING_OUT_FBM2:
     newState = state->sort_out_fbm2();
     break;
+  case Internal_Enum::PIECE_SWITCHED:
+      newState = state->piece_switched();
+      break;
   default:
     break;
   }
