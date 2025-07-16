@@ -43,7 +43,7 @@ State* StartADC_PT1::timer(TIMER_ID id) {
 			}
 
 
-			if(data->piece_near_end && current_position < MOTOR_SLOW_POS_AT_START_ADC) {
+			if(data->piece_near_end && current_position < MOTOR_SLOW_POS_AT_START_ADC && current_position > 70) {
 				data->sender->send_event((int8_t) Topic::COM, (int) COM_Enum::REQUEST_TRANSFER);
 			}
 

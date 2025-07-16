@@ -14,7 +14,7 @@ GateEnd_PT1::~GateEnd_PT1() {}
 void GateEnd_PT1::entry() {
 	PRINT_STATE;
 	data->timer->start_timer(UPDATE_PIECE_INTERVAL, TIMER_ID::GATEEND_PT1);
-	data->piece_near_end = true;
+
 }
 
 void GateEnd_PT1::exit() {
@@ -33,8 +33,13 @@ State* GateEnd_PT1::timer(TIMER_ID id) {
 	auto piece = localdata_.piece;
 	auto distance = piece->piece_tracker->get_distance();
 	Area current_area = distance.first;
-	
+
 	switch(current_area) {
+		case Area::GATE_END:
+			if(distance.second > 1) {
+				data->piece_near_end = true;
+			}
+			break;
 		case Area::OUT_OF_RANGE: {
 				DEBUG("PieceMissing! Cause: piece is too long to reach laser back.");
 				printf("Error: Piece takes too long to reach laser back.\n");

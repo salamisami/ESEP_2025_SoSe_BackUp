@@ -80,7 +80,6 @@ State* ADCGate_PT1::laser_sorting_gate_blocked() {
 
 State* ADCGate_PT1::metal_detected() {
 	DEBUG("Metal Detected.");
-	printf("Metal Detected.\n");
 	localdata_.is_metal = true;
 	return nullptr;
 }

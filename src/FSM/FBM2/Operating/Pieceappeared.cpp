@@ -23,13 +23,13 @@ void Pieceappeared::entry() {
 	data->sender->send_event((int8_t) Topic::ERROR, (int) Error_Enum::ERROR_W_APPEARED);
 
 	//TODO move following commands to action on the previous states accordingly, in order to work with deep history
-	if(data->piece_FBM2_soll == nullptr) {
-		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) -1);
-	} else {
-		data->sender->send_event((int8_t) Topic::DELETE_W_MOTOR, (int) data->piece_FBM2_soll->id);
-		delete data->piece_FBM2_soll;
-		data->piece_FBM2_soll = nullptr;
-	}
+	// if(data->piece_FBM2_soll == nullptr) {
+	// 	// data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) -1);
+	// } else {
+	// 	//data->sender->send_event((int8_t) Topic::MOTOR_STOP_FSM, (int) -1;
+	// 	delete data->piece_FBM2_soll;
+	// 	data->piece_FBM2_soll = nullptr;
+	// }
 
 
 	//Action here
