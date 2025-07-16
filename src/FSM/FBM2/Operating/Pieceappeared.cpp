@@ -39,7 +39,13 @@ void Pieceappeared::entry() {
 
 void Pieceappeared::exit() {
 	PRINT_STATE;
-	data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) data->piece_FBM2_soll->id);
+	data->workpieceList.clean();	
+	data->workpieces = false;
+	data->motor_slowed = false;
+	data->motor_stopped = false;
+	delete data->piece_FBM2_soll;
+	data->sender->send_event((int8_t) Topic::INTERNAL, (int) Internal_Enum::PIECE_SWITCHED);
+	//data->sender->send_event((int8_t) Topic::MOTOR_FAST, (int) data->piece_FBM2_soll->id);
 }
 
 State* Pieceappeared::clone() {
