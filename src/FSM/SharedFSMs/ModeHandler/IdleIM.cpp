@@ -4,6 +4,7 @@ void IdleIM::entry() {
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::LED_START_ON);
     PRINT_STATE;
     data->sender->send_event((int8_t) Topic::ACTUATOR, (int) ActuatorEnum::TRAFFIC_GREEN_ON_SLOW);
+    data->sender->send_event((int8_t)Topic::ACTUATOR, (int)ActuatorEnum::TRAFFIC_GREEN_OFF);
 }
 
 void IdleIM::exit() {
