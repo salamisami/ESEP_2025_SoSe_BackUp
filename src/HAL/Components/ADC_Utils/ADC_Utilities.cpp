@@ -12,28 +12,28 @@
 
 void ADC_Utilities::saveProfile(const Profil& p) {
     std::ofstream file(PROFIL_DATEI, std::ios::app);
-    if (!file.is_open() || file.fail()) {
+    if(!file.is_open() || file.fail()) {
         THROW("[Fehler] Datei konnte nicht geöffnet werden: " + std::string(PROFIL_DATEI));
         return;
     }
 
     file << p.name << ","
-         << static_cast<int32_t>(p.eventValue) << ","
-         << (p.hatLoch ? 1 : 0) << ","
-         << p.avg << ","
-         << p.minV << ","
-         << p.stddev << ","
-         << p.range << ","
-         << p.lochMin << ","
-         << p.lochStartIndex << ","
-         << p.lochEndIndex << ","
-		 << p.minSize << "\n";
+        << static_cast<int32_t>(p.eventValue) << ","
+        << (p.hatLoch ? 1 : 0) << ","
+        << p.avg << ","
+        << p.minV << ","
+        << p.stddev << ","
+        << p.range << ","
+        << p.lochMin << ","
+        << p.lochStartIndex << ","
+        << p.lochEndIndex << ","
+        << p.minSize << "\n";
 
     std::cout << "Profil erfolgreich gespeichert: " << p.name << "\n";
 }
 
 void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVoltage, bool* adcStopped) {
-    struct timespec delay = {0, SAMPLE_DELAY_NS};
+    struct timespec delay = { 0, SAMPLE_DELAY_NS };
     int minMesspunkte = 0;
 
     std::vector<Bauteil> bauteile = {
@@ -46,7 +46,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
     std::ofstream clear(PROFIL_DATEI, std::ios::trunc);
     clear.close();
 
-    for (const auto& bauteil : bauteile) {
+    for(const auto& bauteil : bauteile) {
         std::string name = bauteil.name;
         bool hatLoch = bauteil.hatLoch;
         ADC_Enum eventValue = bauteil.eventValue;
@@ -56,27 +56,27 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         bool bauteilErkannt = false;
 
 
-        while (!*adcStopped) {
+        while(!*adcStopped) {
             adc.sample();
             usleep(1000);
             uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
             float voltage = (raw / 4095.0f) * REF_VOLTAGE;
             float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
 
-            if (!bauteilErkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT ) {
+            if(!bauteilErkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
                 bauteilErkannt = true;
                 std::cout << "Bauteil erkannt – Messung startet\n";
             }
             bool first = true;
-            if (bauteilErkannt) {
+            if(bauteilErkannt) {
                 werte.push_back(sensorVoltage);
                 int messpunkte = werte.size();
-                if ((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && (messpunkte >= (minMesspunkte + W_SIZE_TOLERANZ))) {
-                	std::cout << "Mespunkte Kalibrierung: " << messpunkte << std::endl;
-                	if(first){
-                		minMesspunkte = werte.size();
-                		first = false;
-                	}
+                if((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && (messpunkte >= (minMesspunkte + W_SIZE_TOLERANZ))) {
+                    std::cout << "Mespunkte Kalibrierung: " << messpunkte << std::endl;
+                    if(first) {
+                        minMesspunkte = werte.size();
+                        first = false;
+                    }
                     break;
                 }
 
@@ -84,7 +84,7 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
             nanosleep(&delay, NULL);
         }
 
-        if (werte.empty()) {
+        if(werte.empty()) {
             std::cerr << "Keine Messwerte für " << name << ", überspringe.\n";
             continue;
         }
@@ -92,35 +92,35 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         // Feature-Berechnung
         float sum = 0.0f, sumSquares = 0.0f, minV = werte[0], maxV = werte[0];
         int minIdx = 0;
-        for (size_t i = 0; i < werte.size(); ++i) {
+        for(size_t i = 0; i < werte.size(); ++i) {
             sum += werte[i];
             sumSquares += werte[i] * werte[i];
-            if (werte[i] < minV) { minV = werte[i]; minIdx = i; }
-            if (werte[i] > maxV) maxV = werte[i];
+            if(werte[i] < minV) { minV = werte[i]; minIdx = i; }
+            if(werte[i] > maxV) maxV = werte[i];
         }
         float avg = sum / werte.size();
         float stddev = std::sqrt(sumSquares / werte.size() - avg * avg);
         float range = maxV - minV;
 
-//        float lochMin = 0;
-//        int start = 0, ende = 0;
-//        if (hatLoch) {
-//            int safeStart = std::min<int>(10, werte.size() - 1);
-//            lochMin = werte[safeStart];
-//            int minIdx = safeStart;
-//            for (size_t i = 0; i < werte.size(); ++i) {
-//                if (werte[i] < lochMin) { lochMin = werte[i]; minIdx = i; }
-//            }
-//            float lochSchwelle = lochMin + 0.05f;
-//            start = -1; ende = -1;
-//            for (size_t i = 0; i < werte.size(); ++i) {
-//                if (werte[i] <= lochSchwelle) {
-//                    if (start == -1) start = i;
-//                    ende = i;
-//                }
-//            }
-//            if (start == -1) { start = minIdx; ende = minIdx; }
-//        }
+        //        float lochMin = 0;
+        //        int start = 0, ende = 0;
+        //        if (hatLoch) {
+        //            int safeStart = std::min<int>(10, werte.size() - 1);
+        //            lochMin = werte[safeStart];
+        //            int minIdx = safeStart;
+        //            for (size_t i = 0; i < werte.size(); ++i) {
+        //                if (werte[i] < lochMin) { lochMin = werte[i]; minIdx = i; }
+        //            }
+        //            float lochSchwelle = lochMin + 0.05f;
+        //            start = -1; ende = -1;
+        //            for (size_t i = 0; i < werte.size(); ++i) {
+        //                if (werte[i] <= lochSchwelle) {
+        //                    if (start == -1) start = i;
+        //                    ende = i;
+        //                }
+        //            }
+        //            if (start == -1) { start = minIdx; ende = minIdx; }
+        //        }
 
         Profil p;
         p.name = name;
@@ -132,15 +132,15 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
         p.range = range;
         p.minSize = minMesspunkte;
 
-//        if (hatLoch) {
-//            p.lochMin = lochMin;
-//            p.lochStartIndex = start;
-//            p.lochEndIndex = ende;
-//        } else {
-//            p.lochMin = 0.0f;
-//            p.lochStartIndex = 0;
-//            p.lochEndIndex = 0;
-//        }
+        //        if (hatLoch) {
+        //            p.lochMin = lochMin;
+        //            p.lochStartIndex = start;
+        //            p.lochEndIndex = ende;
+        //        } else {
+        //            p.lochMin = 0.0f;
+        //            p.lochStartIndex = 0;
+        //            p.lochEndIndex = 0;
+        //        }
 
         saveProfile(p);
     }
@@ -150,14 +150,14 @@ void ADC_Utilities::calibrateComponents(ADC& adc, TSCADC& tscadc, float bandVolt
 std::vector<Profil> ADC_Utilities::loadProfile() {
     std::vector<Profil> result;
 
-    if (!FILE_EXISTS(PROFIL_DATEI)) {
+    if(!FILE_EXISTS(PROFIL_DATEI)) {
         return result;
     }
 
     std::ifstream file(PROFIL_DATEI);
     std::string line;
-    while (std::getline(file, line)) {
-        if (line.empty() || line[0] == '#') continue; // Überspringe leere Zeilen/Kommentare
+    while(std::getline(file, line)) {
+        if(line.empty() || line[0] == '#') continue; // Überspringe leere Zeilen/Kommentare
 
         std::istringstream ss(line);
         Profil p;
@@ -204,17 +204,17 @@ std::vector<Profil> ADC_Utilities::loadProfile() {
 }
 
 ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vector<Profil>& profile) {
-    if (value.empty()) return ADC_Enum::ADC_W_NOT_DETECT;
+    if(value.empty()) return ADC_Enum::ADC_W_NOT_DETECT;
 
     // Berechnung für die aktuelle Messung
     float sum = 0, sumSquares = 0, minV = value[0], maxV = value[0];
     int minIndex = 0;
-    for (size_t i = 0; i < value.size(); ++i) {
+    for(size_t i = 0; i < value.size(); ++i) {
         float v = value[i];
         sum += v;
         sumSquares += v * v;
-        if (v < minV) { minV = v; minIndex = i; }
-        if (v > maxV) { maxV = v; }
+        if(v < minV) { minV = v; minIndex = i; }
+        if(v > maxV) { maxV = v; }
     }
     float avg = sum / value.size();
     float stddev = std::sqrt(sumSquares / value.size() - avg * avg);
@@ -227,8 +227,8 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
 
     // Zähle, wie viele Werte nahe dem Minimum liegen (für "Loch-Breite")
     int lochBreite = 0;
-    for (float v : value) {
-        if (std::fabs(v - minV) < LOCH_NAEHE) lochBreite++;
+    for(float v : value) {
+        if(std::fabs(v - minV) < LOCH_NAEHE) lochBreite++;
     }
     bool hatEchtesLoch = ((avg - minV) > LOCH_TIEFE_MIN) && (lochBreite >= LOCH_BREITE_MIN);
 
@@ -241,10 +241,10 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     // 	std::cout << "NEIN \n";
     // }
     // Zuerst Profile OHNE Loch prüfen, wenn kein echtes Loch vorliegt ---
-    if (!hatEchtesLoch) {
-        for (const auto& p : profile) {
-            if (!p.hatLoch) {
-                if (std::fabs(avg - p.avg) < 0.2f && std::fabs(minV - p.minV) < 0.2f) {
+    if(!hatEchtesLoch) {
+        for(const auto& p : profile) {
+            if(!p.hatLoch) {
+                if(std::fabs(avg - p.avg) < 0.2f && std::fabs(minV - p.minV) < 0.2f) {
                     std::cout << "Profil erkannt: " << p.name << " (ohne Loch)\n";
                     return p.eventValue;
                 }
@@ -253,14 +253,14 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     }
 
     // Profile MIT Loch prüfen, wenn ein Loch erkannt wurde
-    if (hatEchtesLoch) {
-        for (const auto& p : profile) {
-            if (p.hatLoch) {
+    if(hatEchtesLoch) {
+        for(const auto& p : profile) {
+            if(p.hatLoch) {
                 //Loch-Match: Mindesttiefe, Position & Bereichsvergleich
 //                bool tiefeOK = std::fabs(minV - p.lochMin) < 0.6f;
 //                bool indexOK = (minIndex >= p.lochStartIndex - 10 && minIndex <= p.lochEndIndex + 10);
                 bool avgOK = std::fabs(avg - p.avg) < 0.3f;
-                if (avgOK) {
+                if(avgOK) {
                     std::cout << "Profil erkannt✅: " << p.name << " (mit Loch)\n";
                     return p.eventValue;
                 }
@@ -271,23 +271,23 @@ ADC_Enum ADC_Utilities::classify(const std::vector<float>& value, const std::vec
     // Fallback: Profil mit höchstem Score
     int bestScore = -1;
     ADC_Enum bestEvent = ADC_Enum::ADC_W_NOT_DETECT;
-    for (const auto& p : profile) {
-			int score = 0;
-			if (std::fabs(avg - p.avg) < 0.2f) score++;
-			if (std::fabs(minV - p.minV) < 0.2f) score++;
-			if (std::fabs(stddev - p.stddev) < 0.1f) score++;
-			if (std::fabs(range - p.range) < 0.2f) score++;
-			if (score > bestScore) {
-				bestScore = score;
-				bestEvent = p.eventValue;
-				//std::cout << "Profil: " << p.name  << "Score:" << bestScore << "\n";
+    for(const auto& p : profile) {
+        int score = 0;
+        if(std::fabs(avg - p.avg) < 0.2f) score++;
+        if(std::fabs(minV - p.minV) < 0.2f) score++;
+        if(std::fabs(stddev - p.stddev) < 0.1f) score++;
+        if(std::fabs(range - p.range) < 0.2f) score++;
+        if(score > bestScore) {
+            bestScore = score;
+            bestEvent = p.eventValue;
+            //std::cout << "Profil: " << p.name  << "Score:" << bestScore << "\n";
 //				if (bestScore >= 2) {
 //					std::cout << "Profil erkannt ✅: " << p.name  << "\n";
 //					return bestEvent;
-			}
-				if (bestScore > 2) {
-					std::cout << "Profil erkannt ✅: " << p.name << "Score:" << bestScore << "\n";
-					return bestEvent;
+        }
+        if(bestScore > 2) {
+            std::cout << "Profil erkannt ✅: " << p.name << "Score:" << bestScore << "\n";
+            return bestEvent;
         }
     }
 
@@ -304,14 +304,14 @@ bool ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bo
 
     auto start_time = std::chrono::steady_clock::now();
 
-    while (!*adcStopped) {
+    while(!*adcStopped) {
         adc.sample();
         usleep(1000);
         uint32_t raw = tscadc.fifoADCDataRead(Fifo::FIFO_0);
         float voltage = (raw / 4095.0f) * REF_VOLTAGE;
         float sensorVoltage = voltage * VOLTAGE_DIVIDER_FACTOR;
 
-        if (!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
+        if(!erkannt && sensorVoltage < bandVoltage - TRIGGER_SCHRITT) {
             erkannt = true;
             return true;
         }
@@ -319,7 +319,7 @@ bool ADC_Utilities::expect_piece(ADC& adc, TSCADC& tscadc, float bandVoltage, bo
         // Timeout prüfen
         auto now = std::chrono::steady_clock::now();
         auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time).count();
-        if (elapsed_ms > timeout_ms) {
+        if(elapsed_ms > timeout_ms) {
 
             return false;
         }
@@ -334,7 +334,7 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
     auto profiles = loadProfile();
     int minSize = 0;
 
-    if (!profiles.empty()) {
+    if(!profiles.empty()) {
         minSize = profiles.front().minSize;
     }
 
@@ -348,15 +348,17 @@ ADC_Enum ADC_Utilities::executeMeasurement(ADC& adc, TSCADC& tscadc, float bandV
 
         werte.push_back(sensorVoltage);
         int messpunkte = werte.size();
-        if((sensorVoltage > bandVoltage - TRIGGER_SCHRITT)  && (messpunkte >= (minSize + W_SIZE_TOLERANZ))){
-        	//std::cout << "Mespunkte Operating: " << messpunkte << std::endl;
-        	//std::cout << "Min Vorgabe Operating: " << (minSize + W_SIZE_TOLERANZ) << std::endl;
+        if((sensorVoltage > bandVoltage - TRIGGER_SCHRITT) && (messpunkte >= (minSize + W_SIZE_TOLERANZ))) {
+            #ifndef NO_DEBUG
+            std::cout << "Mespunkte Operating: " << messpunkte << std::endl;
+            std::cout << "Min Vorgabe Operating: " << (minSize + W_SIZE_TOLERANZ) << std::endl;
+            #endif
             break;
         }
         if(werte.size() >= MAX_WERT) {
             return ADC_Enum::ADC_INVALID_MESURE;
         }
-        
+
         nanosleep(&delay, NULL);
     }
 
