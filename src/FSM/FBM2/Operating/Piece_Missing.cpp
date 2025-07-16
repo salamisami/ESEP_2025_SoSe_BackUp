@@ -29,6 +29,11 @@ void Piece_Missing::entry() {
 		data->piece_FBM2_soll = nullptr;
 	}
 	printf("Piece Missing. Please press the Reset Button.\n");
+	data->workpieceList.clean();	
+	data->workpieces = false;
+	data->motor_slowed = false;
+	data->motor_stopped = false;
+	delete data->piece_FBM2_soll;
 	//Action here
 	//HState::entry() //for HState
 	//OrthState::entry() //for OrthState
