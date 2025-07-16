@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<trgtproject id="com.qnx.tools.ide.target.core.target">
+    <data>
+        <item id="com.qnx.tools.ide.target">
+            <connection>
+                <ENDIAN value="le"/>
+                <VERSION value="2017/02/14-16:14:20EST"/>
+                <ARCHITECTURE value="armle"/>
+                <MACHINE value="AM335X_BeagleBone"/>
+                <DOMAIN value="net.intra"/>
+                <TIMEZONE value="CET-01CEST-02,M3.5.0/2,M10.5.0/2"/>
+                <SYSNAME value="QNX"/>
+                <CPU value="armle"/>
+                <HASVERSION value="1"/>
+                <HOSTNAME value="Festo06"/>
+                <OS value="nto"/>
+                <QCONN_VERSION value="1.4.207944"/>
+                <RELEASE value="7.0.0"/>
+                <NUM_SRVCS value="1"/>
+            </connection>
+            <qconnostype value="nto"/>
+            <project>
+                <name value="FTS-106"/>
+            </project>
+            <qconnport value="8000"/>
+            <qconnguid value="b1df6c49-6c45-45af-a14b-079b3c844eaf"/>
+            <targettmpdir value="/tmp"/>
+            <qconnhostname value="192.168.101.106"/>
+        </item>
+    </data>
+</trgtproject>
